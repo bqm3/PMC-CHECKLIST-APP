@@ -107,10 +107,10 @@ const LoginScreen = ({navigation}) => {
         <View style={[styles.container, {flex: 1}]}>
           <View
             style={[styles.container, {width: SIZES.width, marginBottom: 40}]}>
-            {/* <Image
+            <Image
               style={{width: 224, height: 150, resizeMode: 'contain'}}
               source={require('../../assets/company_logo.png')}
-            /> */}
+            />
             <View style={[styles.container, {width: '80%'}]}>
               <Title text={'Đăng nhập'} size={20} top={10} />
               <View
@@ -160,7 +160,7 @@ const LoginScreen = ({navigation}) => {
                           height: 20,
                           resizeMode: 'contain',
                         }}
-                        // source={require('../../assets/eye.png')}
+                        source={require('../../assets/eye.png')}
                       />
                     ) : (
                       <Image
@@ -169,7 +169,7 @@ const LoginScreen = ({navigation}) => {
                           height: 20,
                           resizeMode: 'contain',
                         }}
-                        // source={require('../../assets/hidden.png')}
+                        source={require('../../assets/hidden.png')}
                       />
                     )}
                   </TouchableOpacity>

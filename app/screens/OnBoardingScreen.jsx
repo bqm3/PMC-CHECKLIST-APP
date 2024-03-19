@@ -21,10 +21,10 @@ const HideKeyboard = ({children}) => (
 const OnBoardingScreen = ({navigation}) => {
   return (
     <HideKeyboard>
-      {/* <ImageBackground
+      <ImageBackground
         source={require('../../assets/background_company.png')}
         resizeMode="cover"
-        style={styles.defaultFlex}> */}
+        style={styles.defaultFlex}>
         <View style={styles.defaultFlex}>
           <View
             style={{
@@ -32,14 +32,14 @@ const OnBoardingScreen = ({navigation}) => {
               justifyContent: 'space-around',
               alignItems: 'center',
             }}>
-            {/* <Image
+            <Image
               style={{width: 224, height: 150, resizeMode: 'contain'}}
               source={require('../../assets/company_logo.png')}
-            /> */}
+            />
             <Button onPress={()=>navigation.navigate('LoginScreen')} text={'Click để tiếp tục'} />
           </View>
         </View>
-      {/* </ImageBackground> */}
+      </ImageBackground>
     </HideKeyboard>
   );
 };

@@ -1,11 +1,16 @@
-import React from 'react';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import {Image, Button, Text} from 'react-native';
-import HomeScreen from '../screens/Checklist/HomeScreen';
-import ThucHienChecklist from '../screens/Checklist/ThucHienChecklist';
+import React from "react";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { Image, Button, Text } from "react-native";
+import {
+  ThucHienChecklist,
+  HomeScreen,
+  DanhmucCalamviec,
+  DanhmucGiamsat,
+  DanhmucKhuvuc,
+  DetailChecklist,
+} from "../screens/Checklist";
 
 const Stack = createNativeStackNavigator();
-// const Tab = createBottomTabNavigator();
 
 const HomeStack = () => {
   return (
@@ -13,24 +18,24 @@ const HomeStack = () => {
       <Stack.Screen
         name="Trang chính"
         component={HomeScreen}
-        // lazy={false}
-        options={({route}) => ({
+        lazy={false}
+        options={({ route }) => ({
           headerShown: true,
           headerStyle: {
             // backgroundColor: COLORS.bg_main,
           },
           headerTitle: () => (
-            <Text style={{fontSize: 20, fontWeight: '700', color: 'black'}}>
+            <Text style={{ fontSize: 20, fontWeight: "700", color: "black" }}>
               CHECKLIST- PMC
             </Text>
           ),
-          headerTitleAlign: 'center',
+          headerTitleAlign: "center",
           headerLeft: () => (
-            // <Image
-            //   style={{width: 90, height: 50, resizeMode: 'contain'}}
-            //   source={require('../../assets/company_logo.png')}
-            // />
-            <></>
+            <Image
+              style={{ width: 90, height: 50, resizeMode: "contain" }}
+              source={require("../../assets/company_logo.png")}
+            />
+            // <></>
           ),
         })}
       />
@@ -38,15 +43,80 @@ const HomeStack = () => {
         name="Thực hiện Check list"
         component={ThucHienChecklist}
         lazy={false}
-        options={({route}) => ({
+        options={({ route }) => ({
           headerShown: true,
-          
+
           headerTitle: () => (
-            <Text style={{fontSize: 20, fontWeight: '700', color: 'black'}}>
+            <Text style={{ fontSize: 20, fontWeight: "700", color: "black" }}>
               Thực hiện Checklist
             </Text>
           ),
-          headerTitleAlign: 'center',
+          headerTitleAlign: "center",
+        })}
+      />
+      <Stack.Screen
+        name="Danh mục Khu vực"
+        component={DanhmucKhuvuc}
+        lazy={false}
+        options={({ route }) => ({
+          headerShown: true,
+
+          headerTitle: () => (
+            <Text style={{ fontSize: 20, fontWeight: "700", color: "black" }}>
+              Danh mục Khu vực
+            </Text>
+          ),
+          headerTitleAlign: "center",
+          headerBackTitle: "Quay lại",
+        })}
+      />
+      <Stack.Screen
+        name="Danh mục Giám sát"
+        component={DanhmucGiamsat}
+        lazy={false}
+        options={({ route }) => ({
+          headerShown: true,
+
+          headerTitle: () => (
+            <Text style={{ fontSize: 20, fontWeight: "700", color: "black" }}>
+              Danh mục Giám sát
+            </Text>
+          ),
+          headerTitleAlign: "center",
+          headerBackTitle: "Quay lại",
+        })}
+      />
+
+      <Stack.Screen
+        name="Danh mục Ca làm việc"
+        component={DanhmucCalamviec}
+        lazy={false}
+        options={({ route }) => ({
+          headerShown: true,
+
+          headerTitle: () => (
+            <Text style={{ fontSize: 20, fontWeight: "700", color: "black" }}>
+              Danh mục Ca làm việc
+            </Text>
+          ),
+          headerTitleAlign: "center",
+          headerBackTitle: "Quay lại",
+        })}
+      />
+
+      <Stack.Screen
+        name="Chi tiết Checklist"
+        component={DetailChecklist}
+        lazy={false}
+        options={({ route }) => ({
+          headerShown: true,
+          headerTitle: () => (
+            <Text style={{ fontSize: 20, fontWeight: "700", color: "black" }}>
+              Chi tiết Checklist
+            </Text>
+          ),
+          headerBackTitle: "Quay lại",
+          headerTitleAlign: "center",
         })}
       />
     </Stack.Navigator>
