@@ -150,7 +150,7 @@ const DanhmucGiamsat = ({ navigation }) => {
                 <View style={{ marginLeft: 10 }}>
                   <TextInput
                     value={dateDay}
-                    placeholderTextColor="#666666"
+                    placeholderTextColor="gray"
                     style={[
                       styles.textInput,
                       {
@@ -198,7 +198,7 @@ const DanhmucGiamsat = ({ navigation }) => {
                 <View style={{ marginLeft: 10, marginVertical: 10 }}>
                   <TextInput
                     // value={"dateHour"}
-                    placeholderTextColor="#666666"
+                    placeholderTextColor="gray"
                     style={[
                       styles.textInput,
                       {
@@ -212,7 +212,7 @@ const DanhmucGiamsat = ({ navigation }) => {
                   <TextInput
                     numberOfLines={3}
                     // value={"dateHour"}
-                    placeholderTextColor="#666666"
+                    placeholderTextColor="gray"
                     style={[
                       styles.textInput,
                       {

@@ -1,6 +1,6 @@
 import * as type from '../types';
 const initialState = {
-  authToken: null,
+  authToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRhIjp7IklEX1VzZXIiOjMsIklEX0R1YW4iOjEsIklEX0tob2lDViI6MSwiVXNlcm5hbWUiOiJBZG1pbiIsIlBhc3N3b3JkIjoiJDJiJDEwJFdsRlh2ODJ3WGxPNnJoc2ZLbjl2TWU2SC91RTRlcDRHcWJYaGxOOEJ5eWJWOVFINjlBM0k2IiwiRW1haWxzIjoicGhvbmdzb2hvYUBwbWN3ZWIudm4iLCJQZXJtaXNzaW9uIjoxLCJpc0RlbGV0ZSI6MH0sImlhdCI6MTcxMDIzNzM3MCwiZXhwIjoxNzQxMzQxMzcwfQ.jOAH5fyIQ_6eGakdq21b48bKQUVnfYz_Di6oQl6HRc0",
   user: {
     ID_User: 3,
     UserName: 'Admin',

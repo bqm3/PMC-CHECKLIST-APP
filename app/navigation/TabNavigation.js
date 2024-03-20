@@ -32,7 +32,7 @@ const HomeStack = () => {
           headerTitleAlign: "center",
           headerLeft: () => (
             <Image
-              style={{ width: 90, height: 50, resizeMode: "contain" }}
+              style={{ width: 80, height: 40, resizeMode: "contain" }}
               source={require("../../assets/company_logo.png")}
             />
             // <></>

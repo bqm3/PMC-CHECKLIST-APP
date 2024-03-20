@@ -2,7 +2,7 @@ import { View, Text, TouchableOpacity } from "react-native";
 import React from "react";
 import { Feather, AntDesign } from "@expo/vector-icons";
 
-const ItemCalamviec = ({ index, data }) => {
+const ItemCalamviec = ({item}) => {
   return (
     <View
       style={{
@@ -17,10 +17,10 @@ const ItemCalamviec = ({ index, data }) => {
     >
       <View>
         <Text style={{ paddingVertical: 2 }}>
-          Ca ngày
+          {item?.Tenca} - {item?.ent_khoicv?.KhoiCV}
         </Text>
         <Text style={{ paddingVertical: 2 }}>
-        Từ giờ: 14:00:01  Đến giờ: 21:00:00
+        Từ giờ: {item?.Giobatdau}  Đến giờ: {item?.Gioketthuc}
         </Text>
       </View>
       <View style={{

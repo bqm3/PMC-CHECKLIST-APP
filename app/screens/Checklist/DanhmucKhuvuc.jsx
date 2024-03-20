@@ -186,7 +186,7 @@ const DanhmucKhuVuc = ({ navigation }) => {
                   <TextInput
                     value={dateDay}
                     selectTextOnFocus={false}
-                    placeholderTextColor="#666666"
+                    placeholderTextColor="gray"
                     style={[
                       styles.textInput,
                       {
@@ -200,7 +200,7 @@ const DanhmucKhuVuc = ({ navigation }) => {
                   <TextInput
                     value={dateHour}
                     selectTextOnFocus={false}
-                    placeholderTextColor="#666666"
+                    placeholderTextColor="gray"
                     style={[
                       styles.textInput,
                       {
@@ -215,7 +215,7 @@ const DanhmucKhuVuc = ({ navigation }) => {
                   <TextInput
                     // value={"dateHour"}
                     // selectTextOnFocus={false}
-                    placeholderTextColor="#666666"
+                    placeholderTextColor="gray"
                     style={[
                       styles.textInput,
                       {
@@ -230,7 +230,7 @@ const DanhmucKhuVuc = ({ navigation }) => {
                     numberOfLines={3}
                     // value={"dateHour"}
                     // selectTextOnFocus={false}
-                    placeholderTextColor="#666666"
+                    placeholderTextColor="gray"
                     style={[
                       styles.textInput,
                       {

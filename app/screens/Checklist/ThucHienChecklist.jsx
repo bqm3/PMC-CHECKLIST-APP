@@ -233,7 +233,7 @@ const ThucHienChecklist = ({navigation}) => {
                     value={dateDay}
                     editable={false}
                     selectTextOnFocus={false}
-                    placeholderTextColor="#666666"
+                    placeholderTextColor="gray"
                     style={[
                       styles.textInput,
                       {
@@ -247,7 +247,7 @@ const ThucHienChecklist = ({navigation}) => {
                     value={dateHour}
                     editable={false}
                     selectTextOnFocus={false}
-                    placeholderTextColor="#666666"
+                    placeholderTextColor="gray"
                     style={[
                       styles.textInput,
                       {

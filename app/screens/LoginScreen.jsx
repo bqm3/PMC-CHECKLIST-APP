@@ -122,7 +122,7 @@ const LoginScreen = ({navigation}) => {
                 <View style={styles.action}>
                   <TextInput
                     placeholder="Nhập tài khoản"
-                    placeholderTextColor="#666666"
+                    placeholderTextColor="gray"
                     style={[styles.textInput]}
                     autoCapitalize="none"
                     value={data.UserName ? data.UserName : user?.UserName}
@@ -135,7 +135,7 @@ const LoginScreen = ({navigation}) => {
                 <View style={styles.action}>
                   <TextInput
                     placeholder="Nhập mật khẩu"
-                    placeholderTextColor="#666666"
+                    placeholderTextColor="gray"
                     style={[styles.textInput]}
                     autoCapitalize="none"
                     value={data.Password}
@@ -181,7 +181,7 @@ const LoginScreen = ({navigation}) => {
                     value={data.Emails}
                     editable={false}
                     selectTextOnFocus={false}
-                    placeholderTextColor="#666666"
+                    placeholderTextColor="gray"
                     style={[styles.textInput]}
                     autoCapitalize="none"
                   />
@@ -193,7 +193,7 @@ const LoginScreen = ({navigation}) => {
                     value={data.Duan}
                     editable={false}
                     selectTextOnFocus={false}
-                    placeholderTextColor="#666666"
+                    placeholderTextColor="gray"
                     style={[styles.textInput]}
                     autoCapitalize="none"
                   />
