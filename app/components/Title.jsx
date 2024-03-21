@@ -6,7 +6,7 @@ const Title = ({text, top, size}) => {
     <View>
       <Text
         style={{
-          color: 'black',
+          color: 'white',
           fontSize: size ? size: 15,
           textAlign: 'center',
           fontWeight: 'bold',

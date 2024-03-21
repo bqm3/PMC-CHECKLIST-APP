@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import React from 'react';
-import { COLORS } from '../constants/theme';
+import { COLORS } from '../../constants/theme';
 import { Ionicons } from '@expo/vector-icons';
 
 const ButtonChecklist = ({ text, onPress, color, marginLeft, icon }) => {

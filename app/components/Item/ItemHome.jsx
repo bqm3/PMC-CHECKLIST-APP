@@ -1,6 +1,6 @@
 import {View, Text, TouchableOpacity} from 'react-native';
 import React from 'react';
-import {COLORS} from '../constants/theme';
+import {COLORS} from '../../constants/theme';
 import { useNavigation } from '@react-navigation/native';
 
 export default function ItemHome({item, index, roleUser}) {

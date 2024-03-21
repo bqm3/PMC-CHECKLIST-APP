@@ -1,14 +1,13 @@
 import {View, Text, TouchableOpacity, ActivityIndicator} from 'react-native';
 import React from 'react';
-import {COLORS} from '../constants/theme';
+import {COLORS} from '../../constants/theme';
 
-const ButtonSubmit = ({text, onPress, isLoading, color, width,pV}) => {
+const ButtonSubmit = ({text, onPress, isLoading,backgroundColor, color, width,pV}) => {
   return (
     <TouchableOpacity
-      // disabled={handleNavigation?.check}
       style={{
         width: width ? width: '100%',
-        backgroundColor: color ? color : COLORS.bg_main,
+        backgroundColor: backgroundColor,
         flexDirection: 'row',
         justifyContent: 'center',
         alignContent: 'center',

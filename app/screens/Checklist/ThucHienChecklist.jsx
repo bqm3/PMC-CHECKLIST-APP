@@ -11,7 +11,7 @@ import {
 import React, { useRef, useState, useEffect } from "react";
 import { Dropdown } from "react-native-element-dropdown";
 import moment from "moment";
-import ButtonChecklist from "../../components/ButtonCheckList";
+import ButtonChecklist from "../../components/Button/ButtonCheckList";
 import { COLORS, SIZES } from "../../constants/theme";
 import { DataTable } from "react-native-paper";
 

@@ -8,7 +8,9 @@ export const COLORS = {
     text_main: 'white',
 
     bg_active: '#2d5991',
-    bg_not_active: '#4285da'
+    bg_not_active: '#4285da',
+
+    bg_button: '#4CB9CE'
 }
 
 export const SIZES = {

@@ -1,6 +1,6 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Image, Button, Text } from "react-native";
+import { Image, Button, Text, TouchableOpacity } from "react-native";
 import {
   ThucHienChecklist,
   HomeScreen,
@@ -9,10 +9,12 @@ import {
   DanhmucKhuvuc,
   DetailChecklist,
 } from "../screens/Checklist";
+import { COLORS } from "../constants/theme";
+import { Ionicons } from '@expo/vector-icons';
 
 const Stack = createNativeStackNavigator();
 
-const HomeStack = () => {
+const HomeStack = ({navigation}) => {
   return (
     <Stack.Navigator initialRouteName="Trang chính">
       <Stack.Screen
@@ -33,7 +35,7 @@ const HomeStack = () => {
           headerLeft: () => (
             <Image
               style={{ width: 80, height: 40, resizeMode: "contain" }}
-              source={require("../../assets/company_logo.png")}
+              source={require("../../assets/pmc_logo.png")}
             />
             // <></>
           ),
@@ -62,12 +64,18 @@ const HomeStack = () => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text style={{ fontSize: 20, fontWeight: "700", color: "black" }}>
+            <Text style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
               Danh mục Khu vực
             </Text>
           ),
+          headerLeft: ()=> <TouchableOpacity>
+            <Ionicons name="chevron-back" size={24} color="white" />
+          </TouchableOpacity>,
           headerTitleAlign: "center",
-          headerBackTitle: "Quay lại",
+          headerStyle: {
+            backgroundColor: COLORS.bg_button,
+            
+          },
         })}
       />
       <Stack.Screen
@@ -78,12 +86,18 @@ const HomeStack = () => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text style={{ fontSize: 20, fontWeight: "700", color: "black" }}>
+            <Text style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
               Danh mục Giám sát
             </Text>
           ),
+          headerLeft: ()=> <TouchableOpacity>
+            <Ionicons name="chevron-back" size={24} color="white" />
+          </TouchableOpacity>,
           headerTitleAlign: "center",
-          headerBackTitle: "Quay lại",
+          headerStyle: {
+            backgroundColor: COLORS.bg_button,
+            
+          },
         })}
       />
 
@@ -95,12 +109,18 @@ const HomeStack = () => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text style={{ fontSize: 20, fontWeight: "700", color: "black" }}>
+            <Text style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
               Danh mục Ca làm việc
             </Text>
           ),
+          headerLeft: ()=> <TouchableOpacity>
+            <Ionicons name="chevron-back" size={24} color="white" />
+          </TouchableOpacity>,
           headerTitleAlign: "center",
-          headerBackTitle: "Quay lại",
+          headerStyle: {
+            backgroundColor: COLORS.bg_button,
+            
+          },
         })}
       />
 

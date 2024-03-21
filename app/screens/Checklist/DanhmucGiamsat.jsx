@@ -2,301 +2,457 @@ import {
   View,
   Text,
   StyleSheet,
-  TextInput,
   Alert,
-  ScrollView,
-  TouchableOpacity,
-  SafeAreaView,
   FlatList,
-  Keyboard,
-  TouchableWithoutFeedback,
+  ImageBackground,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
-import React, { useRef, useState, useEffect } from "react";
-import { Dropdown } from "react-native-element-dropdown";
+import React, {
+  useRef,
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+} from "react";
+import { Provider, useDispatch, useSelector } from "react-redux";
+import {
+  BottomSheetModal,
+  BottomSheetView,
+  BottomSheetModalProvider,
+  BottomSheetScrollView,
+} from "@gorhom/bottom-sheet";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import moment from "moment";
-import ButtonChecklist from "../../components/ButtonCheckList";
+import ButtonChecklist from "../../components/Button/ButtonCheckList";
 import { COLORS, SIZES } from "../../constants/theme";
-import { Ionicons } from "@expo/vector-icons";
-import ItemKhuVuc from "../../components/ItemKhuVuc";
-import ItemGiamSat from "../../components/ItemGiamSat";
+import { AntDesign, Ionicons } from "@expo/vector-icons";
+import ItemCalamviec from "../../components/Item/ItemCalamviec";
 
-const calamviecList = [
-  { label: "Nam", value: "sang" },
-  { label: "Nữ", value: "chieu" },
-  { label: "Khác", value: "toi" },
-];
-
-const data = [
-  {
-    id: 1,
-    title: "123",
-  },
-  {
-    id: 1,
-    title: "123",
-  },
-  {
-    id: 1,
-    title: "123",
-  },
-  {
-    id: 1,
-    title: "123",
-  },
-  {
-    id: 1,
-    title: "123",
-  },
-  {
-    id: 1,
-    title: "123",
-  },
-  {
-    id: 1,
-    title: "123",
-  },
-  {
-    id: 1,
-    title: "123",
-  },
-  {
-    id: 1,
-    title: "123",
-  },
-  {
-    id: 1,
-    title: "123",
-  },
-  {
-    id: 1,
-    title: "123",
-  },
-  {
-    id: 1,
-    title: "123",
-  },
-  {
-    id: 1,
-    title: "123",
-  },
-  {
-    id: 1,
-    title: "123",
-  },
-  {
-    id: 1,
-    title: "123",
-  },
-  {
-    id: 1,
-    title: "123",
-  },
-  {
-    id: 1,
-    title: "123",
-  },
-];
+import { ent_khoicv_get, ent_calv_get, ent_giamsat_get } from "../../redux/actions/entActions";
+import axios from "axios";
+import { BASE_URL } from "../../constants/config";
+import ModalCalamviec from "../../components/Modal/ModalCalamviec";
 
 const DanhmucGiamsat = ({ navigation }) => {
-  const ref = useRef(null);
-  const [heightView, setHeigtView] = useState(0);
-  const date = new Date();
-  const dateHour = moment(date).format("LT");
-  const dateDay = moment(date).format("L");
-  const [valueDate, setValueDate] = useState("");
+  const dispath = useDispatch();
+  const { ent_khoicv, ent_calv, ent_giamsat } = useSelector((state) => state.entReducer);
+  const { user, authToken } = useSelector((state) => state.authReducer);
 
-  const HideKeyboard = ({ children }) => (
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-      {children}
-    </TouchableWithoutFeedback>
-  );
+  const bottomSheetModalRef = useRef(null);
+  const snapPoints = useMemo(() => [1, "20%", "30%", "80%"], []);
+  const [opacity, setOpacity] = useState(1);
+  const [isCheckUpdate, setIsCheckUpdate] = useState({
+    check: false,
+    id_calv: null,
+  });
+
+  const init_khoicv = async () => {
+    await dispath(ent_khoicv_get());
+  };
+
+  const init_calv = async () => {
+    await dispath(ent_calv_get());
+  };
+
+  const init_giamsat = async () => {
+    await dispath(ent_giamsat_get());
+  };
+
+  useEffect(() => {
+    init_giamsat();
+  }, []);
+
+  const dateHour = moment(new Date()).format("LT");
+  const [dataInput, setDataInput] = useState({
+    hoten: "",
+    sdt: dateHour,
+    giokt: dateHour,
+    khoicv: null,
+  });
+
+  const handleChangeText = (key, value) => {
+    setDataInput((data) => ({
+      ...data,
+      [key]: value,
+    }));
+  };
+
+  const handlePushDataSave = async () => {
+    if (dataInput.tenca === "" || dataInput.khoicv === null) {
+      Alert.alert("PMC Thông báo", "Thiêu thông tin ca làm việc", [
+        {
+          text: "Hủy",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+        { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+      ]);
+    } else {
+      let data = {
+        Tenca: dataInput.tenca,
+        Giobatdau: dataInput.giobd,
+        Gioketthuc: dataInput.giokt,
+        ID_KhoiCV: dataInput.khoicv,
+        ID_Duan: user.ID_Duan,
+      };
+      await axios
+        .post(BASE_URL + "/ent_calv/create", data, {
+          headers: {
+            Accept: "application/json",
+            Authorization: "Bearer " + authToken,
+          },
+        })
+        .then((response) => {
+          init_calv();
+          handleAdd();
+          handleCloseModal();
+          Alert.alert("PMC Thông báo", response.data.message, [
+            {
+              text: "Hủy",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel",
+            },
+            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+          ]);
+        })
+        .catch((err) => {
+          Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
+            {
+              text: "Hủy",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel",
+            },
+            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+          ]);
+        });
+    }
+  };
+
+  const handleEditEnt = async (id) => {
+    await axios
+      .get(BASE_URL + `/ent_calv/${id}`, {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer " + authToken,
+        },
+      })
+      .then((response) => {
+        const data = response.data.data;
+        handlePresentModalPress();
+        setDataInput({
+          tenca: data.Tenca,
+          giobd: data.Giobatdau,
+          giokt: data.Gioketthuc,
+          khoicv: data.ID_KhoiCV,
+        });
+        setIsCheckUpdate({
+          check: true,
+          id_calv: id,
+        });
+      })
+      .catch((err) => {
+        Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
+          {
+            text: "Hủy",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel",
+          },
+          { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+        ]);
+      });
+  };
+
+  const handlePushDataEdit = async (id) => {
+    if (dataInput.tenca === "" || dataInput.khoicv === null) {
+      Alert.alert("PMC Thông báo", "Thiêu thông tin ca làm việc", [
+        {
+          text: "Hủy",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+        { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+      ]);
+    } else {
+      let data = {
+        Tenca: dataInput.tenca,
+        Giobatdau: dataInput.giobd,
+        Gioketthuc: dataInput.giokt,
+        ID_KhoiCV: dataInput.khoicv,
+        ID_Duan: user.ID_Duan,
+      };
+      await axios
+        .put(BASE_URL + `/ent_calv/update/${id}`, data, {
+          headers: {
+            Accept: "application/json",
+            Authorization: "Bearer " + authToken,
+          },
+        })
+        .then((response) => {
+          init_calv();
+          handleAdd();
+          handleCloseModal();
+          Alert.alert("PMC Thông báo", response.data.message, [
+            {
+              text: "Hủy",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel",
+            },
+            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+          ]);
+        })
+        .catch((err) => {
+          Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
+            {
+              text: "Hủy",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel",
+            },
+            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+          ]);
+        });
+    }
+  };
+
+  const handleAlertDelete = async(id) => {
+    Alert.alert("PMC Thông báo", "Bạn có muốn xóa ca làm việc", [
+      {
+        text: "Hủy",
+        onPress: () => console.log("Cancel Pressed"),
+        style: "cancel",
+      },
+      { text: "Xác nhận", onPress: () => handlePushDataDelete(id) },
+    ]);
+  };
+
+  const handlePushDataDelete = async (id) => {
+    await axios
+        .put(BASE_URL + `/ent_calv/delete/${id}`,[], {
+          headers: {
+            Accept: "application/json",
+            Authorization: "Bearer " + authToken,
+          },
+        })
+      .then((response) => {
+        init_calv();
+        handleAdd();
+        handleCloseModal();
+        Alert.alert("PMC Thông báo", response.data.message, [
+          {
+            text: "Hủy",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel",
+          },
+          { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+        ]);
+      })
+      .catch((err) => {
+        console.log('err0',err)
+        Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
+          {
+            text: "Hủy",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel",
+          },
+          { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+        ]);
+      });
+  };
+
+  const [isDatePickerVisible, setDatePickerVisibility] = useState({
+    giobd: false,
+    giokt: false,
+  });
+
+  const showDatePicker = (key) => {
+    setDatePickerVisibility((data) => ({
+      ...data,
+      [key]: true,
+    }));
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const handleConfirm = (key, date) => {
+    handleChangeText(key, moment(date).format("LT"));
+    hideDatePicker();
+  };
+
+  const handleAdd = () => {
+    setDataInput({
+      tenca: "",
+      giobd: dateHour,
+      giokt: dateHour,
+      khoicv: null,
+    });
+  };
+
+  const handlePresentModalPress = useCallback(() => {
+    bottomSheetModalRef.current?.present();
+  }, []);
+  const handleSheetChanges = useCallback((index) => {
+    if (index === -1 || index === 0) {
+      setOpacity(1);
+    } else {
+      setOpacity(0.5);
+    }
+  }, []);
+
+  const handleCloseModal = () => {
+    bottomSheetModalRef?.current?.close();
+    setOpacity(1);
+  };
+
+  const decimalNumber = (number) => {
+    if (number < 10) return `0${number}`;
+    return number;
+  };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View
-        style={[
-          {
-            flexDirection: "column",
-          },
-        ]}
-      >
-        <HideKeyboard>
-          <View
-            onLayout={(event) => {
-              const { x, y, width, height } = event.nativeEvent.layout;
-              // console.log(x, y, width, height)
-              setHeigtView(height);
-            }}
-            style={{
-              flexDirection: "column",
-              padding: 10,
-            }}
-          >
-            <View style={{ flexDirection: "row" }}>
+    <>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          style={{ flex: 1 }}
+        >
+          <BottomSheetModalProvider>
+            <ImageBackground
+              source={require("../../../assets/bg.png")}
+              resizeMode="cover"
+              style={{ flex: 1 }}
+            >
               <View
                 style={{
-                  paddingHorizontal: 10,
-                  flex: 2.8,
-                  justifyContent: "space-around",
-                  alignItems: "flex-end",
+                  flex: 1,
+                  justifyContent: "center",
+                  width: "100%",
+                  opacity: opacity,
                 }}
               >
-                <Text style={styles.text}>Họ tên</Text>
-                <Text style={styles.text}>Giới tính</Text>
-                <Text style={styles.text}>Ngày sinh</Text>
-                <Text style={styles.text}>Số điện thoại</Text>
-              </View>
-              <View style={{ flex: 7, justifyContent: "space-around" }}>
-                <View style={{ marginLeft: 10 }}>
-                  <TextInput
-                    value={dateDay}
-                    placeholderTextColor="gray"
-                    style={[
-                      styles.textInput,
-                      {
-                        paddingHorizontal: 10,
-                      },
-                    ]}
-                    autoCapitalize="none"
-                  />
-                </View>
-                <View style={{ marginLeft: 10 }}>
-                  <Dropdown
-                    ref={ref}
-                    style={styles.dropdown}
-                    placeholderStyle={styles.placeholderStyle}
-                    selectedTextStyle={styles.selectedTextStyle}
-                    iconStyle={styles.iconStyle}
-                    data={calamviecList}
-                    maxHeight={300}
-                    labelField="label"
-                    valueField="value"
-                    placeholder="Giới tính"
-                    value={valueDate}
-                    onChange={(item) => {
-                      setValueDate(item.value);
-                    }}
-                    // renderItem={renderItem}
-                    confirmSelectItem
-                    onConfirmSelectItem={(item) => {
-                      Alert.alert("PMC", "Xác nhận đồng ý", [
-                        {
-                          text: "Cancel",
-                          onPress: () => {},
-                        },
-                        {
-                          text: "Confirm",
-                          onPress: () => {
-                            setValueDate(item.value);
-                            ref.current.close();
-                          },
-                        },
-                      ]);
-                    }}
-                  />
-                </View>
-                <View style={{ marginLeft: 10, marginVertical: 10 }}>
-                  <TextInput
-                    // value={"dateHour"}
-                    placeholderTextColor="gray"
-                    style={[
-                      styles.textInput,
-                      {
-                        paddingHorizontal: 10,
-                      },
-                    ]}
-                    onChangeText={(data) => console.log("run", data)}
-                  />
-                </View>
-                <View style={{ marginLeft: 10 }}>
-                  <TextInput
-                    numberOfLines={3}
-                    // value={"dateHour"}
-                    placeholderTextColor="gray"
-                    style={[
-                      styles.textInput,
-                      {
-                        paddingHorizontal: 10,
-                      },
-                    ]}
-                    onChangeText={(data) => console.log("run", data)}
-                  />
+                <View style={styles.container}>
+                  <Text style={styles.danhmuc}>Danh mục giám sát</Text>
+                  {/* {
+                  isLoading && <View style={{flex: 1,justifyContent:'center', alignContent:'center'}}>
+                    <ActivityIndicator />
+                  </View>
+                } */}
+                  {ent_calv && ent_calv.length > 0 ? (
+                    <>
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignContent: "center",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <Text style={styles.text}>
+                          Số lượng: {decimalNumber(ent_calv?.length)}
+                        </Text>
+                        <ButtonChecklist
+                          text={"Thêm mới"}
+                          width={"auto"}
+                          color={COLORS.bg_button}
+                          icon={<Ionicons name="add" size={24} color="white" />}
+                          onPress={handlePresentModalPress}
+                        />
+                      </View>
+
+                      <FlatList
+                        horizontal={false}
+                        contentContainerStyle={{ flexGrow: 1 }}
+                        style={{ marginVertical: 10 }}
+                        data={ent_calv}
+                        renderItem={({ item, index }) => (
+                          <ItemCalamviec
+                            key={index}
+                            item={item}
+                            handleEditEnt={handleEditEnt}
+                            handleAlertDelete={handleAlertDelete}
+                          />
+                        )}
+                        keyExtractor={(item, index) => index.toString()}
+                        scrollEventThrottle={16}
+                        ListFooterComponent={<View style={{ height: 120 }} />}
+                        scrollEnabled={true}
+                      />
+                    </>
+                  ) : (
+                    <>
+                      <View
+                        style={{
+                          flex: 1,
+                          justifyContent: "center",
+                          alignItems: "center",
+                          marginBottom: 100,
+                        }}
+                      >
+                        <Image
+                          source={require("../../../assets/icons/delete_bg.png")}
+                          resizeMode="contain"
+                          style={{ height: 120, width: 120 }}
+                        />
+                        <Text style={[styles.danhmuc, { paddingVertical: 10 }]}>
+                          Bạn chưa thêm dữ liệu nào
+                        </Text>
+                        <ButtonChecklist
+                          text={"Thêm mới"}
+                          width={"auto"}
+                          color={COLORS.bg_button}
+                          onPress={handleAdd}
+                        />
+                      </View>
+                    </>
+                  )}
                 </View>
               </View>
-            </View>
-            {/* inputs  */}
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-around",
-                marginTop: 20,
-              }}
-            >
-              <ButtonChecklist
-                text={"Thêm"}
-                width={"auto"}
-                color={COLORS.bg_main}
-                icon={<Ionicons name="add" size={24} color="white" />}
-                onPress={() =>
-                  Alert.alert("Button with adjusted color pressed")
-                }
-              />
-              <ButtonChecklist
-                text={"Lưu"}
-                width={"auto"}
-                color="red"
-                icon={
-                  <Ionicons
-                    name="save"
-                    size={24}
-                    color="white"
-                    style={{ marginRight: 4 }}
+              <BottomSheetModal
+                ref={bottomSheetModalRef}
+                index={3}
+                snapPoints={snapPoints}
+                onChange={handleSheetChanges}
+              >
+                <BottomSheetScrollView style={styles.contentContainer}>
+                  <ModalCalamviec
+                    ent_khoicv={ent_khoicv}
+                    handleChangeText={handleChangeText}
+                    showDatePicker={showDatePicker}
+                    isDatePickerVisible={isDatePickerVisible}
+                    handleConfirm={handleConfirm}
+                    hideDatePicker={hideDatePicker}
+                    dataInput={dataInput}
+                    handlePushDataSave={handlePushDataSave}
+                    handleEditEnt={handleEditEnt}
+                    isCheckUpdate={isCheckUpdate}
+                    handlePushDataEdit={handlePushDataEdit}
                   />
-                }
-                onPress={() =>
-                  Alert.alert("Button with adjusted color pressed")
-                }
-              />
-            </View>
-          </View>
-        </HideKeyboard>
-        <View style={{ marginTop: 10, height: SIZES.height - heightView }}>
-          <Text
-            style={[
-              styles.text,
-              {
-                textAlign: "center",
-                fontSize: 18,
-              },
-            ]}
-          >
-            Danh sách Nhân viên Giám sát trong Tòa nhà
-          </Text>
-          <FlatList
-            horizontal={false}
-            contentContainerStyle={{ flexGrow: 1 }}
-            style={{ marginVertical: 10 }}
-            data={data}
-            renderItem={(item) => <ItemGiamSat />}
-            keyExtractor={(item, index) => index.toString()}
-            scrollEventThrottle={16}
-            ListFooterComponent={<View style={{ height: 120 }} />}
-            scrollEnabled={true}
-          />
-        </View>
-      </View>
-    </SafeAreaView>
+                </BottomSheetScrollView>
+              </BottomSheetModal>
+            </ImageBackground>
+          </BottomSheetModalProvider>
+        </KeyboardAvoidingView>
+      </GestureHandlerRootView>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    margin: 20,
     flex: 1,
   },
-  text: { fontSize: 15, color: "black", fontWeight: "600" },
+  danhmuc: {
+    fontSize: 25,
+    fontWeight: "700",
+    color: "white",
+    paddingVertical: 40,
+  },
+  text: { fontSize: 15, color: "white", fontWeight: "600" },
   textInput: {
     color: "#05375a",
-    // marginHorizontal: 10,
     fontSize: 16,
     borderRadius: 8,
     borderWidth: 1,

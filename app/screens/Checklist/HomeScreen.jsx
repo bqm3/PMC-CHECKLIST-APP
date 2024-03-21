@@ -2,9 +2,10 @@
 import React, {Component} from 'react';
 import {View, Text, StyleSheet, FlatList} from 'react-native';
 import {useSelector} from 'react-redux';
-import ItemHome from '../../components/ItemHome';
+import ItemHome from '../../components/Item/ItemHome';
 import {COLORS} from '../../constants/theme';
-import ButtonSubmit from '../../components/ButtonSubmit';
+import ButtonSubmit from '../../components/Button/ButtonSubmit';
+import CopyRight from '../../components/CopyRight';
 
 const dataDanhMuc = [
   {
@@ -88,15 +89,7 @@ const HomeScreen = ({navigation}) => {
           columnWrapperStyle={{gap: 20}}
         />
 
-        <View style={{
-            width: '80%'
-        }}>
-        <ButtonSubmit 
-            text={"ĐĂNG XUẤT"}
-            color={'red'}
-            onPress={()=> {}}
-        />
-        </View>
+        
       </View>
       <View style={{
         flex: 2,
@@ -120,25 +113,7 @@ const HomeScreen = ({navigation}) => {
         }}>Giám đốc Tòa nhà toàn quyền sử dụng.</Text>
       </View>
 
-      <View
-        style={{
-          backgroundColor: COLORS.bg_main,
-          position: 'absolute',
-          bottom: 0,
-          height: 40,
-          width: '100%',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-        <Text
-          style={{
-            color: 'white',
-            fontSize: 14,
-            fontWeight: '700',
-          }}>
-          Copyright by @Phòng số hóa - PMC
-        </Text>
-      </View>
+      <CopyRight/>
     </View>
   );
 };
