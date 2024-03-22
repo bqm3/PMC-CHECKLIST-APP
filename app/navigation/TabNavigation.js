@@ -11,6 +11,7 @@ import {
 } from "../screens/Checklist";
 import { COLORS } from "../constants/theme";
 import { Ionicons } from "@expo/vector-icons";
+import DanhmucChecklist from "../screens/Checklist/DanhmucChecklist";
 
 const Stack = createNativeStackNavigator();
 
@@ -65,6 +66,29 @@ const HomeStack = ({ navigation }) => {
           headerTitle: () => (
             <Text style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
               Danh mục Khu vực
+            </Text>
+          ),
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Ionicons name="chevron-back" size={24} color="white" />
+            </TouchableOpacity>
+          ),
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: COLORS.bg_button,
+          },
+        })}
+      />
+      <Stack.Screen
+        name="Danh mục Check list"
+        component={DanhmucChecklist}
+        lazy={false}
+        options={({ navigation, route }) => ({
+          headerShown: true,
+
+          headerTitle: () => (
+            <Text style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
+              Danh mục Check list
             </Text>
           ),
           headerLeft: () => (
