@@ -38,11 +38,11 @@ const ItemCalamviec = ({ item, handleEditEnt, handleAlertDelete }) => {
       <View
         style={{
           flexDirection: "row",
-          marginRight: 20,
+          marginRight: 10,
           gap: 10,
         }}
       >
-        <TouchableOpacity onPress={() => handleEditEnt(item.ID_Calv)}>
+        <TouchableOpacity onPress={() => handleEditEnt(item)}>
           <Image
             source={require("../../../assets/icons/edit_icon.png")}
             resizeMode="contain"

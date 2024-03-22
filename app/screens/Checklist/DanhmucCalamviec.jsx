@@ -127,38 +127,18 @@ const DanhmucCalamviec = ({ navigation }) => {
     }
   };
 
-  const handleEditEnt = async (id) => {
-    await axios
-      .get(BASE_URL + `/ent_calv/${id}`, {
-        headers: {
-          Accept: "application/json",
-          Authorization: "Bearer " + authToken,
-        },
-      })
-      .then((response) => {
-        const data = response.data.data;
-        handlePresentModalPress();
-        setDataInput({
-          tenca: data.Tenca,
-          giobd: data.Giobatdau,
-          giokt: data.Gioketthuc,
-          khoicv: data.ID_KhoiCV,
-        });
-        setIsCheckUpdate({
-          check: true,
-          id_calv: id,
-        });
-      })
-      .catch((err) => {
-        Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
-          {
-            text: "Hủy",
-            onPress: () => console.log("Cancel Pressed"),
-            style: "cancel",
-          },
-          { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-        ]);
-      });
+  const handleEditEnt = async (data) => {
+    handlePresentModalPress();
+    setDataInput({
+      tenca: data.Tenca,
+      giobd: data.Giobatdau,
+      giokt: data.Gioketthuc,
+      khoicv: data.ID_KhoiCV,
+    });
+    setIsCheckUpdate({
+      check: true,
+      id_calv: data.ID_Calv,
+    });
   };
 
   const handlePushDataEdit = async (id) => {
@@ -212,7 +192,7 @@ const DanhmucCalamviec = ({ navigation }) => {
     }
   };
 
-  const handleAlertDelete = async(id) => {
+  const handleAlertDelete = async (id) => {
     Alert.alert("PMC Thông báo", "Bạn có muốn xóa ca làm việc", [
       {
         text: "Hủy",
@@ -225,12 +205,12 @@ const DanhmucCalamviec = ({ navigation }) => {
 
   const handlePushDataDelete = async (id) => {
     await axios
-        .put(BASE_URL + `/ent_calv/delete/${id}`,[], {
-          headers: {
-            Accept: "application/json",
-            Authorization: "Bearer " + authToken,
-          },
-        })
+      .put(BASE_URL + `/ent_calv/delete/${id}`, [], {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer " + authToken,
+        },
+      })
       .then((response) => {
         init_calv();
         handleAdd();
@@ -245,7 +225,7 @@ const DanhmucCalamviec = ({ navigation }) => {
         ]);
       })
       .catch((err) => {
-        console.log('err0',err)
+        console.log("err0", err);
         Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
           {
             text: "Hủy",

@@ -3,6 +3,8 @@ const initialState = {
   ent_khoicv: null,
   ent_calv: null,
   ent_giamsat: null,
+  ent_chucvu: null,
+  ent_duan: null,
   ent_khuvuc: null,
   ent_toanha: null,
   error: false,
@@ -108,32 +110,80 @@ export const entReducer = (state = initialState, action) => {
         isLoading: true,
         message: null,
       };
-      case type.SET_ENT_TOANHA_STATE:
-        return {
-          ...state,
-          ent_toanha: null,
-          error: false,
-          isLoading: true,
-          message: null,
-        };
-      case type.SET_ENT_TOANHA_SUCCESS:
-        return {
-          ...state,
-          ent_toanha: action.payload.ent_toanha,
-          error: false,
-          isLoading: false,
-          message: null,
-        };
-      case type.SET_ENT_TOANHA_FAIL:
-        return {
-          ...state,
-          ent_toanha: null,
-          error: false,
-          isLoading: true,
-          message: null,
-        };
-      
-      case type.SET_LOGOUT:
+    case type.SET_ENT_TOANHA_STATE:
+      return {
+        ...state,
+        ent_toanha: null,
+        error: false,
+        isLoading: true,
+        message: null,
+      };
+    case type.SET_ENT_TOANHA_SUCCESS:
+      return {
+        ...state,
+        ent_toanha: action.payload.ent_toanha,
+        error: false,
+        isLoading: false,
+        message: null,
+      };
+    case type.SET_ENT_TOANHA_FAIL:
+      return {
+        ...state,
+        ent_toanha: null,
+        error: false,
+        isLoading: true,
+        message: null,
+      };
+    case type.SET_ENT_DUAN_STATE:
+      return {
+        ...state,
+        ent_duan: null,
+        error: false,
+        isLoading: true,
+        message: null,
+      };
+    case type.SET_ENT_DUAN_SUCCESS:
+      return {
+        ...state,
+        ent_duan: action.payload.ent_duan,
+        error: false,
+        isLoading: false,
+        message: null,
+      };
+    case type.SET_ENT_DUAN_FAIL:
+      return {
+        ...state,
+        ent_duan: null,
+        error: false,
+        isLoading: true,
+        message: null,
+      };
+    case type.SET_ENT_CHUCVU_STATE:
+      return {
+        ...state,
+        ent_chucvu: null,
+        error: false,
+        isLoading: true,
+        message: null,
+      };
+    case type.SET_ENT_CHUCVU_SUCCESS:
+      return {
+        ...state,
+        ent_chucvu: action.payload.ent_chucvu,
+        error: false,
+        isLoading: false,
+        message: null,
+      };
+    case type.SET_ENT_CHUCVU_FAIL:
+      return {
+        ...state,
+        ent_chucvu: null,
+        error: false,
+        isLoading: true,
+        message: null,
+      };
+
+    case type.SET_LOGOUT:
       return {
         ...state,
       };

@@ -10,11 +10,11 @@ import {
   DetailChecklist,
 } from "../screens/Checklist";
 import { COLORS } from "../constants/theme";
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons } from "@expo/vector-icons";
 
 const Stack = createNativeStackNavigator();
 
-const HomeStack = ({navigation}) => {
+const HomeStack = ({ navigation }) => {
   return (
     <Stack.Navigator initialRouteName="Trang chính">
       <Stack.Screen
@@ -24,20 +24,19 @@ const HomeStack = ({navigation}) => {
         options={({ route }) => ({
           headerShown: true,
           headerStyle: {
-            // backgroundColor: COLORS.bg_main,
+            backgroundColor: COLORS.bg_button,
           },
           headerTitle: () => (
-            <Text style={{ fontSize: 20, fontWeight: "700", color: "black" }}>
+            <Text style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
               CHECKLIST- PMC
             </Text>
           ),
           headerTitleAlign: "center",
           headerLeft: () => (
             <Image
-              style={{ width: 80, height: 40, resizeMode: "contain" }}
+              style={{ width: 80, height: 40, resizeMode: "cover" }}
               source={require("../../assets/pmc_logo.png")}
             />
-            // <></>
           ),
         })}
       />
@@ -60,7 +59,7 @@ const HomeStack = ({navigation}) => {
         name="Danh mục Khu vực"
         component={DanhmucKhuvuc}
         lazy={false}
-        options={({ route }) => ({
+        options={({ navigation, route }) => ({
           headerShown: true,
 
           headerTitle: () => (
@@ -68,13 +67,14 @@ const HomeStack = ({navigation}) => {
               Danh mục Khu vực
             </Text>
           ),
-          headerLeft: ()=> <TouchableOpacity>
-            <Ionicons name="chevron-back" size={24} color="white" />
-          </TouchableOpacity>,
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Ionicons name="chevron-back" size={24} color="white" />
+            </TouchableOpacity>
+          ),
           headerTitleAlign: "center",
           headerStyle: {
             backgroundColor: COLORS.bg_button,
-            
           },
         })}
       />
@@ -82,7 +82,7 @@ const HomeStack = ({navigation}) => {
         name="Danh mục Giám sát"
         component={DanhmucGiamsat}
         lazy={false}
-        options={({ route }) => ({
+        options={({ navigation, route }) => ({
           headerShown: true,
 
           headerTitle: () => (
@@ -90,13 +90,14 @@ const HomeStack = ({navigation}) => {
               Danh mục Giám sát
             </Text>
           ),
-          headerLeft: ()=> <TouchableOpacity>
-            <Ionicons name="chevron-back" size={24} color="white" />
-          </TouchableOpacity>,
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Ionicons name="chevron-back" size={24} color="white" />
+            </TouchableOpacity>
+          ),
           headerTitleAlign: "center",
           headerStyle: {
             backgroundColor: COLORS.bg_button,
-            
           },
         })}
       />
@@ -105,7 +106,7 @@ const HomeStack = ({navigation}) => {
         name="Danh mục Ca làm việc"
         component={DanhmucCalamviec}
         lazy={false}
-        options={({ route }) => ({
+        options={({ navigation, route }) => ({
           headerShown: true,
 
           headerTitle: () => (
@@ -113,13 +114,14 @@ const HomeStack = ({navigation}) => {
               Danh mục Ca làm việc
             </Text>
           ),
-          headerLeft: ()=> <TouchableOpacity>
-            <Ionicons name="chevron-back" size={24} color="white" />
-          </TouchableOpacity>,
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Ionicons name="chevron-back" size={24} color="white" />
+            </TouchableOpacity>
+          ),
           headerTitleAlign: "center",
           headerStyle: {
             backgroundColor: COLORS.bg_button,
-            
           },
         })}
       />

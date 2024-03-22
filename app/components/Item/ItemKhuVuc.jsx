@@ -37,19 +37,11 @@ const ItemKhuVuc = ({ index, item, handleEditEnt, handleAlertDelete }) => {
       <View
         style={{
           flexDirection: "row",
-          marginRight: 20,
+          marginRight: 10,
           gap: 10,
         }}
       >
-        <TouchableOpacity
-        // onPress={() => handleEditEnt(item.ID_Calv)}
-        >
-          <Image
-            source={require("../../../assets/icons/info_icon.png")}
-            resizeMode="contain"
-            style={{ height: 24, width: 24 }}
-          />
-        </TouchableOpacity>
+       
         <TouchableOpacity onPress={() => handleEditEnt(item)}>
           <Image
             source={require("../../../assets/icons/edit_icon.png")}

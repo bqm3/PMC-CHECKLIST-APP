@@ -8,6 +8,8 @@ import {
   Image,
   KeyboardAvoidingView,
   Platform,
+  Modal,
+  Pressable,
 } from "react-native";
 import React, {
   useRef,
@@ -30,30 +32,42 @@ import { COLORS, SIZES } from "../../constants/theme";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import ItemCalamviec from "../../components/Item/ItemCalamviec";
 
-import { ent_khoicv_get, ent_calv_get, ent_giamsat_get } from "../../redux/actions/entActions";
+import {
+  ent_chucvu_get,
+  ent_giamsat_get,
+  ent_duan_get,
+} from "../../redux/actions/entActions";
 import axios from "axios";
 import { BASE_URL } from "../../constants/config";
 import ModalCalamviec from "../../components/Modal/ModalCalamviec";
+import ItemGiamSat from "../../components/Item/ItemGiamSat";
+import ModalGiamsat from "../../components/Modal/ModalGiamsat";
+import ModalGiamsatInfo from "../../components/Modal/ModalGiamsatInfo";
 
 const DanhmucGiamsat = ({ navigation }) => {
   const dispath = useDispatch();
-  const { ent_khoicv, ent_calv, ent_giamsat } = useSelector((state) => state.entReducer);
+  const { ent_giamsat, ent_chucvu, ent_duan } = useSelector(
+    (state) => state.entReducer
+  );
   const { user, authToken } = useSelector((state) => state.authReducer);
 
   const bottomSheetModalRef = useRef(null);
-  const snapPoints = useMemo(() => [1, "20%", "30%", "80%"], []);
+  const snapPoints = useMemo(() => [1, "20%", "50%", "80%"], []);
   const [opacity, setOpacity] = useState(1);
   const [isCheckUpdate, setIsCheckUpdate] = useState({
     check: false,
-    id_calv: null,
+    id_giamsat: null,
   });
+  const [modalVisible, setModalVisible] = useState(false);
+  const [dataModal, setDataModal] = useState(null);
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
-  const init_khoicv = async () => {
-    await dispath(ent_khoicv_get());
+  const init_duan = async () => {
+    await dispath(ent_duan_get());
   };
 
-  const init_calv = async () => {
-    await dispath(ent_calv_get());
+  const init_chucvu = async () => {
+    await dispath(ent_chucvu_get());
   };
 
   const init_giamsat = async () => {
@@ -62,14 +76,18 @@ const DanhmucGiamsat = ({ navigation }) => {
 
   useEffect(() => {
     init_giamsat();
+    init_duan();
+    init_chucvu();
   }, []);
 
-  const dateHour = moment(new Date()).format("LT");
   const [dataInput, setDataInput] = useState({
+    id_duan: null,
     hoten: "",
-    sdt: dateHour,
-    giokt: dateHour,
-    khoicv: null,
+    gioitinh: "",
+    ngaysinh: "",
+    sodienthoai: "",
+    id_chucvu: null,
+    id_quyen: null,
   });
 
   const handleChangeText = (key, value) => {
@@ -80,8 +98,8 @@ const DanhmucGiamsat = ({ navigation }) => {
   };
 
   const handlePushDataSave = async () => {
-    if (dataInput.tenca === "" || dataInput.khoicv === null) {
-      Alert.alert("PMC Thông báo", "Thiêu thông tin ca làm việc", [
+    if (dataInput.hoten === "" || dataInput.sodienthoai === null) {
+      Alert.alert("PMC Thông báo", "Thiêu thông tin người giám sát", [
         {
           text: "Hủy",
           onPress: () => console.log("Cancel Pressed"),
@@ -91,21 +109,23 @@ const DanhmucGiamsat = ({ navigation }) => {
       ]);
     } else {
       let data = {
-        Tenca: dataInput.tenca,
-        Giobatdau: dataInput.giobd,
-        Gioketthuc: dataInput.giokt,
-        ID_KhoiCV: dataInput.khoicv,
-        ID_Duan: user.ID_Duan,
+        ID_Duan: dataInput.id_duan,
+        Hoten: dataInput.hoten,
+        Gioitinh: dataInput.gioitinh,
+        Sodienthoai: dataInput.sodienthoai,
+        Ngaysinh: dataInput.ngaysinh,
+        ID_Chucvu: dataInput.id_chucvu,
+        iQuyen: 1,
       };
       await axios
-        .post(BASE_URL + "/ent_calv/create", data, {
+        .post(BASE_URL + "/ent_giamsat/create", data, {
           headers: {
             Accept: "application/json",
             Authorization: "Bearer " + authToken,
           },
         })
         .then((response) => {
-          init_calv();
+          init_giamsat();
           handleAdd();
           handleCloseModal();
           Alert.alert("PMC Thông báo", response.data.message, [
@@ -130,42 +150,26 @@ const DanhmucGiamsat = ({ navigation }) => {
     }
   };
 
-  const handleEditEnt = async (id) => {
-    await axios
-      .get(BASE_URL + `/ent_calv/${id}`, {
-        headers: {
-          Accept: "application/json",
-          Authorization: "Bearer " + authToken,
-        },
-      })
-      .then((response) => {
-        const data = response.data.data;
-        handlePresentModalPress();
-        setDataInput({
-          tenca: data.Tenca,
-          giobd: data.Giobatdau,
-          giokt: data.Gioketthuc,
-          khoicv: data.ID_KhoiCV,
-        });
-        setIsCheckUpdate({
-          check: true,
-          id_calv: id,
-        });
-      })
-      .catch((err) => {
-        Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
-          {
-            text: "Hủy",
-            onPress: () => console.log("Cancel Pressed"),
-            style: "cancel",
-          },
-          { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-        ]);
-      });
+  const handleEditEnt = async (data) => {
+    handlePresentModalPress();
+    setDataInput({
+      id_duan: data.ID_Duan,
+      hoten: data.Hoten,
+      gioitinh: data.Gioitinh,
+      ngaysinh: data.Ngaysinh,
+      sodienthoai: data.Sodienthoai,
+      id_chucvu: data.ID_Chucvu,
+      id_quyen: data.iQuyen,
+    });
+
+    setIsCheckUpdate({
+      check: true,
+      id_giamsat: data.ID_Giamsat,
+    });
   };
 
   const handlePushDataEdit = async (id) => {
-    if (dataInput.tenca === "" || dataInput.khoicv === null) {
+    if (dataInput.hoten === "" || dataInput.sodienthoai === null) {
       Alert.alert("PMC Thông báo", "Thiêu thông tin ca làm việc", [
         {
           text: "Hủy",
@@ -176,21 +180,24 @@ const DanhmucGiamsat = ({ navigation }) => {
       ]);
     } else {
       let data = {
-        Tenca: dataInput.tenca,
-        Giobatdau: dataInput.giobd,
-        Gioketthuc: dataInput.giokt,
-        ID_KhoiCV: dataInput.khoicv,
-        ID_Duan: user.ID_Duan,
+        ID_Duan: dataInput.id_duan,
+        Hoten: dataInput.hoten,
+        Gioitinh: dataInput.gioitinh,
+        Sodienthoai: dataInput.sodienthoai,
+        Ngaysinh: dataInput.ngaysinh,
+        ID_Chucvu: dataInput.id_chucvu,
+        iQuyen: 1,
       };
+
       await axios
-        .put(BASE_URL + `/ent_calv/update/${id}`, data, {
+        .put(BASE_URL + `/ent_giamsat/update/${id}`, data, {
           headers: {
             Accept: "application/json",
             Authorization: "Bearer " + authToken,
           },
         })
         .then((response) => {
-          init_calv();
+          init_giamsat();
           handleAdd();
           handleCloseModal();
           Alert.alert("PMC Thông báo", response.data.message, [
@@ -203,6 +210,7 @@ const DanhmucGiamsat = ({ navigation }) => {
           ]);
         })
         .catch((err) => {
+          console.log("err", err);
           Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
             {
               text: "Hủy",
@@ -215,8 +223,8 @@ const DanhmucGiamsat = ({ navigation }) => {
     }
   };
 
-  const handleAlertDelete = async(id) => {
-    Alert.alert("PMC Thông báo", "Bạn có muốn xóa ca làm việc", [
+  const handleAlertDelete = async (id) => {
+    Alert.alert("PMC Thông báo", "Bạn có muốn xóa người giám sát", [
       {
         text: "Hủy",
         onPress: () => console.log("Cancel Pressed"),
@@ -228,14 +236,14 @@ const DanhmucGiamsat = ({ navigation }) => {
 
   const handlePushDataDelete = async (id) => {
     await axios
-        .put(BASE_URL + `/ent_calv/delete/${id}`,[], {
-          headers: {
-            Accept: "application/json",
-            Authorization: "Bearer " + authToken,
-          },
-        })
+      .put(BASE_URL + `/ent_giamsat/delete/${id}`, [], {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer " + authToken,
+        },
+      })
       .then((response) => {
-        init_calv();
+        init_giamsat();
         handleAdd();
         handleCloseModal();
         Alert.alert("PMC Thông báo", response.data.message, [
@@ -248,7 +256,6 @@ const DanhmucGiamsat = ({ navigation }) => {
         ]);
       })
       .catch((err) => {
-        console.log('err0',err)
         Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
           {
             text: "Hủy",
@@ -260,39 +267,31 @@ const DanhmucGiamsat = ({ navigation }) => {
       });
   };
 
-  const [isDatePickerVisible, setDatePickerVisibility] = useState({
-    giobd: false,
-    giokt: false,
-  });
-
-  const showDatePicker = (key) => {
-    setDatePickerVisibility((data) => ({
-      ...data,
-      [key]: true,
-    }));
-  };
-
-  const hideDatePicker = () => {
-    setDatePickerVisibility(false);
+  const toggleDatePicker = () => {
+    setDatePickerVisibility(!isDatePickerVisible);
   };
 
   const handleConfirm = (key, date) => {
-    handleChangeText(key, moment(date).format("LT"));
-    hideDatePicker();
+    handleChangeText(key, moment(date).format("L"));
+    setDatePickerVisibility(false);
   };
 
   const handleAdd = () => {
     setDataInput({
-      tenca: "",
-      giobd: dateHour,
-      giokt: dateHour,
-      khoicv: null,
+      id_duan: null,
+      hoten: "",
+      gioitinh: "",
+      ngaysinh: "",
+      sodienthoai: "",
+      id_chucvu: null,
+      id_quyen: null,
     });
   };
 
   const handlePresentModalPress = useCallback(() => {
     bottomSheetModalRef.current?.present();
   }, []);
+
   const handleSheetChanges = useCallback((index) => {
     if (index === -1 || index === 0) {
       setOpacity(1);
@@ -300,6 +299,11 @@ const DanhmucGiamsat = ({ navigation }) => {
       setOpacity(0.5);
     }
   }, []);
+
+  const handleToggleModal = (isCheck, data, opacity) => {
+    setDataModal(data);
+    setModalVisible(isCheck), setOpacity(opacity);
+  };
 
   const handleCloseModal = () => {
     bottomSheetModalRef?.current?.close();
@@ -334,12 +338,8 @@ const DanhmucGiamsat = ({ navigation }) => {
               >
                 <View style={styles.container}>
                   <Text style={styles.danhmuc}>Danh mục giám sát</Text>
-                  {/* {
-                  isLoading && <View style={{flex: 1,justifyContent:'center', alignContent:'center'}}>
-                    <ActivityIndicator />
-                  </View>
-                } */}
-                  {ent_calv && ent_calv.length > 0 ? (
+
+                  {ent_giamsat && ent_giamsat.length > 0 ? (
                     <>
                       <View
                         style={{
@@ -350,7 +350,7 @@ const DanhmucGiamsat = ({ navigation }) => {
                         }}
                       >
                         <Text style={styles.text}>
-                          Số lượng: {decimalNumber(ent_calv?.length)}
+                          Số lượng: {decimalNumber(ent_giamsat?.length)}
                         </Text>
                         <ButtonChecklist
                           text={"Thêm mới"}
@@ -365,13 +365,14 @@ const DanhmucGiamsat = ({ navigation }) => {
                         horizontal={false}
                         contentContainerStyle={{ flexGrow: 1 }}
                         style={{ marginVertical: 10 }}
-                        data={ent_calv}
+                        data={ent_giamsat}
                         renderItem={({ item, index }) => (
-                          <ItemCalamviec
+                          <ItemGiamSat
                             key={index}
                             item={item}
                             handleEditEnt={handleEditEnt}
                             handleAlertDelete={handleAlertDelete}
+                            handleToggleModal={handleToggleModal}
                           />
                         )}
                         keyExtractor={(item, index) => index.toString()}
@@ -416,13 +417,13 @@ const DanhmucGiamsat = ({ navigation }) => {
                 onChange={handleSheetChanges}
               >
                 <BottomSheetScrollView style={styles.contentContainer}>
-                  <ModalCalamviec
-                    ent_khoicv={ent_khoicv}
+                  <ModalGiamsat
+                    ent_chucvu={ent_chucvu}
+                    ent_duan={ent_duan}
                     handleChangeText={handleChangeText}
-                    showDatePicker={showDatePicker}
                     isDatePickerVisible={isDatePickerVisible}
                     handleConfirm={handleConfirm}
-                    hideDatePicker={hideDatePicker}
+                    toggleDatePicker={toggleDatePicker}
                     dataInput={dataInput}
                     handlePushDataSave={handlePushDataSave}
                     handleEditEnt={handleEditEnt}
@@ -431,6 +432,25 @@ const DanhmucGiamsat = ({ navigation }) => {
                   />
                 </BottomSheetScrollView>
               </BottomSheetModal>
+              <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                  Alert.alert("Modal has been closed.");
+                  setModalVisible(!modalVisible);
+                }}
+              >
+                <View style={styles.centeredView}>
+                  <View style={styles.modalView}>
+                    <Text style={styles.modalText}>Thông tin cá nhân chi tiết</Text>
+                    <ModalGiamsatInfo 
+                    dataModal={dataModal}
+                    handleToggleModal={handleToggleModal}
+                    />
+                  </View>
+                </View>
+              </Modal>
             </ImageBackground>
           </BottomSheetModalProvider>
         </KeyboardAvoidingView>
@@ -486,6 +506,33 @@ const styles = StyleSheet.create({
     color: COLORS.text_main,
   },
   row: { flexDirection: "row", backgroundColor: "#FFF1C1" },
+
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalView: {
+    // margin: 20,
+    backgroundColor: "white",
+    borderRadius: 16,
+    padding: 10,
+    // alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalText: {
+    fontSize: 20,
+    fontWeight: '600',
+    paddingVertical: 10
+  }
 });
 
 export default DanhmucGiamsat;
