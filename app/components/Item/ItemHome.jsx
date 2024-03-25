@@ -35,7 +35,7 @@ export default function ItemHome({ item, index, roleUser }) {
       }}>
       <Image source={item.icon}
       resizeMode="contain" style={{width: 36, height: 36}}/>
-      <Text
+      <Text 
         style={{
           color: 'black',
           fontSize: 16,

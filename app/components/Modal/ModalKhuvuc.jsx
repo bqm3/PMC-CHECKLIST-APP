@@ -37,7 +37,7 @@ const ModalKhuvuc = ({
               paddingHorizontal: 10,
             },
           ]}
-          autoCapitalize="none"
+          autoCapitalize="sentences"
           onChangeText={(val) => handleChangeText("tenkhuvuc", val)}
         />
         <Text style={styles.text}>Mã Qr code</Text>
@@ -51,7 +51,7 @@ const ModalKhuvuc = ({
               paddingHorizontal: 10,
             },
           ]}
-          autoCapitalize="none"
+          autoCapitalize="sentences"
           onChangeText={(val) => handleChangeText("qrcode", val)}
         />
         <View
@@ -73,14 +73,14 @@ const ModalKhuvuc = ({
                   paddingHorizontal: 10,
                 },
               ]}
-              autoCapitalize="none"
+              autoCapitalize="sentences"
               onChangeText={(val) => handleChangeText("makhuvuc", val)}
             />
           </View>
           <View style={{ width: "48%" }}>
             <Text style={styles.text}>Số thứ tự</Text>
             <TextInput
-              value={`${dataInput.sothutu}`}
+              value={dataInput.sothutu}
               placeholder="Nhập số thứ tự khu vực thực hiện checklist"
               placeholderTextColor="gray"
               style={[
@@ -89,7 +89,7 @@ const ModalKhuvuc = ({
                   paddingHorizontal: 10,
                 },
               ]}
-              autoCapitalize="none"
+              autoCapitalize="sentences"
               onChangeText={(val) => handleChangeText("sothutu", val)}
             />
           </View>
@@ -119,23 +119,9 @@ const ModalKhuvuc = ({
               value={dataInput.khoicv}
               onChange={(item) => {
                 handleChangeText("khoicv", item.ID_Khoi);
+                ref.current.close();
               }}
-              confirmSelectItem
-              onConfirmSelectItem={(item) => {
-                Alert.alert("PMC", "Xác nhận đồng ý", [
-                  {
-                    text: "Cancel",
-                    onPress: () => {},
-                  },
-                  {
-                    text: "Confirm",
-                    onPress: () => {
-                      handleChangeText("khoicv", item.ID_Khoi);
-                      ref.current.close();
-                    },
-                  },
-                ]);
-              }}
+              
             />
           </View>
           <View style={{ width: "48%" }}>
@@ -155,23 +141,9 @@ const ModalKhuvuc = ({
               value={dataInput.toanha}
               onChange={(item) => {
                 handleChangeText("toanha", item.ID_Toanha);
+                ref.current.close();
               }}
-              confirmSelectItem
-              onConfirmSelectItem={(item) => {
-                Alert.alert("PMC", "Xác nhận đồng ý", [
-                  {
-                    text: "Cancel",
-                    onPress: () => {},
-                  },
-                  {
-                    text: "Confirm",
-                    onPress: () => {
-                      handleChangeText("toanha", item.ID_Toanha);
-                      ref.current.close();
-                    },
-                  },
-                ]);
-              }}
+              
             />
           </View>
         </View>

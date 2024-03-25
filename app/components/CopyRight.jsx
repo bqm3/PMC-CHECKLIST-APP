@@ -15,7 +15,7 @@ const CopyRight = () => {
       alignItems: "center",
     }}
   >
-    <Text
+    <Text 
       style={{
         color: "white",
         fontSize: 14,

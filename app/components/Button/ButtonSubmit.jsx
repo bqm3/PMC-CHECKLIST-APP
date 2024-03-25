@@ -24,7 +24,7 @@ const ButtonSubmit = ({text, onPress, isLoading,backgroundColor, color, width,pV
         />
       )}
 
-      <Text
+      <Text 
         style={{
           color: 'white',
           fontSize: 15,

@@ -25,7 +25,7 @@ const ButtonChecklist = ({ text, onPress, color, marginLeft, icon }) => {
         alignItems: 'center'
       }}>
       {icon}
-      <Text
+      <Text 
         style={{
           color: 'white',
           fontSize: 15,

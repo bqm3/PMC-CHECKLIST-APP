@@ -4,7 +4,7 @@ import React from 'react';
 const Title = ({text, top, size}) => {
   return (
     <View>
-      <Text
+      <Text 
         style={{
           color: 'white',
           fontSize: size ? size: 15,

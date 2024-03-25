@@ -11,7 +11,7 @@ const Button = ({onPress, text, backgroundColor, color}) => {
         borderRadius: SIZES.borderRadius,
       }}
       onPress={onPress}>
-      <Text
+      <Text 
         style={{
           color: color,
           fontSize: 15,
