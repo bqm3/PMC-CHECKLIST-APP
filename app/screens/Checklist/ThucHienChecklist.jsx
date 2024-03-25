@@ -240,7 +240,7 @@ const ThucHienChecklist = ({navigation}) => {
                         paddingHorizontal: 10,
                       },
                     ]}
-                    autoCapitalize="none"
+                    autoCapitalize="sentences"
                   />
 
                   <TextInput
@@ -254,7 +254,7 @@ const ThucHienChecklist = ({navigation}) => {
                         paddingHorizontal: 10,
                       },
                     ]}
-                    autoCapitalize="none"
+                    autoCapitalize="sentences"
                   />
                 </View>
                 <View style={{ marginLeft: 10 }}>

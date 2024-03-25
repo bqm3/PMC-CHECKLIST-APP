@@ -149,6 +149,20 @@ const DanhmucGiamsat = ({ navigation }) => {
         });
     }
   };
+  function formatDate(inputDate) {
+    // Extract day, month, and year from the input date
+    var dateObject = new Date(inputDate);
+    var day = dateObject.getDate();
+    var month = dateObject.getMonth() + 1; // Add 1 because January is 0
+    var year = dateObject.getFullYear();
+    
+    // Pad day and month with leading zeros if necessary
+    day = day < 10 ? '0' + day : day;
+    month = month < 10 ? '0' + month : month;
+    
+    // Return the formatted date
+    return year + '-' + month + '-' + day;
+}
 
   const handleEditEnt = async (data) => {
     handlePresentModalPress();
@@ -272,7 +286,8 @@ const DanhmucGiamsat = ({ navigation }) => {
   };
 
   const handleConfirm = (key, date) => {
-    handleChangeText(key, moment(date).format("L"));
+    const dateF =  formatDate(date)
+    handleChangeText(key, dateF);
     setDatePickerVisibility(false);
   };
 
@@ -293,7 +308,8 @@ const DanhmucGiamsat = ({ navigation }) => {
   }, []);
 
   const handleSheetChanges = useCallback((index) => {
-    if (index === -1 || index === 0) {
+    console.log('index', index)
+    if (index === -1 || index == 0) {
       setOpacity(1);
     } else {
       setOpacity(0.5);
@@ -416,7 +432,8 @@ const DanhmucGiamsat = ({ navigation }) => {
                 snapPoints={snapPoints}
                 onChange={handleSheetChanges}
               >
-                <BottomSheetScrollView style={styles.contentContainer}>
+                <BottomSheetScrollView
+                style={styles.contentContainer}>
                   <ModalGiamsat
                     ent_chucvu={ent_chucvu}
                     ent_duan={ent_duan}

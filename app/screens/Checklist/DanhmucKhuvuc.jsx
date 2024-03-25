@@ -76,7 +76,7 @@ const DanhmucCalamviec = ({ navigation }) => {
     toanha: null,
     khoicv: null,
     makhuvuc: "",
-    sothutu: null,
+    sothutu: 0,
     qrcode: "",
     tenkhuvuc: "",
   });

@@ -66,15 +66,17 @@ const HomeScreen = ({ navigation }) => {
     >
       <View style={styles.container}>
         <View style={styles.content}>
-          <Text
+          <Text 
             style={{
               color: "white",
               fontSize: 16,
             }}
+            numberOfLines={1}
+            adjustsFontSizeToFit 
           >
             Digital Transformation Good day and Happy
           </Text>
-          <Text
+          <Text 
             style={{
               fontSize: 20,
               color: "white",
@@ -116,7 +118,7 @@ const HomeScreen = ({ navigation }) => {
             marginHorizontal: 20,
           }}
         >
-          <Text
+          <Text 
             style={{
               color: "white",
               fontSize: 15,
@@ -125,7 +127,7 @@ const HomeScreen = ({ navigation }) => {
             Người Giám sát chỉ thực hiện công việc Check list, Tra cứu và Đổi
             mật khẩu.
           </Text>
-          <Text
+          <Text 
             style={{
               color: "white",
               fontSize: 15,

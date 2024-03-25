@@ -6,7 +6,7 @@ const DetailChecklist = ({ route, navigation }) => {
     console.log('itemId',itemId)
   return (
     <View>
-      <Text>DetailChecklist</Text>
+      <Text >DetailChecklist</Text>
     </View>
   )
 }

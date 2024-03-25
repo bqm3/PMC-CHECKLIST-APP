@@ -8,6 +8,7 @@ import {
   Image,
   KeyboardAvoidingView,
   Platform,
+  Keyboard
 } from "react-native";
 import React, {
   useRef,
@@ -128,6 +129,7 @@ const DanhmucCalamviec = ({ navigation }) => {
   };
 
   const handleEditEnt = async (data) => {
+    // console.log('data',data)
     handlePresentModalPress();
     setDataInput({
       tenca: data.Tenca,
@@ -270,8 +272,9 @@ const DanhmucCalamviec = ({ navigation }) => {
   const handlePresentModalPress = useCallback(() => {
     bottomSheetModalRef.current?.present();
   }, []);
+
   const handleSheetChanges = useCallback((index) => {
-    if (index === -1 || index === 0) {
+    if (index === -1 || index == 0) {
       setOpacity(1);
     } else {
       setOpacity(0.5);

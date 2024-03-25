@@ -136,7 +136,7 @@ const LoginScreen = ({ navigation }) => {
                       placeholder="Nhập tài khoản"
                       placeholderTextColor="gray"
                       style={[styles.textInput]}
-                      autoCapitalize="none"
+                      autoCapitalize="sentences"
                       scrollEnabled={true}
                       value={data.UserName ? data.UserName : user?.UserName}
                       onChangeText={(val) => handleChangeText("UserName", val)}
@@ -148,7 +148,7 @@ const LoginScreen = ({ navigation }) => {
                       placeholder="Nhập mật khẩu"
                       placeholderTextColor="gray"
                       style={[styles.textInput]}
-                      autoCapitalize="none"
+                      autoCapitalize="sentences"
                       scrollEnabled={true}
                       value={data.Password}
                       onChangeText={(val) => handleChangeText("Password", val)}
@@ -193,7 +193,7 @@ const LoginScreen = ({ navigation }) => {
                       selectTextOnFocus={false}
                       placeholderTextColor="gray"
                       style={[styles.textInput]}
-                      autoCapitalize="none"
+                      autoCapitalize="sentences"
                     />
                   </View>
 
@@ -205,7 +205,7 @@ const LoginScreen = ({ navigation }) => {
                       selectTextOnFocus={false}
                       placeholderTextColor="gray"
                       style={[styles.textInput]}
-                      autoCapitalize="none"
+                      autoCapitalize="sentences"
                     />
                   </View>
 
