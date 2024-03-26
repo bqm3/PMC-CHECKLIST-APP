@@ -37,6 +37,13 @@ const ModalChecklist = ({
   dataKhuVuc,
 }) => {
   const ref = useRef(null);
+  
+  const defaultTang = ent_tang.find(tang => tang.ID_Tang === dataInput?.ID_Tang);
+  const defaultToanha = ent_toanha.find(toanha => toanha.ID_Toanha === dataCheckKhuvuc?.ID_Toanha);
+  const defaultKhoi = ent_khoicv.find(Khoi => Khoi.ID_Khoi === dataCheckKhuvuc?.ID_KhoiCV);
+  const defaultKhuvuc = ent_khuvuc.find(Khuvuc => Khuvuc.ID_Khuvuc === dataInput?.ID_Khuvuc);
+const defaultButtonText = defaultTang ? defaultTang : "Tầng";
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <KeyboardAvoidingView
@@ -56,7 +63,7 @@ const ModalChecklist = ({
               <View style={{ width: "48%" }}>
                 <Text style={styles.text}>Số thứ tự</Text>
                 <TextInput
-                  value={dataInput.Sothutu}
+                  value={`${dataInput?.Sothutu}`}
                   placeholder="Số thứ tự"
                   placeholderTextColor="gray"
                   style={[
@@ -72,7 +79,7 @@ const ModalChecklist = ({
               <View style={{ width: "48%" }}>
                 <Text style={styles.text}>Mã số</Text>
                 <TextInput
-                  value={dataInput.Maso}
+                  value={dataInput?.Maso}
                   placeholder="Mã số"
                   placeholderTextColor="gray"
                   style={[
@@ -89,7 +96,7 @@ const ModalChecklist = ({
             {/* Mã Qr code  */}
             <Text style={styles.text}>Mã Qr code</Text>
             <TextInput
-              value={dataInput.MaQrCode}
+              value={dataInput?.MaQrCode}
               placeholder="Nhập Qr code"
               placeholderTextColor="gray"
               style={[
@@ -104,7 +111,7 @@ const ModalChecklist = ({
             {/* Tên checklist  */}
             <Text style={styles.text}>Tên Checklist</Text>
             <TextInput
-              value={dataInput.Checklist}
+              value={dataInput?.Checklist}
               placeholder="Nhập tên Checklist"
               placeholderTextColor="gray"
               style={[
@@ -119,7 +126,7 @@ const ModalChecklist = ({
 
             <Text style={styles.text}>Giá trị định danh</Text>
             <TextInput
-              value={dataInput.Giatridinhdanh}
+              value={dataInput?.Giatridinhdanh}
               placeholder="Nhập giá trị định danh"
               placeholderTextColor="gray"
               style={[
@@ -137,7 +144,7 @@ const ModalChecklist = ({
 
             <Text style={styles.text}>Giá trị nhận</Text>
             <TextInput
-              value={dataInput.Giatrinhan}
+              value={dataInput?.Giatrinhan}
               placeholder="Nhập giá trị nhận"
               placeholderTextColor="gray"
               style={[
@@ -175,7 +182,7 @@ const ModalChecklist = ({
                   // rowStyle={{ height: 50, justifyContent: "center" }}
                   defaultButtonText={"Tòa nhà"}
                   buttonTextStyle={styles.customText}
-                  defaultValue={dataCheckKhuvuc.ID_Toanha}
+                  defaultValue={defaultToanha}
                   onSelect={(selectedItem, index) => {
                     handleChangeTextKhuVuc("ID_Toanha", selectedItem.ID_Toanha);
                     handleDataKhuvuc({
@@ -232,7 +239,7 @@ const ModalChecklist = ({
                   // rowStyle={{ height: 50, justifyContent: "center" }}
                   defaultButtonText={"Khối công việc"}
                   buttonTextStyle={styles.customText}
-                  defaultValue={dataCheckKhuvuc.ID_KhoiCV}
+                  defaultValue={defaultKhoi}
                   onSelect={(selectedItem, index) => {
                     handleChangeTextKhuVuc("ID_KhoiCV", selectedItem.ID_Khoi);
                     handleDataKhuvuc({
@@ -300,7 +307,8 @@ const ModalChecklist = ({
                   // rowStyle={{ height: 50, justifyContent: "center" }}
                   defaultButtonText={"Tầng"}
                   buttonTextStyle={styles.customText}
-                  defaultValue={dataInput.ID_Tang}
+                  defaultValue={defaultButtonText}
+                  
                   onSelect={(selectedItem, index) => {
                     handleChangeText("ID_Tang", selectedItem.ID_Tang);
                   }}
@@ -334,7 +342,7 @@ const ModalChecklist = ({
                         value={item.ID_Tang}
                         label={item.Tentang}
                         key={index}
-                        selectedItem={dataInput.ID_Tang}
+                        selectedItem={dataInput?.ID_Tang}
                       />
                     );
                   }}
@@ -356,7 +364,7 @@ const ModalChecklist = ({
                       // rowStyle={{ height: 50, justifyContent: "center" }}
                       defaultButtonText={"Khu vực"}
                       buttonTextStyle={styles.customText}
-                      defaultValue={dataInput.ID_Khuvuc}
+                      defaultValue={defaultKhuvuc}
                       onSelect={(selectedItem, index) => {
                         handleChangeText("ID_Khuvuc", selectedItem.ID_Khuvuc);
                       }}
@@ -392,7 +400,7 @@ const ModalChecklist = ({
                             value={item.ID_Khuvuc}
                             label={item.Tenkhuvuc}
                             key={index}
-                            selectedItem={dataInput.ID_Khuvuc}
+                            selectedItem={dataInput?.ID_Khuvuc}
                           />
                         );
                       }}
@@ -411,7 +419,7 @@ const ModalChecklist = ({
               color={COLORS.bg_button}
               onPress={
                 isCheckUpdate.check
-                  ? () => handlePushDataEdit(isCheckUpdate.id_giamsat)
+                  ? () => handlePushDataEdit(isCheckUpdate.ID_CheckList)
                   : () => handlePushDataSave()
               }
             />

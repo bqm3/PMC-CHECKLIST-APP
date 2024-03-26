@@ -10,7 +10,8 @@ import {
   Platform,
   ScrollView,
   TouchableOpacity,
-  ActivityIndicator
+  ActivityIndicator,
+  Modal,
 } from "react-native";
 import React, {
   useRef,
@@ -40,9 +41,12 @@ import {
 } from "../../redux/actions/entActions";
 import ModalChecklist from "../../components/Modal/ModalChecklist";
 import axios from "axios";
+import { Feather } from "@expo/vector-icons";
 import { BASE_URL } from "../../constants/config";
 import ActionCheckbox from "../../components/ActiveCheckbox";
 import ActionCheckboxAll from "../../components/ActiveCheckboxAll";
+import ModalChecklistInfo from "../../components/Modal/ModalChecklistInfo";
+import ModalChecklistFilter from "../../components/Modal/ModalChecklistFilter";
 
 const numberOfItemsPerPageList = [2, 3, 4];
 
@@ -150,9 +154,57 @@ const DanhmucChecklist = ({ navigation }) => {
   const { ent_tang, ent_khuvuc, ent_checklist, ent_khoicv, ent_toanha } =
     useSelector((state) => state.entReducer);
   const { user, authToken } = useSelector((state) => state.authReducer);
+
   const [listChecklist, setListChecklist] = useState([]);
   const [newActionCheckList, setNewActionCheckList] = useState([]);
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisibleFilter, setModalVisibleFilter] = useState(false);
+  const [isCheckbox, setIsCheckbox] = useState(false);
+  const [dataModal, setDataModal] = useState(null);
+  const [isCheckUpdate, setIsCheckUpdate] = useState({
+    check: false,
+    id_checklist: null,
+  });
+
+  const [isFilterData, setIsFilterData] = useState({
+    ID_Khuvuc: null,
+    ID_Tang: null,
+  });
+
+  const bottomSheetModalRef = useRef(null);
+  const snapPoints = useMemo(() => [1, "20%", "60%", "90%"], []);
+  const [opacity, setOpacity] = useState(1);
+  const [page, setPage] = React.useState(0);
+  const [numberOfItemsPerPage, onItemsPerPageChange] = React.useState(
+    numberOfItemsPerPageList[0]
+  );
+
+  const from = page * numberOfItemsPerPage;
+  const to = Math.min((page + 1) * numberOfItemsPerPage, dataTable.length);
+  const [dataInput, setDataInput] = useState({
+    ID_Khuvuc: null,
+    ID_Tang: null,
+    Sothutu: "",
+    Maso: "",
+    MaQrCode: "",
+    Checklist: "",
+    Giatridinhdanh: "",
+    Giatrinhan: "",
+    Sothutu: "",
+  });
+
+  const [dataCheckKhuvuc, setDataCheckKhuvuc] = useState({
+    ID_KhoiCV: null,
+    ID_Toanha: null,
+  });
+  const [filters, setFilters] = useState({
+    ID_Tang: false,
+    ID_Khuvuc: false,
+  });
+  const [isEnabled, setIsEnabled] = useState(true);
+
+  const [status, setStatus] = useState(false);
 
   const init_checklist = async () => {
     await dispath(ent_checklist_get());
@@ -185,67 +237,61 @@ const DanhmucChecklist = ({ navigation }) => {
     init_toanha();
   }, []);
 
+  const toggleSwitch = (isEnabled) => {
+    setIsEnabled(!isEnabled);
+    if (isEnabled === false) {
+      setIsFilterData({
+        ID_Tang: null,
+        ID_Khuvuc: null,
+      });
+      setFilters({
+        ID_Tang: false,
+        ID_Khuvuc: false,
+      });
+    }
+  };
+
+  const handleCheckbox = (key, value) => {
+    setFilters((data) => ({
+      ...data,
+      [key]: value,
+    }));
+    setIsEnabled(false);
+  };
+
   useEffect(() => {
-    setIsLoading(true)
+    setIsLoading(true);
     // Use setTimeout to update the message after 2000 milliseconds (2 seconds)
     const timeoutId = setTimeout(() => {
-      setIsLoading(false)
-    }, 1000);
+      setIsLoading(false);
+    }, 2000);
 
     // Cleanup function to clear the timeout if the component unmounts
     return () => clearTimeout(timeoutId);
-  }, []); // 
-
-  const [isCheckUpdate, setIsCheckUpdate] = useState({
-    check: false,
-    id_checklist: null,
-  });
-
-  const bottomSheetModalRef = useRef(null);
-  const snapPoints = useMemo(() => [1, "20%", "60%", "90%"], []);
-  const [opacity, setOpacity] = useState(1);
-  const [page, setPage] = React.useState(0);
-  const [numberOfItemsPerPage, onItemsPerPageChange] = React.useState(
-    numberOfItemsPerPageList[0]
-  );
-
-  const from = page * numberOfItemsPerPage;
-  const to = Math.min((page + 1) * numberOfItemsPerPage, dataTable.length);
+  }, []); //
 
   React.useEffect(() => {
     setPage(0);
   }, [numberOfItemsPerPage]);
 
-  const [dataInput, setDataInput] = useState({
-    ID_Khuvuc: null,
-    ID_Tang: null,
-    Sothutu: "",
-    Maso: "",
-    MaQrCode: "",
-    Checklist: "",
-    Giatridinhdanh: "",
-    Giatrinhan: "",
-  });
-
-  const [dataCheckKhuvuc, setDataCheckKhuvuc] = useState({
-    ID_KhoiCV: null,
-    ID_Toanha: null,
-  });
-  const [status, setStatus] = useState(false)
   const toggleTodo = async () => {
-    if(newActionCheckList.length > 0 && newActionCheckList.length < listChecklist.length){
-      setNewActionCheckList(listChecklist)
-      setStatus(true)
-    }else if(newActionCheckList.length ===0){
-      setNewActionCheckList(listChecklist)
-      setStatus(true)
-    }else {
-      setNewActionCheckList([])
-      setStatus(false)
+    if (
+      newActionCheckList.length > 0 &&
+      newActionCheckList.length < listChecklist.length
+    ) {
+      setNewActionCheckList(listChecklist);
+      setStatus(true);
+    } else if (newActionCheckList.length === 0) {
+      setNewActionCheckList(listChecklist);
+      setStatus(true);
+    } else {
+      setNewActionCheckList([]);
+      setStatus(false);
     }
   };
 
   const handleToggle = async (data) => {
+    setIsCheckbox(true);
     const isExistIndex = newActionCheckList.findIndex(
       (existingItem) => existingItem.ID_Checklist === data.ID_Checklist
     );
@@ -259,6 +305,12 @@ const DanhmucChecklist = ({ navigation }) => {
       // Nếu item chưa tồn tại, thêm vào mảng mới
       setNewActionCheckList((prevArray) => [...prevArray, data]);
     }
+  };
+
+  const handleToggleModal = (isCheck, data, opacity) => {
+    setDataModal(data);
+    setModalVisible(isCheck);
+    setOpacity(opacity);
   };
 
   const [dataKhuVuc, setDataKhuVuc] = useState({});
@@ -289,13 +341,15 @@ const DanhmucChecklist = ({ navigation }) => {
       });
   };
 
-  // useEffect(()=> {
-  //   console.log('run')
-  //   handleDataKhuvuc(dataCheckKhuvuc)
-  // },[dataCheckKhuvuc])
-
   const handleChangeText = (key, value) => {
     setDataInput((data) => ({
+      ...data,
+      [key]: value,
+    }));
+  };
+
+  const handleChangeFilter = (key, value) => {
+    setIsFilterData((data) => ({
       ...data,
       [key]: value,
     }));
@@ -333,6 +387,7 @@ const DanhmucChecklist = ({ navigation }) => {
           init_checklist();
           handleAdd();
           handleCloseModal();
+
           Alert.alert("PMC Thông báo", response.data.message, [
             {
               text: "Hủy",
@@ -358,24 +413,36 @@ const DanhmucChecklist = ({ navigation }) => {
   const handleEditEnt = async (data) => {
     handlePresentModalPress();
     setDataInput({
-      id_duan: data.ID_Duan,
-      hoten: data.Hoten,
-      gioitinh: data.Gioitinh,
-      ngaysinh: data.Ngaysinh,
-      sodienthoai: data.Sodienthoai,
-      id_chucvu: data.ID_Chucvu,
-      id_quyen: data.iQuyen,
+      ID_Khuvuc: data.ID_Khuvuc,
+      ID_Tang: data.ID_Tang,
+      Sothutu: data.Sothutu,
+      Maso: data.Maso,
+      MaQrCode: data.MaQrCode,
+      Checklist: data.Checklist,
+      Giatridinhdanh: data.Giatridinhdanh,
+      Giatrinhan: data.Giatrinhan,
+      Sothutu: data.Sothutu,
+    });
+
+    setDataCheckKhuvuc({
+      ID_KhoiCV: data.ent_khuvuc?.ID_KhoiCV,
+      ID_Toanha: data.ent_khuvuc?.ID_Toanha,
+    });
+
+    handleDataKhuvuc({
+      ID_KhoiCV: data.ent_khuvuc?.ID_KhoiCV,
+      ID_Toanha: data.ent_khuvuc?.ID_Toanha,
     });
 
     setIsCheckUpdate({
       check: true,
-      id_giamsat: data.ID_Giamsat,
+      ID_CheckList: data.ID_Checklist,
     });
   };
 
   const handlePushDataEdit = async (id) => {
-    if (dataInput.hoten === "" || dataInput.sodienthoai === null) {
-      Alert.alert("PMC Thông báo", "Thiêu thông tin ca làm việc", [
+    if (dataInput.Checklist === "" || dataInput.Giatrinhan === "") {
+      Alert.alert("PMC Thông báo", "Thiêu thông tin checklist", [
         {
           text: "Hủy",
           onPress: () => console.log("Cancel Pressed"),
@@ -385,26 +452,30 @@ const DanhmucChecklist = ({ navigation }) => {
       ]);
     } else {
       let data = {
-        ID_Duan: dataInput.id_duan,
-        Hoten: dataInput.hoten,
-        Gioitinh: dataInput.gioitinh,
-        Sodienthoai: dataInput.sodienthoai,
-        Ngaysinh: dataInput.ngaysinh,
-        ID_Chucvu: dataInput.id_chucvu,
-        iQuyen: 1,
+        ID_Khuvuc: dataInput.ID_Khuvuc,
+        ID_Tang: dataInput.ID_Tang,
+        Sothutu: dataInput.Sothutu,
+        Maso: dataInput.Maso,
+        MaQrCode: dataInput.MaQrCode,
+        Checklist: dataInput.Checklist,
+        Giatridinhdanh: dataInput.Giatridinhdanh,
+        Giatrinhan: dataInput.Giatrinhan,
+        Sothutu: dataInput.Sothutu,
       };
 
       await axios
-        .put(BASE_URL + `/ent_giamsat/update/${id}`, data, {
+        .put(BASE_URL + `/ent_checklist/update/${id}`, data, {
           headers: {
             Accept: "application/json",
             Authorization: "Bearer " + authToken,
           },
         })
         .then((response) => {
-          init_giamsat();
+          init_checklist();
           handleAdd();
           handleCloseModal();
+          setNewActionCheckList([]);
+          setStatus(false);
           Alert.alert("PMC Thông báo", response.data.message, [
             {
               text: "Hủy",
@@ -448,7 +519,7 @@ const DanhmucChecklist = ({ navigation }) => {
         },
       })
       .then((response) => {
-        init_giamsat();
+        init_checklist();
         handleAdd();
         handleCloseModal();
         Alert.alert("PMC Thông báo", response.data.message, [
@@ -470,6 +541,35 @@ const DanhmucChecklist = ({ navigation }) => {
           { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
         ]);
       });
+  };
+
+  const handleFilterData = async (isModal, opacity) => {
+    // setIsFilterData(false)
+    setModalVisibleFilter(isModal);
+    setOpacity(opacity);
+    setIsCheckbox(false);
+  };
+  
+  const handlePushDataCheck = async (isCheck) => {
+    if (isCheck === true) {
+      setListChecklist(ent_checklist);
+      handleFilterData(false, 1);
+    } else {
+      await axios
+        .post(BASE_URL + "/ent_checklist/filter", isFilterData, {
+          headers: {
+            Accept: "application/json",
+            Authorization: "Bearer " + authToken,
+          },
+        })
+        .then((res) => {
+          setListChecklist(res.data.data);
+          handleFilterData(false, 1);
+        })
+        .then((err) => {
+          console.log("err", err);
+        });
+    }
   };
 
   const handleAdd = () => {
@@ -551,7 +651,6 @@ const DanhmucChecklist = ({ navigation }) => {
     );
   };
 
-
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <KeyboardAvoidingView
@@ -583,16 +682,20 @@ const DanhmucChecklist = ({ navigation }) => {
                 >
                   Số lượng: {decimalNumber(listChecklist?.length)}
                 </Text>
-                {
-                  isLoading === true ?
-                  <View style={{flex: 1, justifyContent: 'center',alignItems: 'center',
-                  marginBottom: 40
-                  }}>
-                    <ActivityIndicator size="large" color={'white'}/>
+                {isLoading === true ? (
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      marginBottom: 40,
+                    }}
+                  >
+                    <ActivityIndicator size="large" color={"white"} />
                   </View>
-                  :
+                ) : (
                   <>
-                       {listChecklist?.length > 0 ? (
+                    {listChecklist?.length > 0 ? (
                       <>
                         <View
                           style={{
@@ -603,6 +706,7 @@ const DanhmucChecklist = ({ navigation }) => {
                           }}
                         >
                           <TouchableOpacity
+                            onPress={() => handleFilterData(true, 0.5)}
                             style={{
                               flexDirection: "row",
                               alignItems: "center",
@@ -620,11 +724,13 @@ const DanhmucChecklist = ({ navigation }) => {
                             text={"Thêm mới"}
                             width={"auto"}
                             color={COLORS.bg_button}
-                            icon={<Ionicons name="add" size={24} color="white" />}
+                            icon={
+                              <Ionicons name="add" size={24} color="white" />
+                            }
                             onPress={handlePresentModalPress}
                           />
                         </View>
-    
+
                         <ScrollView>
                           <DataTable
                             style={{
@@ -635,7 +741,9 @@ const DanhmucChecklist = ({ navigation }) => {
                           >
                             <ScrollView
                               horizontal
-                              contentContainerStyle={{ flexDirection: "column" }}
+                              contentContainerStyle={{
+                                flexDirection: "column",
+                              }}
                             >
                               <DataTable.Header
                                 style={{
@@ -650,7 +758,10 @@ const DanhmucChecklist = ({ navigation }) => {
                                     width: 50,
                                   }}
                                 >
-                                  <ActionCheckboxAll toggleTodo={toggleTodo} status={status}/>
+                                  <ActionCheckboxAll
+                                    toggleTodo={toggleTodo}
+                                    status={status}
+                                  />
                                 </DataTable.Title>
                                 {headerList &&
                                   headerList.map((item, index) => {
@@ -682,7 +793,7 @@ const DanhmucChecklist = ({ navigation }) => {
                                     );
                                   })}
                               </DataTable.Header>
-    
+
                               {listChecklist && listChecklist.length > 0 && (
                                 <FlatList
                                   nestedScrollEnabled={false}
@@ -700,7 +811,9 @@ const DanhmucChecklist = ({ navigation }) => {
                                 onPageChange={(page) => setPage(page)}
                                 // label={`${from + 1}-${to} đến ${items.length}`}
                                 showFastPaginationControls
-                                numberOfItemsPerPageList={numberOfItemsPerPageList}
+                                numberOfItemsPerPageList={
+                                  numberOfItemsPerPageList
+                                }
                                 numberOfItemsPerPage={numberOfItemsPerPage}
                                 onItemsPerPageChange={onItemsPerPageChange}
                                 selectPageDropdownLabel={"Hàng trên mỗi trang"}
@@ -724,7 +837,9 @@ const DanhmucChecklist = ({ navigation }) => {
                             resizeMode="contain"
                             style={{ height: 120, width: 120 }}
                           />
-                          <Text style={[styles.danhmuc, { paddingVertical: 10 }]}>
+                          <Text
+                            style={[styles.danhmuc, { paddingVertical: 10 }]}
+                          >
                             Bạn chưa thêm dữ liệu nào
                           </Text>
                           <ButtonChecklist
@@ -737,8 +852,7 @@ const DanhmucChecklist = ({ navigation }) => {
                       </>
                     )}
                   </>
-                }
-                
+                )}
               </View>
             </View>
 
@@ -767,6 +881,100 @@ const DanhmucChecklist = ({ navigation }) => {
                 />
               </BottomSheetScrollView>
             </BottomSheetModal>
+
+            {isCheckbox === true && newActionCheckList?.length > 0 && (
+              <View
+                style={{
+                  width: 60,
+                  position: "absolute",
+                  right: 20,
+                  bottom: 50,
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: 8,
+                }}
+              >
+                {newActionCheckList?.length === 1 && (
+                  <>
+                    <TouchableOpacity
+                      style={styles.button}
+                      onPress={() => handleEditEnt(newActionCheckList[0])}
+                    >
+                      <Feather name="edit" size={24} color="white" />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.button}
+                      onPress={() =>
+                        handleToggleModal(true, newActionCheckList[0], 0.2)
+                      }
+                    >
+                      <Feather name="eye" size={24} color="white" />
+                    </TouchableOpacity>
+                  </>
+                )}
+                <TouchableOpacity style={styles.button}>
+                  <Feather name="trash-2" size={24} color="white" />
+                </TouchableOpacity>
+              </View>
+            )}
+
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={modalVisible}
+              onRequestClose={() => {
+                Alert.alert("Modal has been closed.");
+                setModalVisible(!modalVisible);
+              }}
+            >
+              <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                  <Text style={styles.modalText}>
+                    Thông tin checlist chi tiết
+                  </Text>
+                  <ModalChecklistInfo
+                    dataModal={dataModal}
+                    handleToggleModal={handleToggleModal}
+                  />
+                </View>
+              </View>
+            </Modal>
+
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={modalVisibleFilter}
+              onRequestClose={() => {
+                Alert.alert("Modal has been closed.");
+                setModalVisibleFilter(!modalVisibleFilter);
+              }}
+            >
+              <View style={styles.centeredView}>
+                <View style={styles.modalView}>
+                  <Text style={styles.modalText}>
+                    Tìm kiếm thông tin checklist
+                  </Text>
+                  <ModalChecklistFilter
+                    dataModal={dataModal}
+                    setModalVisibleFilter={setModalVisibleFilter}
+                    isFilterData={isFilterData}
+                    setIsFilterData={setIsFilterData}
+                    handleFilterData={handleFilterData}
+                    ent_khuvuc={ent_khuvuc}
+                    ent_toanha={ent_toanha}
+                    ent_khoicv={ent_khoicv}
+                    ent_tang={ent_tang}
+                    handleChangeFilter={handleChangeFilter}
+                    handlePushDataCheck={handlePushDataCheck}
+                    toggleSwitch={toggleSwitch}
+                    handleCheckbox={handleCheckbox}
+                    filters={filters}
+                    isEnabled={isEnabled}
+                  />
+                </View>
+              </View>
+            </Modal>
           </ImageBackground>
         </BottomSheetModalProvider>
       </KeyboardAvoidingView>
@@ -799,5 +1007,40 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     justifyContent: "center",
     alignItems: "center",
+  },
+  button: {
+    backgroundColor: COLORS.color_bg,
+    width: 60,
+    height: 60,
+    borderRadius: 50,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+    zIndex: 10,
+  },
+  modalView: {
+    // margin: 20,
+    backgroundColor: "white",
+    borderRadius: 16,
+    padding: 10,
+    // alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalText: {
+    fontSize: 20,
+    fontWeight: "600",
+    paddingVertical: 10,
   },
 });

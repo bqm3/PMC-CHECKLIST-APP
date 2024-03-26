@@ -321,7 +321,6 @@ const DanhmucGiamsat = ({ navigation }) => {
   }, []);
 
   const handleSheetChanges = useCallback((index) => {
-    console.log('index', index)
     if (index === -1 || index == 0) {
       setOpacity(1);
     } else {

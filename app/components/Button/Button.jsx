@@ -6,9 +6,11 @@ const Button = ({onPress, text, backgroundColor, color}) => {
   return (
     <TouchableOpacity
       style={{
-        backgroundColor: backgroundColor,
+        backgroundColor: backgroundColor ? backgroundColor : 'white',
         padding: SIZES.padding,
         borderRadius: SIZES.borderRadius,
+        borderColor: backgroundColor ? backgroundColor : COLORS.bg_button,
+        borderWidth: 1
       }}
       onPress={onPress}>
       <Text 

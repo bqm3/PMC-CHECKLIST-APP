@@ -9,7 +9,7 @@ const ActionCheckbox = ({ newActionCheckList, item, handleToggle }) => {
   );
   return (
     <TouchableOpacity style={styles.box} onPress={() => handleToggle(item)}>
-      {isExistIndex && <Entypo name="check" size={16} color={"blue"} />}
+      {isExistIndex && <Entypo name="check" size={16} color={COLORS.color_bg} />}
     </TouchableOpacity>
   );
 };
@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     borderWidth: 2,
-    borderColor: "COLORS.gray",
+    borderColor:COLORS.gray,
     borderRadius: 2,
     justifyContent: "center",
     alignItems: "center",
