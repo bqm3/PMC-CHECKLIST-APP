@@ -8,7 +8,8 @@ import {
   Image,
   KeyboardAvoidingView,
   Platform,
-  Keyboard
+  Keyboard,
+  ActivityIndicator
 } from "react-native";
 import React, {
   useRef,
@@ -44,6 +45,7 @@ const DanhmucCalamviec = ({ navigation }) => {
   const bottomSheetModalRef = useRef(null);
   const snapPoints = useMemo(() => [1, "20%", "30%", "80%"], []);
   const [opacity, setOpacity] = useState(1);
+  const [isLoading, setIsLoading] = useState(true);
   const [isCheckUpdate, setIsCheckUpdate] = useState({
     check: false,
     id_calv: null,
@@ -61,6 +63,17 @@ const DanhmucCalamviec = ({ navigation }) => {
     init_khoicv();
     init_calv();
   }, []);
+
+  useEffect(() => {
+    setIsLoading(true);
+    // Use setTimeout to update the message after 2000 milliseconds (2 seconds)
+    const timeoutId = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+
+    // Cleanup function to clear the timeout if the component unmounts
+    return () => clearTimeout(timeoutId);
+  }, []); //
 
   const dateHour = moment(new Date()).format("LT");
   const [dataInput, setDataInput] = useState({
@@ -314,12 +327,20 @@ const DanhmucCalamviec = ({ navigation }) => {
               >
                 <View style={styles.container}>
                   <Text style={styles.danhmuc}>Danh mục làm việc</Text>
-                  {/* {
-                  isLoading && <View style={{flex: 1,justifyContent:'center', alignContent:'center'}}>
-                    <ActivityIndicator />
-                  </View>
-                } */}
-                  {ent_calv && ent_calv.length > 0 ? (
+                  {isLoading === true ? (
+                    <View
+                      style={{
+                        flex: 1,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        marginBottom: 40,
+                      }}
+                    >
+                      <ActivityIndicator size="large" color={"white"} />
+                    </View>
+                  ):
+                  <>
+                   {ent_calv && ent_calv.length > 0 ? (
                     <>
                       <View
                         style={{
@@ -387,6 +408,9 @@ const DanhmucCalamviec = ({ navigation }) => {
                       </View>
                     </>
                   )}
+                  </>
+                  }
+                 
                 </View>
               </View>
               <BottomSheetModal

@@ -10,6 +10,7 @@ import {
   Platform,
   Modal,
   Pressable,
+  ActivityIndicator
 } from "react-native";
 import React, {
   useRef,
@@ -54,6 +55,7 @@ const DanhmucGiamsat = ({ navigation }) => {
   const bottomSheetModalRef = useRef(null);
   const snapPoints = useMemo(() => [1, "20%", "50%", "80%"], []);
   const [opacity, setOpacity] = useState(1);
+  const [isLoading, setIsLoading] = useState(true);
   const [isCheckUpdate, setIsCheckUpdate] = useState({
     check: false,
     id_giamsat: null,
@@ -79,6 +81,17 @@ const DanhmucGiamsat = ({ navigation }) => {
     init_duan();
     init_chucvu();
   }, []);
+
+  useEffect(() => {
+    setIsLoading(true);
+    // Use setTimeout to update the message after 2000 milliseconds (2 seconds)
+    const timeoutId = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+
+    // Cleanup function to clear the timeout if the component unmounts
+    return () => clearTimeout(timeoutId);
+  }, []); //
 
   const [dataInput, setDataInput] = useState({
     id_duan: null,
@@ -354,8 +367,20 @@ const DanhmucGiamsat = ({ navigation }) => {
               >
                 <View style={styles.container}>
                   <Text style={styles.danhmuc}>Danh mục giám sát</Text>
-
-                  {ent_giamsat && ent_giamsat.length > 0 ? (
+                  {isLoading === true ? (
+                    <View
+                      style={{
+                        flex: 1,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        marginBottom: 40,
+                      }}
+                    >
+                      <ActivityIndicator size="large" color={"white"} />
+                    </View>
+                  ):
+                  <>
+                    {ent_giamsat && ent_giamsat.length > 0 ? (
                     <>
                       <View
                         style={{
@@ -424,6 +449,10 @@ const DanhmucGiamsat = ({ navigation }) => {
                       </View>
                     </>
                   )}
+                  </>
+                  }
+
+                
                 </View>
               </View>
               <BottomSheetModal

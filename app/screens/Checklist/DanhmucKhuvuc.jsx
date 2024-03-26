@@ -8,6 +8,7 @@ import {
   Image,
   KeyboardAvoidingView,
   Platform,
+  ActivityIndicator,
 } from "react-native";
 import React, {
   useRef,
@@ -49,6 +50,7 @@ const DanhmucCalamviec = ({ navigation }) => {
   const bottomSheetModalRef = useRef(null);
   const snapPoints = useMemo(() => [1, "20%", "30%", "80%"], []);
   const [opacity, setOpacity] = useState(1);
+  const [isLoading, setIsLoading] = useState(true);
   const [isCheckUpdate, setIsCheckUpdate] = useState({
     check: false,
     id_khuvuc: null,
@@ -71,6 +73,17 @@ const DanhmucCalamviec = ({ navigation }) => {
     init_khuvuc();
     init_khoicv();
   }, []);
+
+  useEffect(() => {
+    setIsLoading(true);
+    // Use setTimeout to update the message after 2000 milliseconds (2 seconds)
+    const timeoutId = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+
+    // Cleanup function to clear the timeout if the component unmounts
+    return () => clearTimeout(timeoutId);
+  }, []); //
 
   const [dataInput, setDataInput] = useState({
     toanha: null,
@@ -159,7 +172,6 @@ const DanhmucCalamviec = ({ navigation }) => {
       qrcode: data.MaQrCode,
       tenkhuvuc: data.Tenkhuvuc,
     });
-    
   };
 
   const handlePushDataEdit = async (id) => {
@@ -272,6 +284,7 @@ const DanhmucCalamviec = ({ navigation }) => {
   const handlePresentModalPress = useCallback(() => {
     bottomSheetModalRef.current?.present();
   }, []);
+
   const handleSheetChanges = useCallback((index) => {
     if (index === -1 || index === 0) {
       setOpacity(1);
@@ -313,73 +326,93 @@ const DanhmucCalamviec = ({ navigation }) => {
               >
                 <View style={styles.container}>
                   <Text style={styles.danhmuc}>Danh mục khu vực</Text>
-
-                  {ent_khuvuc && ent_khuvuc.length > 0 ? (
-                    <>
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          alignContent: "center",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <Text style={styles.text}>
-                          Số lượng: {decimalNumber(ent_khuvuc?.length)}
-                        </Text>
-                        <ButtonChecklist
-                          text={"Thêm mới"}
-                          width={"auto"}
-                          color={COLORS.bg_button}
-                          icon={<Ionicons name="add" size={24} color="white" />}
-                          onPress={handlePresentModalPress}
-                        />
-                      </View>
-
-                      <FlatList
-                        horizontal={false}
-                        contentContainerStyle={{ flexGrow: 1 }}
-                        style={{ marginVertical: 10 }}
-                        data={ent_khuvuc}
-                        renderItem={({ item, index }) => (
-                          <ItemKhuVuc
-                            key={index}
-                            item={item}
-                            handleEditEnt={handleEditEnt}
-                            handleAlertDelete={handleAlertDelete}
-                          />
-                        )}
-                        keyExtractor={(item, index) => index.toString()}
-                        scrollEventThrottle={16}
-                        ListFooterComponent={<View style={{ height: 120 }} />}
-                        scrollEnabled={true}
-                      />
-                    </>
+                  {isLoading === true ? (
+                    <View
+                      style={{
+                        flex: 1,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        marginBottom: 40,
+                      }}
+                    >
+                      <ActivityIndicator size="large" color={"white"} />
+                    </View>
                   ) : (
                     <>
-                      <View
-                        style={{
-                          flex: 1,
-                          justifyContent: "center",
-                          alignItems: "center",
-                          marginBottom: 100,
-                        }}
-                      >
-                        <Image
-                          source={require("../../../assets/icons/delete_bg.png")}
-                          resizeMode="contain"
-                          style={{ height: 120, width: 120 }}
-                        />
-                        <Text style={[styles.danhmuc, { paddingVertical: 10 }]}>
-                          Bạn chưa thêm dữ liệu nào
-                        </Text>
-                        <ButtonChecklist
-                          text={"Thêm mới"}
-                          width={"auto"}
-                          color={COLORS.bg_button}
-                          onPress={handleAdd}
-                        />
-                      </View>
+                      {ent_khuvuc && ent_khuvuc.length > 0 ? (
+                        <>
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              alignContent: "center",
+                              alignItems: "center",
+                              justifyContent: "space-between",
+                            }}
+                          >
+                            <Text style={styles.text}>
+                              Số lượng: {decimalNumber(ent_khuvuc?.length)}
+                            </Text>
+                            <ButtonChecklist
+                              text={"Thêm mới"}
+                              width={"auto"}
+                              color={COLORS.bg_button}
+                              icon={
+                                <Ionicons name="add" size={24} color="white" />
+                              }
+                              onPress={handlePresentModalPress}
+                            />
+                          </View>
+
+                          <FlatList
+                            horizontal={false}
+                            contentContainerStyle={{ flexGrow: 1 }}
+                            style={{ marginVertical: 10 }}
+                            data={ent_khuvuc}
+                            renderItem={({ item, index }) => (
+                              <ItemKhuVuc
+                                key={index}
+                                item={item}
+                                handleEditEnt={handleEditEnt}
+                                handleAlertDelete={handleAlertDelete}
+                              />
+                            )}
+                            keyExtractor={(item, index) => index.toString()}
+                            scrollEventThrottle={16}
+                            ListFooterComponent={
+                              <View style={{ height: 120 }} />
+                            }
+                            scrollEnabled={true}
+                          />
+                        </>
+                      ) : (
+                        <>
+                          <View
+                            style={{
+                              flex: 1,
+                              justifyContent: "center",
+                              alignItems: "center",
+                              marginBottom: 100,
+                            }}
+                          >
+                            <Image
+                              source={require("../../../assets/icons/delete_bg.png")}
+                              resizeMode="contain"
+                              style={{ height: 120, width: 120 }}
+                            />
+                            <Text
+                              style={[styles.danhmuc, { paddingVertical: 10 }]}
+                            >
+                              Bạn chưa thêm dữ liệu nào
+                            </Text>
+                            <ButtonChecklist
+                              text={"Thêm mới"}
+                              width={"auto"}
+                              color={COLORS.bg_button}
+                              onPress={handleAdd}
+                            />
+                          </View>
+                        </>
+                      )}
                     </>
                   )}
                 </View>

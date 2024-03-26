@@ -12,6 +12,9 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Dropdown } from "react-native-element-dropdown";
 import { COLORS } from "../../constants/theme";
 import ButtonChecklist from "../Button/ButtonCheckList";
+import { FontAwesome } from "@expo/vector-icons";
+import VerticalSelect from "../VerticalSelect";
+import SelectDropdown from "react-native-select-dropdown";
 
 const ModalKhuvuc = ({
   ent_khoicv,
@@ -104,46 +107,106 @@ const ModalKhuvuc = ({
         >
           <View style={{ width: "48%" }}>
             <Text style={styles.text}>Khối công việc</Text>
-
-            <Dropdown
-              ref={ref}
-              style={styles.dropdown}
-              placeholderStyle={styles.placeholderStyle}
-              selectedTextStyle={styles.selectedTextStyle}
-              iconStyle={styles.iconStyle}
+            <SelectDropdown
               data={ent_khoicv ? ent_khoicv : []}
-              maxHeight={300}
-              labelField="KhoiCV"
-              valueField="ID_Khoi"
-              placeholder="Khối công việc"
-              value={dataInput.khoicv}
-              onChange={(item) => {
-                handleChangeText("khoicv", item.ID_Khoi);
-                ref.current.close();
+              buttonStyle={styles.select}
+              dropdownStyle={{
+                borderRadius: 8,
+                maxHeight: 400,
               }}
-              
+              // rowStyle={{ height: 50, justifyContent: "center" }}
+              defaultButtonText={"Khối công việc"}
+              buttonTextStyle={styles.customText}
+              defaultValue={dataInput.khoicv}
+              onSelect={(selectedItem, index) => {
+                handleChangeText("khoicv", selectedItem.ID_Khoi);
+              }}
+              renderDropdownIcon={(isOpened) => {
+                return (
+                  <FontAwesome
+                    name={isOpened ? "chevron-up" : "chevron-down"}
+                    color={"#637381"}
+                    size={14}
+                    style={{ marginRight: 10 }}
+                  />
+                );
+              }}
+              dropdownIconPosition={"right"}
+              buttonTextAfterSelection={(selectedItem, index) => {
+                return (
+                  <View
+                    style={{
+                      justifyContent: "center",
+                      alignContent: "center",
+                      height: 50,
+                    }}
+                  >
+                    <Text style={styles.text}>{selectedItem?.KhoiCV}</Text>
+                  </View>
+                );
+              }}
+              renderCustomizedRowChild={(item, index) => {
+                return (
+                  <VerticalSelect
+                    value={item.ID_Khoi}
+                    label={item.KhoiCV}
+                    key={index}
+                    selectedItem={dataInput.khoicv}
+                  />
+                );
+              }}
             />
           </View>
           <View style={{ width: "48%" }}>
             <Text style={styles.text}>Tòa nhà</Text>
-
-            <Dropdown
-              ref={ref}
-              style={styles.dropdown}
-              placeholderStyle={styles.placeholderStyle}
-              selectedTextStyle={styles.selectedTextStyle}
-              iconStyle={styles.iconStyle}
+            <SelectDropdown
               data={ent_toanha ? ent_toanha : []}
-              maxHeight={300}
-              labelField="Toanha"
-              valueField="ID_Toanha"
-              placeholder="Tòa nhà"
-              value={dataInput.toanha}
-              onChange={(item) => {
-                handleChangeText("toanha", item.ID_Toanha);
-                ref.current.close();
+              buttonStyle={styles.select}
+              dropdownStyle={{
+                borderRadius: 8,
+                maxHeight: 400,
               }}
-              
+              // rowStyle={{ height: 50, justifyContent: "center" }}
+              defaultButtonText={"Tòa nhà"}
+              buttonTextStyle={styles.customText}
+              defaultValue={dataInput.toanha}
+              onSelect={(selectedItem, index) => {
+                handleChangeText("toanha", selectedItem.ID_Toanha);
+              }}
+              renderDropdownIcon={(isOpened) => {
+                return (
+                  <FontAwesome
+                    name={isOpened ? "chevron-up" : "chevron-down"}
+                    color={"#637381"}
+                    size={14}
+                    style={{ marginRight: 10 }}
+                  />
+                );
+              }}
+              dropdownIconPosition={"right"}
+              buttonTextAfterSelection={(selectedItem, index) => {
+                return (
+                  <View
+                    style={{
+                      justifyContent: "center",
+                      alignContent: "center",
+                      height: 50,
+                    }}
+                  >
+                    <Text style={styles.text}>{selectedItem?.Toanha}</Text>
+                  </View>
+                );
+              }}
+              renderCustomizedRowChild={(item, index) => {
+                return (
+                  <VerticalSelect
+                    value={item.ID_Toanha}
+                    label={item.Toanha}
+                    key={index}
+                    selectedItem={dataInput.toanha}
+                  />
+                );
+              }}
             />
           </View>
         </View>
@@ -208,4 +271,17 @@ const styles = StyleSheet.create({
     color: COLORS.text_main,
   },
   row: { flexDirection: "row", backgroundColor: "#FFF1C1" },
+  select: {
+    width: "100%",
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "gray",
+    height: 48,
+    backgroundColor: "white",
+    zIndex: 1,
+  },
+  customText: {
+    fontWeight: "600",
+    fontSize: 15,
+  },
 });
