@@ -8,7 +8,7 @@ const ActionCheckbox = ({ newActionCheckList, item, handleToggle }) => {
     (existingItem) => existingItem.ID_Checklist === item.ID_Checklist
   );
   return (
-    <TouchableOpacity style={styles.box} onPress={() => handleToggle(item)}>
+    <TouchableOpacity style={[styles.box]} onPress={() => handleToggle(item)}>
       {isExistIndex && <Entypo name="check" size={16} color={COLORS.color_bg} />}
     </TouchableOpacity>
   );

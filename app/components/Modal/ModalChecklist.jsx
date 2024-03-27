@@ -38,10 +38,10 @@ const ModalChecklist = ({
 }) => {
   const ref = useRef(null);
   
-  const defaultTang = ent_tang.find(tang => tang.ID_Tang === dataInput?.ID_Tang);
-  const defaultToanha = ent_toanha.find(toanha => toanha.ID_Toanha === dataCheckKhuvuc?.ID_Toanha);
-  const defaultKhoi = ent_khoicv.find(Khoi => Khoi.ID_Khoi === dataCheckKhuvuc?.ID_KhoiCV);
-  const defaultKhuvuc = ent_khuvuc.find(Khuvuc => Khuvuc.ID_Khuvuc === dataInput?.ID_Khuvuc);
+  const defaultTang = ent_tang?.find(tang => tang.ID_Tang === dataInput?.ID_Tang);
+  const defaultToanha = ent_toanha?.find(toanha => toanha.ID_Toanha === dataCheckKhuvuc?.ID_Toanha);
+  const defaultKhoi = ent_khoicv?.find(Khoi => Khoi.ID_Khoi === dataCheckKhuvuc?.ID_KhoiCV);
+  const defaultKhuvuc = ent_khuvuc?.find(Khuvuc => Khuvuc.ID_Khuvuc === dataInput?.ID_Khuvuc);
 const defaultButtonText = defaultTang ? defaultTang : "Tầng";
 
   return (

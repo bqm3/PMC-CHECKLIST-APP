@@ -8,6 +8,7 @@ export default function ItemHome({ item, index, roleUser }) {
   const navigation = useNavigation();
   return (
     <TouchableOpacity
+      disabled={roleUser !== 1 && item?.role === 1 ? true : false}
       onPress={() => {
         navigation.navigate(item.path);
       }}
@@ -17,7 +18,7 @@ export default function ItemHome({ item, index, roleUser }) {
           width: "30%",
           position: "relative",
           backgroundColor:
-            roleUser === 2 && item?.role === 1
+            roleUser !== 1 && item?.role === 1
               ? COLORS.bg_active
               : COLORS.bg_white,
           alignItems: "center",
@@ -27,25 +28,30 @@ export default function ItemHome({ item, index, roleUser }) {
         item.id == 2 && item.id == 5 && { marginHorizontal: 10 },
       ]}
     >
-      <View style={{
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems:'center',
-        padding: 8
-      }}>
-      <Image source={item.icon}
-      resizeMode="contain" style={{width: 36, height: 36}}/>
-      <Text 
+      <View
         style={{
-          color: 'black',
-          fontSize: 16,
-          fontWeight: "600",
-          padding: 4,
-          textAlign: "center",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          padding: 8,
         }}
       >
-        {item.path}
-      </Text>
+        <Image
+          source={item.icon}
+          resizeMode="contain"
+          style={{ width: 36, height: 36 }}
+        />
+        <Text
+          style={{
+            color: roleUser !== 1 && item?.role === 1 ? 'white' : 'black',
+            fontSize: 16,
+            fontWeight: "600",
+            padding: 4,
+            textAlign: "center",
+          }}
+        >
+          {item.path}
+        </Text>
       </View>
     </TouchableOpacity>
   );
