@@ -5,6 +5,10 @@ import DanhmucCalamviec from "./DanhmucCalamviec"
 import DanhmucGiamsat from "./DanhmucGiamsat"
 import DanhmucKhuvuc from "./DanhmucKhuvuc"
 import DetailChecklist from "./DetailChecklist"
+import DanhmucTracuu from "./DanhmucTracuu"
+import Profile from "../Profile"
+import DanhmucChecklist from "./DanhmucChecklist"
+
 
 
 module.exports = {
@@ -13,5 +17,8 @@ module.exports = {
     DanhmucCalamviec,
     DanhmucGiamsat,
     DanhmucKhuvuc,
-    DetailChecklist
+    DetailChecklist,
+    DanhmucTracuu,
+    Profile,
+    DanhmucChecklist
 }

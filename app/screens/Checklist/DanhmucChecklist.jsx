@@ -12,6 +12,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Modal,
+  TouchableHighlight,
 } from "react-native";
 import React, {
   useRef,
@@ -28,7 +29,7 @@ import {
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { AntDesign, Ionicons } from "@expo/vector-icons";
+import { AntDesign, Ionicons,Feather } from "@expo/vector-icons";
 import { DataTable } from "react-native-paper";
 import ButtonChecklist from "../../components/Button/ButtonCheckList";
 import { COLORS, SIZES } from "../../constants/theme";
@@ -41,14 +42,13 @@ import {
 } from "../../redux/actions/entActions";
 import ModalChecklist from "../../components/Modal/ModalChecklist";
 import axios from "axios";
-import { Feather } from "@expo/vector-icons";
 import { BASE_URL } from "../../constants/config";
 import ActionCheckbox from "../../components/ActiveCheckbox";
 import ActionCheckboxAll from "../../components/ActiveCheckboxAll";
 import ModalChecklistInfo from "../../components/Modal/ModalChecklistInfo";
 import ModalChecklistFilter from "../../components/Modal/ModalChecklistFilter";
 
-const numberOfItemsPerPageList = [2, 3, 4];
+const numberOfItemsPerPageList = [10, 15, 20];
 
 const headerList = [
   {
@@ -90,65 +90,6 @@ const headerList = [
   },
 ];
 
-const dataTable = [
-  {
-    ngay: "3/18/2024",
-    tenca: "Ca tối",
-    nhanvien: "Nguyễn Mạnh Hùng",
-    giobd: "10:44 AM",
-    tinhtrang: "Xong",
-    ghichu: "note note asdfdasf adfasfadf adfadasdf",
-    giokt: "10:43 PM",
-    ID: 1,
-    giochup1: "10:43 PM",
-    giochup2: "10:43 PM",
-    giochup3: "10:43 PM",
-    giochup4: "10:43 PM",
-  },
-  {
-    ngay: "3/18/2024",
-    tenca: "Ca tối",
-    nhanvien: "Nguyễn Mạnh Hùng",
-    giobd: "10:44 AM",
-    tinhtrang: "",
-    ghichu: "",
-    giokt: "10:43 PM",
-    ID: 2,
-    giochup1: "",
-    giochup2: "",
-    giochup3: "",
-    giochup4: "",
-  },
-  {
-    ngay: "3/18/2024",
-    tenca: "Ca tối",
-    nhanvien: "Nguyễn Mạnh Hùng",
-    giobd: "10:44 AM",
-    tinhtrang: "Xong",
-    ghichu: "",
-    giokt: "10:43 PM",
-    ID: 3,
-    giochup1: "",
-    giochup2: "",
-    giochup3: "",
-    giochup4: "",
-  },
-  {
-    ngay: "3/18/2024",
-    tenca: "Ca tối",
-    nhanvien: "Nguyễn Mạnh Hùng",
-    giobd: "10:44 AM",
-    tinhtrang: "Xong",
-    ghichu: "",
-    giokt: "10:43 PM",
-    ID: 4,
-    giochup1: "",
-    giochup2: "",
-    giochup3: "",
-    giochup4: "",
-  },
-];
-
 const DanhmucChecklist = ({ navigation }) => {
   const dispath = useDispatch();
   const { ent_tang, ent_khuvuc, ent_checklist, ent_khoicv, ent_toanha } =
@@ -177,11 +118,11 @@ const DanhmucChecklist = ({ navigation }) => {
   const [opacity, setOpacity] = useState(1);
   const [page, setPage] = React.useState(0);
   const [numberOfItemsPerPage, onItemsPerPageChange] = React.useState(
-    numberOfItemsPerPageList[0]
+    numberOfItemsPerPageList[1]
   );
 
   const from = page * numberOfItemsPerPage;
-  const to = Math.min((page + 1) * numberOfItemsPerPage, dataTable.length);
+  const to = Math.min((page + 1) * numberOfItemsPerPage, listChecklist?.length);
   const [dataInput, setDataInput] = useState({
     ID_Khuvuc: null,
     ID_Tang: null,
@@ -499,29 +440,30 @@ const DanhmucChecklist = ({ navigation }) => {
     }
   };
 
-  const handleAlertDelete = async (id) => {
-    Alert.alert("PMC Thông báo", "Bạn có muốn xóa người giám sát", [
+  const handleAlertDelete = async (data) => {
+    Alert.alert("PMC Thông báo", "Bạn có muốn xóa danh mục checklist", [
       {
         text: "Hủy",
         onPress: () => console.log("Cancel Pressed"),
         style: "cancel",
       },
-      { text: "Xác nhận", onPress: () => handlePushDataDelete(id) },
+      { text: "Xác nhận", onPress: () => handlePushDataDelete(data) },
     ]);
   };
 
-  const handlePushDataDelete = async (id) => {
+  const handlePushDataDelete = async (data) => {
     await axios
-      .put(BASE_URL + `/ent_giamsat/delete/${id}`, [], {
+      .put(BASE_URL + `/ent_checklist/delete-all/${data}`, [], {
         headers: {
           Accept: "application/json",
           Authorization: "Bearer " + authToken,
         },
       })
       .then((response) => {
-        init_checklist();
         handleAdd();
-        handleCloseModal();
+        init_checklist();
+        setNewActionCheckList([])
+        // handleCloseModal();
         Alert.alert("PMC Thông báo", response.data.message, [
           {
             text: "Hủy",
@@ -549,7 +491,7 @@ const DanhmucChecklist = ({ navigation }) => {
     setOpacity(opacity);
     setIsCheckbox(false);
   };
-  
+
   const handlePushDataCheck = async (isCheck) => {
     if (isCheck === true) {
       setListChecklist(ent_checklist);
@@ -586,7 +528,7 @@ const DanhmucChecklist = ({ navigation }) => {
   };
 
   const handlePresentModalPress = useCallback(() => {
-    bottomSheetModalRef.current?.present();
+    bottomSheetModalRef?.current?.present();
   }, []);
 
   const handleSheetChanges = useCallback((index) => {
@@ -608,48 +550,109 @@ const DanhmucChecklist = ({ navigation }) => {
   };
 
   const _renderItem = ({ item, index }) => {
+    const isExistIndex = newActionCheckList?.find(
+      (existingItem) => existingItem?.ID_Checklist === item?.ID_Checklist
+    );
     return (
-      <DataTable.Row style={{ gap: 20, paddingVertical: 10 }} key={index}>
-        <DataTable.Cell style={{ width: 50 }}>
-          <ActionCheckbox
-            item={item}
-            index={index}
-            handleToggle={handleToggle}
-            newActionCheckList={newActionCheckList}
-            // active={}
-          />
-        </DataTable.Cell>
+      <TouchableHighlight onPress={() => handleToggle(item)}>
+        <DataTable.Row
+          style={{
+            gap: 20,
+            paddingVertical: 10,
+            backgroundColor: isExistIndex ? COLORS.bg_button : "white",
+          }}
+          key={index}
+        >
+          <DataTable.Cell style={{ width: 50 }}>
+            <ActionCheckbox
+              item={item}
+              index={index}
+              handleToggle={handleToggle}
+              newActionCheckList={newActionCheckList}
+              // active={}
+            />
+          </DataTable.Cell>
 
-        <DataTable.Cell style={{ width: 150 }}>
-          <Text numberOfLines={3}>{item?.Checklist}</Text>
-        </DataTable.Cell>
-        <DataTable.Cell style={{ width: 120 }}>
-          <Text numberOfLines={2}>{item?.Giatrinhan}</Text>
-        </DataTable.Cell>
-        <DataTable.Cell style={{ width: 120, justifyContent: "center" }}>
-          {item?.ent_khuvuc?.ent_toanha?.Toanha}
-        </DataTable.Cell>
-        <DataTable.Cell style={{ width: 120, justifyContent: "center" }}>
-          {item?.ent_tang?.Tentang}
-        </DataTable.Cell>
-        <DataTable.Cell style={{ width: 120, justifyContent: "center" }}>
-          {item?.ent_khuvuc?.Tenkhuvuc}
-        </DataTable.Cell>
-        <DataTable.Cell style={{ width: 120 }}>
-          {item?.ent_khuvuc?.ent_khoicv?.KhoiCV}
-        </DataTable.Cell>
-        <DataTable.Cell style={{ width: 150 }}>
-          <Text numberOfLines={2}>{item?.Giatridinhdanh}</Text>
-        </DataTable.Cell>
-        <DataTable.Cell style={{ width: 100, justifyContent: "center" }}>
-          <Text>{item?.Maso}</Text>
-        </DataTable.Cell>
-        <DataTable.Cell style={{ width: 100, justifyContent: "center" }}>
-          {item?.Sothutu}
-        </DataTable.Cell>
-      </DataTable.Row>
+          <DataTable.Cell style={{ width: 150 }}>
+            <Text
+              style={{ color: isExistIndex ? "white" : "black" }}
+              numberOfLines={3}
+            >
+              {item?.Checklist}
+            </Text>
+          </DataTable.Cell>
+          <DataTable.Cell style={{ width: 120 }}>
+            <Text
+              style={{ color: isExistIndex ? "white" : "black" }}
+              numberOfLines={2}
+            >
+              {item?.Giatrinhan}
+            </Text>
+          </DataTable.Cell>
+          <DataTable.Cell style={{ width: 120, justifyContent: "center" }}>
+            <Text
+              style={{ color: isExistIndex ? "white" : "black" }}
+              numberOfLines={2}
+            >
+              {item?.ent_khuvuc?.ent_toanha?.Toanha}
+            </Text>
+          </DataTable.Cell>
+          <DataTable.Cell style={{ width: 120, justifyContent: "center" }}>
+            <Text
+              style={{ color: isExistIndex ? "white" : "black" }}
+              numberOfLines={2}
+            >
+              {item?.ent_tang?.Tentang}
+            </Text>
+          </DataTable.Cell>
+          <DataTable.Cell style={{ width: 120, justifyContent: "center" }}>
+            <Text
+              style={{ color: isExistIndex ? "white" : "black" }}
+              numberOfLines={2}
+            >
+              {" "}
+              {item?.ent_khuvuc?.Tenkhuvuc}
+            </Text>
+          </DataTable.Cell>
+          <DataTable.Cell style={{ width: 120 }}>
+            <Text
+              style={{ color: isExistIndex ? "white" : "black" }}
+              numberOfLines={2}
+            >
+              {item?.ent_khuvuc?.ent_khoicv?.KhoiCV}
+            </Text>
+          </DataTable.Cell>
+          <DataTable.Cell style={{ width: 150 }}>
+            <Text
+              style={{ color: isExistIndex ? "white" : "black" }}
+              numberOfLines={2}
+            >
+              {item?.Giatridinhdanh}
+            </Text>
+          </DataTable.Cell>
+          <DataTable.Cell style={{ width: 100, justifyContent: "center" }}>
+            <Text
+              style={{ color: isExistIndex ? "white" : "black" }}
+              numberOfLines={2}
+            >
+              {item?.Maso}
+            </Text>
+          </DataTable.Cell>
+          <DataTable.Cell style={{ width: 100, justifyContent: "center" }}>
+            <Text
+              style={{ color: isExistIndex ? "white" : "black" }}
+              numberOfLines={2}
+            >
+              {item?.Sothutu}
+            </Text>
+          </DataTable.Cell>
+        </DataTable.Row>
+      </TouchableHighlight>
     );
   };
+
+  var arrayId = newActionCheckList?.map((item) => item?.ID_Checklist);
+  let scrollRef = React.useRef(null);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -703,6 +706,7 @@ const DanhmucChecklist = ({ navigation }) => {
                             alignContent: "center",
                             alignItems: "center",
                             justifyContent: "space-between",
+                            // flex: 1, backgroundColor: 'red'
                           }}
                         >
                           <TouchableOpacity
@@ -731,11 +735,16 @@ const DanhmucChecklist = ({ navigation }) => {
                           />
                         </View>
 
-                        <ScrollView>
+                        <ScrollView
+                          style={{ flex: 1, marginBottom: 20, marginTop: 20 }}
+                          ref={(it) => (scrollRef.current = it)}
+                          // onContentSizeChange={() =>
+                          //   scrollRef.current?.scrollToEnd({ animated: false })
+                          // }
+                        >
                           <DataTable
                             style={{
                               backgroundColor: "white",
-                              marginTop: 30,
                               borderRadius: 8,
                             }}
                           >
@@ -794,22 +803,30 @@ const DanhmucChecklist = ({ navigation }) => {
                                   })}
                               </DataTable.Header>
 
-                              {listChecklist && listChecklist.length > 0 && (
+                              {listChecklist && listChecklist?.length > 0 && (
                                 <FlatList
-                                  nestedScrollEnabled={false}
                                   keyExtractor={(item, index) =>
                                     `${item?.ID_Khuvuc}_${index}`
                                   }
-                                  data={listChecklist}
+                                  scrollEnabled={false}
+                                  data={listChecklist?.slice(
+                                    page * numberOfItemsPerPage,
+                                    page * numberOfItemsPerPage +
+                                      numberOfItemsPerPage
+                                  )}
                                   renderItem={_renderItem}
                                 />
                               )}
                               <DataTable.Pagination
                                 style={{ justifyContent: "flex-start" }}
                                 page={page}
-                                // numberOfPages={Math.ceil(items.length / numberOfItemsPerPage)}
+                                numberOfPages={Math.ceil(
+                                  listChecklist?.length / numberOfItemsPerPage
+                                )}
                                 onPageChange={(page) => setPage(page)}
-                                // label={`${from + 1}-${to} đến ${items.length}`}
+                                label={`${from + 1}-${to} đến ${
+                                  listChecklist?.length
+                                }`}
                                 showFastPaginationControls
                                 numberOfItemsPerPageList={
                                   numberOfItemsPerPageList
@@ -913,7 +930,10 @@ const DanhmucChecklist = ({ navigation }) => {
                     </TouchableOpacity>
                   </>
                 )}
-                <TouchableOpacity style={styles.button}>
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={() => handleAlertDelete(arrayId)}
+                >
                   <Feather name="trash-2" size={24} color="white" />
                 </TouchableOpacity>
               </View>

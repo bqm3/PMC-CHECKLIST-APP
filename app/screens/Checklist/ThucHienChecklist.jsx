@@ -2,18 +2,50 @@ import {
   View,
   Text,
   StyleSheet,
-  TextInput,
   Alert,
+  FlatList,
+  ImageBackground,
+  Image,
+  KeyboardAvoidingView,
+  Platform,
   ScrollView,
   TouchableOpacity,
-  SafeAreaView,
+  ActivityIndicator,
+  Modal,
+  TouchableHighlight,
 } from "react-native";
-import React, { useRef, useState, useEffect } from "react";
-import { Dropdown } from "react-native-element-dropdown";
-import moment from "moment";
+import React, {
+  useRef,
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+} from "react";
+import { Provider, useDispatch, useSelector } from "react-redux";
+import {
+  BottomSheetModal,
+  BottomSheetView,
+  BottomSheetModalProvider,
+  BottomSheetScrollView,
+} from "@gorhom/bottom-sheet";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { AntDesign, Ionicons,Feather } from "@expo/vector-icons";
+import { DataTable } from "react-native-paper";
 import ButtonChecklist from "../../components/Button/ButtonCheckList";
 import { COLORS, SIZES } from "../../constants/theme";
-import { DataTable } from "react-native-paper";
+import {
+  ent_checklist_get,
+  ent_tang_get,
+  ent_khuvuc_get,
+  ent_toanha_get,
+  ent_khoicv_get,
+} from "../../redux/actions/entActions";
+import {tb_checklistc_get} from "../../redux/actions/tbActions"
+import ModalChecklist from "../../components/Modal/ModalChecklist";
+import axios from "axios";
+import { BASE_URL } from "../../constants/config";
+import moment from "moment";
+import ModalChecklistC from "../../components/Modal/ModalChecklistC";
 
 const numberOfItemsPerPageList = [2, 3, 4];
 
@@ -167,463 +199,318 @@ const dataTable = [
 
 const ThucHienChecklist = ({navigation}) => {
   const ref = useRef(null);
+  const dispath = useDispatch();
+  const { ent_tang, ent_khuvuc, ent_checklist, ent_khoicv, ent_toanha, ent_giamsat } =
+    useSelector((state) => state.entReducer);
+    const { tb_checklistc } =
+    useSelector((state) => state.tbReducer);
+  const { user, authToken } = useSelector((state) => state.authReducer);
+
   const date = new Date();
   const dateHour = moment(date).format("LT");
   const dateDay = moment(date).format("L");
-  const [flexHeight, setFlexHeight] = useState(null);
-  const [tinhTrang, setTinhTrang] = useState(true);
-  const [focusRow, setFocusRow] = useState(false);
-
-  const [valueDate, setValueDate] = useState("");
-
+  
+  const bottomSheetModalRef = useRef(null);
+  const snapPoints = useMemo(() => [1, "30%", "60%", "90%"], []);
+  const [opacity, setOpacity] = useState(1);
   const [page, setPage] = React.useState(0);
   const [numberOfItemsPerPage, onItemsPerPageChange] = React.useState(
-    numberOfItemsPerPageList[0]
+    numberOfItemsPerPageList[1]
   );
-  const from = page * numberOfItemsPerPage;
-  const to = Math.min((page + 1) * numberOfItemsPerPage, dataTable.length);
+  const [listChecklist, setListChecklist] = useState([]);
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    setIsLoading(true);
+    // Use setTimeout to update the message after 2000 milliseconds (2 seconds)
+    const timeoutId = setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+
+    // Cleanup function to clear the timeout if the component unmounts
+    return () => clearTimeout(timeoutId);
+  }, []); //
+
+  const init_checklist = async () => {
+    await dispath(ent_checklist_get());
+  };
+
+  const init_khuvuc = async () => {
+    await dispath(ent_khuvuc_get());
+  };
+  useEffect(() => {
+    setListChecklist(ent_checklist);
+  }, [ent_checklist]);
+
+  const init_tang = async () => {
+    await dispath(ent_tang_get());
+  };
+
+  const init_khoicv = async () => {
+    await dispath(ent_khoicv_get());
+  };
+
+  const init_toanha = async () => {
+    await dispath(ent_toanha_get());
+  };
+
+  useEffect(() => {
+    init_checklist();
+    init_khuvuc();
+    init_tang();
+    init_khoicv();
+    init_toanha();
+  }, []);
+
+  
 
   React.useEffect(() => {
     setPage(0);
   }, [numberOfItemsPerPage]);
 
-  useEffect(() => {
-    if (SIZES.height > 700) {
-      setFlexHeight(3.5);
-    } else {
-      setFlexHeight(4);
-    }
-  }, [SIZES.height]);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View
-        style={[
-          styles.container,
-          {
-            flexDirection: "column",
-          },
-        ]}
+    <>
+     <GestureHandlerRootView style={{ flex: 1 }}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{ flex: 1 }}
       >
-        <View style={{ flex: flexHeight }}>
-          <View
-            style={{
-              flexDirection: "column",
-              padding: 10,
-              height: "100%",
-              justifyContent: "space-around",
-            }}
+        <BottomSheetModalProvider>
+          <ImageBackground
+            source={require("../../../assets/bg.png")}
+            resizeMode="cover"
+            style={{ flex: 1 }}
           >
-            <View style={{ flexDirection: "row" }}>
-              <View
-                style={{
-                  paddingHorizontal: 10,
-                  flex: 2,
-                  justifyContent: "space-around",
-                  alignItems: "flex-end",
-                }}
-              >
-                <Text style={styles.text}>Ngày</Text>
-                <Text style={styles.text}>Ca</Text>
-                <Text style={styles.text}>Nhân viên</Text>
-              </View>
-              <View style={{ flex: 8, justifyContent: "space-around" }}>
-                <View style={{ flexDirection: "row" }}>
-                  <TextInput
-                    value={dateDay}
-                    editable={false}
-                    selectTextOnFocus={false}
-                    placeholderTextColor="gray"
-                    style={[
-                      styles.textInput,
-                      {
-                        paddingHorizontal: 10,
-                      },
-                    ]}
-                    autoCapitalize="sentences"
-                  />
-
-                  <TextInput
-                    value={dateHour}
-                    editable={false}
-                    selectTextOnFocus={false}
-                    placeholderTextColor="gray"
-                    style={[
-                      styles.textInput,
-                      {
-                        paddingHorizontal: 10,
-                      },
-                    ]}
-                    autoCapitalize="sentences"
-                  />
-                </View>
-                <View style={{ marginLeft: 10 }}>
-                  <Dropdown
-                    ref={ref}
-                    style={styles.dropdown}
-                    placeholderStyle={styles.placeholderStyle}
-                    selectedTextStyle={styles.selectedTextStyle}
-                    iconStyle={styles.iconStyle}
-                    data={calamviecList}
-                    maxHeight={300}
-                    labelField="label"
-                    valueField="value"
-                    placeholder="Ca làm việc"
-                    value={valueDate}
-                    onChange={(item) => {
-                      setValueDate(item.value);
-                    }}
-                    // renderItem={renderItem}
-                    confirmSelectItem
-                    onConfirmSelectItem={(item) => {
-                      Alert.alert("PMC", "Xác nhận đồng ý", [
-                        {
-                          text: "Cancel",
-                          onPress: () => {},
-                        },
-                        {
-                          text: "Confirm",
-                          onPress: () => {
-                            setValueDate(item.value);
-                            ref.current.close();
-                          },
-                        },
-                      ]);
-                    }}
-                  />
-                </View>
-                <View style={{ marginLeft: 10 }}>
-                  <Dropdown
-                    ref={ref}
-                    style={styles.dropdown}
-                    placeholderStyle={styles.placeholderStyle}
-                    selectedTextStyle={styles.selectedTextStyle}
-                    inputSearchStyle={styles.inputSearchStyle}
-                    iconStyle={styles.iconStyle}
-                    data={dataList}
-                    search
-                    maxHeight={300}
-                    labelField="label"
-                    valueField="value"
-                    placeholder="Nhân viên"
-                    searchPlaceholder="Search..."
-                    value={valueDate}
-                    onChange={(item) => {
-                      setValueDate(item.value);
-                    }}
-                    // renderItem={renderItem}
-                    confirmSelectItem
-                    onConfirmSelectItem={(item) => {
-                      Alert.alert("PMC", "Xác nhận đồng ý", [
-                        {
-                          text: "Cancel",
-                          onPress: () => {},
-                        },
-                        {
-                          text: "Confirm",
-                          onPress: () => {
-                            setValueDate(item.value);
-                            ref.current.close();
-                          },
-                        },
-                      ]);
-                    }}
-                  />
-                </View>
-              </View>
-            </View>
-            {/* inputs  */}
             <View
-              style={{ flexDirection: "row", justifyContent: "space-between" }}
+              style={{
+                flex: 1,
+                justifyContent: "center",
+                opacity: opacity,
+              }}
             >
-              {tinhTrang && (
-                <ButtonChecklist
-                  text={"Khóa ca"}
-                  width={"auto"}
-                  color={COLORS.bg_main}
-                  onPress={() =>
-                    Alert.alert("Button with adjusted color pressed")
-                  }
-                />
-              )}
-
-              <View
-                style={{
-                  flexDirection: "row",
-                }}
-              >
-                <View>
-                  {tinhTrang && (
-                    <ButtonChecklist
-                      text={"Mở lại"}
-                      width={"auto"}
-                      color="red"
-                      onPress={() =>
-                        Alert.alert("Button with adjusted color pressed")
+              <View style={styles.container}>
+                {
+                  isLoading ? (
+                    <View
+                      style={{
+                        flex: 1,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        marginBottom: 40,
+                      }}
+                    >
+                      <ActivityIndicator size="large" color={"white"} />
+                    </View>
+                  ):
+                  (
+                    <>
+                     {listChecklist && listChecklist?.length > 0 ? (
+                        <>
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            alignContent: "center",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            // flex: 1, backgroundColor: 'red'
+                          }}
+                        >
+                          <TouchableOpacity
+                            onPress={() => handleFilterData(true, 0.5)}
+                            style={{
+                              flexDirection: "row",
+                              alignItems: "center",
+                              gap: 8,
+                            }}
+                          >
+                            <Image
+                              source={require("../../../assets/icons/filter_icon.png")}
+                              resizeMode="contain"
+                              style={{ height: 24, width: 24 }}
+                            />
+                            <Text style={styles.text}>Lọc dữ liệu</Text>
+                          </TouchableOpacity>
+                          <ButtonChecklist
+                            text={"Thêm mới"}
+                            width={"auto"}
+                            color={COLORS.bg_button}
+                            icon={
+                              <Ionicons name="add" size={24} color="white" />
+                            }
+                            // onPress={handlePresentModalPress}
+                          />
+                        </View>
+                        </>
+                      ):
+                      (
+                        <>
+                        <View
+                          style={{
+                            flex: 1,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            marginBottom: 120,
+                          }}
+                        >
+                          <Image
+                            source={require("../../../assets/icons/delete_bg.png")}
+                            resizeMode="contain"
+                            style={{ height: 120, width: 120 }}
+                          />
+                          <Text
+                            style={[styles.danhmuc, { paddingVertical: 10 }]}
+                          >
+                            Bạn chưa thêm dữ liệu nào
+                          </Text>
+                          <ButtonChecklist
+                            text={"Thêm mới"}
+                            width={"auto"}
+                            color={COLORS.bg_button}
+                            onPress={handlePresentModalPress}
+                          />
+                        </View>
+                      </>
+                      )
                       }
-                    />
-                  )}
-                </View>
-                <View>
-                  <ButtonChecklist
-                    text={"Thêm mới"}
-                    width={"auto"}
-                    marginLeft={10}
-                    color={COLORS.bg_main}
-                    onPress={() =>
-                      // Alert.alert("Button with adjusted color pressed")
-                      navigation.navigate("Chi tiết Checklist", {
-                        itemId: 1
-                      })
-                    }
-                  />
-                </View>
-                <View>
-                  <ButtonChecklist
-                    text={"Chụp ảnh"}
-                    width={"auto"}
-                    marginLeft={10}
-                    color={COLORS.bg_main}
-                    onPress={() =>
-                      Alert.alert("Button with adjusted color pressed")
-                    }
-                  />
-                </View>
+                    </>
+                  )
+                }
               </View>
             </View>
-          </View>
-        </View>
-        <View style={{ flex: 10 - flexHeight }}>
-          <ScrollView
-            horizontal={true}
-            style={{ width: SIZES.width, alignSelf: "center" }}
-          >
-            <DataTable>
-              <DataTable.Header numberOfLines={2}>
-                {headerList &&
-                  headerList.map((data, index) => (
-                    <DataTable.Title
-                    key={index}
-                      style={{
-                        width: data.width,
-                        justifyContent: "center",
-                      }}
-                    >
-                      {data.til}
-                    </DataTable.Title>
-                  ))}
-              </DataTable.Header>
-              {dataTable &&
-                dataTable.map((data, index) => (
-                  <DataTable.Row
-                    key={index}
-                    style={{
-                      backgroundColor:
-                        focusRow === data.ID ? "#6fa8dc" : "white",
-                    }}
-                    onPress={() => {
-                      if (data.tinhtrang === "Xong") {
-                        setTinhTrang(false);
-                      } else {
-                        setTinhTrang(true);
-                      }
-                      setFocusRow(data.ID);
-                    }}
-                  >
-                    <DataTable.Cell
-                      style={{
-                        width: 20,
-                        justifyContent: "center",
-                        borderRightWidth: 1,
-                        borderColor: "#bcbcbc",
-                        color: focusRow === data.ID ? "white" : "black",
-                      }}
-                    >
-                      {data.ngay}
-                    </DataTable.Cell>
-                    <DataTable.Cell
-                      style={{
-                        width: 20,
-                        justifyContent: "center",
-                        borderRightWidth: 1,
-                        borderColor: "#bcbcbc",
-                        colors: focusRow === data.ID ? "white" : "black",
-                      }}
-                    >
-                      {data.tenca}
-                    </DataTable.Cell>
-                    <DataTable.Cell
-                      numberOfLines={2}
-                      style={{
-                        width: 110,
-                        justifyContent: "center",
-                        borderRightWidth: 1,
-                        borderColor: "#bcbcbc",
-                        colors: focusRow === data.ID ? "white" : "black",
-                      }}
-                    >
-                      {data.nhanvien}
-                    </DataTable.Cell>
-                    <DataTable.Cell
-                      style={{
-                        width: 30,
-                        justifyContent: "center",
-                        borderRightWidth: 1,
-                        borderColor: "#bcbcbc",
-                        colors: focusRow === data.ID ? "white" : "black",
-                      }}
-                    >
-                      {data.giobd}
-                    </DataTable.Cell>
-                    <DataTable.Cell
-                      style={{
-                        width: 25,
-                        justifyContent: "center",
-                        borderRightWidth: 1,
-                        borderColor: "#bcbcbc",
-                        colors: focusRow === data.ID ? "white" : "black",
-                      }}
-                    >
-                      {data.tinhtrang}
-                    </DataTable.Cell>
-                    <DataTable.Cell
-                      style={{
-                        width: 30,
-                        justifyContent: "center",
-                        borderRightWidth: 1,
-                        borderColor: "#bcbcbc",
-                        colors: focusRow === data.ID ? "white" : "black",
-                      }}
-                    >
-                      {data.ghichu}
-                    </DataTable.Cell>
-                    <DataTable.Cell
-                      style={{
-                        width: 30,
-                        justifyContent: "center",
-                        borderRightWidth: 1,
-                        borderColor: "#bcbcbc",
-                        colors: focusRow === data.ID ? "white" : "black",
-                      }}
-                    >
-                      {data.giokt}
-                    </DataTable.Cell>
-                    <DataTable.Cell
-                      style={{
-                        width: 0,
-                        justifyContent: "center",
-                        borderRightWidth: 1,
-                        borderColor: "#bcbcbc",
-                        colors: focusRow === data.ID ? "white" : "black",
-                      }}
-                    >
-                      {data.ID}
-                    </DataTable.Cell>
-                    <DataTable.Cell
-                      style={{
-                        width: 50,
-                        justifyContent: "center",
-                        borderRightWidth: 1,
-                        borderColor: "#bcbcbc",
-                        colors: focusRow === data.ID ? "white" : "black",
-                      }}
-                    >
-                      {data.giochup1}
-                    </DataTable.Cell>
-                    <DataTable.Cell
-                      style={{
-                        width: 50,
-                        justifyContent: "center",
-                        borderRightWidth: 1,
-                        borderColor: "#bcbcbc",
-                        colors: focusRow === data.ID ? "white" : "black",
-                      }}
-                    >
-                      {data.giochup2}
-                    </DataTable.Cell>
-                    <DataTable.Cell
-                      style={{
-                        width: 50,
-                        justifyContent: "center",
-                        borderRightWidth: 1,
-                        borderColor: "#bcbcbc",
-                        colors: focusRow === data.ID ? "white" : "black",
-                      }}
-                    >
-                      {data.giochup3}
-                    </DataTable.Cell>
-                    <DataTable.Cell
-                      style={{
-                        width: 50,
-                        justifyContent: "center",
-                        colors: focusRow === data.ID ? "white" : "black",
-                      }}
-                    >
-                      {data.giochup4}
-                    </DataTable.Cell>
-                  </DataTable.Row>
-                ))}
 
-              <DataTable.Pagination
-                style={{ justifyContent: "flex-start" }}
-                page={page}
-                numberOfPages={Math.ceil(items.length / numberOfItemsPerPage)}
-                onPageChange={(page) => setPage(page)}
-                label={`${from + 1}-${to} đến ${items.length}`}
-                showFastPaginationControls
-                numberOfItemsPerPageList={numberOfItemsPerPageList}
-                numberOfItemsPerPage={numberOfItemsPerPage}
-                onItemsPerPageChange={onItemsPerPageChange}
-                selectPageDropdownLabel={"Hàng trên mỗi trang"}
-              />
-            </DataTable>
-          </ScrollView>
-        </View>
-      </View>
-    </SafeAreaView>
-  );
+            <BottomSheetModal
+              ref={bottomSheetModalRef}
+              index={3}
+              snapPoints={snapPoints}
+              // onChange={handleSheetChanges}
+            >
+              <BottomSheetScrollView style={styles.contentContainer}>
+                <ModalChecklistC
+                  // ent_tang={ent_tang}
+                  // ent_khuvuc={ent_khuvuc}
+                  // ent_khoicv={ent_khoicv}
+                  // ent_toanha={ent_toanha}
+                  // handleChangeText={handleChangeText}
+                  // handleDataKhuvuc={handleDataKhuvuc}
+                  // handleChangeTextKhuVuc={handleChangeTextKhuVuc}
+                  // dataCheckKhuvuc={dataCheckKhuvuc}
+                  // dataInput={dataInput}
+                  // handlePushDataSave={handlePushDataSave}
+                  // isCheckUpdate={isCheckUpdate}
+                  // handlePushDataEdit={handlePushDataEdit}
+                  // activeKhuVuc={activeKhuVuc}
+                  // dataKhuVuc={dataKhuVuc}
+                />
+              </BottomSheetScrollView>
+            </BottomSheetModal>
+
+            {/* {isCheckbox === true && newActionCheckList?.length > 0 && ( */}
+              <View
+                style={{
+                  width: 60,
+                  position: "absolute",
+                  right: 20,
+                  bottom: 50,
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: 8,
+                }}
+              >
+                {/* {newActionCheckList?.length === 1 && ( */}
+                  <>
+                    <TouchableOpacity
+                      style={styles.button}
+                      // onPress={() => handleEditEnt(newActionCheckList[0])}
+                    >
+                      <Feather name="edit" size={24} color="white" />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.button}
+                      // onPress={() =>
+                      //   handleToggleModal(true, newActionCheckList[0], 0.2)
+                      // }
+                    >
+                      <Feather name="eye" size={24} color="white" />
+                    </TouchableOpacity>
+                  </>
+                {/* )} */}
+                <TouchableOpacity
+                  style={styles.button}
+                  // onPress={() => handleAlertDelete(arrayId)}
+                >
+                  <Feather name="trash-2" size={24} color="white" />
+                </TouchableOpacity>
+              </View>
+            {/* )} */}
+            </ImageBackground>
+            </BottomSheetModalProvider>
+            </KeyboardAvoidingView>
+            </GestureHandlerRootView>
+    </>
+  )
 };
 
 const styles = StyleSheet.create({
   container: {
+    margin: 12,
     flex: 1,
   },
-  text: { fontSize: 15, color: "black", fontWeight: "600" },
-  textInput: {
-    color: "#05375a",
-    marginHorizontal: 10,
-    fontSize: 16,
-    borderRadius: 8,
-    borderWidth: 1,
-    height: 36,
-    paddingVertical: 4,
-    backgroundColor: "white",
+  danhmuc: {
+    fontSize: 25,
+    fontWeight: "700",
+    color: "white",
+    // paddingVertical: 40,
   },
-  dropdown: {
-    marginTop: 10,
-    height: 36,
-    paddingHorizontal: 10,
+  text: { fontSize: 15, color: "white", fontWeight: "600" },
+  headerTable: {
+    color: "white",
+  },
+  outter: {
+    width: 20,
+    height: 20,
+    borderWidth: 2,
+    borderColor: COLORS.gray,
+    borderRadius: 2,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  button: {
+    backgroundColor: COLORS.color_bg,
+    width: 60,
+    height: 60,
+    borderRadius: 50,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+    zIndex: 10,
+  },
+  modalView: {
+    // margin: 20,
     backgroundColor: "white",
-    borderRadius: 8,
-    backgroundColor: "white",
-    shadowColor: "#000000",
+    borderRadius: 16,
+    padding: 10,
+    // alignItems: "center",
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
-      height: 9,
+      height: 2,
     },
-    shadowOpacity: 0.22,
-    shadowRadius: 9.22,
-    elevation: 12,
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
-  head: {
-    backgroundColor: COLORS.bg_main,
-    // height: 30
+  modalText: {
+    fontSize: 20,
+    fontWeight: "600",
+    paddingVertical: 10,
   },
-  headText: {
-    textAlign: "center",
-    color: COLORS.text_main,
-  },
-  row: { flexDirection: "row", backgroundColor: "#FFF1C1" },
 });
 
 export default ThucHienChecklist;

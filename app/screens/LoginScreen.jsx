@@ -21,6 +21,7 @@ import ButtonSubmit from "../components/Button/ButtonSubmit";
 
 import UserContext from "../context/UserContext";
 import CopyRight from "../components/CopyRight";
+import { ScrollView } from "react-native";
 
 const HideKeyboard = ({ children }) => (
   <TouchableWithoutFeedback
@@ -36,7 +37,8 @@ const LoginScreen = ({ navigation }) => {
   const dispatch = useDispatch();
 
   const { userData, saveUser } = useContext(UserContext);
-  const { error, isLoading, user } = useSelector((state) => state.authReducer);
+  const { error, user, message, isLoading } = useSelector((state) => state.authReducer);
+  // const [isLoading, setIsLoading] = useState(false);
 
   const [show, setShow] = useState(false);
 
@@ -47,37 +49,11 @@ const LoginScreen = ({ navigation }) => {
     Duan: "",
   });
 
+  console.log('error', data)
+
   const handleSubmit = async () => {
     dispatch(login(data.UserName, data.Password));
   };
-
-  // useEffect(() => {
-  //   if (user && error === false) {
-  //     setData({
-  //       ...data,
-  //       UserName: user.UserName,
-  //       Emails: user.Emails,
-  //       Duan: user?.ent_duan?.Duan,
-  //     });
-  //     saveUser(user);
-  //   } else if (user === null && error === true) {
-  //     Alert.alert("PMC Thông báo", "Sai tên đăng nhập hoặc mật khẩu", [
-  //       {
-  //         text: "Hủy",
-  //         onPress: () => console.log("Cancel Pressed"),
-  //         style: "cancel",
-  //       },
-  //       { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-  //     ]);
-  //     setData({
-  //       ...data,
-  //       UserName: data.UserName,
-  //       Password: data.Password,
-  //       Emails: "",
-  //       Duan: "",
-  //     });
-  //   }
-  // }, [user, error]);
 
   const handleChangeText = (key, value) => {
     setData((data) => ({
@@ -110,126 +86,140 @@ const LoginScreen = ({ navigation }) => {
     <>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.container}
+        style={{flex: 1}}
       >
+        <HideKeyboard>
         <ImageBackground
           source={require("../../assets/bg_company.jpg")}
           resizeMode="cover"
           style={styles.defaultFlex}
         >
-          <HideKeyboard>
-            <View style={[styles.container, { height: "100%" }]}>
-              <Image
-                style={{ width: 120, height: 70, resizeMode: "contain" }}
-                source={require("../../assets/pmc_logo.png")}
-              />
-              <View style={{ marginHorizontal: 36 }}>
-                <Title text={"Đăng nhập"} size={20} top={50} />
-                <View
-                  style={{
-                    marginTop: 20,
-                    justifyContent: "flex-start",
-                  }}
-                >
-                  <View style={styles.action}>
-                    <TextInput
-                      placeholder="Nhập tài khoản"
-                      placeholderTextColor="gray"
-                      style={[styles.textInput]}
-                      autoCapitalize="sentences"
-                      scrollEnabled={true}
-                      value={data.UserName ? data.UserName : user?.UserName}
-                      onChangeText={(val) => handleChangeText("UserName", val)}
-                    />
-                  </View>
+          <ScrollView contentContainerStyle={styles.container}>
+            <Image
+              style={{ width: 120, height: 70, resizeMode: "contain" }}
+              source={require("../../assets/pmc_logo.png")}
+            />
+            <View style={{ marginHorizontal: 36 }}>
+              <Title text={"Đăng nhập"} size={20} top={30} />
 
-                  <View style={styles.action}>
-                    <TextInput
-                      placeholder="Nhập mật khẩu"
-                      placeholderTextColor="gray"
-                      style={[styles.textInput]}
-                      autoCapitalize="sentences"
-                      scrollEnabled={true}
-                      value={data.Password}
-                      onChangeText={(val) => handleChangeText("Password", val)}
-                      secureTextEntry={!show}
-                    />
-                    <TouchableOpacity
-                      style={{
-                        width: 40,
-                        height: 40,
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                      onPress={() => setShow(!show)}
-                    >
-                      {show ? (
-                        <Image
-                          style={{
-                            width: 20,
-                            height: 20,
-                            resizeMode: "contain",
-                          }}
-                          source={require("../../assets/eye.png")}
-                        />
-                      ) : (
-                        <Image
-                          style={{
-                            width: 20,
-                            height: 20,
-                            resizeMode: "contain",
-                          }}
-                          source={require("../../assets/hidden.png")}
-                        />
-                      )}
-                    </TouchableOpacity>
-                  </View>
-
-                  <View style={styles.action}>
-                    <TextInput
-                      placeholder="Email cá nhân"
-                      value={data.Emails}
-                      editable={false}
-                      selectTextOnFocus={false}
-                      placeholderTextColor="gray"
-                      style={[styles.textInput]}
-                      autoCapitalize="sentences"
-                    />
-                  </View>
-
-                  <View style={styles.action}>
-                    <TextInput
-                      placeholder="Dự án tham dự"
-                      value={data.Duan}
-                      editable={false}
-                      selectTextOnFocus={false}
-                      placeholderTextColor="gray"
-                      style={[styles.textInput]}
-                      autoCapitalize="sentences"
-                    />
-                  </View>
-
-                  <View style={{ height: 20 }} />
-                  <ButtonSubmit
-                  backgroundColor={COLORS.bg_button}
-                    text={"Đăng Nhập"}
-                    // navigationNext={navigationNext}
-                    isLoading={isLoading}
-                    onPress={() => handleSubmit()}
+              <View
+                style={{
+                  // marginTop: 20,
+                  justifyContent: "flex-start",
+                }}
+              >
+                <View>
+                  {
+                    message !== null &&
+                    <Text style={{ color: COLORS.bg_red, fontSize: 16, textAlign: 'center' }}>{message}</Text>
+                  }
+                </View>
+                
+                <View style={{height: 20}}></View>
+                <View style={styles.action}>
+                  <TextInput
+                    placeholder="Nhập tài khoản"
+                    placeholderTextColor="gray"
+                    style={[styles.textInput]}
+                    autoCapitalize="sentences"
+                    onChangeText={(val) => handleChangeText("UserName", val)}
+                    defaultValue={data.UserName}
+                    autoCorrect={false}
+                    secureTextEntry={false}
+                    underLineColorAndroid='transparent'
+                    
                   />
                 </View>
+
+                <View style={styles.action}>
+                  <TextInput
+                    placeholder="Nhập mật khẩu"
+                    placeholderTextColor="gray"
+                    style={[styles.textInput]}
+                    autoCapitalize="sentences"
+                    value={data.Password}
+                    onChangeText={(val) => handleChangeText("Password", val)}
+                    secureTextEntry={!show}
+                    onSubmitEditing={() => handleSubmit()}
+                  />
+                  <TouchableOpacity
+                    style={{
+                      width: 40,
+                      height: 40,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                    onPress={() => setShow(!show)}
+                  >
+                    {show ? (
+                      <Image
+                        style={{
+                          width: 20,
+                          height: 20,
+                          resizeMode: "contain",
+                        }}
+                        source={require("../../assets/eye.png")}
+                      />
+                    ) : (
+                      <Image
+                        style={{
+                          width: 20,
+                          height: 20,
+                          resizeMode: "contain",
+                        }}
+                        source={require("../../assets/hidden.png")}
+                      />
+                    )}
+                  </TouchableOpacity>
+                </View>
+                {/* </HideKeyboard> */}
+                <View style={styles.action}>
+                  <TextInput
+                    placeholder="Email cá nhân"
+                    value={data.Emails}
+                    editable={false}
+                    selectTextOnFocus={false}
+                    placeholderTextColor="gray"
+                    style={[styles.textInput]}
+                    autoCapitalize="sentences"
+                  />
+                </View>
+
+                <View style={styles.action}>
+                  <TextInput
+                    placeholder="Dự án tham dự"
+                    value={data.Duan}
+                    editable={false}
+                    selectTextOnFocus={false}
+                    placeholderTextColor="gray"
+                    style={[styles.textInput]}
+                    autoCapitalize="sentences"
+                  />
+                </View>
+
+                <View style={{ height: 20 }} />
+                <ButtonSubmit
+                  backgroundColor={COLORS.bg_button}
+                  text={"Đăng Nhập"}
+                  // navigationNext={navigationNext}
+                  isLoading={isLoading}
+                  onPress={() => handleSubmit()}
+                />
               </View>
             </View>
-          </HideKeyboard>
+          </ScrollView>
+       
         </ImageBackground>
-      </KeyboardAvoidingView>
-      {isKeyboardVisible === true ? (
+        </HideKeyboard>
+        {isKeyboardVisible === true ? (
         <></>
       ) : (
         <>
-         <CopyRight/>
+          <CopyRight />
         </>
       )}
+      </KeyboardAvoidingView>
+      
     </>
   );
 };
