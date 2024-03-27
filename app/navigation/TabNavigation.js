@@ -8,10 +8,12 @@ import {
   DanhmucGiamsat,
   DanhmucKhuvuc,
   DetailChecklist,
+  Profile,
+  DanhmucChecklist,
+  DanhmucTracuu,
 } from "../screens/Checklist";
 import { COLORS } from "../constants/theme";
-import { Ionicons } from "@expo/vector-icons";
-import DanhmucChecklist from "../screens/Checklist/DanhmucChecklist";
+import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
 
 const Stack = createNativeStackNavigator();
 
@@ -22,7 +24,7 @@ const HomeStack = ({ navigation }) => {
         name="Trang chính"
         component={HomeScreen}
         lazy={false}
-        options={({ route }) => ({
+        options={({ route, navigation }) => ({
           headerShown: true,
           headerStyle: {
             backgroundColor: COLORS.bg_button,
@@ -39,21 +41,57 @@ const HomeStack = ({ navigation }) => {
               source={require("../../assets/pmc_logo.png")}
             />
           ),
+          headerRight: () => (
+            <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
+              <FontAwesome5 name="user-alt" size={24} color="white" />
+            </TouchableOpacity>
+          ),
+        })}
+      />
+      <Stack.Screen
+        name="Profile"
+        component={Profile}
+        lazy={false}
+        options={({ navigation, route }) => ({
+          headerShown: true,
+
+          headerTitle: () => (
+            <Text style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
+              Thông tin cá nhân
+            </Text>
+          ),
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Ionicons name="chevron-back" size={24} color="white" />
+            </TouchableOpacity>
+          ),
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: COLORS.bg_button,
+          },
         })}
       />
       <Stack.Screen
         name="Thực hiện Check list"
         component={ThucHienChecklist}
         lazy={false}
-        options={({ route }) => ({
+        options={({ navigation, route }) => ({
           headerShown: true,
 
           headerTitle: () => (
-            <Text style={{ fontSize: 20, fontWeight: "700", color: "black" }}>
+            <Text style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
               Thực hiện Checklist
             </Text>
           ),
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Ionicons name="chevron-back" size={24} color="white" />
+            </TouchableOpacity>
+          ),
           headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: COLORS.bg_button,
+          },
         })}
       />
       <Stack.Screen
@@ -151,6 +189,30 @@ const HomeStack = ({ navigation }) => {
       />
 
       <Stack.Screen
+        name="Tra cứu"
+        component={DanhmucTracuu}
+        lazy={false}
+        options={({ navigation, route }) => ({
+          headerShown: true,
+
+          headerTitle: () => (
+            <Text style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
+              Tra cứu
+            </Text>
+          ),
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Ionicons name="chevron-back" size={24} color="white" />
+            </TouchableOpacity>
+          ),
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: COLORS.bg_button,
+          },
+        })}
+      />
+
+      <Stack.Screen
         name="Chi tiết Checklist"
         component={DetailChecklist}
         lazy={false}
@@ -168,39 +230,5 @@ const HomeStack = ({ navigation }) => {
     </Stack.Navigator>
   );
 };
-
-// const TabNavigation = () => {
-//   return (
-//     <Tab.Navigator>
-//       <Tab.Screen
-//         name="Trang chủ"
-//         lazy={true}
-//         component={HomeStack}
-// options={({ route }) => ({
-//   headerShown: false,
-//   // unmountOnBlur: true,
-//   tabBarIcon: ({ focused, color, size }) => {
-//     let iconName;
-//     // if (route.name === "Trang chủ") {
-//     //   iconName = !focused
-//     //     ? require("../../assets/Icon-bottom/Trang_Chu.png")
-//     //     : require("../../assets/Icon-bottom/Trang_Chu_Xanh.png");
-//     // }
-//     return (
-//       <Image
-//         source={iconName}
-//         style={{ width: 24, height: 24 }}
-//         resizeMode="stretch"
-//       />
-//     );
-//   },
-//   // tabBarActiveTintColor: COLORS.green,
-//   // tabBarInactiveTintColor: COLORS.gray,
-// })}
-//       />
-
-//     </Tab.Navigator>
-//   );
-// };
 
 export default HomeStack;

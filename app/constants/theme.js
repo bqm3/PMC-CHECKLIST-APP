@@ -7,6 +7,7 @@ export const COLORS = {
     bg_white: 'white',
     text_main: 'white',
     color_bg: "#005C79",
+    bg_red: "#CE4C4C",
 
     bg_active: '#2d5991',
     bg_not_active: '#4285da',

@@ -33,13 +33,17 @@ import { BASE_URL } from '../../constants/config';
 
 export const login = (UserName, Password) => {
   return async dispatch => {
+    dispatch({
+      type: type.SET_LOGIN_INIT,
+      payload: {
+        user: null,
+        authToken: null,
+        message: null,
+        isLoading: true
+      },
+    });
+    // console.log('rin',UserName, Password)
     try {
-        dispatch({
-            type: type.SET_LOGIN_INIT,
-            payload: {
-              isLoading: true,
-            },
-          });
       const response = await axios.post(
         BASE_URL + '/ent_user/login',
         {
@@ -47,7 +51,6 @@ export const login = (UserName, Password) => {
           Password,
         },
       );
-
       if (response.status == 200) {
         const {token, user} = response.data;
         await AsyncStorage.setItem('tokenUser', token);
@@ -56,6 +59,8 @@ export const login = (UserName, Password) => {
           payload: {
             user: user,
             authToken: token,
+            message: null,
+            isLoading: false
           },
         });
       }
@@ -65,69 +70,25 @@ export const login = (UserName, Password) => {
         payload: {
           user: null,
           authToken: null,
+          message: "Thông tin đăng nhập sai. Vui lòng thử lại!!!",
+          isLoading: false
         },
       });
     }
   };
 };
 
-// export const loginOtpAction = (phone, otp) => {
-//   return async (dispatch) => {
+export const logoutAction = () => {
+  return async (dispatch) => {
 
-//     try{
-//      const response = await axios.post(
-//        BASE_URL+ "user/verify-otp",
-//        {
-//          phone: phone,
-//          otp: otp,
-//        }
-//      );
-//      if (response.status == 200) {
-//        const { access_token, user } = response.data;
-//        await AsyncStorage.setItem("tokenUser", access_token);
-//        dispatch({
-//          type: type.SET_LOGIN_SUCCESS,
-//          payload: {
-//            user: user,
-//            classes: user.classes,
-//            authToken: access_token,
-//            isLoggedIn: true,
-//            error: false,
-//            isLoading: false
-//          }
-
-//        });
-//      }
-//     }catch(e){
-//      dispatch({
-//        type: type.SET_LOGIN_FAIL_STATE,
-//        payload: {
-//          error: true,
-//          isLoggedIn: false,
-//          isLoading: false,
-//                   user: null,
-//                   authToken: null,
-//                   classes: null
-//        }
-
-//      });
-//     }
-//   };
-// };
-
-// export const logoutAction = () => {
-//   return async (dispatch) => {
-//     await AsyncStorage.clear();
-//     dispatch({
-//       type: type.SET_LOGOUT_STATE,
-//       payload: {
-//         user: null,
-//         classes: null,
-//         authToken: null,
-//         isLoggedIn: false,
-//         isLoading: false,
-//         error: false,
-//       },
-//     });
-//   };
-// };
+    await AsyncStorage.clear();
+    dispatch({
+      type: type.SET_LOGOUT,
+      payload: {
+        user: null,
+        tokenUser: null,
+        isLoading: false,
+      },
+    });
+  };
+};
