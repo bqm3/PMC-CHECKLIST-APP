@@ -8,7 +8,7 @@ const VerticalSelect = ({ value,label, selectedItem }) => {
     <View
       style={[
         { backgroundColor: isChecked ? COLORS.bg_button : "white" },
-        { justifyContent: "center", paddingLeft: 10, height: 50 },
+        { alignItems:'center', justifyContent:'center',height: 50 },
       ]}
     >
       <Text
@@ -30,5 +30,5 @@ const VerticalSelect = ({ value,label, selectedItem }) => {
 export default VerticalSelect;
 
 const styles = StyleSheet.create({
-  customSelect: { fontSize: 14, fontWeight: 700, color: "#637381" },
+  customSelect: { fontSize: 15, fontWeight: 700, color: "#637381" },
 });

@@ -197,7 +197,7 @@ const HomeStack = ({ navigation }) => {
 
           headerTitle: () => (
             <Text style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
-              Tra cứu
+              Thống kê và tra cứu
             </Text>
           ),
           headerLeft: () => (

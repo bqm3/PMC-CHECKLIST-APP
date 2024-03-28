@@ -17,8 +17,7 @@ const ButtonChecklist = ({ text, onPress, color, marginLeft, icon }) => {
       }}
       onPress={onPress}>
       <View style={{
-        paddingVertical: 10,
-        paddingHorizontal: 12,
+        padding: 12,
         flexDirection: 'row',
         justifyContent: 'center',
         alignContent: 'center',

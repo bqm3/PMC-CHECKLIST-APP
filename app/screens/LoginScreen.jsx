@@ -49,8 +49,6 @@ const LoginScreen = ({ navigation }) => {
     Duan: "",
   });
 
-  console.log('error', data)
-
   const handleSubmit = async () => {
     dispatch(login(data.UserName, data.Password));
   };
@@ -108,6 +106,7 @@ const LoginScreen = ({ navigation }) => {
                   justifyContent: "flex-start",
                 }}
               >
+                <View style={{height: 20}}></View>
                 <View>
                   {
                     message !== null &&
@@ -115,7 +114,7 @@ const LoginScreen = ({ navigation }) => {
                   }
                 </View>
                 
-                <View style={{height: 20}}></View>
+                
                 <View style={styles.action}>
                   <TextInput
                     placeholder="Nhập tài khoản"
@@ -151,7 +150,7 @@ const LoginScreen = ({ navigation }) => {
                     }}
                     onPress={() => setShow(!show)}
                   >
-                    {show ? (
+                    {!show ? (
                       <Image
                         style={{
                           width: 20,

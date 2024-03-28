@@ -143,6 +143,7 @@ const DanhmucChecklist = ({ navigation }) => {
     ID_Tang: false,
     ID_Khuvuc: false,
   });
+  
   const [isEnabled, setIsEnabled] = useState(true);
 
   const [status, setStatus] = useState(false);
