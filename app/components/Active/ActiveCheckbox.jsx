@@ -1,14 +1,14 @@
 import React from "react";
 import { Text, View, TouchableOpacity, StyleSheet } from "react-native";
 import { Entypo } from "@expo/vector-icons";
-import { COLORS } from "../constants/theme";
+import { COLORS } from "../../constants/theme";
 
-const ActionCheckbox = ({ newActionCheckList, item, handleToggle }) => {
+const ActionCheckbox = ({ newActionCheckList, item, handleToggle, size }) => {
   const isExistIndex = newActionCheckList?.find(
     (existingItem) => existingItem.ID_Checklist === item.ID_Checklist
   );
   return (
-    <TouchableOpacity style={[styles.box]} onPress={() => handleToggle(item)}>
+    <TouchableOpacity style={[styles.box, {width: size, height: size }]} onPress={() => handleToggle ? handleToggle(item) : {}}>
       {isExistIndex && <Entypo name="check" size={16} color={COLORS.color_bg} />}
     </TouchableOpacity>
   );

@@ -216,15 +216,22 @@ const HomeStack = ({ navigation }) => {
         name="Chi tiết Checklist"
         component={DetailChecklist}
         lazy={false}
-        options={({ route }) => ({
+        options={({ route, navigation }) => ({
           headerShown: true,
           headerTitle: () => (
-            <Text style={{ fontSize: 20, fontWeight: "700", color: "black" }}>
+            <Text style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
               Chi tiết Checklist
             </Text>
           ),
-          headerBackTitle: "Quay lại",
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Ionicons name="chevron-back" size={24} color="white" />
+            </TouchableOpacity>
+          ),
           headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: COLORS.bg_button,
+          },
         })}
       />
     </Stack.Navigator>

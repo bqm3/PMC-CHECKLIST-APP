@@ -9,7 +9,7 @@ export const tb_checklistc_get = () => {
         try {
           const token = await AsyncStorage.getItem("tokenUser");
        if (token !== null) {
-            const response = await axios.get(BASE_URL + "/ent_checklistc", {
+            const response = await axios.get(BASE_URL + "/tb_checklistc", {
               headers: {
                 Accept: "application/json",
                 Authorization: "Bearer " + token,
@@ -26,7 +26,7 @@ export const tb_checklistc_get = () => {
             console.error("initialized error");
           }
         } catch (err) {
-          console.log("err", err);
+          console.log("errd", err);
         }
       };
 };

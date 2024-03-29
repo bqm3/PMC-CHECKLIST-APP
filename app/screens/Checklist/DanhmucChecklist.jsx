@@ -29,7 +29,7 @@ import {
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { AntDesign, Ionicons,Feather } from "@expo/vector-icons";
+import { AntDesign, Ionicons, Feather } from "@expo/vector-icons";
 import { DataTable } from "react-native-paper";
 import ButtonChecklist from "../../components/Button/ButtonCheckList";
 import { COLORS, SIZES } from "../../constants/theme";
@@ -43,8 +43,8 @@ import {
 import ModalChecklist from "../../components/Modal/ModalChecklist";
 import axios from "axios";
 import { BASE_URL } from "../../constants/config";
-import ActionCheckbox from "../../components/ActiveCheckbox";
-import ActionCheckboxAll from "../../components/ActiveCheckboxAll";
+import ActionCheckbox from "../../components/Active/ActiveCheckbox";
+import ActionCheckboxAll from "../../components/Active/ActiveCheckboxAll";
 import ModalChecklistInfo from "../../components/Modal/ModalChecklistInfo";
 import ModalChecklistFilter from "../../components/Modal/ModalChecklistFilter";
 
@@ -114,7 +114,7 @@ const DanhmucChecklist = ({ navigation }) => {
   });
 
   const bottomSheetModalRef = useRef(null);
-  const snapPoints = useMemo(() => [1, "20%", "60%", "90%"], []);
+  const snapPoints = useMemo(() => ["90%"], []);
   const [opacity, setOpacity] = useState(1);
   const [page, setPage] = React.useState(0);
   const [numberOfItemsPerPage, onItemsPerPageChange] = React.useState(
@@ -143,7 +143,7 @@ const DanhmucChecklist = ({ navigation }) => {
     ID_Tang: false,
     ID_Khuvuc: false,
   });
-  
+
   const [isEnabled, setIsEnabled] = useState(true);
 
   const [status, setStatus] = useState(false);
@@ -156,6 +156,7 @@ const DanhmucChecklist = ({ navigation }) => {
     await dispath(ent_khuvuc_get());
   };
   useEffect(() => {
+     
     setListChecklist(ent_checklist);
   }, [ent_checklist]);
 
@@ -218,12 +219,12 @@ const DanhmucChecklist = ({ navigation }) => {
 
   const toggleTodo = async () => {
     if (
-      newActionCheckList.length > 0 &&
-      newActionCheckList.length < listChecklist.length
+      newActionCheckList?.length > 0 &&
+      newActionCheckList?.length < listChecklist?.length
     ) {
       setNewActionCheckList(listChecklist);
       setStatus(true);
-    } else if (newActionCheckList.length === 0) {
+    } else if (newActionCheckList?.length === 0) {
       setNewActionCheckList(listChecklist);
       setStatus(true);
     } else {
@@ -463,7 +464,7 @@ const DanhmucChecklist = ({ navigation }) => {
       .then((response) => {
         handleAdd();
         init_checklist();
-        setNewActionCheckList([])
+        setNewActionCheckList([]);
         // handleCloseModal();
         Alert.alert("PMC Thông báo", response.data.message, [
           {
@@ -533,7 +534,7 @@ const DanhmucChecklist = ({ navigation }) => {
   }, []);
 
   const handleSheetChanges = useCallback((index) => {
-    if (index === -1 || index === 0) {
+    if (index === -1) {
       setOpacity(1);
     } else {
       setOpacity(0.5);
@@ -876,7 +877,7 @@ const DanhmucChecklist = ({ navigation }) => {
 
             <BottomSheetModal
               ref={bottomSheetModalRef}
-              index={3}
+              index={0}
               snapPoints={snapPoints}
               onChange={handleSheetChanges}
             >
