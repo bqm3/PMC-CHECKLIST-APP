@@ -2,15 +2,16 @@ import {View, Text, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {COLORS, SIZES} from '../../constants/theme';
 
-const Button = ({onPress, text, backgroundColor, color}) => {
+const Button = ({onPress, text, backgroundColor, color, border, width}) => {
   return (
     <TouchableOpacity
       style={{
         backgroundColor: backgroundColor ? backgroundColor : 'white',
         padding: SIZES.padding,
         borderRadius: SIZES.borderRadius,
-        borderColor: backgroundColor ? backgroundColor : COLORS.bg_button,
-        borderWidth: 1
+        borderColor: border ? border : COLORS.bg_button,
+        borderWidth: 1,
+        width: width || 'auto'
       }}
       onPress={onPress}>
       <Text 

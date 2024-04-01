@@ -26,7 +26,7 @@ const ButtonSubmit = ({text, onPress, isLoading,backgroundColor, color, width,pV
 
       <Text 
         style={{
-          color: 'white',
+          color: color ? color : 'white',
           fontSize: 15,
           textAlign: 'center',
           fontWeight: 'bold',

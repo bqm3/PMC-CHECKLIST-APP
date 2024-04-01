@@ -13,11 +13,14 @@ const ButtonChecklist = ({ text, onPress, color, marginLeft, icon }) => {
         justifyContent: 'center',
         alignContent: 'center',
         borderRadius: 8,
-        marginLeft: marginLeft ? marginLeft : 0
+        marginLeft: marginLeft ? marginLeft : 0,
+        borderColor: COLORS.bg_button,
+        borderWidth: 1,
+
       }}
       onPress={onPress}>
       <View style={{
-        padding: 12,
+        padding: 16,
         flexDirection: 'row',
         justifyContent: 'center',
         alignContent: 'center',

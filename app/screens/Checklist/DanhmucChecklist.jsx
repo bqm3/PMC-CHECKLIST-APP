@@ -569,6 +569,7 @@ const DanhmucChecklist = ({ navigation }) => {
             <ActionCheckbox
               item={item}
               index={index}
+              size={20}
               handleToggle={handleToggle}
               newActionCheckList={newActionCheckList}
               // active={}
