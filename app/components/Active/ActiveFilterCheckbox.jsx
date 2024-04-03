@@ -3,11 +3,11 @@ import { Text, View, TouchableOpacity, StyleSheet } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import { COLORS } from "../../constants/theme";
 
-const ActionFilterCheckbox = ({ handleCheckbox, name, filters }) => {
+const ActionFilterCheckbox = ({ handleCheckbox, name, filters, size }) => {
  
   return (
-    <TouchableOpacity style={styles.box} onPress={() => handleCheckbox(name,!filters)}>
-      {filters && <Entypo name="check" size={16} color={COLORS.color_bg} />}
+    <TouchableOpacity style={[styles.box, {width: size && size +5, height: size && size +5}]} onPress={() => handleCheckbox(name,!filters)}>
+      {filters && <Entypo name="check" size={size ? size: 16} color={COLORS.color_bg} />}
     </TouchableOpacity>
   );
 };

@@ -61,7 +61,7 @@ export const ent_calv_get = () => {
 export const ent_giamsat_get = () => {
   return async (dispatch) => {
     try {
-     const token = await AsyncStorage.getItem("tokenUser");
+      const token = await AsyncStorage.getItem("tokenUser");
       if (token !== null) {
         const response = await axios.get(BASE_URL + "/ent_giamsat", {
           headers: {
@@ -112,7 +112,6 @@ export const ent_toanha_get = () => {
   };
 };
 
-
 export const ent_khuvuc_get = () => {
   return async (dispatch) => {
     try {
@@ -140,7 +139,6 @@ export const ent_khuvuc_get = () => {
   };
 };
 
-
 export const ent_duan_get = () => {
   return async (dispatch) => {
     try {
@@ -167,7 +165,6 @@ export const ent_duan_get = () => {
     }
   };
 };
-
 
 export const ent_chucvu_get = () => {
   return async (dispatch) => {
@@ -201,7 +198,7 @@ export const ent_checklist_get = () => {
     try {
       const token = await AsyncStorage.getItem("tokenUser");
       if (token !== null) {
-        const response = await axios.get(BASE_URL + "/ent_checklist", {
+        const response = await axios.get(BASE_URL + `/ent_checklist/`, {
           headers: {
             Accept: "application/json",
             Authorization: "Bearer " + token,
@@ -219,6 +216,58 @@ export const ent_checklist_get = () => {
       }
     } catch (err) {
       console.log("err", err);
+      dispatch({
+        type: type.SET_ENT_CHECKLIST_FAIL,
+        payload: {
+          ent_checklist: [],
+        },
+      });
+    }
+  };
+};
+
+export const ent_checklist_get_detail = (ID_KhoiCV, ID_ChecklistC) => {
+  return async (dispatch) => {
+    dispatch({
+      type: type.SET_ENT_CHECKLIST_STATE,
+      payload: {
+        ent_checklist: [],
+        isLoading: true
+      },
+    });
+    try {
+      const token = await AsyncStorage.getItem("tokenUser");
+      
+      if (token !== null) {
+        const response = await axios.get(
+          BASE_URL + `/ent_checklist/${ID_KhoiCV}/${ID_ChecklistC}`,
+          {
+            headers: {
+              Accept: "application/json",
+              Authorization: "Bearer " + token,
+            },
+          }
+        );
+        const data = response.data.data;
+        dispatch({
+          type: type.SET_ENT_CHECKLIST_SUCCESS,
+          payload: {
+            ent_checklist: data,
+            isLoading: false
+          },
+        });
+      } else {
+        console.error("initialized error");
+      }
+    } catch (err) {
+      dispatch({
+        type: type.SET_ENT_CHECKLIST_FAIL,
+        payload: {
+          ent_checklist: [],
+          isLoading: false
+        },
+      });
+      console.log("err123", err);
     }
   };
 };
@@ -227,7 +276,7 @@ export const ent_tang_get = () => {
   return async (dispatch) => {
     try {
       const token = await AsyncStorage.getItem("tokenUser");
-       if (token !== null) {
+      if (token !== null) {
         const response = await axios.get(BASE_URL + "/ent_tang", {
           headers: {
             Accept: "application/json",

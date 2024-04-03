@@ -15,6 +15,7 @@ import ButtonChecklist from "../Button/ButtonCheckList";
 import { FontAwesome } from "@expo/vector-icons";
 import VerticalSelect from "../VerticalSelect";
 import SelectDropdown from "react-native-select-dropdown";
+import ButtonSubmit from "../Button/ButtonSubmit";
 
 const ModalKhuvuc = ({
   ent_khoicv,
@@ -24,8 +25,13 @@ const ModalKhuvuc = ({
   handlePushDataSave,
   handlePushDataEdit,
   isCheckUpdate,
+  loadingSubmit
 }) => {
   const ref = useRef(null);
+
+  const defaultKhoiCV= ent_khoicv?.find(khoicv => khoicv.ID_Khoi === dataInput?.khoicv);
+  const defaultToanha = ent_toanha?.find(duan => duan.ID_Toanha === dataInput?.toanha);
+
   return (
     <View style={{ margin: 20 }}>
       <View style={{ justifyContent: "space-around", width: "100%" }}>
@@ -117,7 +123,7 @@ const ModalKhuvuc = ({
               // rowStyle={{ height: 50, justifyContent: "center" }}
               defaultButtonText={"Khối công việc"}
               buttonTextStyle={styles.customText}
-              defaultValue={dataInput.khoicv}
+              defaultValue={defaultKhoiCV}
               onSelect={(selectedItem, index) => {
                 handleChangeText("khoicv", selectedItem.ID_Khoi);
               }}
@@ -169,7 +175,7 @@ const ModalKhuvuc = ({
               // rowStyle={{ height: 50, justifyContent: "center" }}
               defaultButtonText={"Tòa nhà"}
               buttonTextStyle={styles.customText}
-              defaultValue={dataInput.toanha}
+              defaultValue={defaultToanha}
               onSelect={(selectedItem, index) => {
                 handleChangeText("toanha", selectedItem.ID_Toanha);
               }}
@@ -212,10 +218,12 @@ const ModalKhuvuc = ({
         </View>
       </View>
       <View style={{ marginTop: 20 }}>
-        <ButtonChecklist
+        <ButtonSubmit
           text={isCheckUpdate.check ? "Cập nhật" : "Lưu"}
           width={"auto"}
-          color={COLORS.bg_button}
+          backgroundColor={COLORS.bg_button}
+          color={'white'}
+          isLoading={loadingSubmit}
           onPress={
             isCheckUpdate.check
               ? () => handlePushDataEdit(isCheckUpdate.id_khuvuc)

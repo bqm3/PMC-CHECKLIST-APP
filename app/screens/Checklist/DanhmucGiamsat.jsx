@@ -37,6 +37,7 @@ import {
   ent_chucvu_get,
   ent_giamsat_get,
   ent_duan_get,
+  ent_khoicv_get
 } from "../../redux/actions/entActions";
 import axios from "axios";
 import { BASE_URL } from "../../constants/config";
@@ -47,18 +48,19 @@ import ModalGiamsatInfo from "../../components/Modal/ModalGiamsatInfo";
 
 const DanhmucGiamsat = ({ navigation }) => {
   const dispath = useDispatch();
-  const { ent_giamsat, ent_chucvu, ent_duan } = useSelector(
+  const { ent_giamsat, ent_chucvu, ent_duan, ent_khoicv } = useSelector(
     (state) => state.entReducer
   );
   const { user, authToken } = useSelector((state) => state.authReducer);
 
   const bottomSheetModalRef = useRef(null);
-  const snapPoints = useMemo(() => [1, "20%", "50%", "80%"], []);
+  const snapPoints = useMemo(() => ["90%"], []);
   const [opacity, setOpacity] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadingSubmit, setLoadingSubmit] = useState(false)
   const [isCheckUpdate, setIsCheckUpdate] = useState({
     check: false,
-    id_giamsat: null,
+    ID_Giamsat: null,
   });
   const [modalVisible, setModalVisible] = useState(false);
   const [dataModal, setDataModal] = useState(null);
@@ -66,6 +68,10 @@ const DanhmucGiamsat = ({ navigation }) => {
 
   const init_duan = async () => {
     await dispath(ent_duan_get());
+  };
+
+  const init_khoicv = async () => {
+    await dispath(ent_khoicv_get());
   };
 
   const init_chucvu = async () => {
@@ -80,6 +86,7 @@ const DanhmucGiamsat = ({ navigation }) => {
     init_giamsat();
     init_duan();
     init_chucvu();
+    init_khoicv()
   }, []);
 
   useEffect(() => {
@@ -94,13 +101,14 @@ const DanhmucGiamsat = ({ navigation }) => {
   }, []); //
 
   const [dataInput, setDataInput] = useState({
-    id_duan: null,
+    ID_Duan: null,
     hoten: "",
     gioitinh: "",
     ngaysinh: "",
     sodienthoai: "",
-    id_chucvu: null,
-    id_quyen: null,
+    ID_Chucvu: null,
+    ID_Quyen: null,
+    ID_KhoiCV: null,
   });
 
   const handleChangeText = (key, value) => {
@@ -122,14 +130,16 @@ const DanhmucGiamsat = ({ navigation }) => {
       ]);
     } else {
       let data = {
-        ID_Duan: dataInput.id_duan,
+        ID_Duan: dataInput.ID_Duan,
         Hoten: dataInput.hoten,
         Gioitinh: dataInput.gioitinh,
         Sodienthoai: dataInput.sodienthoai,
         Ngaysinh: dataInput.ngaysinh,
-        ID_Chucvu: dataInput.id_chucvu,
+        ID_Chucvu: dataInput.ID_Chucvu,
+        ID_KhoiCV: dataInput.ID_KhoiCV,
         iQuyen: 1,
       };
+      setLoadingSubmit(true)
       await axios
         .post(BASE_URL + "/ent_giamsat/create", data, {
           headers: {
@@ -141,6 +151,7 @@ const DanhmucGiamsat = ({ navigation }) => {
           init_giamsat();
           handleAdd();
           handleCloseModal();
+          setLoadingSubmit(false)
           Alert.alert("PMC Thông báo", response.data.message, [
             {
               text: "Hủy",
@@ -151,6 +162,7 @@ const DanhmucGiamsat = ({ navigation }) => {
           ]);
         })
         .catch((err) => {
+          setLoadingSubmit(false)
           Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
             {
               text: "Hủy",
@@ -180,18 +192,19 @@ const DanhmucGiamsat = ({ navigation }) => {
   const handleEditEnt = async (data) => {
     handlePresentModalPress();
     setDataInput({
-      id_duan: data.ID_Duan,
+      ID_Duan: data.ID_Duan,
       hoten: data.Hoten,
       gioitinh: data.Gioitinh,
       ngaysinh: data.Ngaysinh,
       sodienthoai: data.Sodienthoai,
-      id_chucvu: data.ID_Chucvu,
-      id_quyen: data.iQuyen,
+      ID_Chucvu: data.ID_Chucvu,
+      ID_KhoiCV: data.ID_KhoiCV,
+      ID_Quyen: data.iQuyen,
     });
 
     setIsCheckUpdate({
       check: true,
-      id_giamsat: data.ID_Giamsat,
+      ID_Giamsat: data.ID_Giamsat,
     });
   };
 
@@ -207,14 +220,16 @@ const DanhmucGiamsat = ({ navigation }) => {
       ]);
     } else {
       let data = {
-        ID_Duan: dataInput.id_duan,
+        ID_Duan: dataInput.ID_Duan,
         Hoten: dataInput.hoten,
         Gioitinh: dataInput.gioitinh,
         Sodienthoai: dataInput.sodienthoai,
         Ngaysinh: dataInput.ngaysinh,
-        ID_Chucvu: dataInput.id_chucvu,
+        ID_Chucvu: dataInput.ID_Chucvu,
+        ID_KhoiCV: dataInput.ID_KhoiCV,
         iQuyen: 1,
       };
+      setLoadingSubmit(true)
 
       await axios
         .put(BASE_URL + `/ent_giamsat/update/${id}`, data, {
@@ -226,7 +241,7 @@ const DanhmucGiamsat = ({ navigation }) => {
         .then((response) => {
           init_giamsat();
           handleAdd();
-          handleCloseModal();
+          handleCloseModal();setLoadingSubmit(false)
           Alert.alert("PMC Thông báo", response.data.message, [
             {
               text: "Hủy",
@@ -237,7 +252,7 @@ const DanhmucGiamsat = ({ navigation }) => {
           ]);
         })
         .catch((err) => {
-          console.log("err", err);
+          console.log("err", err);setLoadingSubmit(false)
           Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
             {
               text: "Hủy",
@@ -306,13 +321,14 @@ const DanhmucGiamsat = ({ navigation }) => {
 
   const handleAdd = () => {
     setDataInput({
-      id_duan: null,
+      ID_Duan: null,
       hoten: "",
       gioitinh: "",
       ngaysinh: "",
       sodienthoai: "",
-      id_chucvu: null,
-      id_quyen: null,
+      ID_Chucvu: null,
+      ID_Quyen: null,
+      ID_KhoiCV: null,
     });
   };
 
@@ -321,16 +337,17 @@ const DanhmucGiamsat = ({ navigation }) => {
   }, []);
 
   const handleSheetChanges = useCallback((index) => {
-    if (index === -1 || index == 0) {
+    if (index === -1) {
       setOpacity(1);
     } else {
-      setOpacity(0.5);
+      setOpacity(0.2);
     }
   }, []);
 
   const handleToggleModal = (isCheck, data, opacity) => {
     setDataModal(data);
-    setModalVisible(isCheck), setOpacity(opacity);
+    setModalVisible(isCheck), 
+    setOpacity(opacity);
   };
 
   const handleCloseModal = () => {
@@ -396,7 +413,7 @@ const DanhmucGiamsat = ({ navigation }) => {
                           text={"Thêm mới"}
                           width={"auto"}
                           color={COLORS.bg_button}
-                          icon={<Ionicons name="add" size={24} color="white" />}
+                          icon={<Ionicons name="add" size={20} color="white" />}
                           onPress={handlePresentModalPress}
                         />
                       </View>
@@ -443,7 +460,7 @@ const DanhmucGiamsat = ({ navigation }) => {
                           text={"Thêm mới"}
                           width={"auto"}
                           color={COLORS.bg_button}
-                          onPress={handleAdd}
+                          onPress={handlePresentModalPress}
                         />
                       </View>
                     </>
@@ -456,7 +473,7 @@ const DanhmucGiamsat = ({ navigation }) => {
               </View>
               <BottomSheetModal
                 ref={bottomSheetModalRef}
-                index={3}
+                index={0}
                 snapPoints={snapPoints}
                 onChange={handleSheetChanges}
               >
@@ -465,6 +482,7 @@ const DanhmucGiamsat = ({ navigation }) => {
                   <ModalGiamsat
                     ent_chucvu={ent_chucvu}
                     ent_duan={ent_duan}
+                    ent_khoicv={ent_khoicv}
                     handleChangeText={handleChangeText}
                     isDatePickerVisible={isDatePickerVisible}
                     handleConfirm={handleConfirm}
@@ -474,6 +492,7 @@ const DanhmucGiamsat = ({ navigation }) => {
                     handleEditEnt={handleEditEnt}
                     isCheckUpdate={isCheckUpdate}
                     handlePushDataEdit={handlePushDataEdit}
+                    loadingSubmit={loadingSubmit}
                   />
                 </BottomSheetScrollView>
               </BottomSheetModal>

@@ -30,7 +30,12 @@ import {
 } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Entypo } from "@expo/vector-icons";
-import { ent_checklist_get } from "../../redux/actions/entActions";
+import {
+  ent_checklist_get_detail,
+  ent_khuvuc_get,
+  ent_tang_get,
+  ent_toanha_get,
+} from "../../redux/actions/entActions";
 import ButtonChecklist from "../../components/Button/ButtonCheckList";
 import { COLORS, SIZES } from "../../constants/theme";
 import ActiveChecklist from "../../components/Active/ActiveCheckList";
@@ -42,12 +47,15 @@ import axios from "axios";
 import { BASE_URL } from "../../constants/config";
 
 const DetailChecklist = ({ route, navigation }) => {
-  const { ID_ChecklistC, otherParam } = route.params;
+  const { ID_ChecklistC, ID_KhoiCV, otherParam } = route.params;
   const dispath = useDispatch();
-  const { ent_checklist } = useSelector((state) => state.entReducer);
+  const { ent_checklist, ent_tang, ent_khuvuc, ent_toanha, isLoading } =
+    useSelector((state) => state.entReducer);
+
   const { user, authToken } = useSelector((state) => state.authReducer);
 
   const [dataChecklist, setDataChecklist] = useState([]);
+  const [dataChecklistFilter, setDataChecklistFilter] = useState([]);
   const [newActionDataChecklist, setNewActionDataChecklist] = useState([]);
   const [dataItem, setDataItem] = useState(null);
   const bottomSheetModalRef = useRef(null);
@@ -55,14 +63,89 @@ const DetailChecklist = ({ route, navigation }) => {
   const [opacity, setOpacity] = useState(1);
   const [index, setIndex] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [loadingSubmit, setLoadingSubmit] = useState(false);
+
+  const [filterData, setFilterData] = useState({
+    ID_Khuvuc: null,
+    ID_Tang: null,
+    ID_Toanha: null,
+    ID_ChecklistC: ID_ChecklistC,
+  });
+
+  const [isFilter, setIsFilter] = useState({
+    ID_Tang: false,
+    ID_Khuvuc: false,
+    ID_Toanha: null,
+  });
+
+  const [isEnabled, setIsEnabled] = useState(true);
 
   const init_checklist = async () => {
-    await dispath(ent_checklist_get());
+    await dispath(ent_checklist_get_detail(ID_KhoiCV, ID_ChecklistC));
+  };
+
+  const init_ent_khuvuc = async () => {
+    await dispath(ent_khuvuc_get());
+  };
+
+  const init_ent_toanha = async () => {
+    await dispath(ent_toanha_get());
+  };
+
+  const init_ent_tang = async () => {
+    await dispath(ent_tang_get());
   };
 
   useEffect(() => {
     init_checklist();
+    init_ent_khuvuc();
+    init_ent_toanha();
+    init_ent_tang();
   }, []);
+
+  const toggleSwitch = (isEnabled) => {
+    setIsEnabled(!isEnabled);
+    if (isEnabled === false) {
+      setFilterData({
+        ID_Tang: null,
+        ID_Khuvuc: null,
+        ID_Toanha: null,
+        ID_ChecklistC: ID_ChecklistC,
+      });
+      setDataChecklistFilter(dataChecklist);
+      setIsFilter({
+        ID_Tang: false,
+        ID_Khuvuc: false,
+        ID_Toanha: false,
+      });
+    }
+  };
+
+  const handleCheckbox = (key, value) => {
+    setIsFilter((data) => ({
+      ...data,
+      [key]: value,
+    }));
+    setIsEnabled(false);
+  };
+
+  const handleChangeFilter = (key, value) => {
+    setFilterData((data) => ({
+      ...data,
+      [key]: value,
+    }));
+  };
+
+  const handleToggleFilter = (isModal, opacity) => {
+    setOpacity(opacity);
+    setIsCheckbox(false);
+    bottomSheetModalRef.current?.close();
+  };
+
+  const handleCloseModal = () => {
+    bottomSheetModalRef?.current?.close();
+    setOpacity(1);
+  };
 
   const handlePresentModalPress = useCallback((item) => {
     bottomSheetModalRef?.current?.present();
@@ -105,11 +188,13 @@ const DetailChecklist = ({ route, navigation }) => {
         gioht: moment().format("LTS"),
       };
     });
+    setDataChecklistFilter(processedData);
     setDataChecklist(processedData);
-  }, [ent_checklist]);
+  }, [ent_checklist, loadingSubmit]);
 
   const decimalNumber = (number) => {
-    if (number < 10) return `0${number}`;
+    if (number < 10 && number >= 1) return `0${number}`;
+    if (number == 0) return `0`;
     return number;
   };
 
@@ -126,8 +211,12 @@ const DetailChecklist = ({ route, navigation }) => {
       }
       return item;
     });
-
+    const newDataChecklist = updatedDataChecklist.filter(
+      (item) => item.valueCheck !== null
+    );
+    setNewActionDataChecklist(newDataChecklist);
     setDataChecklist(updatedDataChecklist);
+    setDataChecklistFilter(updatedDataChecklist);
   };
 
   const handleChange = (key, value, index) => {
@@ -141,60 +230,128 @@ const DetailChecklist = ({ route, navigation }) => {
       }
       return item;
     });
+    const newDataChecklist = updatedDataChecklist.filter(
+      (item) => item.valueCheck !== null
+    );
+    setNewActionDataChecklist(newDataChecklist);
     setDataChecklist(updatedDataChecklist);
+    setDataChecklistFilter(updatedDataChecklist);
   };
 
   const handleSubmit = async () => {
     try {
-      // const formData = new FormData();
       let formData = new FormData();
 
-      // {
-      //   imageArr && formData.append('image_1', file);
-      // }
-      // formData.append('image_length', imageArr ? 1 : 0);
-      // formData.append('is_public', 1);
-      // formData.append('type', type);
-      // formData.append('content', value);
-      // formData.append('group_id', userInfo.group_id);
-      // Lặp qua mảng dataChecklist và thêm từng mục vào formData
-      dataChecklist.forEach((item, index) => {
-        const file = {
-          uri:
-            Platform.OS === "android"
-              ? item?.Anh?.uri
-              : item?.Anh?.uri.replace("file://", ""),
-          name:
-            item?.Anh?.fileName ||
-            Math.floor(Math.random() * Math.floor(999999999)) + ".jpg",
-          type: item?.Anh?.type || "image/jpeg",
+      // Loop through newActionDataChecklist array
+      newActionDataChecklist.forEach((item, index) => {
+        // Create an object to store information related to the item
+        const itemInfo = {
+          ID_ChecklistC: ID_ChecklistC,
+          ID_Checklist: item.ID_Checklist,
+          Ketqua: item.valueCheck || "",
+          Gioht: item.gioht,
+          Ghichu: item.GhichuChitiet || "",
+          Anh: "",
         };
-        {
-          formData.append("Anh", file || '');
+
+        // Check if the item has an image
+        if (item.Anh) {
+          const file = {
+            uri:
+              Platform.OS === "android"
+                ? item?.Anh?.uri
+                : item?.Anh?.uri.replace("file://", ""),
+            name:
+              item?.Anh?.fileName ||
+              Math.floor(Math.random() * Math.floor(999999999)) + ".jpg",
+            type: item?.Anh?.type || "image/jpeg",
+          };
+
+          // Append image file to formData
+          formData.append(`Images`, file);
+
+          // Update the Anh property of the itemInfo object with the index of the image file
+          itemInfo.Anh = `${file.name}`;
         }
-        formData.append(`ID_ChecklistC`, ID_ChecklistC);
-        formData.append(`ID_Checklist`, item.ID_Checklist);
-        formData.append(`Ketqua`, item.Ketqua || null);
-        formData.append(`Gioht`, item.gioht);
-        formData.append(`Ghichu`, item.Ghichu || null);
+
+        // Append other item information to formData
+        Object.entries(itemInfo).forEach(([key, value]) => {
+          formData.append(key, value);
+        });
       });
 
-      // Gửi yêu cầu POST với dữ liệu formData
-      const response = await axios.post(
-        BASE_URL + "/tb_checklistchitiet/create",
-        formData,
-        {
+      setLoadingSubmit(true);
+      // Send POST request with formData
+      await axios
+        .post(BASE_URL + "/tb_checklistchitiet/create", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
             Authorization: "Bearer " + authToken,
           },
-        }
-      );
-
-      console.log("Response:", response.data);
+        })
+        .then((res) => {
+          init_checklist();
+          setLoadingSubmit(false);
+          Alert.alert("PMC Thông báo", "Checklist thành công", [
+            {
+              text: "Hủy",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel",
+            },
+            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+          ]);
+        })
+        .catch((err) => {
+          setLoadingSubmit(false);
+          Alert.alert(
+            "PMC Thông báo",
+            "Đã có lỗi xảy ra. Vui lòng kiểm tra lại!!",
+            [
+              {
+                text: "Hủy",
+                onPress: () => console.log("Cancel Pressed"),
+                style: "cancel",
+              },
+              { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+            ]
+          );
+        });
     } catch (error) {
       console.error("Error:", error);
     }
+  };
+
+  const handlePushDataFilter = async () => {
+    await axios
+      .post(BASE_URL + "/ent_checklist/filter", filterData, {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer " + authToken,
+        },
+      })
+      .then((res) => {
+        Alert.alert("PMC Thông báo", "Tìm kiếm thành công", [
+          {
+            text: "Hủy",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel",
+          },
+          { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+        ]);
+        setDataChecklistFilter(res.data.data);
+        handleCloseModal();
+      })
+      .catch((err) => {
+        console.log("err", err);
+        Alert.alert("PMC Thông báo", "Tìm kiếm thất bại", [
+          {
+            text: "Hủy",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel",
+          },
+          { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+        ]);
+      });
   };
 
   const renderItem = (item, index) => {
@@ -219,7 +376,7 @@ const DetailChecklist = ({ route, navigation }) => {
           />
           <Text
             style={{
-              fontSize: 15,
+              fontSize: 16,
               color: "black",
               fontWeight: "600",
             }}
@@ -251,60 +408,80 @@ const DetailChecklist = ({ route, navigation }) => {
               <View
                 style={{
                   flex: 1,
-                  justifyContent: "center",
+                  // justifyContent: "center",
                   opacity: opacity,
                 }}
               >
-                {dataChecklist && dataChecklist?.length > 0 && (
-                  <>
-                    <View style={styles.container}>
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          alignContent: "center",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <TouchableOpacity
-                          // onPress={() => handleFilterData(true, 0.5)}
-                          style={{
-                            flexDirection: "row",
-                            alignItems: "center",
-                            gap: 8,
-                          }}
-                        >
-                          <Text style={styles.text}>
-                            Số lượng: {decimalNumber(dataChecklist?.length)}{" "}
-                            Checklist
-                          </Text>
-                        </TouchableOpacity>
-                        <ButtonChecklist
-                          text={"Tìm kiếm"}
-                          width={"auto"}
-                          color={COLORS.bg_button}
-                          // onPress={handlePresentModalPress}
-                        />
-                      </View>
-                    </View>
-                    <FlatList
+                <View style={{ margin: 12 }}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignContent: "center",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <TouchableOpacity
+                      // onPress={() => handleFilterData(true, 0.5)}
                       style={{
-                        margin: 12,
-                        flex: 1,
-                        marginBottom: 100,
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: 8,
                       }}
-                      data={dataChecklist}
-                      renderItem={({ item, index, separators }) =>
-                        renderItem(item, index)
-                      }
-                      ItemSeparatorComponent={() => (
-                        <View style={{ height: 16 }} />
-                      )}
-                      keyExtractor={(item, index) =>
-                        `${item?.ID_Checklist}_${index}`
-                      }
+                    >
+                      <Text style={styles.text}>
+                        Số lượng: {decimalNumber(dataChecklistFilter?.length)}{" "}
+                        Checklist
+                      </Text>
+                    </TouchableOpacity>
+                    <ButtonChecklist
+                      text={"Tìm kiếm"}
+                      width={"auto"}
+                      color={COLORS.bg_button}
+                      onPress={handlePresentModalPress}
                     />
-                  </>
+                  </View>
+                </View>
+                {isLoading === false &&
+                  dataChecklistFilter &&
+                  dataChecklistFilter?.length > 0 && (
+                    <>
+                      <FlatList
+                        style={{
+                          margin: 12,
+                          flex: 1,
+                          marginBottom: 100,
+                        }}
+                        data={dataChecklistFilter}
+                        renderItem={({ item, index, separators }) =>
+                          renderItem(item, index)
+                        }
+                        ItemSeparatorComponent={() => (
+                          <View style={{ height: 16 }} />
+                        )}
+                        keyExtractor={(item, index) =>
+                          `${item?.ID_Checklist}_${index}`
+                        }
+                      />
+                    </>
+                  )}
+
+                {isLoading === true && (
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <ActivityIndicator
+                      style={{
+                        marginRight: 4,
+                      }}
+                      size="large"
+                      color={COLORS.bg_white}
+                    ></ActivityIndicator>
+                  </View>
                 )}
                 <View
                   style={{
@@ -323,6 +500,7 @@ const DetailChecklist = ({ route, navigation }) => {
                   />
                   <Button
                     text={"Hoàn Thành"}
+                    isLoading={loadingSubmit}
                     backgroundColor={COLORS.bg_button}
                     color={"white"}
                     onPress={() => handleSubmit()}
@@ -341,20 +519,18 @@ const DetailChecklist = ({ route, navigation }) => {
               <BottomSheetScrollView style={styles.contentContainer}>
                 <ModalChitietChecklist
                   dataItem={dataItem}
-                  // ent_tang={ent_tang}
-                  // ent_khuvuc={ent_khuvuc}
-                  // ent_khoicv={ent_khoicv}
-                  // ent_toanha={ent_toanha}
-                  // handleChangeText={handleChangeText}
-                  // handleDataKhuvuc={handleDataKhuvuc}
-                  // handleChangeTextKhuVuc={handleChangeTextKhuVuc}
-                  // dataCheckKhuvuc={dataCheckKhuvuc}
-                  // dataInput={dataInput}
-                  // handlePushDataSave={handlePushDataSave}
-                  // isCheckUpdate={isCheckUpdate}
-                  // handlePushDataEdit={handlePushDataEdit}
-                  // activeKhuVuc={activeKhuVuc}
-                  // dataKhuVuc={dataKhuVuc}
+                  ent_tang={ent_tang}
+                  ent_khuvuc={ent_khuvuc}
+                  ent_toanha={ent_toanha}
+                  toggleSwitch={toggleSwitch}
+                  filterData={filterData}
+                  isFilter={isFilter}
+                  handleCheckbox={handleCheckbox}
+                  handleChangeFilter={handleChangeFilter}
+                  isEnabled={isEnabled}
+                  handleToggleFilter={handleToggleFilter}
+                  handleCloseModal={handleCloseModal}
+                  handlePushDataFilter={handlePushDataFilter}
                 />
               </BottomSheetScrollView>
             </BottomSheetModal>

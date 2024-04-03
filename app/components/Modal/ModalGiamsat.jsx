@@ -18,6 +18,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { FontAwesome } from "@expo/vector-icons";
 import VerticalSelect from "../VerticalSelect";
 import SelectDropdown from "react-native-select-dropdown";
+import ButtonSubmit from "../Button/ButtonSubmit";
 
 const dataGioitinh = [
   {
@@ -37,6 +38,7 @@ const dataGioitinh = [
 const ModalGiamsat = ({
   ent_chucvu,
   ent_duan,
+  ent_khoicv,
   handleChangeText,
   dataInput,
   handlePushDataSave,
@@ -46,8 +48,24 @@ const ModalGiamsat = ({
   isDatePickerVisible,
   handleConfirm,
   handleEditEnt,
+  loadingSubmit,
 }) => {
   const ref = useRef(null);
+
+  const defaultChucvu = ent_chucvu?.find(
+    (chucvu) => chucvu.ID_Chucvu === dataInput?.ID_Chucvu
+  );
+  const defaultDuan = ent_duan?.find(
+    (duan) => duan.ID_Duan === dataInput?.ID_Duan
+  );
+  const defaultKhoi = ent_khoicv?.find(
+    (khoi) => khoi.ID_Khoi === dataInput?.ID_KhoiCV
+  );
+  console.log('defaultKhoi',defaultKhoi, dataInput?.ID_KhoiCV)
+  const defaultGioitinh = dataGioitinh?.find(
+    (duan) => duan.value === dataInput?.gioitinh
+  );
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <KeyboardAvoidingView
@@ -93,7 +111,7 @@ const ModalGiamsat = ({
             >
               <View style={{ width: "48%" }}>
                 <Text style={styles.text}>Giới tính</Text>
-                
+
                 <SelectDropdown
                   data={dataGioitinh ? dataGioitinh : []}
                   buttonStyle={styles.select}
@@ -104,10 +122,9 @@ const ModalGiamsat = ({
                   // rowStyle={{ height: 50, justifyContent: "center" }}
                   defaultButtonText={"Chọn giới tính"}
                   buttonTextStyle={styles.customText}
-                  defaultValue={dataInput.gioitinh}
+                  defaultValue={defaultGioitinh}
                   onSelect={(selectedItem, index) => {
                     handleChangeText("gioitinh", selectedItem.value);
-                    
                   }}
                   renderDropdownIcon={(isOpened) => {
                     return (
@@ -191,10 +208,9 @@ const ModalGiamsat = ({
                   // rowStyle={{ height: 50, justifyContent: "center" }}
                   defaultButtonText={"Chọn dự án"}
                   buttonTextStyle={styles.customText}
-                  defaultValue={dataInput.id_duan}
+                  defaultValue={defaultDuan}
                   onSelect={(selectedItem, index) => {
-                    handleChangeText("id_duan", selectedItem.ID_Duan);
-                    
+                    handleChangeText("ID_Duan", selectedItem.ID_Duan);
                   }}
                   renderDropdownIcon={(isOpened) => {
                     return (
@@ -226,7 +242,7 @@ const ModalGiamsat = ({
                         value={item.ID_Duan}
                         label={item.Duan}
                         key={index}
-                        selectedItem={dataInput.id_duan}
+                        selectedItem={dataInput.ID_Duan}
                       />
                     );
                   }}
@@ -235,7 +251,7 @@ const ModalGiamsat = ({
               <View style={{ width: "48%" }}>
                 <Text style={styles.text}>Chức vụ</Text>
                 <SelectDropdown
-                ref={ref}
+                  ref={ref}
                   data={ent_chucvu ? ent_chucvu : []}
                   buttonStyle={styles.select}
                   dropdownStyle={{
@@ -245,10 +261,9 @@ const ModalGiamsat = ({
                   // rowStyle={{ height: 50, justifyContent: "center" }}
                   defaultButtonText={"Chọn chức vụ"}
                   buttonTextStyle={styles.customText}
-                  defaultValue={dataInput.id_chucvu}
+                  defaultValue={defaultChucvu}
                   onSelect={(selectedItem, index) => {
-                    handleChangeText("id_chucvu", selectedItem.ID_Chucvu);
-                    
+                    handleChangeText("ID_Chucvu", selectedItem.ID_Chucvu);
                   }}
                   renderDropdownIcon={(isOpened) => {
                     return (
@@ -280,23 +295,77 @@ const ModalGiamsat = ({
                         value={item.ID_Chucvu}
                         label={item.Chucvu}
                         key={index}
-                        selectedItem={dataInput.id_chucvu}
+                        selectedItem={dataInput.ID_Chucvu}
                       />
                     );
                   }}
                 />
-                
               </View>
+            </View>
+            <View>
+              <Text style={styles.text}>Khối công việc</Text>
+
+              <SelectDropdown
+                data={ent_khoicv ? ent_khoicv : []}
+                buttonStyle={styles.select}
+                dropdownStyle={{
+                  borderRadius: 8,
+                  maxHeight: 400,
+                }}
+                // rowStyle={{ height: 50, justifyContent: "center" }}
+                defaultButtonText={"Chọn khối công việc"}
+                buttonTextStyle={styles.customText}
+                defaultValue={defaultKhoi}
+                onSelect={(selectedItem, index) => {
+                  handleChangeText("ID_KhoiCV", selectedItem.ID_Khoi);
+                }}
+                renderDropdownIcon={(isOpened) => {
+                  return (
+                    <FontAwesome
+                      name={isOpened ? "chevron-up" : "chevron-down"}
+                      color={"#637381"}
+                      size={14}
+                      style={{ marginRight: 10 }}
+                    />
+                  );
+                }}
+                dropdownIconPosition={"right"}
+                buttonTextAfterSelection={(selectedItem, index) => {
+                  return (
+                    <View
+                      style={{
+                        justifyContent: "center",
+                        alignContent: "center",
+                        height: 50,
+                      }}
+                    >
+                      <Text style={styles.text}>{selectedItem?.KhoiCV}</Text>
+                    </View>
+                  );
+                }}
+                renderCustomizedRowChild={(item, index) => {
+                  return (
+                    <VerticalSelect
+                      value={item.ID_Khoi}
+                      label={item.KhoiCV}
+                      key={index}
+                      selectedItem={dataInput.ID_KhoiCV}
+                    />
+                  );
+                }}
+              />
             </View>
           </View>
           <View style={{ marginTop: 20 }}>
-            <ButtonChecklist
+            <ButtonSubmit
               text={isCheckUpdate.check ? "Cập nhật" : "Lưu"}
               width={"auto"}
-              color={COLORS.bg_button}
+              isLoading={loadingSubmit}
+              color={"white"}
+              backgroundColor={COLORS.bg_button}
               onPress={
                 isCheckUpdate.check
-                  ? () => handlePushDataEdit(isCheckUpdate.id_giamsat)
+                  ? () => handlePushDataEdit(isCheckUpdate.ID_Giamsat)
                   : () => handlePushDataSave()
               }
             />

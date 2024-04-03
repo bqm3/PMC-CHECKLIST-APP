@@ -43,9 +43,10 @@ const DanhmucCalamviec = ({ navigation }) => {
   const { user, authToken } = useSelector((state) => state.authReducer);
 
   const bottomSheetModalRef = useRef(null);
-  const snapPoints = useMemo(() => [1, "20%", "30%", "80%"], []);
+  const snapPoints = useMemo(() => ["90%"], []);
   const [opacity, setOpacity] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadingSubmit, setLoadingSubmit] = useState(false)
   const [isCheckUpdate, setIsCheckUpdate] = useState({
     check: false,
     id_calv: null,
@@ -108,6 +109,7 @@ const DanhmucCalamviec = ({ navigation }) => {
         ID_KhoiCV: dataInput.khoicv,
         ID_Duan: user.ID_Duan,
       };
+      setLoadingSubmit(true)
       await axios
         .post(BASE_URL + "/ent_calv/create", data, {
           headers: {
@@ -119,6 +121,7 @@ const DanhmucCalamviec = ({ navigation }) => {
           init_calv();
           handleAdd();
           handleCloseModal();
+          setLoadingSubmit(false)
           Alert.alert("PMC Thông báo", response.data.message, [
             {
               text: "Hủy",
@@ -129,6 +132,7 @@ const DanhmucCalamviec = ({ navigation }) => {
           ]);
         })
         .catch((err) => {
+          setLoadingSubmit(false)
           Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
             {
               text: "Hủy",
@@ -142,7 +146,6 @@ const DanhmucCalamviec = ({ navigation }) => {
   };
 
   const handleEditEnt = async (data) => {
-    // console.log('data',data)
     handlePresentModalPress();
     setDataInput({
       tenca: data.Tenca,
@@ -174,6 +177,7 @@ const DanhmucCalamviec = ({ navigation }) => {
         ID_KhoiCV: dataInput.khoicv,
         ID_Duan: user.ID_Duan,
       };
+      setLoadingSubmit(true)
       await axios
         .put(BASE_URL + `/ent_calv/update/${id}`, data, {
           headers: {
@@ -185,6 +189,7 @@ const DanhmucCalamviec = ({ navigation }) => {
           init_calv();
           handleAdd();
           handleCloseModal();
+          setLoadingSubmit(false)
           Alert.alert("PMC Thông báo", response.data.message, [
             {
               text: "Hủy",
@@ -195,6 +200,7 @@ const DanhmucCalamviec = ({ navigation }) => {
           ]);
         })
         .catch((err) => {
+          setLoadingSubmit(false)
           Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
             {
               text: "Hủy",
@@ -287,10 +293,10 @@ const DanhmucCalamviec = ({ navigation }) => {
   }, []);
 
   const handleSheetChanges = useCallback((index) => {
-    if (index === -1 || index == 0) {
+    if (index === -1) {
       setOpacity(1);
     } else {
-      setOpacity(0.5);
+      setOpacity(0.2);
     }
   }, []);
 
@@ -357,7 +363,7 @@ const DanhmucCalamviec = ({ navigation }) => {
                           text={"Thêm mới"}
                           width={"auto"}
                           color={COLORS.bg_button}
-                          icon={<Ionicons name="add" size={24} color="white" />}
+                          icon={<Ionicons name="add" size={20} color="white" />}
                           onPress={handlePresentModalPress}
                         />
                       </View>
@@ -403,7 +409,7 @@ const DanhmucCalamviec = ({ navigation }) => {
                           text={"Thêm mới"}
                           width={"auto"}
                           color={COLORS.bg_button}
-                          onPress={handleAdd}
+                          onPress={handlePresentModalPress}
                         />
                       </View>
                     </>
@@ -415,7 +421,7 @@ const DanhmucCalamviec = ({ navigation }) => {
               </View>
               <BottomSheetModal
                 ref={bottomSheetModalRef}
-                index={3}
+                index={0}
                 snapPoints={snapPoints}
                 onChange={handleSheetChanges}
               >
@@ -432,6 +438,7 @@ const DanhmucCalamviec = ({ navigation }) => {
                     handleEditEnt={handleEditEnt}
                     isCheckUpdate={isCheckUpdate}
                     handlePushDataEdit={handlePushDataEdit}
+                    loadingSubmit={loadingSubmit}
                   />
                 </BottomSheetScrollView>
               </BottomSheetModal>

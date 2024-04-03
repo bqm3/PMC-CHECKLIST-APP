@@ -145,6 +145,7 @@ const DanhmucChecklist = ({ navigation }) => {
   });
 
   const [isEnabled, setIsEnabled] = useState(true);
+  const [loadingSubmit, setLoadingSubmit] = useState(false);
 
   const [status, setStatus] = useState(false);
 
@@ -156,7 +157,6 @@ const DanhmucChecklist = ({ navigation }) => {
     await dispath(ent_khuvuc_get());
   };
   useEffect(() => {
-     
     setListChecklist(ent_checklist);
   }, [ent_checklist]);
 
@@ -268,20 +268,27 @@ const DanhmucChecklist = ({ navigation }) => {
   };
 
   const handleDataKhuvuc = async (data) => {
-    await axios
-      .post(BASE_URL + "/ent_khuvuc/filter", data, {
-        headers: {
-          Accept: "application/json",
-          Authorization: "Bearer " + authToken,
-        },
-      })
-      .then((res) => {
-        setDataKhuVuc(res.data.data);
-        setActiveKhuvuc(true);
-      })
-      .then((err) => {
-        console.log("err", err);
-      });
+    if (data.ID_KhoiCV && data.ID_Toanha) {
+      const dataSet = ent_khuvuc.filter(
+        (item) =>
+          `${item.ID_KhoiCV}_${item.ID_Toanha}` ===
+          `${data.ID_KhoiCV}_${data.ID_Toanha}`
+      );
+      setDataKhuVuc(dataSet);
+      setActiveKhuvuc(true);
+    } else if (data.ID_KhoiCV) {
+      const dataSet = ent_khuvuc.filter(
+        (item) => `${item.ID_KhoiCV}` === `${data.ID_KhoiCV}`
+      );
+      setDataKhuVuc(dataSet);
+      setActiveKhuvuc(true);
+    } else if (data.ID_Toanha) {
+      const dataSet = ent_khuvuc.filter(
+        (item) => `${item.ID_Toanha}` === `${data.ID_Toanha}`
+      );
+      setDataKhuVuc(dataSet);
+      setActiveKhuvuc(true);
+    }
   };
 
   const handleChangeText = (key, value) => {
@@ -319,6 +326,7 @@ const DanhmucChecklist = ({ navigation }) => {
         Giatridinhdanh: dataInput.Giatridinhdanh,
         Giatrinhan: dataInput.Giatrinhan,
       };
+      setLoadingSubmit(true);
       await axios
         .post(BASE_URL + "/ent_checklist/create", data, {
           headers: {
@@ -330,7 +338,7 @@ const DanhmucChecklist = ({ navigation }) => {
           init_checklist();
           handleAdd();
           handleCloseModal();
-
+          setLoadingSubmit(false);
           Alert.alert("PMC Thông báo", response.data.message, [
             {
               text: "Hủy",
@@ -341,6 +349,8 @@ const DanhmucChecklist = ({ navigation }) => {
           ]);
         })
         .catch((err) => {
+          setLoadingSubmit(false);
+          console.log("err", err);
           Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
             {
               text: "Hủy",
@@ -405,7 +415,7 @@ const DanhmucChecklist = ({ navigation }) => {
         Giatrinhan: dataInput.Giatrinhan,
         Sothutu: dataInput.Sothutu,
       };
-
+      setLoadingSubmit(true);
       await axios
         .put(BASE_URL + `/ent_checklist/update/${id}`, data, {
           headers: {
@@ -419,6 +429,7 @@ const DanhmucChecklist = ({ navigation }) => {
           handleCloseModal();
           setNewActionCheckList([]);
           setStatus(false);
+          setLoadingSubmit(false);
           Alert.alert("PMC Thông báo", response.data.message, [
             {
               text: "Hủy",
@@ -429,7 +440,7 @@ const DanhmucChecklist = ({ navigation }) => {
           ]);
         })
         .catch((err) => {
-          console.log("err", err);
+          setLoadingSubmit(false);
           Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
             {
               text: "Hủy",
@@ -537,7 +548,7 @@ const DanhmucChecklist = ({ navigation }) => {
     if (index === -1) {
       setOpacity(1);
     } else {
-      setOpacity(0.5);
+      setOpacity(0.2);
     }
   }, []);
 
@@ -732,7 +743,7 @@ const DanhmucChecklist = ({ navigation }) => {
                             width={"auto"}
                             color={COLORS.bg_button}
                             icon={
-                              <Ionicons name="add" size={24} color="white" />
+                              <Ionicons name="add" size={20} color="white" />
                             }
                             onPress={handlePresentModalPress}
                           />
@@ -898,6 +909,7 @@ const DanhmucChecklist = ({ navigation }) => {
                   handlePushDataEdit={handlePushDataEdit}
                   activeKhuVuc={activeKhuVuc}
                   dataKhuVuc={dataKhuVuc}
+                  loadingSubmit={loadingSubmit}
                 />
               </BottomSheetScrollView>
             </BottomSheetModal>

@@ -4050,6 +4050,20 @@
     "invariant" "^2.2.4"
     "md5-file" "^3.2.3"
 
+"expo-barcode-scanner@~12.9.3":
+  "integrity" "sha512-I3zaKSINRMHbTc7sHIq14ug3fHkCsW4rweJF12yk0kHaympI2wxVgIo2DhzeZaYG1Ylkuj5aiKen3NuwDk1FSA=="
+  "resolved" "https://registry.npmjs.org/expo-barcode-scanner/-/expo-barcode-scanner-12.9.3.tgz"
+  "version" "12.9.3"
+  dependencies:
+    "expo-image-loader" "~4.6.0"
+
+"expo-camera@~14.1.1":
+  "integrity" "sha512-ANxQYy2P9qXxRoLWs7Gs3y7NM7OpYr7Q1H6kmQwJxHjjuJSc2qhwhY10I138d0fzB0h0p8NF1ezqIrqWct5AvQ=="
+  "resolved" "https://registry.npmjs.org/expo-camera/-/expo-camera-14.1.1.tgz"
+  "version" "14.1.1"
+  dependencies:
+    "invariant" "^2.2.4"
+
 "expo-constants@~15.4.0":
   "integrity" "sha512-1pVVjwk733hbbIjtQcvUFCme540v4gFemdNlaxM2UXKbfRCOh2hzgKN5joHMOysoXQe736TTUrRj7UaZI5Yyhg=="
   "resolved" "https://registry.npmjs.org/expo-constants/-/expo-constants-15.4.5.tgz"

@@ -19,13 +19,15 @@ import { FontAwesome } from "@expo/vector-icons";
 import VerticalSelect from "../VerticalSelect";
 import SelectDropdown from "react-native-select-dropdown";
 import moment from "moment";
+import ButtonSubmit from "../Button/ButtonSubmit";
 
 const ModalChecklistC = ({
   ent_giamsat,
   ent_calv,
   dataInput,
   handleChangeText,
-  handlePushDataSave
+  handlePushDataSave,
+  isLoading
 }) => {
   const ref = useRef(null);
   return (
@@ -53,6 +55,7 @@ const ModalChecklistC = ({
                     styles.textInput,
                     {
                       paddingHorizontal: 10,
+                      backgroundColor: "#bcbcbc"
                     },
                   ]}
                 />
@@ -67,6 +70,7 @@ const ModalChecklistC = ({
                     styles.textInput,
                     {
                       paddingHorizontal: 10,
+                      backgroundColor: "#bcbcbc"
                     },
                   ]}
                 />
@@ -180,10 +184,12 @@ const ModalChecklistC = ({
               />
             </View>
             <View style={{ marginTop: 20 }}>
-            <ButtonChecklist
+            <ButtonSubmit
               text={"Lưu"}
               width={"auto"}
-              color={COLORS.bg_button}
+              backgroundColor={COLORS.bg_button}
+              color={'white'}
+              isLoading={isLoading}
               onPress={handlePushDataSave}
             />
           </View>

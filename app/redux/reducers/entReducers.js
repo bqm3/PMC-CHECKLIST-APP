@@ -1,14 +1,14 @@
 import * as type from "../types";
 const initialState = {
-  ent_khoicv: null,
-  ent_calv: null,
-  ent_giamsat: null,
-  ent_chucvu: null,
-  ent_duan: null,
-  ent_khuvuc: null,
-  ent_checklist: null,
-  ent_tang: null,
-  ent_toanha: null,
+  ent_khoicv: [],
+  ent_calv: [],
+  ent_giamsat: [],
+  ent_chucvu: [],
+  ent_duan: [],
+  ent_khuvuc: [],
+  ent_checklist: [],
+  ent_tang: [],
+  ent_toanha: [],
   error: false,
   isLoading: false,
   message: null,
@@ -189,7 +189,7 @@ export const entReducer = (state = initialState, action) => {
           ...state,
           ent_checklist: null,
           error: false,
-          isLoading: true,
+          isLoading: action.payload.isLoading,
           message: null,
         };
       case type.SET_ENT_CHECKLIST_SUCCESS:
@@ -197,15 +197,15 @@ export const entReducer = (state = initialState, action) => {
           ...state,
           ent_checklist: action.payload.ent_checklist,
           error: false,
-          isLoading: false,
+          isLoading: action.payload.isLoading,
           message: null,
         };
       case type.SET_ENT_CHECKLIST_FAIL:
         return {
           ...state,
-          ent_checklist: null,
+          ent_checklist: action.payload.ent_checklist,
           error: false,
-          isLoading: true,
+          isLoading: action.payload.isLoading,
           message: null,
         };
         case type.SET_ENT_TANG_STATE:

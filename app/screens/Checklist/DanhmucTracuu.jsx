@@ -294,7 +294,7 @@ const DanhmucTracuu = () => {
     if (index === -1 || index === 0) {
       setOpacity(1);
     } else {
-      setOpacity(0.5);
+      setOpacity(0.2);
     }
   }, []);
 

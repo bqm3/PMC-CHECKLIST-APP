@@ -16,8 +16,6 @@ import { FontAwesome, Entypo } from "@expo/vector-icons";
 import VerticalSelect from "../VerticalSelect";
 import Button from "../Button/Button";
 import { COLORS, SIZES } from "../../constants/theme";
-import ButtonSubmit from "../Button/ButtonSubmit";
-import ButtonChecklist from "../Button/ButtonCheckList";
 import * as ImagePicker from "expo-image-picker";
 
 const ModalPopupDetailChecklist = ({
@@ -44,7 +42,6 @@ const ModalPopupDetailChecklist = ({
     const result = await ImagePicker.launchCameraAsync();
 
     if (!result.cancelled) {
-      console.log("result?.assets[0]", result?.assets[0]);
       handleChange(
         "Anh",
         result?.assets[0],

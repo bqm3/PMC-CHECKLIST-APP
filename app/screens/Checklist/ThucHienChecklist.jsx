@@ -33,16 +33,14 @@ import { AntDesign, Ionicons, Feather } from "@expo/vector-icons";
 import { DataTable } from "react-native-paper";
 import ButtonChecklist from "../../components/Button/ButtonCheckList";
 import { COLORS, SIZES } from "../../constants/theme";
-import {
-  ent_calv_get,
-  ent_giamsat_get,
-} from "../../redux/actions/entActions";
+import { ent_calv_get, ent_giamsat_get } from "../../redux/actions/entActions";
 import { tb_checklistc_get } from "../../redux/actions/tbActions";
 import ModalChecklist from "../../components/Modal/ModalChecklist";
 import axios from "axios";
 import { BASE_URL } from "../../constants/config";
 import moment from "moment";
 import ModalChecklistC from "../../components/Modal/ModalChecklistC";
+import ModalChecklistCImage from "../../components/Modal/ModalChecklistCImage";
 
 const numberOfItemsPerPageList = [10, 15, 20];
 
@@ -84,20 +82,18 @@ const headerList = [
 const ThucHienChecklist = ({ navigation }) => {
   const ref = useRef(null);
   const dispath = useDispatch();
-  const {
-    ent_giamsat,
-    ent_calv
-  } = useSelector((state) => state.entReducer);
+  const { ent_giamsat, ent_calv } = useSelector((state) => state.entReducer);
   const { tb_checklistc } = useSelector((state) => state.tbReducer);
   const { user, authToken } = useSelector((state) => state.authReducer);
 
   const date = new Date();
-  const dateDay = moment(date).format('YYYY-MM-DD');
-  const dateHour = moment(date).format('LTS');
+  const dateDay = moment(date).format("YYYY-MM-DD");
+  const dateHour = moment(date).format("LTS");
 
   const [data, setData] = useState([]);
   const bottomSheetModalRef = useRef(null);
-  const snapPoints = useMemo(() => ["70%"], []);
+  const bottomSheetModalRef2 = useRef(null);
+  const snapPoints = useMemo(() => ["90%"], []);
   const [opacity, setOpacity] = useState(1);
   const [page, setPage] = React.useState(0);
   const [numberOfItemsPerPage, onItemsPerPageChange] = React.useState(
@@ -108,17 +104,36 @@ const ThucHienChecklist = ({ navigation }) => {
 
   const [newActionCheckList, setNewActionCheckList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadingSubmit, setLoadingSubmit] = useState(false);
 
   const [dataInput, setDataInput] = useState({
     dateDay: dateDay,
     dateHour: dateHour,
     Calv: null,
     ID_Giamsat: null,
-    ID_Duan: user?.ID_Duan
+    ID_Duan: user?.ID_Duan,
+  });
+
+  const [dataImages, setDataImages] = useState({
+    Giochupanh1: null,
+    Anh1: null,
+    Giochupanh2: null,
+    Anh2: null,
+    Giochupanh3: null,
+    Anh3: null,
+    Giochupanh4: null,
+    Anh4: null,
   });
 
   const handleChangeText = (key, value) => {
     setDataInput((data) => ({
+      ...data,
+      [key]: value,
+    }));
+  };
+
+  const handleChangeImages = (key, value) => {
+    setDataImages((data) => ({
       ...data,
       [key]: value,
     }));
@@ -129,13 +144,12 @@ const ThucHienChecklist = ({ navigation }) => {
     // Use setTimeout to update the message after 2000 milliseconds (2 seconds)
     const timeoutId = setTimeout(() => {
       setIsLoading(false);
-    }, 2000);
+    }, 1000);
 
     // Cleanup function to clear the timeout if the component unmounts
     return () => clearTimeout(timeoutId);
   }, []); //
 
-  
   useEffect(() => {
     setData(tb_checklistc);
   }, [tb_checklistc]);
@@ -153,8 +167,8 @@ const ThucHienChecklist = ({ navigation }) => {
   };
 
   useEffect(() => {
-    init_ca()
-    int_giamsat()
+    init_ca();
+    int_giamsat();
     int_checklistc();
   }, []);
 
@@ -175,7 +189,126 @@ const ThucHienChecklist = ({ navigation }) => {
     }
   };
 
-  
+  const handlePushDataImagesSave = async (id) => {
+    try {
+      let formData = new FormData();
+
+      // Iterate over the keys of dataImages object
+      if (dataImages.Anh1) {
+        const file = {
+          uri:
+            Platform.OS === "android"
+              ? dataImages?.Anh1?.uri
+              : dataImages?.Anh1?.uri.replace("file://", ""),
+          name:
+            dataImages?.Anh1?.fileName ||
+            Math.floor(Math.random() * Math.floor(999999999)) + ".jpg",
+          type: dataImages?.Anh1?.type || "image/jpeg",
+        };
+
+        // Append image file to formData
+        formData.append(`Images`, file);
+        formData.append(`Anh1`, file?.name);
+        formData.append("Giochupanh1", dateHour);
+      }
+      if (dataImages.Anh2) {
+        const file = {
+          uri:
+            Platform.OS === "android"
+              ? dataImages?.Anh2?.uri
+              : dataImages?.Anh2?.uri.replace("file://", ""),
+          name:
+            dataImages?.Anh2?.fileName ||
+            Math.floor(Math.random() * Math.floor(999999999)) + ".jpg",
+          type: dataImages?.Anh2?.type || "image/jpeg",
+        };
+
+        // Append image file to formData
+        formData.append(`Images`, file);
+        formData.append(`Anh2`, file?.name);
+        formData.append("Giochupanh2", dateHour);
+      }
+      if (dataImages.Anh3) {
+        const file = {
+          uri:
+            Platform.OS === "android"
+              ? dataImages?.Anh3?.uri
+              : dataImages?.Anh3?.uri.replace("file://", ""),
+          name:
+            dataImages?.Anh3?.fileName ||
+            Math.floor(Math.random() * Math.floor(999999999)) + ".jpg",
+          type: dataImages?.Anh3?.type || "image/jpeg",
+        };
+
+        // Append image file to formData
+        formData.append(`Images`, file);
+        formData.append(`Anh3`, file?.name);
+        formData.append("Giochupanh3", dateHour);
+      }
+      if (dataImages.Anh4) {
+        const file = {
+          uri:
+            Platform.OS === "android"
+              ? dataImages?.Anh4?.uri
+              : dataImages?.Anh4?.uri.replace("file://", ""),
+          name:
+            dataImages?.Anh4?.fileName ||
+            Math.floor(Math.random() * Math.floor(999999999)) + ".jpg",
+          type: dataImages?.Anh4?.type || "image/jpeg",
+        };
+
+        // Append image file to formData
+        formData.append(`Images`, file);
+        formData.append(`Anh4`, file?.name);
+        formData.append("Giochupanh4", dateHour);
+      }
+      setLoadingSubmit(true);
+      await axios
+        .put(
+          BASE_URL +
+            `/tb_checklistc/update-images/${newActionCheckList[0].ID_ChecklistC}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: "Bearer " + authToken,
+            },
+          }
+        )
+        .then((res) => {
+          setLoadingSubmit(false);
+          handleAdd()
+          int_checklistc()
+          bottomSheetModalRef2?.current?.close();
+          Alert.alert("PMC Thông báo", "Checklist thành công", [
+            {
+              text: "Hủy",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel",
+            },
+            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+          ]);
+        })
+        .catch((err) => {
+          setLoadingSubmit(false);
+          // Handle the error appropriately, e.g., displaying an error message
+          Alert.alert(
+            "PMC Thông báo",
+            "Đã có lỗi xảy ra. Vui lòng kiểm tra lại!!",
+            [
+              {
+                text: "Hủy",
+                onPress: () => console.log("Cancel Pressed"),
+                style: "cancel",
+              },
+              { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+            ]
+          );
+        });
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
 
   const handlePushDataSave = async () => {
     if (dataInput.ID_Calv === null || dataInput.ID_Giamsat === null) {
@@ -195,8 +328,8 @@ const ThucHienChecklist = ({ navigation }) => {
         ID_KhoiCV: dataInput.Calv.ent_khoicv.ID_Khoi,
         Ngay: dataInput.dateDay,
         Giobd: dataInput.dateHour,
-       
       };
+      setLoadingSubmit(true);
       await axios
         .post(BASE_URL + "/tb_checklistc/create-first", data, {
           headers: {
@@ -208,7 +341,7 @@ const ThucHienChecklist = ({ navigation }) => {
           handleAdd();
           int_checklistc();
           handleCloseModal();
-
+          setLoadingSubmit(false);
           Alert.alert("PMC Thông báo", response.data.message, [
             {
               text: "Hủy",
@@ -219,15 +352,19 @@ const ThucHienChecklist = ({ navigation }) => {
           ]);
         })
         .catch((err) => {
-          console.log('err',err)
-          Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
-            {
-              text: "Hủy",
-              onPress: () => console.log("Cancel Pressed"),
-              style: "cancel",
-            },
-            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-          ]);
+          setLoadingSubmit(false);
+          Alert.alert(
+            "PMC Thông báo",
+            "Đã có lỗi xảy ra. Vui lòng kiểm tra lại!!",
+            [
+              {
+                text: "Hủy",
+                onPress: () => console.log("Cancel Pressed"),
+                style: "cancel",
+              },
+              { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+            ]
+          );
         });
     }
   };
@@ -236,7 +373,7 @@ const ThucHienChecklist = ({ navigation }) => {
     if (index === -1) {
       setOpacity(1);
     } else {
-      setOpacity(0.3);
+      setOpacity(0.2);
     }
   }, []);
 
@@ -250,7 +387,17 @@ const ThucHienChecklist = ({ navigation }) => {
       dateHour: dateHour,
       Calv: null,
       ID_Giamsat: null,
-      ID_Duan: user?.ID_Duan
+      ID_Duan: user?.ID_Duan,
+    });
+    setDataImages({
+      Giochupanh1: null,
+      Anh1: null,
+      Giochupanh2: null,
+      Anh2: null,
+      Giochupanh3: null,
+      Anh3: null,
+      Giochupanh4: null,
+      Anh4: null,
     });
   };
 
@@ -259,12 +406,69 @@ const ThucHienChecklist = ({ navigation }) => {
     setOpacity(1);
   };
 
-  const handleChecklistDetail = (id) => {
-    navigation.navigate("Chi tiết Checklist", {
-      ID_ChecklistC: id,
+  const handleToggleModal = () => {
+    bottomSheetModalRef2?.current?.present();
+    // setOpacity(0.2);
+  };
 
-    })
-  }
+  const handleChecklistDetail = (id1, id2) => {
+    navigation.navigate("Chi tiết Checklist", {
+      ID_ChecklistC: id1,
+      ID_KhoiCV: id2,
+    });
+  };
+
+  const handleCloseChecklist = async (ID_ChecklistC) => {
+    await axios
+      .put(
+        BASE_URL + `/tb_checklistc/close/${ID_ChecklistC}`,
+        {
+          Giokt: dateHour,
+        },
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: "Bearer " + authToken,
+          },
+        }
+      )
+      .then(() => {
+        int_checklistc();
+        setNewActionCheckList([]);
+        Alert.alert("PMC Thông báo", "Khóa ca thành công", [
+          {
+            text: "Hủy",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel",
+          },
+          { text: "Xác nhận", onPress: () => {} },
+        ]);
+      })
+      .catch((err) => {
+        Alert.alert("PMC Thông báo", "Khóa ca thất bại. Vui lòng thử lại!!", [
+          {
+            text: "Hủy",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel",
+          },
+          { text: "Xác nhận", onPress: () => {} },
+        ]);
+      });
+  };
+
+  const handleChecklistClose = (item) => {
+    Alert.alert("PMC Thông báo", "Bạn muốn khóa ca checklist ?", [
+      {
+        text: "Hủy",
+        onPress: () => console.log("Cancel Pressed"),
+        style: "cancel",
+      },
+      {
+        text: "Xác nhận",
+        onPress: () => handleCloseChecklist(item?.ID_ChecklistC),
+      },
+    ]);
+  };
 
   React.useEffect(() => {
     setPage(0);
@@ -353,7 +557,6 @@ const ThucHienChecklist = ({ navigation }) => {
       </TouchableHighlight>
     );
   };
-
   return (
     <>
       <GestureHandlerRootView style={{ flex: 1 }}>
@@ -402,7 +605,7 @@ const ThucHienChecklist = ({ navigation }) => {
                       text={"Thêm mới"}
                       width={"auto"}
                       color={COLORS.bg_button}
-                      icon={<Ionicons name="add" size={24} color="white" />}
+                      icon={<Ionicons name="add" size={20} color="white" />}
                       onPress={handlePresentModalPress}
                     />
                   </View>
@@ -423,10 +626,6 @@ const ThucHienChecklist = ({ navigation }) => {
                         <>
                           <ScrollView
                             style={{ flex: 1, marginBottom: 20, marginTop: 20 }}
-                            // ref={(it) => (scrollRef.current = it)}
-                            // onContentSizeChange={() =>
-                            //   scrollRef.current?.scrollToEnd({ animated: false })
-                            // }
                           >
                             <DataTable
                               style={{
@@ -557,21 +756,46 @@ const ThucHienChecklist = ({ navigation }) => {
                 onChange={handleSheetChanges}
               >
                 <BottomSheetScrollView style={styles.contentContainer}>
+                  <Text
+                    style={{
+                      color: "black",
+                      fontWeight: "600",
+                      fontSize: 20,
+                      textAlign: "center",
+                      paddingTop: 10,
+                    }}
+                  >
+                    {user?.ent_khoicv?.KhoiCV}
+                  </Text>
                   <ModalChecklistC
-                  ent_giamsat={ent_giamsat}
-                  ent_calv={ent_calv}
-                  dataInput={dataInput}
-                  handleChangeText={handleChangeText}
-                  handlePushDataSave={handlePushDataSave}
-                  // handleDataKhuvuc={handleDataKhuvuc}
-                  // handleChangeTextKhuVuc={handleChangeTextKhuVuc}
-                  // dataCheckKhuvuc={dataCheckKhuvuc}
-                  // dataInput={dataInput}
-                  // handlePushDataSave={handlePushDataSave}
-                  // isCheckUpdate={isCheckUpdate}
-                  // handlePushDataEdit={handlePushDataEdit}
-                  // activeKhuVuc={activeKhuVuc}
-                  // dataKhuVuc={dataKhuVuc}
+                    ent_giamsat={ent_giamsat}
+                    ent_calv={ent_calv}
+                    dataInput={dataInput}
+                    handleChangeText={handleChangeText}
+                    handlePushDataSave={handlePushDataSave}
+                    isLoading={loadingSubmit}
+                  />
+                </BottomSheetScrollView>
+              </BottomSheetModal>
+
+              <BottomSheetModal
+                ref={bottomSheetModalRef2}
+                index={0}
+                snapPoints={snapPoints}
+                onChange={handleSheetChanges}
+              >
+                <BottomSheetScrollView style={styles.contentContainer}>
+                  <ModalChecklistCImage
+                    dataImages={dataImages}
+                    handleChangeImages={handleChangeImages}
+                    ent_giamsat={ent_giamsat}
+                    ent_calv={ent_calv}
+                    dataInput={dataInput}
+                    handleChangeText={handleChangeText}
+                    handlePushDataSave={handlePushDataSave}
+                    isLoading={loadingSubmit}
+                    handlePushDataImagesSave={handlePushDataImagesSave}
+                    newActionCheckList={newActionCheckList}
                   />
                 </BottomSheetScrollView>
               </BottomSheetModal>
@@ -586,33 +810,41 @@ const ThucHienChecklist = ({ navigation }) => {
                     flexDirection: "column",
                     justifyContent: "center",
                     alignItems: "center",
-                    gap: 8,
+                    gap: 10,
                   }}
                 >
                   {newActionCheckList[0]?.Tinhtrang === 0 && (
                     <>
                       <TouchableOpacity
-                        style={[styles.button,{backgroundColor: COLORS.bg_red}]}
-                        // onPress={() => handleEditEnt(newActionCheckList[0])}
+                        style={[
+                          styles.button,
+                          { backgroundColor: COLORS.bg_red },
+                        ]}
+                        onPress={() =>
+                          handleChecklistClose(newActionCheckList[0])
+                        }
                       >
-                        <Feather name="lock" size={24} color="white" />
+                        <Feather name="lock" size={26} color="white" />
                       </TouchableOpacity>
                       <TouchableOpacity
                         style={[styles.button]}
-                        onPress={() => handleChecklistDetail(newActionCheckList[0]?.ID_ChecklistC)}
+                        onPress={() =>
+                          handleChecklistDetail(
+                            newActionCheckList[0]?.ID_ChecklistC,
+                            newActionCheckList[0]?.ID_KhoiCV
+                          )
+                        }
                       >
-                        <Feather name="unlock" size={24} color="white" />
+                        <Feather name="unlock" size={26} color="white" />
                       </TouchableOpacity>
                     </>
                   )}
 
                   <TouchableOpacity
                     style={styles.button}
-                    // onPress={() =>
-                    //   handleToggleModal(true, newActionCheckList[0], 0.2)
-                    // }
+                    onPress={() => handleToggleModal()}
                   >
-                    <Feather name="eye" size={24} color="white" />
+                    <Feather name="camera" size={26} color="white" />
                   </TouchableOpacity>
                 </View>
               )}
@@ -650,8 +882,8 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: COLORS.color_bg,
-    width: 60,
-    height: 60,
+    width: 65,
+    height: 65,
     borderRadius: 50,
     justifyContent: "center",
     alignItems: "center",

@@ -18,6 +18,7 @@ import KeyboardAvoidingComponent from "../KeyboardAvoidingComponent";
 import { FontAwesome } from "@expo/vector-icons";
 import VerticalSelect from "../VerticalSelect";
 import SelectDropdown from "react-native-select-dropdown";
+import ButtonSubmit from "../Button/ButtonSubmit";
 
 const ModalCalamviec = ({
   ent_khoicv,
@@ -30,6 +31,7 @@ const ModalCalamviec = ({
   handlePushDataSave,
   handlePushDataEdit,
   isCheckUpdate,
+  loadingSubmit
 }) => {
   const ref = useRef(null);
   return (
@@ -148,10 +150,12 @@ const ModalCalamviec = ({
           />
         </View>
         <View style={{ marginTop: 20 }}>
-          <ButtonChecklist
+          <ButtonSubmit
             text={isCheckUpdate.check ? "Cập nhật" : "Lưu"}
             width={"auto"}
-            color={COLORS.bg_button}
+            color={'white'}
+            backgroundColor={COLORS.bg_button}
+            isLoading={loadingSubmit}
             onPress={
               isCheckUpdate.check
                 ? () => handlePushDataEdit(isCheckUpdate.id_calv)

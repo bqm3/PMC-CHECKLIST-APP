@@ -14,6 +14,7 @@ import {
 } from "../screens/Checklist";
 import { COLORS } from "../constants/theme";
 import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
+import QRCodeScreen from "../screens/QRCodeScreen";
 
 const Stack = createNativeStackNavigator();
 

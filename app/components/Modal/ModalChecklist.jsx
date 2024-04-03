@@ -12,7 +12,7 @@ import {
 import React, { useRef } from "react";
 import { Dropdown } from "react-native-element-dropdown";
 import { COLORS } from "../../constants/theme";
-import ButtonChecklist from "../Button/ButtonCheckList";
+import ButtonSubmit from "../Button/ButtonSubmit";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { FontAwesome } from "@expo/vector-icons";
 import VerticalSelect from "../VerticalSelect";
@@ -35,14 +35,23 @@ const ModalChecklist = ({
   handleDataKhuvuc,
   activeKhuVuc,
   dataKhuVuc,
+  loadingSubmit,
 }) => {
   const ref = useRef(null);
-  
-  const defaultTang = ent_tang?.find(tang => tang.ID_Tang === dataInput?.ID_Tang);
-  const defaultToanha = ent_toanha?.find(toanha => toanha.ID_Toanha === dataCheckKhuvuc?.ID_Toanha);
-  const defaultKhoi = ent_khoicv?.find(Khoi => Khoi.ID_Khoi === dataCheckKhuvuc?.ID_KhoiCV);
-  const defaultKhuvuc = ent_khuvuc?.find(Khuvuc => Khuvuc.ID_Khuvuc === dataInput?.ID_Khuvuc);
-const defaultButtonText = defaultTang ? defaultTang : "Tầng";
+
+  const defaultTang = ent_tang?.find(
+    (tang) => tang.ID_Tang === dataInput?.ID_Tang
+  );
+  const defaultToanha = ent_toanha?.find(
+    (toanha) => toanha.ID_Toanha === dataCheckKhuvuc?.ID_Toanha
+  );
+  const defaultKhoi = ent_khoicv?.find(
+    (Khoi) => Khoi.ID_Khoi === dataCheckKhuvuc?.ID_KhoiCV
+  );
+  const defaultKhuvuc = ent_khuvuc?.find(
+    (Khuvuc) => Khuvuc.ID_Khuvuc === dataInput?.ID_Khuvuc
+  );
+  const defaultButtonText = defaultTang ? defaultTang : "Tầng";
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -308,7 +317,6 @@ const defaultButtonText = defaultTang ? defaultTang : "Tầng";
                   defaultButtonText={"Tầng"}
                   buttonTextStyle={styles.customText}
                   defaultValue={defaultButtonText}
-                  
                   onSelect={(selectedItem, index) => {
                     handleChangeText("ID_Tang", selectedItem.ID_Tang);
                   }}
@@ -413,10 +421,12 @@ const defaultButtonText = defaultTang ? defaultTang : "Tầng";
             <View style={{ height: 20 }}></View>
           </View>
           <View style={{ marginTop: 20 }}>
-            <ButtonChecklist
+            <ButtonSubmit
               text={isCheckUpdate.check ? "Cập nhật" : "Lưu"}
               width={"auto"}
-              color={COLORS.bg_button}
+              isLoading={loadingSubmit}
+              color={"white"}
+              backgroundColor={COLORS.bg_button}
               onPress={
                 isCheckUpdate.check
                   ? () => handlePushDataEdit(isCheckUpdate.ID_CheckList)
