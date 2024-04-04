@@ -307,7 +307,7 @@ const DanhmucChecklist = ({ navigation }) => {
 
   const handlePushDataSave = async () => {
     if (dataInput.Checklist === "") {
-      Alert.alert("PMC Thông báo", "Thiêu thông tin Checklist", [
+      Alert.alert("PMC Thông báo", "Thiếu thông tin Checklist", [
         {
           text: "Hủy",
           onPress: () => console.log("Cancel Pressed"),
@@ -395,7 +395,7 @@ const DanhmucChecklist = ({ navigation }) => {
 
   const handlePushDataEdit = async (id) => {
     if (dataInput.Checklist === "" || dataInput.Giatrinhan === "") {
-      Alert.alert("PMC Thông báo", "Thiêu thông tin checklist", [
+      Alert.alert("PMC Thông báo", "Thiếu thông tin checklist", [
         {
           text: "Hủy",
           onPress: () => console.log("Cancel Pressed"),

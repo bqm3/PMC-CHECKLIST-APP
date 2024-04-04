@@ -120,7 +120,7 @@ const DanhmucGiamsat = ({ navigation }) => {
 
   const handlePushDataSave = async () => {
     if (dataInput.hoten === "" || dataInput.sodienthoai === null) {
-      Alert.alert("PMC Thông báo", "Thiêu thông tin người giám sát", [
+      Alert.alert("PMC Thông báo", "Thiếu thông tin người giám sát", [
         {
           text: "Hủy",
           onPress: () => console.log("Cancel Pressed"),
@@ -210,7 +210,7 @@ const DanhmucGiamsat = ({ navigation }) => {
 
   const handlePushDataEdit = async (id) => {
     if (dataInput.hoten === "" || dataInput.sodienthoai === null) {
-      Alert.alert("PMC Thông báo", "Thiêu thông tin ca làm việc", [
+      Alert.alert("PMC Thông báo", "Thiếu thông tin ca làm việc", [
         {
           text: "Hủy",
           onPress: () => console.log("Cancel Pressed"),

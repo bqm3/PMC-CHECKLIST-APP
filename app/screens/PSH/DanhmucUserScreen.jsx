@@ -8,6 +8,8 @@ import {
   Image,
   KeyboardAvoidingView,
   Platform,
+  Modal,
+  Pressable,
   ActivityIndicator,
 } from "react-native";
 import React, {
@@ -25,24 +27,24 @@ import {
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import moment from "moment";
 import ButtonChecklist from "../../components/Button/ButtonCheckList";
 import { COLORS, SIZES } from "../../constants/theme";
-import { AntDesign, Ionicons } from "@expo/vector-icons";
 
 import {
-  ent_toanha_get,
+  ent_chucvu_get,
+  ent_duan_get,
   ent_khoicv_get,
-  ent_khuvuc_get,
+  ent_users_get,
 } from "../../redux/actions/entActions";
 import axios from "axios";
 import { BASE_URL } from "../../constants/config";
-import ItemKhuVuc from "../../components/Item/ItemKhuVuc";
-import ModalKhuvuc from "../../components/Modal/ModalKhuvuc";
+import ModalGiamsatInfo from "../../components/Modal/ModalGiamsatInfo";
+import ItemUser from "../../components/Item/ItemUser";
+import ModalUsers from "../../components/Modal/ModalUsers";
 
-const DanhmucCalamviec = ({ navigation }) => {
+const DanhmucUserScreen = ({ navigation }) => {
   const dispath = useDispatch();
-  const { ent_toanha, ent_khuvuc, ent_khoicv } = useSelector(
+  const { ent_users, ent_duan, ent_khoicv, ent_chucvu } = useSelector(
     (state) => state.entReducer
   );
   const { user, authToken } = useSelector((state) => state.authReducer);
@@ -50,49 +52,47 @@ const DanhmucCalamviec = ({ navigation }) => {
   const bottomSheetModalRef = useRef(null);
   const snapPoints = useMemo(() => ["90%"], []);
   const [opacity, setOpacity] = useState(1);
-  const [isLoading, setIsLoading] = useState(true);
-  const [loadingSubmit, setLoadingSubmit] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
+  const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [isCheckUpdate, setIsCheckUpdate] = useState({
     check: false,
-    id_khuvuc: null,
+    ID_User: null,
   });
+  const [modalVisible, setModalVisible] = useState(false);
+  const [dataModal, setDataModal] = useState(null);
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
-  const init_toanha = async () => {
-    await dispath(ent_toanha_get());
+  const init_duan = async () => {
+    await dispath(ent_duan_get());
   };
 
   const init_khoicv = async () => {
     await dispath(ent_khoicv_get());
   };
 
-  const init_khuvuc = async () => {
-    await dispath(ent_khuvuc_get());
+  const init_chucvu = async () => {
+    await dispath(ent_chucvu_get());
+  };
+
+  const init_users = async () => {
+    await dispath(ent_users_get());
   };
 
   useEffect(() => {
-    init_toanha();
-    init_khuvuc();
+    init_users();
+    init_duan();
+    init_chucvu();
     init_khoicv();
   }, []);
 
-  useEffect(() => {
-    setIsLoading(true);
-    // Use setTimeout to update the message after 2000 milliseconds (2 seconds)
-    const timeoutId = setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-
-    // Cleanup function to clear the timeout if the component unmounts
-    return () => clearTimeout(timeoutId);
-  }, []); //
-
   const [dataInput, setDataInput] = useState({
-    toanha: null,
-    khoicv: null,
-    makhuvuc: "",
-    sothutu: 0,
-    qrcode: "",
-    tenkhuvuc: "",
+    ID_Duan: null,
+    Permission: null,
+    ID_KhoiCV: null,
+    UserName: "",
+    Password: "",
+    Emails: "",
+    rePassword: "",
   });
 
   const handleChangeText = (key, value) => {
@@ -103,13 +103,17 @@ const DanhmucCalamviec = ({ navigation }) => {
   };
 
   const handlePushDataSave = async () => {
-    if (
-      dataInput.makhuvuc === "" ||
-      dataInput.khoicv === null ||
-      dataInput.toanha === null ||
-      dataInput.tenkhuvuc === ""
-    ) {
-      Alert.alert("PMC Thông báo", "Thiếu thông tin khu vực", [
+    if (dataInput.UserName === "" || dataInput.Password === "") {
+      Alert.alert("PMC Thông báo", "Thiếu thông tin người dùng", [
+        {
+          text: "Hủy",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+        { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+      ]);
+    } else if (dataInput.Password !== dataInput.rePassword) {
+      Alert.alert("PMC Thông báo", "Mật khẩu phải trùng nhau", [
         {
           text: "Hủy",
           onPress: () => console.log("Cancel Pressed"),
@@ -119,27 +123,27 @@ const DanhmucCalamviec = ({ navigation }) => {
       ]);
     } else {
       let data = {
-        ID_Toanha: dataInput.toanha,
-        ID_KhoiCV: dataInput.khoicv,
-        Sothutu: dataInput.sothutu,
-        Makhuvuc: dataInput.makhuvuc,
-        MaQrCode: dataInput.qrcode,
-        Tenkhuvuc: dataInput.tenkhuvuc,
+        ID_Duan: dataInput.ID_Duan,
+        Permission: dataInput.Permission,
+        ID_KhoiCV: dataInput.ID_KhoiCV,
+        UserName: dataInput.UserName,
+        Password: dataInput.Password,
+        Emails: dataInput.Emails,
       };
-      setLoadingSubmit(true)
+      setLoadingSubmit(true);
       await axios
-        .post(BASE_URL + "/ent_khuvuc/create", data, {
+        .post(BASE_URL + "/ent_user/register", data, {
           headers: {
             Accept: "application/json",
             Authorization: "Bearer " + authToken,
           },
         })
         .then((response) => {
-          init_khuvuc();
+          init_users();
           handleAdd();
           handleCloseModal();
-          setLoadingSubmit(false)
-          Alert.alert("PMC Thông báo", response.data.message, [
+          setLoadingSubmit(false);
+          Alert.alert("PMC Thông báo", "Tạo tài khoản user thành công!!", [
             {
               text: "Hủy",
               onPress: () => console.log("Cancel Pressed"),
@@ -149,7 +153,8 @@ const DanhmucCalamviec = ({ navigation }) => {
           ]);
         })
         .catch((err) => {
-          setLoadingSubmit(false)
+          console.error("err", err);
+          setLoadingSubmit(false);
           Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
             {
               text: "Hủy",
@@ -162,25 +167,36 @@ const DanhmucCalamviec = ({ navigation }) => {
     }
   };
 
-  const handleEditEnt = (data) => {
-    setIsCheckUpdate({
-      check: true,
-      id_khuvuc: data.ID_Khuvuc,
-    });
+  const handleEditEnt = async (data) => {
     handlePresentModalPress();
     setDataInput({
-      toanha: data.ID_Toanha,
-      khoicv: data.ID_KhoiCV,
-      sothutu: data.Sothutu,
-      makhuvuc: data.Makhuvuc,
-      qrcode: data.MaQrCode,
-      tenkhuvuc: data.Tenkhuvuc,
+      ID_Duan: data.ID_Duan,
+      Permission: data.Permission,
+      ID_KhoiCV: data.ID_KhoiCV,
+      UserName: data.UserName,
+      Password: "",
+      rePassword: "",
+      Emails: data.Emails,
+    });
+
+    setIsCheckUpdate({
+      check: true,
+      ID_User: data.ID_User,
     });
   };
 
   const handlePushDataEdit = async (id) => {
-    if (dataInput.tenca === "" || dataInput.khoicv === null) {
+    if (dataInput.UserName === "" || dataInput.Password === null) {
       Alert.alert("PMC Thông báo", "Thiếu thông tin ca làm việc", [
+        {
+          text: "Hủy",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+        { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+      ]);
+    } else if (dataInput.Password !== dataInput.rePassword) {
+      Alert.alert("PMC Thông báo", "Mật khẩu phải trùng nhau", [
         {
           text: "Hủy",
           onPress: () => console.log("Cancel Pressed"),
@@ -190,26 +206,27 @@ const DanhmucCalamviec = ({ navigation }) => {
       ]);
     } else {
       let data = {
-        ID_Toanha: dataInput.toanha,
-        ID_KhoiCV: dataInput.khoicv,
-        Sothutu: dataInput.sothutu,
-        Makhuvuc: dataInput.makhuvuc,
-        MaQrCode: dataInput.qrcode,
-        Tenkhuvuc: dataInput.tenkhuvuc,
+        ID_Duan: dataInput.ID_Duan,
+        Permission: dataInput.Permission,
+        ID_KhoiCV: dataInput.ID_KhoiCV,
+        UserName: dataInput.UserName,
+        Password: dataInput.Password,
+        Emails: dataInput.Emails,
       };
-      setLoadingSubmit(true)
+      setLoadingSubmit(true);
+
       await axios
-        .put(BASE_URL + `/ent_khuvuc/update/${id}`, data, {
+        .put(BASE_URL + `/ent_user/update/${id}`, data, {
           headers: {
             Accept: "application/json",
             Authorization: "Bearer " + authToken,
           },
         })
         .then((response) => {
-          init_khuvuc();
+          init_users();
           handleAdd();
           handleCloseModal();
-          setLoadingSubmit(false)
+          setLoadingSubmit(false);
           Alert.alert("PMC Thông báo", response.data.message, [
             {
               text: "Hủy",
@@ -220,7 +237,8 @@ const DanhmucCalamviec = ({ navigation }) => {
           ]);
         })
         .catch((err) => {
-          setLoadingSubmit(false)
+          console.log("err", err);
+          setLoadingSubmit(false);
           Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
             {
               text: "Hủy",
@@ -234,7 +252,7 @@ const DanhmucCalamviec = ({ navigation }) => {
   };
 
   const handleAlertDelete = async (id) => {
-    Alert.alert("PMC Thông báo", "Bạn có muốn xóa khu vực làm việc", [
+    Alert.alert("PMC Thông báo", "Bạn có muốn xóa người dùng", [
       {
         text: "Hủy",
         onPress: () => console.log("Cancel Pressed"),
@@ -246,16 +264,14 @@ const DanhmucCalamviec = ({ navigation }) => {
 
   const handlePushDataDelete = async (id) => {
     await axios
-      .put(BASE_URL + `/ent_khuvuc/delete/${id}`, [], {
+      .put(BASE_URL + `/ent_user/delete/${id}`, [], {
         headers: {
           Accept: "application/json",
           Authorization: "Bearer " + authToken,
         },
       })
       .then((response) => {
-        init_khuvuc();
-        handleAdd();
-        handleCloseModal();
+        init_users();
         Alert.alert("PMC Thông báo", response.data.message, [
           {
             text: "Hủy",
@@ -277,14 +293,19 @@ const DanhmucCalamviec = ({ navigation }) => {
       });
   };
 
+  const toggleDatePicker = () => {
+    setDatePickerVisibility(!isDatePickerVisible);
+  };
+
   const handleAdd = () => {
     setDataInput({
-      toanha: null,
-      khoicv: null,
-      makhuvuc: "",
-      sothutu: "",
-      qrcode: "",
-      tenkhuvuc: "",
+      ID_Duan: null,
+      UserName: "",
+      Password: "",
+      Emails: "",
+      rePassword: "",
+      Permission: null,
+      ID_KhoiCV: null,
     });
   };
 
@@ -299,6 +320,11 @@ const DanhmucCalamviec = ({ navigation }) => {
       setOpacity(0.2);
     }
   }, []);
+
+  const handleToggleModal = (isCheck, data, opacity) => {
+    setDataModal(data);
+    setModalVisible(isCheck), setOpacity(opacity);
+  };
 
   const handleCloseModal = () => {
     bottomSheetModalRef?.current?.close();
@@ -332,7 +358,9 @@ const DanhmucCalamviec = ({ navigation }) => {
                 }}
               >
                 <View style={styles.container}>
-                  <Text style={styles.danhmuc}>Danh mục khu vực</Text>
+                  <Text style={styles.danhmuc}>
+                    Danh mục quản lý người dùng
+                  </Text>
                   {isLoading === true ? (
                     <View
                       style={{
@@ -346,7 +374,7 @@ const DanhmucCalamviec = ({ navigation }) => {
                     </View>
                   ) : (
                     <>
-                      {ent_khuvuc && ent_khuvuc.length > 0 ? (
+                      {ent_users && ent_users.length > 0 ? (
                         <>
                           <View
                             style={{
@@ -357,16 +385,21 @@ const DanhmucCalamviec = ({ navigation }) => {
                             }}
                           >
                             <Text style={styles.text}>
-                              Số lượng: {decimalNumber(ent_khuvuc?.length)}
+                              Số lượng: {decimalNumber(ent_users?.length)}
                             </Text>
                             <ButtonChecklist
                               text={"Thêm mới"}
                               width={"auto"}
                               color={COLORS.bg_button}
-                              icon={
-                                <Ionicons name="add" size={20} color="white" />
-                              }
-                              onPress={handlePresentModalPress}
+                              // icon={<Ionicons name="add" size={20} color="white" />}
+                              onPress={() => {
+                                handlePresentModalPress();
+                                handleAdd();
+                                setIsCheckUpdate({
+                                  check: false,
+                                  ID_User: null,
+                                });
+                              }}
                             />
                           </View>
 
@@ -374,13 +407,14 @@ const DanhmucCalamviec = ({ navigation }) => {
                             horizontal={false}
                             contentContainerStyle={{ flexGrow: 1 }}
                             style={{ marginVertical: 10 }}
-                            data={ent_khuvuc}
+                            data={ent_users}
                             renderItem={({ item, index }) => (
-                              <ItemKhuVuc
+                              <ItemUser
                                 key={index}
                                 item={item}
                                 handleEditEnt={handleEditEnt}
                                 handleAlertDelete={handleAlertDelete}
+                                handleToggleModal={handleToggleModal}
                               />
                             )}
                             keyExtractor={(item, index) => index.toString()}
@@ -431,18 +465,42 @@ const DanhmucCalamviec = ({ navigation }) => {
                 onChange={handleSheetChanges}
               >
                 <BottomSheetScrollView style={styles.contentContainer}>
-                  <ModalKhuvuc
+                  <ModalUsers
+                    ent_chucvu={ent_chucvu}
+                    ent_duan={ent_duan}
                     ent_khoicv={ent_khoicv}
-                    ent_toanha={ent_toanha}
-                    handleChangeText={handleChangeText}
+                    toggleDatePicker={toggleDatePicker}
                     dataInput={dataInput}
                     handlePushDataSave={handlePushDataSave}
+                    handleEditEnt={handleEditEnt}
                     isCheckUpdate={isCheckUpdate}
                     handlePushDataEdit={handlePushDataEdit}
                     loadingSubmit={loadingSubmit}
+                    handleChangeText={handleChangeText}
                   />
                 </BottomSheetScrollView>
               </BottomSheetModal>
+              <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalVisible}
+                onRequestClose={() => {
+                  Alert.alert("Modal has been closed.");
+                  setModalVisible(!modalVisible);
+                }}
+              >
+                <View style={styles.centeredView}>
+                  <View style={styles.modalView}>
+                    <Text style={styles.modalText}>
+                      Thông tin cá nhân chi tiết
+                    </Text>
+                    <ModalGiamsatInfo
+                      dataModal={dataModal}
+                      handleToggleModal={handleToggleModal}
+                    />
+                  </View>
+                </View>
+              </Modal>
             </ImageBackground>
           </BottomSheetModalProvider>
         </KeyboardAvoidingView>
@@ -460,7 +518,7 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: "700",
     color: "white",
-    paddingVertical: 40,
+    marginBottom: 20,
   },
   text: { fontSize: 15, color: "white", fontWeight: "600" },
   textInput: {
@@ -498,6 +556,33 @@ const styles = StyleSheet.create({
     color: COLORS.text_main,
   },
   row: { flexDirection: "row", backgroundColor: "#FFF1C1" },
+
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalView: {
+    // margin: 20,
+    backgroundColor: "white",
+    borderRadius: 16,
+    padding: 10,
+    // alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalText: {
+    fontSize: 20,
+    fontWeight: "600",
+    paddingVertical: 10,
+  },
 });
 
-export default DanhmucCalamviec;
+export default DanhmucUserScreen;

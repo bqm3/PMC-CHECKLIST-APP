@@ -25,24 +25,21 @@ import {
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import moment from "moment";
 import ButtonChecklist from "../../components/Button/ButtonCheckList";
 import { COLORS, SIZES } from "../../constants/theme";
-import { AntDesign, Ionicons } from "@expo/vector-icons";
 
 import {
   ent_toanha_get,
-  ent_khoicv_get,
-  ent_khuvuc_get,
+  ent_duan_get,
 } from "../../redux/actions/entActions";
 import axios from "axios";
 import { BASE_URL } from "../../constants/config";
-import ItemKhuVuc from "../../components/Item/ItemKhuVuc";
-import ModalKhuvuc from "../../components/Modal/ModalKhuvuc";
+import ItemToanha from "../../components/Item/ItemToanha";
+import ModalToanha from "../../components/Modal/ModalToanha";
 
-const DanhmucCalamviec = ({ navigation }) => {
+const DanhmucToanhaScreen = ({ navigation }) => {
   const dispath = useDispatch();
-  const { ent_toanha, ent_khuvuc, ent_khoicv } = useSelector(
+  const { ent_toanha, ent_duan } = useSelector(
     (state) => state.entReducer
   );
   const { user, authToken } = useSelector((state) => state.authReducer);
@@ -50,49 +47,33 @@ const DanhmucCalamviec = ({ navigation }) => {
   const bottomSheetModalRef = useRef(null);
   const snapPoints = useMemo(() => ["90%"], []);
   const [opacity, setOpacity] = useState(1);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false)
   const [isCheckUpdate, setIsCheckUpdate] = useState({
     check: false,
-    id_khuvuc: null,
+    ID_Toanha: null,
   });
 
   const init_toanha = async () => {
     await dispath(ent_toanha_get());
   };
 
-  const init_khoicv = async () => {
-    await dispath(ent_khoicv_get());
-  };
-
-  const init_khuvuc = async () => {
-    await dispath(ent_khuvuc_get());
+  const init_duan = async () => {
+    await dispath(ent_duan_get());
   };
 
   useEffect(() => {
+    setIsLoading(true)
     init_toanha();
-    init_khuvuc();
-    init_khoicv();
+    init_duan();
+    setIsLoading(false)
   }, []);
 
-  useEffect(() => {
-    setIsLoading(true);
-    // Use setTimeout to update the message after 2000 milliseconds (2 seconds)
-    const timeoutId = setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-
-    // Cleanup function to clear the timeout if the component unmounts
-    return () => clearTimeout(timeoutId);
-  }, []); //
-
+  
   const [dataInput, setDataInput] = useState({
-    toanha: null,
-    khoicv: null,
-    makhuvuc: "",
-    sothutu: 0,
-    qrcode: "",
-    tenkhuvuc: "",
+    ID_Duan: null,
+    Toanha: "",
+    Sotang: 0,
   });
 
   const handleChangeText = (key, value) => {
@@ -104,12 +85,10 @@ const DanhmucCalamviec = ({ navigation }) => {
 
   const handlePushDataSave = async () => {
     if (
-      dataInput.makhuvuc === "" ||
-      dataInput.khoicv === null ||
-      dataInput.toanha === null ||
-      dataInput.tenkhuvuc === ""
+      dataInput.ID_Duan === null ||
+      dataInput.Toanha === "" 
     ) {
-      Alert.alert("PMC Thông báo", "Thiếu thông tin khu vực", [
+      Alert.alert("PMC Thông báo", "Thiếu thông tin tòa nhà", [
         {
           text: "Hủy",
           onPress: () => console.log("Cancel Pressed"),
@@ -119,23 +98,21 @@ const DanhmucCalamviec = ({ navigation }) => {
       ]);
     } else {
       let data = {
-        ID_Toanha: dataInput.toanha,
-        ID_KhoiCV: dataInput.khoicv,
-        Sothutu: dataInput.sothutu,
-        Makhuvuc: dataInput.makhuvuc,
-        MaQrCode: dataInput.qrcode,
-        Tenkhuvuc: dataInput.tenkhuvuc,
+        ID_Duan: dataInput.ID_Duan,
+        Toanha: dataInput.Toanha,
+        Sotang: dataInput.Sotang,
+        
       };
       setLoadingSubmit(true)
       await axios
-        .post(BASE_URL + "/ent_khuvuc/create", data, {
+        .post(BASE_URL + "/ent_toanha/create", data, {
           headers: {
             Accept: "application/json",
             Authorization: "Bearer " + authToken,
           },
         })
         .then((response) => {
-          init_khuvuc();
+          init_toanha();
           handleAdd();
           handleCloseModal();
           setLoadingSubmit(false)
@@ -149,6 +126,7 @@ const DanhmucCalamviec = ({ navigation }) => {
           ]);
         })
         .catch((err) => {
+          console.log('err',err)
           setLoadingSubmit(false)
           Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
             {
@@ -165,22 +143,20 @@ const DanhmucCalamviec = ({ navigation }) => {
   const handleEditEnt = (data) => {
     setIsCheckUpdate({
       check: true,
-      id_khuvuc: data.ID_Khuvuc,
+      ID_Toanha: data.ID_Toanha,
     });
     handlePresentModalPress();
     setDataInput({
-      toanha: data.ID_Toanha,
-      khoicv: data.ID_KhoiCV,
-      sothutu: data.Sothutu,
-      makhuvuc: data.Makhuvuc,
-      qrcode: data.MaQrCode,
-      tenkhuvuc: data.Tenkhuvuc,
+      ID_Duan: data.ID_Duan,
+        Toanha: data.Toanha,
+        Sotang: data.Sotang,
+    
     });
   };
 
   const handlePushDataEdit = async (id) => {
-    if (dataInput.tenca === "" || dataInput.khoicv === null) {
-      Alert.alert("PMC Thông báo", "Thiếu thông tin ca làm việc", [
+    if (dataInput.Toanha === "" || dataInput.ID_Duan === null) {
+      Alert.alert("PMC Thông báo", "Thiếu thông tin tòa nhà", [
         {
           text: "Hủy",
           onPress: () => console.log("Cancel Pressed"),
@@ -190,23 +166,20 @@ const DanhmucCalamviec = ({ navigation }) => {
       ]);
     } else {
       let data = {
-        ID_Toanha: dataInput.toanha,
-        ID_KhoiCV: dataInput.khoicv,
-        Sothutu: dataInput.sothutu,
-        Makhuvuc: dataInput.makhuvuc,
-        MaQrCode: dataInput.qrcode,
-        Tenkhuvuc: dataInput.tenkhuvuc,
+        ID_Duan: dataInput.ID_Duan,
+        Toanha: dataInput.Toanha,
+        Sotang: dataInput.Sotang,
       };
       setLoadingSubmit(true)
       await axios
-        .put(BASE_URL + `/ent_khuvuc/update/${id}`, data, {
+        .put(BASE_URL + `/ent_toanha/update/${id}`, data, {
           headers: {
             Accept: "application/json",
             Authorization: "Bearer " + authToken,
           },
         })
         .then((response) => {
-          init_khuvuc();
+          init_toanha();
           handleAdd();
           handleCloseModal();
           setLoadingSubmit(false)
@@ -246,14 +219,14 @@ const DanhmucCalamviec = ({ navigation }) => {
 
   const handlePushDataDelete = async (id) => {
     await axios
-      .put(BASE_URL + `/ent_khuvuc/delete/${id}`, [], {
+      .put(BASE_URL + `/ent_toanha/delete/${id}`, [], {
         headers: {
           Accept: "application/json",
           Authorization: "Bearer " + authToken,
         },
       })
       .then((response) => {
-        init_khuvuc();
+        init_toanha();
         handleAdd();
         handleCloseModal();
         Alert.alert("PMC Thông báo", response.data.message, [
@@ -279,12 +252,10 @@ const DanhmucCalamviec = ({ navigation }) => {
 
   const handleAdd = () => {
     setDataInput({
-      toanha: null,
-      khoicv: null,
-      makhuvuc: "",
-      sothutu: "",
-      qrcode: "",
-      tenkhuvuc: "",
+      ID_Duan: null,
+      Toanha: "",
+      Sotang: 0,
+     
     });
   };
 
@@ -306,7 +277,8 @@ const DanhmucCalamviec = ({ navigation }) => {
   };
 
   const decimalNumber = (number) => {
-    if (number < 10) return `0${number}`;
+    if (number < 10 && number >= 1) return `0${number}`;
+    if (number === 0) return `${number}`;
     return number;
   };
 
@@ -332,7 +304,7 @@ const DanhmucCalamviec = ({ navigation }) => {
                 }}
               >
                 <View style={styles.container}>
-                  <Text style={styles.danhmuc}>Danh mục khu vực</Text>
+                  <Text style={styles.danhmuc}>Danh mục tòa nhà</Text>
                   {isLoading === true ? (
                     <View
                       style={{
@@ -346,7 +318,7 @@ const DanhmucCalamviec = ({ navigation }) => {
                     </View>
                   ) : (
                     <>
-                      {ent_khuvuc && ent_khuvuc.length > 0 ? (
+                      {ent_toanha && ent_toanha.length > 0 ? (
                         <>
                           <View
                             style={{
@@ -357,16 +329,23 @@ const DanhmucCalamviec = ({ navigation }) => {
                             }}
                           >
                             <Text style={styles.text}>
-                              Số lượng: {decimalNumber(ent_khuvuc?.length)}
+                              Số lượng: {decimalNumber(ent_toanha?.length)}
                             </Text>
                             <ButtonChecklist
                               text={"Thêm mới"}
                               width={"auto"}
                               color={COLORS.bg_button}
-                              icon={
-                                <Ionicons name="add" size={20} color="white" />
-                              }
-                              onPress={handlePresentModalPress}
+                              // icon={
+                              //   <Ionicons name="add" size={20} color="white" />
+                              // }
+                              onPress={()=> {
+                                handlePresentModalPress()
+                                handleAdd()
+                                setIsCheckUpdate({
+                                  check: false,
+                                  ID_Toanha: null,
+                                })
+                              }}
                             />
                           </View>
 
@@ -374,9 +353,9 @@ const DanhmucCalamviec = ({ navigation }) => {
                             horizontal={false}
                             contentContainerStyle={{ flexGrow: 1 }}
                             style={{ marginVertical: 10 }}
-                            data={ent_khuvuc}
+                            data={ent_toanha}
                             renderItem={({ item, index }) => (
-                              <ItemKhuVuc
+                              <ItemToanha
                                 key={index}
                                 item={item}
                                 handleEditEnt={handleEditEnt}
@@ -431,7 +410,16 @@ const DanhmucCalamviec = ({ navigation }) => {
                 onChange={handleSheetChanges}
               >
                 <BottomSheetScrollView style={styles.contentContainer}>
-                  <ModalKhuvuc
+                  <ModalToanha 
+                   ent_duan={ent_duan}
+                   handleChangeText={handleChangeText}
+                   dataInput={dataInput}
+                   handlePushDataSave={handlePushDataSave}
+                   isCheckUpdate={isCheckUpdate}
+                   handlePushDataEdit={handlePushDataEdit}
+                   loadingSubmit={loadingSubmit}
+                  />
+                  {/* <ModalKhuvuc
                     ent_khoicv={ent_khoicv}
                     ent_toanha={ent_toanha}
                     handleChangeText={handleChangeText}
@@ -440,7 +428,7 @@ const DanhmucCalamviec = ({ navigation }) => {
                     isCheckUpdate={isCheckUpdate}
                     handlePushDataEdit={handlePushDataEdit}
                     loadingSubmit={loadingSubmit}
-                  />
+                  /> */}
                 </BottomSheetScrollView>
               </BottomSheetModal>
             </ImageBackground>
@@ -460,7 +448,6 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: "700",
     color: "white",
-    paddingVertical: 40,
   },
   text: { fontSize: 15, color: "white", fontWeight: "600" },
   textInput: {
@@ -500,4 +487,4 @@ const styles = StyleSheet.create({
   row: { flexDirection: "row", backgroundColor: "#FFF1C1" },
 });
 
-export default DanhmucCalamviec;
+export default DanhmucToanhaScreen;

@@ -298,3 +298,30 @@ export const ent_tang_get = () => {
     }
   };
 };
+
+export const ent_users_get = () => {
+  return async (dispatch) => {
+    try {
+      const token = await AsyncStorage.getItem("tokenUser");
+      if (token !== null) {
+        const response = await axios.get(BASE_URL + "/ent_user/get-online", {
+          headers: {
+            Accept: "application/json",
+            Authorization: "Bearer " + token,
+          },
+        });
+        const data = response.data.data;
+        dispatch({
+          type: type.SET_ENT_USERS_SUCCESS,
+          payload: {
+            ent_users: data,
+          },
+        });
+      } else {
+        console.error("initialized error");
+      }
+    } catch (err) {
+      console.log("err", err);
+    }
+  };
+};

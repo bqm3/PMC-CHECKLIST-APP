@@ -15,6 +15,9 @@ import {
 import { COLORS } from "../constants/theme";
 import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
 import QRCodeScreen from "../screens/QRCodeScreen";
+import DanhmucToanhaScreen from "../screens/PSH/DanhmucToanhaScreen";
+import DanhmucDuanScreen from "../screens/PSH/DanhmucDuanScreen";
+import DanhmucUserScreen from "../screens/PSH/DanhmucUserScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -175,6 +178,77 @@ const HomeStack = ({ navigation }) => {
           headerTitle: () => (
             <Text style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
               Danh mục Ca làm việc
+            </Text>
+          ),
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Ionicons name="chevron-back" size={24} color="white" />
+            </TouchableOpacity>
+          ),
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: COLORS.bg_button,
+          },
+        })}
+      />
+
+      <Stack.Screen
+        name="Danh mục tòa nhà"
+        component={DanhmucToanhaScreen}
+        lazy={false}
+        options={({ navigation, route }) => ({
+          headerShown: true,
+
+          headerTitle: () => (
+            <Text style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
+              Danh mục tòa nhà
+            </Text>
+          ),
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Ionicons name="chevron-back" size={24} color="white" />
+            </TouchableOpacity>
+          ),
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: COLORS.bg_button,
+          },
+        })}
+      />
+
+      <Stack.Screen
+        name="Quản lý người dùng"
+        component={DanhmucUserScreen}
+        lazy={false}
+        options={({ navigation, route }) => ({
+          headerShown: true,
+
+          headerTitle: () => (
+            <Text style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
+              Quản lý người dùng
+            </Text>
+          ),
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <Ionicons name="chevron-back" size={24} color="white" />
+            </TouchableOpacity>
+          ),
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: COLORS.bg_button,
+          },
+        })}
+      />
+      <Stack.Screen
+        name="Danh mục dự án"
+        component={DanhmucDuanScreen}
+        lazy={false}
+        options={({ navigation, route }) => ({
+          headerShown: true,
+
+          headerTitle: () => (
+            <Text style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
+              Danh mục dự án
             </Text>
           ),
           headerLeft: () => (

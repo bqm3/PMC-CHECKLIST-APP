@@ -13,7 +13,7 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useNavigation } from "@react-navigation/native";
@@ -24,12 +24,14 @@ import Title from "../components/Title";
 import ButtonSubmit from "../components/Button/ButtonSubmit";
 import { logoutAction } from "../redux/actions/authActions";
 import { COLORS } from "../constants/theme";
+import LoginContext from "../context/LoginContext";
 
 
 const Profile = () => {
   const { user, authToken } = useSelector((state) => state.authReducer);
   const dispatch = useDispatch();
   const navigation = useNavigation()
+  const { step, saveStep } = useContext(LoginContext);
   
 
   const [isCheckSecurity, setIsCheckSecurity] = useState({
@@ -116,6 +118,7 @@ const Profile = () => {
 
   const logout = ()=> {
     dispatch(logoutAction());
+    saveStep(1)
    }
 
   return (
@@ -180,7 +183,7 @@ const Profile = () => {
               <TextInput
                 value={user?.ent_duan?.Duan}
                 editable={false}
-                placeholder="Nhập tên ca thực hiện checklist"
+                placeholder="Tên dự án"
                 placeholderTextColor="gray"
                 style={[
                   styles.textInput,

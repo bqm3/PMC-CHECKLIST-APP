@@ -312,7 +312,7 @@ const ThucHienChecklist = ({ navigation }) => {
 
   const handlePushDataSave = async () => {
     if (dataInput.ID_Calv === null || dataInput.ID_Giamsat === null) {
-      Alert.alert("PMC Thông báo", "Thiêu thông tin Checklist", [
+      Alert.alert("PMC Thông báo", "Thiếu thông tin Checklist", [
         {
           text: "Hủy",
           onPress: () => console.log("Cancel Pressed"),
