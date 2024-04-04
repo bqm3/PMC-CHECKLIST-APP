@@ -263,6 +263,7 @@ const ThucHienChecklist = ({ navigation }) => {
         formData.append("Giochupanh4", dateHour);
       }
       setLoadingSubmit(true);
+      console.log('formData',formData)
       await axios
         .put(
           BASE_URL +

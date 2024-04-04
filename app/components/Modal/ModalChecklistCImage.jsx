@@ -9,7 +9,9 @@ import {
   KeyboardAvoidingView,
   Platform,
   Image,
+  Modal,
 } from "react-native";
+import { WebView } from "react-native-webview";
 import React, { useRef, useState } from "react";
 import { FontAwesome, Entypo } from "@expo/vector-icons";
 import { COLORS, SIZES } from "../../constants/theme";
@@ -32,7 +34,15 @@ const ModalChecklistCImage = ({
   const [image2, setImage2] = useState(newActionCheckList[0]?.Anh2);
   const [image3, setImage3] = useState(newActionCheckList[0]?.Anh3);
   const [image4, setImage4] = useState(newActionCheckList[0]?.Anh4);
-  const pickImage = async (text, hour, onPress) => {
+  const [openImage1, setOpenImage1] = useState(false);
+  const [openImage2, setOpenImage2] = useState(false);
+  const [openImage3, setOpenImage3] = useState(false);
+  const [openImage4, setOpenImage4] = useState(false);
+
+  const [image, setImage] = useState(null);
+
+  const [modalVisible, setModalVisible] = useState(false);
+  const pickImage = async (text, hour, onPress, setOpen) => {
     // Ask the user for the permission to access the camera
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
 
@@ -47,7 +57,13 @@ const ModalChecklistCImage = ({
       handleChangeImages(text, result?.assets[0]);
       handleChangeImages(hour, dateHour);
       onPress(result?.assets[0]);
+      setOpen(true);
     }
+  };
+
+  const handleWebView = (image) => {
+    setModalVisible(true);
+    setImage(image);
   };
 
   return (
@@ -80,15 +96,27 @@ const ModalChecklistCImage = ({
                       justifyContent: "center",
                       height: 100,
                     }}
-                    onPress={() => pickImage("Anh1", "Giochupanh1", setImage1)}
+                    onPress={() =>
+                      pickImage("Anh1", "Giochupanh1", setImage1, setOpenImage1)
+                    }
                   >
                     <Entypo name="camera" size={24} color="black" />
                   </TouchableOpacity>
-                  {image1 && (
+
+                  {image1 !== null && openImage1 === true && (
                     <Image
                       source={{ uri: image1.uri ? image1.uri : image1 }}
                       style={styles.image}
                     />
+                  )}
+                  {image1 === null && <></>}
+                  {image1 !== null && openImage1 === false && (
+                    <TouchableOpacity
+                      style={styles.buttonImage}
+                      onPress={() => handleWebView(image1)}
+                    >
+                      <Text style={styles.textImage}>Xem ảnh</Text>
+                    </TouchableOpacity>
                   )}
                 </View>
               </View>
@@ -111,11 +139,20 @@ const ModalChecklistCImage = ({
                   >
                     <Entypo name="camera" size={24} color="black" />
                   </TouchableOpacity>
-                  {image2 && (
+                  {image2 !== null && openImage2 === true && (
                     <Image
-                      source={{ uri: image2?.uri ? image2.uri : image2 }}
+                      source={{ uri: image2.uri ? image2.uri : image2 }}
                       style={styles.image}
                     />
+                  )}
+                  {image2 === null && <></>}
+                  {image2 !== null && openImage2 === false && (
+                    <TouchableOpacity
+                      style={styles.buttonImage}
+                      onPress={() => handleWebView(image2)}
+                    >
+                      <Text style={styles.textImage}>Xem ảnh</Text>
+                    </TouchableOpacity>
                   )}
                 </View>
               </View>
@@ -147,11 +184,20 @@ const ModalChecklistCImage = ({
                   >
                     <Entypo name="camera" size={24} color="black" />
                   </TouchableOpacity>
-                  {image3 && (
+                  {image3 !== null && openImage3 === true && (
                     <Image
-                      source={{ uri: image3?.uri ? image3.uri : image3 }}
+                      source={{ uri: image3.uri ? image3.uri : image3 }}
                       style={styles.image}
                     />
+                  )}
+                  {image3 === null && <></>}
+                  {image3 !== null && openImage3 === false && (
+                    <TouchableOpacity
+                      style={styles.buttonImage}
+                      onPress={() => handleWebView(image3)}
+                    >
+                      <Text style={styles.textImage}>Xem ảnh</Text>
+                    </TouchableOpacity>
                   )}
                 </View>
               </View>
@@ -174,11 +220,20 @@ const ModalChecklistCImage = ({
                   >
                     <Entypo name="camera" size={24} color="black" />
                   </TouchableOpacity>
-                  {image4 && (
+                  {image4 !== null && openImage4 === true && (
                     <Image
-                      source={{ uri: image4?.uri ? image4.uri : image4 }}
+                      source={{ uri: image4.uri ? image4.uri : image4 }}
                       style={styles.image}
                     />
+                  )}
+                  {image4 === null && <></>}
+                  {image4 !== null && openImage4 === false && (
+                    <TouchableOpacity
+                      style={styles.buttonImage}
+                      onPress={() => handleWebView(image4)}
+                    >
+                      <Text style={styles.textImage}>Xem ảnh</Text>
+                    </TouchableOpacity>
                   )}
                 </View>
               </View>
@@ -196,6 +251,43 @@ const ModalChecklistCImage = ({
             </View>
           </View>
         </View>
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => {
+            Alert.alert("Modal has been closed.");
+            setModalVisible(!modalVisible);
+          }}
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text style={styles.modalText}>Hình ảnh checklist</Text>
+
+              <WebView
+                style={{
+                  width: 300,
+                  height: 80,
+                  justifyContent: "center",
+                  alignContent: "center",
+                }}
+                source={{
+                  uri: `https://drive.google.com/file/d/${image}/view`,
+                }}
+              />
+            </View>
+            <TouchableOpacity
+              onPress={() => {
+                setModalVisible(false);
+                setImage(null);
+              }}
+              style={styles.buttonImage}
+            >
+              <Text style={styles.textImage}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
       </KeyboardAvoidingView>
     </GestureHandlerRootView>
   );
@@ -267,5 +359,48 @@ const styles = StyleSheet.create({
     height: 100,
     resizeMode: "center",
     marginVertical: 10,
+  },
+  buttonImage: {
+    flexDirection: "row",
+    backgroundColor: COLORS.bg_button,
+    alignContent: "center",
+    justifyContent: "center",
+    borderRadius: 12,
+    marginTop: 10,
+  },
+  textImage: {
+    padding: 12,
+    color: "white",
+    fontWeight: "700",
+    fontSize: 16,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+    zIndex: 10,
+  },
+
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 16,
+    padding: 10,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    height: SIZES.height * 0.6,
+    width: SIZES.width * 0.8,
+  },
+  modalText: {
+    fontSize: 20,
+    fontWeight: "600",
   },
 });

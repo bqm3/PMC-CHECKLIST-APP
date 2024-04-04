@@ -18,6 +18,7 @@ import QRCodeScreen from "../screens/QRCodeScreen";
 import DanhmucToanhaScreen from "../screens/PSH/DanhmucToanhaScreen";
 import DanhmucDuanScreen from "../screens/PSH/DanhmucDuanScreen";
 import DanhmucUserScreen from "../screens/PSH/DanhmucUserScreen";
+import WebViewImage from "../screens/WebViewImage";
 
 const Stack = createNativeStackNavigator();
 

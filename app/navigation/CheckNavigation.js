@@ -7,7 +7,6 @@ import LoginContext from "../context/LoginContext";
 export default function CheckNavigation() {
   const { authToken, user } = useSelector((state) => state.authReducer);
   const { step, saveStep } = useContext(LoginContext);
-  console.log('step',step)
   return (
     <>
       {user && authToken && step ===3  ? (
