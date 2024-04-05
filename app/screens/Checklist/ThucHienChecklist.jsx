@@ -41,6 +41,7 @@ import { BASE_URL } from "../../constants/config";
 import moment from "moment";
 import ModalChecklistC from "../../components/Modal/ModalChecklistC";
 import ModalChecklistCImage from "../../components/Modal/ModalChecklistCImage";
+import * as ImageManipulator from "expo-image-manipulator";
 
 const numberOfItemsPerPageList = [10, 15, 20];
 
@@ -189,21 +190,40 @@ const ThucHienChecklist = ({ navigation }) => {
     }
   };
 
+  const reduceImageSize = async (uri) => {
+    try {
+      const manipResult = await ImageManipulator.manipulateAsync(
+        uri,
+        [],
+        {
+          compress: 0.5, // Adjust compression quality (0 to 1, where 1 means no compression)
+          format: ImageManipulator.SaveFormat.JPEG, // Set the desired format
+        }
+      );
+      return manipResult.uri;
+    } catch (error) {
+      console.log("Error reducing image size:", error);
+      return uri; // Return original URI in case of error
+    }
+  };
+
   const handlePushDataImagesSave = async (id) => {
     try {
       let formData = new FormData();
-
       // Iterate over the keys of dataImages object
       if (dataImages.Anh1) {
         const file = {
           uri:
             Platform.OS === "android"
-              ? dataImages?.Anh1?.uri
-              : dataImages?.Anh1?.uri.replace("file://", ""),
+              ?  await reduceImageSize(dataImages?.Anh1?.uri)
+              : (await reduceImageSize(dataImages?.Anh1?.uri)).replace("file://", ""),
           name:
             dataImages?.Anh1?.fileName ||
-            Math.floor(Math.random() * Math.floor(999999999)) + ".png",
+            Math.floor(Math.random() * Math.floor(99999999999999)) + ".jpeg",
           type: dataImages?.Anh1?.type || "image/jpeg",
+          fileSize: dataImages.Anh1.fileSize,
+          height: dataImages.Anh1.height,
+          wdith: dataImages.Anh1.wdith,
         };
 
         // Append image file to formData
@@ -215,12 +235,15 @@ const ThucHienChecklist = ({ navigation }) => {
         const file = {
           uri:
             Platform.OS === "android"
-              ? dataImages?.Anh2?.uri
-              : dataImages?.Anh2?.uri.replace("file://", ""),
+              ? await reduceImageSize(dataImages?.Anh2?.uri)
+              : (await reduceImageSize(dataImages?.Anh2?.uri)).replace("file://", ""),
           name:
             dataImages?.Anh2?.fileName ||
-            Math.floor(Math.random() * Math.floor(999999999)) + ".png",
+            Math.floor(Math.random() * Math.floor(99999999999999)) + ".jpeg",
           type: dataImages?.Anh2?.type || "image/jpeg",
+          fileSize: dataImages.Anh2.fileSize,
+          height: dataImages.Anh2.height,
+          wdith: dataImages.Anh2.wdith,
         };
 
         // Append image file to formData
@@ -232,12 +255,15 @@ const ThucHienChecklist = ({ navigation }) => {
         const file = {
           uri:
             Platform.OS === "android"
-              ? dataImages?.Anh3?.uri
-              : dataImages?.Anh3?.uri.replace("file://", ""),
+              ? await reduceImageSize(dataImages?.Anh3?.uri)
+              : (await reduceImageSize(dataImages?.Anh3?.uri)).replace("file://", ""),
           name:
             dataImages?.Anh3?.fileName ||
-            Math.floor(Math.random() * Math.floor(999999999)) + ".png",
+            Math.floor(Math.random() * Math.floor(99999999999999)) + ".jpeg",
           type: dataImages?.Anh3?.type || "image/jpeg",
+          fileSize: dataImages.Anh3.fileSize,
+          height: dataImages.Anh3.height,
+          wdith: dataImages.Anh3.wdith,
         };
 
         // Append image file to formData
@@ -249,12 +275,15 @@ const ThucHienChecklist = ({ navigation }) => {
         const file = {
           uri:
             Platform.OS === "android"
-              ? dataImages?.Anh4?.uri
-              : dataImages?.Anh4?.uri.replace("file://", ""),
+              ? await reduceImageSize(dataImages?.Anh4?.uri)
+              : (await reduceImageSize(dataImages?.Anh4?.uri)).replace("file://", ""),
           name:
             dataImages?.Anh4?.fileName ||
-            Math.floor(Math.random() * Math.floor(999999999)) + ".png",
+            Math.floor(Math.random() * Math.floor(999999999)) + ".jpeg",
           type: dataImages?.Anh4?.type || "image/jpeg",
+          fileSize: dataImages.Anh4.fileSize,
+          height: dataImages.Anh4.height,
+          wdith: dataImages.Anh4.wdith,
         };
 
         // Append image file to formData
@@ -263,7 +292,6 @@ const ThucHienChecklist = ({ navigation }) => {
         formData.append("Giochupanh4", dateHour);
       }
       setLoadingSubmit(true);
-      console.log('formData',formData)
       await axios
         .put(
           BASE_URL +
@@ -352,7 +380,7 @@ const ThucHienChecklist = ({ navigation }) => {
             { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
           ]);
         })
-        .catch((err) => {
+        .catch((res) => {
           setLoadingSubmit(false);
           Alert.alert(
             "PMC Thông báo",

@@ -231,7 +231,7 @@ export const ent_checklist_get_detail = (ID_KhoiCV, ID_ChecklistC) => {
     dispatch({
       type: type.SET_ENT_CHECKLIST_STATE,
       payload: {
-        ent_checklist: [],
+        ent_checklist_detail: [],
         isLoading: true
       },
     });
@@ -250,9 +250,9 @@ export const ent_checklist_get_detail = (ID_KhoiCV, ID_ChecklistC) => {
         );
         const data = response.data.data;
         dispatch({
-          type: type.SET_ENT_CHECKLIST_SUCCESS,
+          type: type.SET_ENT_CHECKLIST_DETAIL_SUCCESS,
           payload: {
-            ent_checklist: data,
+            ent_checklist_detail: data,
             isLoading: false
           },
         });
@@ -263,7 +263,7 @@ export const ent_checklist_get_detail = (ID_KhoiCV, ID_ChecklistC) => {
       dispatch({
         type: type.SET_ENT_CHECKLIST_FAIL,
         payload: {
-          ent_checklist: [],
+          ent_checklist_detail: [],
           isLoading: false
         },
       });

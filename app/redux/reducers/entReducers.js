@@ -7,6 +7,7 @@ const initialState = {
   ent_duan: [],
   ent_khuvuc: [],
   ent_checklist: [],
+  ent_checklist_detail: [],
   ent_tang: [],
   ent_toanha: [],
   ent_users: [],
@@ -257,7 +258,31 @@ export const entReducer = (state = initialState, action) => {
         isLoading: true,
         message: null,
       };
-
+      case type.SET_ENT_CHECKLIST_DETAIL_STATE:
+        return {
+          ...state,
+          ent_checklist_detail: null,
+          error: false,
+          isLoading: action.payload.isLoading,
+          message: null,
+        };
+      case type.SET_ENT_CHECKLIST_DETAIL_SUCCESS:
+        return {
+          ...state,
+          ent_checklist_detail: action.payload.ent_checklist_detail,
+          error: false,
+          isLoading: action.payload.isLoading,
+          message: null,
+        };
+      case type.SET_ENT_CHECKLIST_DETAIL_FAIL:
+        return {
+          ...state,
+          ent_checklist_detail: action.payload.ent_checklist_detail,
+          error: false,
+          isLoading: action.payload.isLoading,
+          message: null,
+        };
+      
     case type.SET_LOGOUT:
       return {
         ...state,

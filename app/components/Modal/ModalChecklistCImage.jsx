@@ -19,6 +19,7 @@ import Button from "../Button/Button";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import moment from "moment";
 import * as ImagePicker from "expo-image-picker";
+import * as ImageManipulator from "expo-image-manipulator";
 
 const ModalChecklistCImage = ({
   handlePushDataSave,
@@ -40,8 +41,8 @@ const ModalChecklistCImage = ({
   const [openImage4, setOpenImage4] = useState(false);
 
   const [image, setImage] = useState(null);
-
   const [modalVisible, setModalVisible] = useState(false);
+
   const pickImage = async (text, hour, onPress, setOpen) => {
     // Ask the user for the permission to access the camera
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
@@ -51,12 +52,24 @@ const ModalChecklistCImage = ({
       return;
     }
 
-    const result = await ImagePicker.launchCameraAsync();
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 0.5, // Adjust image quality (0 to 1)
+    });
 
     if (!result.cancelled) {
-      handleChangeImages(text, result?.assets[0]);
+      const assetFile = result?.assets[0];
+      const modifiedImage = {
+        ...assetFile,
+        fileSize: assetFile.fileSize / 1000,
+        height: 500,
+        width: 400,
+      };
+      handleChangeImages(text, modifiedImage);
       handleChangeImages(hour, dateHour);
-      onPress(result?.assets[0]);
+      onPress(modifiedImage);
       setOpen(true);
     }
   };
@@ -135,7 +148,9 @@ const ModalChecklistCImage = ({
                       justifyContent: "center",
                       height: 100,
                     }}
-                    onPress={() => pickImage("Anh2", "Giochupanh2", setImage2,setOpenImage2)}
+                    onPress={() =>
+                      pickImage("Anh2", "Giochupanh2", setImage2, setOpenImage2)
+                    }
                   >
                     <Entypo name="camera" size={24} color="black" />
                   </TouchableOpacity>
@@ -180,7 +195,9 @@ const ModalChecklistCImage = ({
                       justifyContent: "center",
                       height: 100,
                     }}
-                    onPress={() => pickImage("Anh3", "Giochupanh3", setImage3,setOpenImage3)}
+                    onPress={() =>
+                      pickImage("Anh3", "Giochupanh3", setImage3, setOpenImage3)
+                    }
                   >
                     <Entypo name="camera" size={24} color="black" />
                   </TouchableOpacity>
@@ -216,7 +233,9 @@ const ModalChecklistCImage = ({
                       justifyContent: "center",
                       height: 100,
                     }}
-                    onPress={() => pickImage("Anh4", "Giochupanh4", setImage4,setOpenImage4)}
+                    onPress={() =>
+                      pickImage("Anh4", "Giochupanh4", setImage4, setOpenImage4)
+                    }
                   >
                     <Entypo name="camera" size={24} color="black" />
                   </TouchableOpacity>

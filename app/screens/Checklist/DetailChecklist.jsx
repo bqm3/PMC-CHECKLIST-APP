@@ -47,16 +47,18 @@ import axios from "axios";
 import { BASE_URL } from "../../constants/config";
 
 const DetailChecklist = ({ route, navigation }) => {
-  const { ID_ChecklistC, ID_KhoiCV, otherParam } = route.params;
+  const { ID_ChecklistC, ID_KhoiCV } = route.params;
   const dispath = useDispatch();
-  const { ent_checklist, ent_tang, ent_khuvuc, ent_toanha, isLoading } =
+  const { ent_checklist_detail, ent_tang, ent_khuvuc, ent_toanha, isLoading } =
     useSelector((state) => state.entReducer);
 
   const { user, authToken } = useSelector((state) => state.authReducer);
 
   const [dataChecklist, setDataChecklist] = useState([]);
+  const [data, setData] = useState([]);
   const [dataChecklistFilter, setDataChecklistFilter] = useState([]);
   const [newActionDataChecklist, setNewActionDataChecklist] = useState([]);
+  const [defaultActionDataChecklist, setDefaultActionDataChecklist] = useState([]);
   const [dataItem, setDataItem] = useState(null);
   const bottomSheetModalRef = useRef(null);
   const snapPoints = useMemo(() => ["80%"], []);
@@ -64,6 +66,7 @@ const DetailChecklist = ({ route, navigation }) => {
   const [index, setIndex] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
+  const [isEnabled, setIsEnabled] = useState(true);
 
   const [filterData, setFilterData] = useState({
     ID_Khuvuc: null,
@@ -77,8 +80,6 @@ const DetailChecklist = ({ route, navigation }) => {
     ID_Khuvuc: false,
     ID_Toanha: null,
   });
-
-  const [isEnabled, setIsEnabled] = useState(true);
 
   const init_checklist = async () => {
     await dispath(ent_checklist_get_detail(ID_KhoiCV, ID_ChecklistC));
@@ -112,12 +113,43 @@ const DetailChecklist = ({ route, navigation }) => {
         ID_Toanha: null,
         ID_ChecklistC: ID_ChecklistC,
       });
-      setDataChecklistFilter(dataChecklist);
+
       setIsFilter({
         ID_Tang: false,
         ID_Khuvuc: false,
         ID_Toanha: false,
       });
+
+        let filteredData = dataChecklist.map((item) => {
+          const matchingItem = newActionDataChecklist.find(
+            (newItem) => newItem.ID_Checklist === item.ID_Checklist
+          );
+          if (matchingItem) {
+            return {
+              ...item,
+              valueCheck: matchingItem.valueCheck,
+              GhichuChitiet: matchingItem.GhichuChitiet,
+              Anh: matchingItem.Anh,
+              gioht: matchingItem.gioht,
+              ID_ChecklistC: ID_ChecklistC,
+            };
+          }
+          return {
+            ...item,
+            valueCheck: null,
+            GhichuChitiet: "",
+            ID_ChecklistC: ID_ChecklistC,
+            Anh: null,
+            gioht: moment().format("LTS"),
+          };
+        });
+
+        const newDataChecklist = filteredData.filter(
+          (item) => item.valueCheck !== null
+        );
+
+        setDataChecklistFilter(filteredData);
+        setNewActionDataChecklist(newDataChecklist);
     }
   };
 
@@ -176,21 +208,21 @@ const DetailChecklist = ({ route, navigation }) => {
   }, []);
 
   useEffect(() => {
-    const processedData = ent_checklist?.map((item) => {
+    const processedData = ent_checklist_detail?.map((item) => {
       return {
         ...item,
         Giatrinhan: item?.Giatrinhan?.split("/"),
         valueCheck: null,
         GhichuChitiet: "",
         ID_ChecklistC: ID_ChecklistC,
-        // Bổ sung đường dẫn hình ảnh vào dữ liệu của mỗi mục
         Anh: null,
         gioht: moment().format("LTS"),
       };
     });
     setDataChecklistFilter(processedData);
     setDataChecklist(processedData);
-  }, [ent_checklist, loadingSubmit]);
+    setData(processedData);
+  }, [ent_checklist_detail, loadingSubmit]);
 
   const decimalNumber = (number) => {
     if (number < 10 && number >= 1) return `0${number}`;
@@ -199,10 +231,10 @@ const DetailChecklist = ({ route, navigation }) => {
   };
 
   const handleItemClick = (value, index, key) => {
-    const updatedDataChecklist = dataChecklist?.map((item, i) => {
-      if (i === index && key === "click") {
+    const updatedDataChecklist = dataChecklistFilter?.map((item, i) => {
+      if (item.ID_Checklist === index && key === "click") {
         return { ...item, valueCheck: value, gioht: moment().format("LTS") };
-      } else if (i === index && key === "active") {
+      } else if (item.ID_Checklist === index && key === "active") {
         return {
           ...item,
           valueCheck: item.valueCheck === null ? value : null,
@@ -215,12 +247,12 @@ const DetailChecklist = ({ route, navigation }) => {
       (item) => item.valueCheck !== null
     );
     setNewActionDataChecklist(newDataChecklist);
-    setDataChecklist(updatedDataChecklist);
+    setDefaultActionDataChecklist(newDataChecklist)
     setDataChecklistFilter(updatedDataChecklist);
   };
 
   const handleChange = (key, value, index) => {
-    const updatedDataChecklist = dataChecklist.map((item, i) => {
+    const updatedDataChecklist = dataChecklist?.map((item, i) => {
       if (i === index) {
         return {
           ...item,
@@ -234,7 +266,6 @@ const DetailChecklist = ({ route, navigation }) => {
       (item) => item.valueCheck !== null
     );
     setNewActionDataChecklist(newDataChecklist);
-    setDataChecklist(updatedDataChecklist);
     setDataChecklistFilter(updatedDataChecklist);
   };
 
@@ -242,9 +273,7 @@ const DetailChecklist = ({ route, navigation }) => {
     try {
       let formData = new FormData();
 
-      // Loop through newActionDataChecklist array
-      newActionDataChecklist.forEach((item, index) => {
-        // Create an object to store information related to the item
+      for (const item of newActionDataChecklist) {
         const itemInfo = {
           ID_ChecklistC: ID_ChecklistC,
           ID_Checklist: item.ID_Checklist,
@@ -254,7 +283,6 @@ const DetailChecklist = ({ route, navigation }) => {
           Anh: "",
         };
 
-        // Check if the item has an image
         if (item.Anh) {
           const file = {
             uri:
@@ -267,78 +295,101 @@ const DetailChecklist = ({ route, navigation }) => {
             type: item?.Anh?.type || "image/jpeg",
           };
 
-          // Append image file to formData
           formData.append(`Images`, file);
 
-          // Update the Anh property of the itemInfo object with the index of the image file
           itemInfo.Anh = `${file.name}`;
         }
 
-        // Append other item information to formData
         Object.entries(itemInfo).forEach(([key, value]) => {
           formData.append(key, value);
         });
-      });
+      }
 
       setLoadingSubmit(true);
-      // Send POST request with formData
-      await axios
-        .post(BASE_URL + "/tb_checklistchitiet/create", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: "Bearer " + authToken,
-          },
-        })
-        .then((res) => {
-          init_checklist();
-          setLoadingSubmit(false);
-          Alert.alert("PMC Thông báo", "Checklist thành công", [
-            {
-              text: "Hủy",
-              onPress: () => console.log("Cancel Pressed"),
-              style: "cancel",
-            },
-            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-          ]);
-        })
-        .catch((err) => {
-          setLoadingSubmit(false);
-          Alert.alert(
-            "PMC Thông báo",
-            "Đã có lỗi xảy ra. Vui lòng kiểm tra lại!!",
-            [
-              {
-                text: "Hủy",
-                onPress: () => console.log("Cancel Pressed"),
-                style: "cancel",
-              },
-              { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-            ]
-          );
-        });
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
 
-  const handlePushDataFilter = async () => {
-    await axios
-      .post(BASE_URL + "/ent_checklist/filter", filterData, {
+      await axios.post(BASE_URL + "/tb_checklistchitiet/create", formData, {
         headers: {
-          Accept: "application/json",
+          "Content-Type": "multipart/form-data",
           Authorization: "Bearer " + authToken,
         },
-      })
-      .then((res) => {
-        Alert.alert("PMC Thông báo", "Tìm kiếm thành công", [
+      });
+
+      init_checklist();
+      setLoadingSubmit(false);
+      Alert.alert("PMC Thông báo", "Checklist thành công", [
+        {
+          text: "Hủy",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+        { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+      ]);
+    } catch (error) {
+      setLoadingSubmit(false);
+      Alert.alert(
+        "PMC Thông báo",
+        "Đã có lỗi xảy ra. Vui lòng kiểm tra lại!!",
+        [
           {
             text: "Hủy",
             onPress: () => console.log("Cancel Pressed"),
             style: "cancel",
           },
           { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-        ]);
-        setDataChecklistFilter(res.data.data);
+        ]
+      );
+    }
+  };
+
+  const handlePushDataFilter = async () => {
+    await axios
+      .post(
+        BASE_URL + `/ent_checklist/filter/${ID_KhoiCV}/${ID_ChecklistC}`,
+        filterData,
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: "Bearer " + authToken,
+          },
+        }
+      )
+      .then((res) => {
+        const dataList = res.data.data;
+        let filteredData = dataList.map((item) => {
+          const matchingItem = defaultActionDataChecklist.find(
+            (newItem) => newItem.ID_Checklist === item.ID_Checklist
+          );
+          if (matchingItem) {
+            return {
+              ...item,
+              valueCheck: matchingItem.valueCheck,
+              GhichuChitiet: matchingItem.GhichuChitiet,
+              Anh: matchingItem.Anh,
+              gioht: matchingItem.gioht,
+              ID_ChecklistC: ID_ChecklistC,
+            };
+          } else {
+            return {
+              ...item,
+              valueCheck: null,
+              GhichuChitiet: "",
+              Anh: null,
+              gioht: moment().format("LTS"),
+              ID_ChecklistC: ID_ChecklistC,
+            };
+          }
+        });
+  
+        const newDataChecklist = filteredData.filter(
+          (item) => item.valueCheck !== null
+        );
+  
+        // Thêm các phần tử mới từ newDataChecklist vào newActionDataChecklist
+        setNewActionDataChecklist((prevState) =>
+          prevState.concat(newDataChecklist)
+        );
+  
+        setDataChecklistFilter(filteredData);
         handleCloseModal();
       })
       .catch((err) => {
@@ -353,6 +404,7 @@ const DetailChecklist = ({ route, navigation }) => {
         ]);
       });
   };
+  
 
   const renderItem = (item, index) => {
     return (
@@ -370,7 +422,11 @@ const DetailChecklist = ({ route, navigation }) => {
             index={index}
             size={30}
             handleToggle={() =>
-              handleItemClick(item?.Giatridinhdanh, index, "active")
+              handleItemClick(
+                item?.Giatridinhdanh,
+                item?.ID_Checklist,
+                "active"
+              )
             }
             // active={}
           />

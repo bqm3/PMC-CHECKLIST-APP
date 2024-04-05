@@ -4088,6 +4088,13 @@
   "resolved" "https://registry.npmjs.org/expo-image-loader/-/expo-image-loader-4.6.0.tgz"
   "version" "4.6.0"
 
+"expo-image-manipulator@~11.8.0":
+  "integrity" "sha512-ZWVrHnYmwJq6h7auk+ropsxcNi+LyZcPFKQc8oy+JA0SaJosfShvkCm7RADWAunHmfPCmjHrhwPGEu/rs7WG/A=="
+  "resolved" "https://registry.npmjs.org/expo-image-manipulator/-/expo-image-manipulator-11.8.0.tgz"
+  "version" "11.8.0"
+  dependencies:
+    "expo-image-loader" "~4.6.0"
+
 "expo-image-picker@~14.7.1":
   "integrity" "sha512-ILQVOJgI3aEzrDmCFGDPtpAepYkn8mot8G7vfQ51BfFdQbzL6N3Wm1fS/ofdWlAZJl/qT2DwaIh5xYmf3SyGZA=="
   "resolved" "https://registry.npmjs.org/expo-image-picker/-/expo-image-picker-14.7.1.tgz"
@@ -6658,6 +6665,11 @@
     "nested-error-stacks" "~2.0.1"
     "rc" "~1.2.7"
     "resolve" "~1.7.1"
+
+"resize-image@^0.1.0":
+  "integrity" "sha512-78cWCEX/IupMCwKi5Gg5gxjOZKoN6UXinL2eVOB4xzyG2QNjq64z6pJBnyBKg5/BsjEosLz1co5e3DHr99TgFg=="
+  "resolved" "https://registry.npmjs.org/resize-image/-/resize-image-0.1.0.tgz"
+  "version" "0.1.0"
 
 "resolve-from@^3.0.0":
   "integrity" "sha512-GnlH6vxLymXJNMBo7XP1fJIzBFbdYt49CuTwmB/6N53t+kMPRMFKz783LlQ4tv28XoQfMWinAJX6WCGf2IlaIw=="
