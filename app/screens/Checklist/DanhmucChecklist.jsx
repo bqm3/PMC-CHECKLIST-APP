@@ -712,43 +712,41 @@ const DanhmucChecklist = ({ navigation }) => {
                   </View>
                 ) : (
                   <>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignContent: "center",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        // flex: 1, backgroundColor: 'red'
+                      }}
+                    >
+                      <TouchableOpacity
+                        onPress={() => handleFilterData(true, 0.5)}
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          gap: 8,
+                        }}
+                      >
+                        <Image
+                          source={require("../../../assets/icons/filter_icon.png")}
+                          resizeMode="contain"
+                          style={{ height: 24, width: 24 }}
+                        />
+                        <Text style={styles.text}>Lọc dữ liệu</Text>
+                      </TouchableOpacity>
+                      <ButtonChecklist
+                        text={"Thêm mới"}
+                        width={"auto"}
+                        color={COLORS.bg_button}
+                        // icon={<Ionicons name="add" size={20} color="white" />}
+                        onPress={handlePresentModalPress}
+                      />
+                    </View>
+
                     {listChecklist?.length > 0 ? (
                       <>
-                        <View
-                          style={{
-                            flexDirection: "row",
-                            alignContent: "center",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                            // flex: 1, backgroundColor: 'red'
-                          }}
-                        >
-                          <TouchableOpacity
-                            onPress={() => handleFilterData(true, 0.5)}
-                            style={{
-                              flexDirection: "row",
-                              alignItems: "center",
-                              gap: 8,
-                            }}
-                          >
-                            <Image
-                              source={require("../../../assets/icons/filter_icon.png")}
-                              resizeMode="contain"
-                              style={{ height: 24, width: 24 }}
-                            />
-                            <Text style={styles.text}>Lọc dữ liệu</Text>
-                          </TouchableOpacity>
-                          <ButtonChecklist
-                            text={"Thêm mới"}
-                            width={"auto"}
-                            color={COLORS.bg_button}
-                            icon={
-                              <Ionicons name="add" size={20} color="white" />
-                            }
-                            onPress={handlePresentModalPress}
-                          />
-                        </View>
-
                         <ScrollView
                           style={{ flex: 1, marginBottom: 20, marginTop: 20 }}
                           ref={(it) => (scrollRef.current = it)}

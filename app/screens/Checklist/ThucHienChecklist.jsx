@@ -202,7 +202,7 @@ const ThucHienChecklist = ({ navigation }) => {
               : dataImages?.Anh1?.uri.replace("file://", ""),
           name:
             dataImages?.Anh1?.fileName ||
-            Math.floor(Math.random() * Math.floor(999999999)) + ".jpg",
+            Math.floor(Math.random() * Math.floor(999999999)) + ".png",
           type: dataImages?.Anh1?.type || "image/jpeg",
         };
 
@@ -219,7 +219,7 @@ const ThucHienChecklist = ({ navigation }) => {
               : dataImages?.Anh2?.uri.replace("file://", ""),
           name:
             dataImages?.Anh2?.fileName ||
-            Math.floor(Math.random() * Math.floor(999999999)) + ".jpg",
+            Math.floor(Math.random() * Math.floor(999999999)) + ".png",
           type: dataImages?.Anh2?.type || "image/jpeg",
         };
 
@@ -236,7 +236,7 @@ const ThucHienChecklist = ({ navigation }) => {
               : dataImages?.Anh3?.uri.replace("file://", ""),
           name:
             dataImages?.Anh3?.fileName ||
-            Math.floor(Math.random() * Math.floor(999999999)) + ".jpg",
+            Math.floor(Math.random() * Math.floor(999999999)) + ".png",
           type: dataImages?.Anh3?.type || "image/jpeg",
         };
 
@@ -253,7 +253,7 @@ const ThucHienChecklist = ({ navigation }) => {
               : dataImages?.Anh4?.uri.replace("file://", ""),
           name:
             dataImages?.Anh4?.fileName ||
-            Math.floor(Math.random() * Math.floor(999999999)) + ".jpg",
+            Math.floor(Math.random() * Math.floor(999999999)) + ".png",
           type: dataImages?.Anh4?.type || "image/jpeg",
         };
 
@@ -490,7 +490,7 @@ const ThucHienChecklist = ({ navigation }) => {
         >
           <DataTable.Cell style={{ width: 120, justifyContent: "center" }}>
             <Text
-              style={{ color: isExistIndex ? "white" : "black" }}
+              style={{ color: isExistIndex ? "white" : "black", fontSize:15 }}
               numberOfLines={2}
             >
               {moment(item?.Ngay).format("DD-MM-YYYY")}
@@ -498,7 +498,7 @@ const ThucHienChecklist = ({ navigation }) => {
           </DataTable.Cell>
           <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
             <Text
-              style={{ color: isExistIndex ? "white" : "black" }}
+              style={{ color: isExistIndex ? "white" : "black", fontSize:15 }}
               numberOfLines={2}
             >
               {item?.ent_calv?.Tenca}
@@ -506,7 +506,7 @@ const ThucHienChecklist = ({ navigation }) => {
           </DataTable.Cell>
           <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
             <Text
-              style={{ color: isExistIndex ? "white" : "black" }}
+              style={{ color: isExistIndex ? "white" : "black", fontSize:15 }}
               numberOfLines={2}
             >
               {item?.ent_khoicv?.KhoiCV}
@@ -514,7 +514,7 @@ const ThucHienChecklist = ({ navigation }) => {
           </DataTable.Cell>
           <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
             <Text
-              style={{ color: isExistIndex ? "white" : "black" }}
+              style={{ color: isExistIndex ? "white" : "black", fontSize:15 }}
               numberOfLines={2}
             >
               {item?.ent_giamsat?.Hoten}
@@ -522,7 +522,7 @@ const ThucHienChecklist = ({ navigation }) => {
           </DataTable.Cell>
           <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
             <Text
-              style={{ color: isExistIndex ? "white" : "black" }}
+              style={{ color: isExistIndex ? "white" : "black", fontSize:15 }}
               numberOfLines={2}
             >
               {item?.Giobd}
@@ -530,7 +530,7 @@ const ThucHienChecklist = ({ navigation }) => {
           </DataTable.Cell>
           <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
             <Text
-              style={{ color: isExistIndex ? "white" : "black" }}
+              style={{ color: isExistIndex ? "white" : "black", fontSize:15 }}
               numberOfLines={2}
             >
               {item?.Giokt}
@@ -538,7 +538,7 @@ const ThucHienChecklist = ({ navigation }) => {
           </DataTable.Cell>
           <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
             <Text
-              style={{ color: isExistIndex ? "white" : "black" }}
+              style={{ color: isExistIndex ? "white" : "black", fontSize:15 }}
               numberOfLines={2}
             >
               {" "}
@@ -548,7 +548,7 @@ const ThucHienChecklist = ({ navigation }) => {
 
           <DataTable.Cell style={{ width: 200, justifyContent: "center" }}>
             <Text
-              style={{ color: isExistIndex ? "white" : "black" }}
+              style={{ color: isExistIndex ? "white" : "black", fontSize:15 }}
               numberOfLines={3}
             >
               {item?.Ghichu}
@@ -606,7 +606,7 @@ const ThucHienChecklist = ({ navigation }) => {
                       text={"Thêm mới"}
                       width={"auto"}
                       color={COLORS.bg_button}
-                      icon={<Ionicons name="add" size={20} color="white" />}
+                      // icon={<Ionicons name="add" size={20} color="white" />}
                       onPress={handlePresentModalPress}
                     />
                   </View>

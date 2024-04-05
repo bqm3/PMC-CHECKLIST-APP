@@ -363,7 +363,7 @@ const DanhmucCalamviec = ({ navigation }) => {
                           text={"Thêm mới"}
                           width={"auto"}
                           color={COLORS.bg_button}
-                          icon={<Ionicons name="add" size={20} color="white" />}
+                          // icon={<Ionicons name="add" size={20} color="white" />}
                           onPress={handlePresentModalPress}
                         />
                       </View>

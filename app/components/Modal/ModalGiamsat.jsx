@@ -61,7 +61,6 @@ const ModalGiamsat = ({
   const defaultKhoi = ent_khoicv?.find(
     (khoi) => khoi.ID_Khoi === dataInput?.ID_KhoiCV
   );
-  console.log('defaultKhoi',defaultKhoi, dataInput?.ID_KhoiCV)
   const defaultGioitinh = dataGioitinh?.find(
     (duan) => duan.value === dataInput?.gioitinh
   );

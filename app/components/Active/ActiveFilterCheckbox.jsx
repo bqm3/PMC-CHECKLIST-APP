@@ -6,7 +6,7 @@ import { COLORS } from "../../constants/theme";
 const ActionFilterCheckbox = ({ handleCheckbox, name, filters, size }) => {
  
   return (
-    <TouchableOpacity style={[styles.box, {width: size && size +5, height: size && size +5}]} onPress={() => handleCheckbox(name,!filters)}>
+    <TouchableOpacity style={[styles.box, {width: size ? size +5 : 20, height: size ? size +5 : 20}]} onPress={() => handleCheckbox(name,!filters)}>
       {filters && <Entypo name="check" size={size ? size: 16} color={COLORS.color_bg} />}
     </TouchableOpacity>
   );

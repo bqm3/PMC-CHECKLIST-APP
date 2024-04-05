@@ -135,7 +135,7 @@ const ModalChecklistCImage = ({
                       justifyContent: "center",
                       height: 100,
                     }}
-                    onPress={() => pickImage("Anh2", "Giochupanh2", setImage2)}
+                    onPress={() => pickImage("Anh2", "Giochupanh2", setImage2,setOpenImage2)}
                   >
                     <Entypo name="camera" size={24} color="black" />
                   </TouchableOpacity>
@@ -180,7 +180,7 @@ const ModalChecklistCImage = ({
                       justifyContent: "center",
                       height: 100,
                     }}
-                    onPress={() => pickImage("Anh3", "Giochupanh3", setImage3)}
+                    onPress={() => pickImage("Anh3", "Giochupanh3", setImage3,setOpenImage3)}
                   >
                     <Entypo name="camera" size={24} color="black" />
                   </TouchableOpacity>
@@ -216,7 +216,7 @@ const ModalChecklistCImage = ({
                       justifyContent: "center",
                       height: 100,
                     }}
-                    onPress={() => pickImage("Anh4", "Giochupanh4", setImage4)}
+                    onPress={() => pickImage("Anh4", "Giochupanh4", setImage4,setOpenImage4)}
                   >
                     <Entypo name="camera" size={24} color="black" />
                   </TouchableOpacity>

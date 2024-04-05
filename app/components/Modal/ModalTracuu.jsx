@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
+  Switch,
 } from "react-native";
 import React, { useRef } from "react";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
@@ -19,34 +20,35 @@ import { FontAwesome } from "@expo/vector-icons";
 import VerticalSelect from "../VerticalSelect";
 import SelectDropdown from "react-native-select-dropdown";
 import moment from "moment";
-
-const dataGioitinh = [
-  {
-    value: "nam",
-    label: "Nam",
-  },
-  {
-    value: "nu",
-    label: "Nữ",
-  },
-  {
-    value: "khac",
-    label: "Khác",
-  },
-];
+import Button from "../Button/Button";
+import ButtonSubmit from "../Button/ButtonSubmit";
 
 const ModalTracuu = ({
   handleChangeFilters,
   filters,
   toggleDatePicker,
-  handleConfirm,
+  handlePresentModalClose,
   isDatePickerVisible,
   ent_toanha,
   ent_tang,
   ent_khuvuc,
-  ent_khoicv,
+  toggleSwitch,
+  isEnabled,
+  fetchData,
 }) => {
   const ref = useRef(null);
+  const defaultKhuvuc = ent_khuvuc.find(
+    (khuvuc) => khuvuc.ID_Khuvuc === filters?.ID_Khuvuc
+  );
+
+  const defaultTang = ent_tang.find(
+    (tang) => tang.ID_Tang === filters?.ID_Tang
+  );
+
+  const defaultToanha = ent_toanha.find(
+    (toanha) => toanha.ID_Toanha === filters?.ID_Toanha
+  );
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <KeyboardAvoidingView
@@ -66,11 +68,11 @@ const ModalTracuu = ({
                 <Text style={styles.text}>Từ ngày</Text>
 
                 <TouchableOpacity
-                  onPress={() => toggleDatePicker("firstDate", true)}
+                  onPress={() => toggleDatePicker("fromDate", true)}
                 >
                   <TextInput
-                    value={filters?.firstDate}
-                    placeholder="Nhập ngày sinh"
+                    value={filters?.fromDate}
+                    placeholder="Từ ngày"
                     placeholderTextColor="gray"
                     style={[
                       styles.textInput,
@@ -81,29 +83,29 @@ const ModalTracuu = ({
                     pointerEvents="none"
                   />
                   <DateTimePickerModal
-                    isVisible={isDatePickerVisible?.firstDate}
+                    isVisible={isDatePickerVisible?.fromDate}
                     mode="date"
-                    //   date={new Date(filters?.firstDate)}
+                    //   date={new Date(filters?.fromDate)}
                     isDarkModeEnabled={true}
                     onConfirm={(date) => {
                       handleChangeFilters(
-                        "firstDate",
+                        "fromDate",
                         moment(date).format("YYYY-MM-DD")
                       );
-                      toggleDatePicker("firstDate", false);
+                      toggleDatePicker("fromDate", false);
                     }}
-                    onCancel={() => toggleDatePicker("firstDate", false)}
+                    onCancel={() => toggleDatePicker("fromDate", false)}
                   />
                 </TouchableOpacity>
               </View>
               <View style={{ width: "48%" }}>
                 <Text style={styles.text}>Đến ngày</Text>
                 <TouchableOpacity
-                  onPress={() => toggleDatePicker("lastDate", true)}
+                  onPress={() => toggleDatePicker("toDate", true)}
                 >
                   <TextInput
-                    value={filters?.lastDate}
-                    placeholder="Nhập ngày sinh"
+                    value={filters?.toDate}
+                    placeholder="Đến ngày"
                     placeholderTextColor="gray"
                     style={[
                       styles.textInput,
@@ -114,18 +116,18 @@ const ModalTracuu = ({
                     pointerEvents="none"
                   />
                   <DateTimePickerModal
-                    isVisible={isDatePickerVisible?.lastDate}
+                    isVisible={isDatePickerVisible?.toDate}
                     mode="date"
                     //   date={new Date(filters?.lastDate)}
                     isDarkModeEnabled={true}
                     onConfirm={(date) => {
                       handleChangeFilters(
-                        "lastDate",
+                        "toDate",
                         moment(date).format("YYYY-MM-DD")
                       );
-                      toggleDatePicker("lastDate", false);
+                      toggleDatePicker("toDate", false);
                     }}
-                    onCancel={() => toggleDatePicker("lastDate", false)}
+                    onCancel={() => toggleDatePicker("toDate", false)}
                   />
                 </TouchableOpacity>
               </View>
@@ -143,9 +145,9 @@ const ModalTracuu = ({
                 // rowStyle={{ height: 50, justifyContent: "center" }}
                 defaultButtonText={"Tòa nhà"}
                 buttonTextStyle={styles.customText}
-                defaultValue={filters.ID_Toanha}
+                defaultValue={defaultToanha}
                 onSelect={(selectedItem, index) => {
-                  handleChangeFilters("ID_Toanha", selectedItem.ID_Toanha);
+                  handleChangeFilters("ID_Toanha", selectedItem?.ID_Toanha);
                 }}
                 renderDropdownIcon={(isOpened) => {
                   return (
@@ -178,7 +180,7 @@ const ModalTracuu = ({
                       value={item.ID_Toanha}
                       label={item.Toanha}
                       key={index}
-                      selectedItem={filters.ID_Toanha}
+                      selectedItem={filters?.ID_Toanha}
                     />
                   );
                 }}
@@ -197,9 +199,9 @@ const ModalTracuu = ({
                 // rowStyle={{ height: 50, justifyContent: "center" }}
                 defaultButtonText={"Khu vực"}
                 buttonTextStyle={styles.customText}
-                defaultValue={filters.ID_Khuvuc}
+                defaultValue={defaultKhuvuc}
                 onSelect={(selectedItem, index) => {
-                  handleChangeFilters("ID_Khuvuc", selectedItem.ID_Khuvuc);
+                  handleChangeFilters("ID_Khuvuc", selectedItem?.ID_Khuvuc);
                 }}
                 renderDropdownIcon={(isOpened) => {
                   return (
@@ -232,66 +234,13 @@ const ModalTracuu = ({
                       value={item.ID_Khuvuc}
                       label={item.Tenkhuvuc}
                       key={index}
-                      selectedItem={filters.ID_Khuvuc}
+                      selectedItem={filters?.ID_Khuvuc}
                     />
                   );
                 }}
               />
             </View>
-            <View>
-              <Text style={styles.text}>Bộ phận</Text>
 
-              <SelectDropdown
-                data={ent_khoicv ? ent_khoicv : []}
-                buttonStyle={styles.select}
-                dropdownStyle={{
-                  borderRadius: 8,
-                  maxHeight: 400,
-                }}
-                // rowStyle={{ height: 50, justifyContent: "center" }}
-                defaultButtonText={"Bộ phận"}
-                buttonTextStyle={styles.customText}
-                defaultValue={filters.ID_KhoiCV}
-                onSelect={(selectedItem, index) => {
-                  handleChangeFilters("ID_KhoiCV", selectedItem.ID_KhoiCV);
-                }}
-                renderDropdownIcon={(isOpened) => {
-                  return (
-                    <FontAwesome
-                      name={isOpened ? "chevron-up" : "chevron-down"}
-                      color={"#637381"}
-                      size={14}
-                      style={{ marginRight: 10 }}
-                    />
-                  );
-                }}
-                dropdownIconPosition={"right"}
-                buttonTextAfterSelection={(selectedItem, index) => {
-                  return (
-                    <View
-                      key={index}
-                      style={{
-                        justifyContent: "center",
-                        alignContent: "center",
-                        height: 50,
-                      }}
-                    >
-                      <Text style={styles.text}>{selectedItem?.KhoiCV}</Text>
-                    </View>
-                  );
-                }}
-                renderCustomizedRowChild={(item, index) => {
-                  return (
-                    <VerticalSelect
-                      value={item.ID_Khoi}
-                      label={item.KhoiCV}
-                      key={index}
-                      selectedItem={filters.ID_KhoiCV}
-                    />
-                  );
-                }}
-              />
-            </View>
             <View>
               <Text style={styles.text}>Tầng</Text>
 
@@ -305,9 +254,9 @@ const ModalTracuu = ({
                 // rowStyle={{ height: 50, justifyContent: "center" }}
                 defaultButtonText={"Tầng"}
                 buttonTextStyle={styles.customText}
-                defaultValue={filters.ID_Tang}
+                defaultValue={defaultTang}
                 onSelect={(selectedItem, index) => {
-                  handleChangeFilters("ID_Tang", selectedItem.ID_Tang);
+                  handleChangeFilters("ID_Tang", selectedItem?.ID_Tang);
                 }}
                 renderDropdownIcon={(isOpened) => {
                   return (
@@ -340,23 +289,51 @@ const ModalTracuu = ({
                       value={item.ID_Tang}
                       label={item.Tentang}
                       key={index}
-                      selectedItem={filters.ID_Tang}
+                      selectedItem={filters?.ID_Tang}
                     />
                   );
                 }}
               />
             </View>
+            <View style={{ height: 10 }}></View>
+            <View
+              style={[
+                styles.container,
+                { justifyContent: "flex-start", flexDirection: "row" },
+              ]}
+            >
+              <Switch
+                trackColor={{ false: "#red", true: COLORS.bg_button }}
+                thumbColor={isEnabled ? COLORS.color_bg : "#f4f3f4"}
+                ios_backgroundColor="#3e3e3e"
+                onValueChange={() => toggleSwitch(isEnabled)}
+                value={isEnabled}
+              />
+              <Text style={[styles.text, { paddingHorizontal: 12 }]}>
+                Tất cả
+              </Text>
+            </View>
           </View>
+
           <View style={{ marginTop: 20 }}>
-            <ButtonChecklist
+            <ButtonSubmit
               text={"Tìm kiếm"}
               width={"auto"}
-              color={COLORS.bg_button}
-              // onPress={
-              //   isCheckUpdate?.check
-              //     ? () => handlePushDataEdit(isCheckUpdate?.id_giamsat)
-              //     : () => handlePushDataSave()
-              // }
+              backgroundColor={COLORS.bg_button}
+              color={"white"}
+              onPress={() => {
+                fetchData(filters);
+              }}
+            />
+            <View style={{ height: 10 }} />
+            <Button
+              text={"Đóng"}
+              width={"auto"}
+              backgroundColor={COLORS.bg_white}
+              color={COLORS.color_bg}
+              onPress={() => {
+                handlePresentModalClose();
+              }}
             />
           </View>
         </View>
