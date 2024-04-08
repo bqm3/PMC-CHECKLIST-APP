@@ -1,6 +1,6 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Image, Button, Text, TouchableOpacity } from "react-native";
+import { Image, Button, Text, TouchableOpacity, Platform } from "react-native";
 import {
   ThucHienChecklist,
   HomeScreen,
@@ -22,9 +22,26 @@ import WebViewImage from "../screens/WebViewImage";
 
 const Stack = createNativeStackNavigator();
 
+const Back = ({navigation, title}) => {
+  return (
+    <TouchableOpacity
+      onPress={() =>
+        title ? navigation.navigate("Profile") : navigation.goBack()
+      }
+    >
+      <FontAwesome5 name="user-alt" size={28} color="white" />
+    </TouchableOpacity>
+  );
+};
+
 const HomeStack = ({ navigation }) => {
   return (
-    <Stack.Navigator initialRouteName="Trang chính">
+    <Stack.Navigator
+      initialRouteName="Trang chính"
+      screenOptions={{
+        headerBackTitleVisible: false,
+      }}
+    >
       <Stack.Screen
         name="Trang chính"
         component={HomeScreen}
@@ -34,6 +51,7 @@ const HomeStack = ({ navigation }) => {
           headerStyle: {
             backgroundColor: COLORS.bg_button,
           },
+          headerBackTitleVisible: false,
           headerTitle: () => (
             <Text style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
               CHECKLIST- PMC
@@ -47,9 +65,10 @@ const HomeStack = ({ navigation }) => {
             />
           ),
           headerRight: () => (
-            <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
-              <FontAwesome5 name="user-alt" size={24} color="white" />
-            </TouchableOpacity>
+            // <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
+            //   <FontAwesome5 name="user-alt" size={28} color="white" />
+            // </TouchableOpacity>
+            <Back navigation={navigation} title={'Profile'}/>
           ),
         })}
       />
@@ -67,13 +86,14 @@ const HomeStack = ({ navigation }) => {
           ),
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Ionicons name="chevron-back" size={24} color="white" />
+              <Ionicons name="chevron-back" size={28} color="white" />
             </TouchableOpacity>
           ),
           headerTitleAlign: "center",
           headerStyle: {
             backgroundColor: COLORS.bg_button,
           },
+          headerBackTitleVisible: false,
         })}
       />
       <Stack.Screen
@@ -90,13 +110,14 @@ const HomeStack = ({ navigation }) => {
           ),
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Ionicons name="chevron-back" size={24} color="white" />
+              <Ionicons name="chevron-back" size={28} color="white" />
             </TouchableOpacity>
           ),
           headerTitleAlign: "center",
           headerStyle: {
             backgroundColor: COLORS.bg_button,
           },
+          headerBackTitleVisible: false,
         })}
       />
       <Stack.Screen
@@ -113,13 +134,14 @@ const HomeStack = ({ navigation }) => {
           ),
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Ionicons name="chevron-back" size={24} color="white" />
+              <Ionicons name="chevron-back" size={28} color="white" />
             </TouchableOpacity>
           ),
           headerTitleAlign: "center",
           headerStyle: {
             backgroundColor: COLORS.bg_button,
           },
+          headerBackTitleVisible: false,
         })}
       />
       <Stack.Screen
@@ -136,13 +158,14 @@ const HomeStack = ({ navigation }) => {
           ),
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Ionicons name="chevron-back" size={24} color="white" />
+              <Ionicons name="chevron-back" size={28} color="white" />
             </TouchableOpacity>
           ),
           headerTitleAlign: "center",
           headerStyle: {
             backgroundColor: COLORS.bg_button,
           },
+          headerBackTitleVisible: false,
         })}
       />
       <Stack.Screen
@@ -159,13 +182,14 @@ const HomeStack = ({ navigation }) => {
           ),
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Ionicons name="chevron-back" size={24} color="white" />
+              <Ionicons name="chevron-back" size={28} color="white" />
             </TouchableOpacity>
           ),
           headerTitleAlign: "center",
           headerStyle: {
             backgroundColor: COLORS.bg_button,
           },
+          headerBackTitleVisible: false,
         })}
       />
 
@@ -183,13 +207,14 @@ const HomeStack = ({ navigation }) => {
           ),
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Ionicons name="chevron-back" size={24} color="white" />
+              <Ionicons name="chevron-back" size={28} color="white" />
             </TouchableOpacity>
           ),
           headerTitleAlign: "center",
           headerStyle: {
             backgroundColor: COLORS.bg_button,
           },
+          headerBackTitleVisible: false,
         })}
       />
 
@@ -207,13 +232,14 @@ const HomeStack = ({ navigation }) => {
           ),
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Ionicons name="chevron-back" size={24} color="white" />
+              <Ionicons name="chevron-back" size={28} color="white" />
             </TouchableOpacity>
           ),
           headerTitleAlign: "center",
           headerStyle: {
             backgroundColor: COLORS.bg_button,
           },
+          headerBackTitleVisible: false,
         })}
       />
 
@@ -231,13 +257,14 @@ const HomeStack = ({ navigation }) => {
           ),
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Ionicons name="chevron-back" size={24} color="white" />
+              <Ionicons name="chevron-back" size={28} color="white" />
             </TouchableOpacity>
           ),
           headerTitleAlign: "center",
           headerStyle: {
             backgroundColor: COLORS.bg_button,
           },
+          headerBackTitleVisible: false,
         })}
       />
       <Stack.Screen
@@ -254,13 +281,14 @@ const HomeStack = ({ navigation }) => {
           ),
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Ionicons name="chevron-back" size={24} color="white" />
+              <Ionicons name="chevron-back" size={28} color="white" />
             </TouchableOpacity>
           ),
           headerTitleAlign: "center",
           headerStyle: {
             backgroundColor: COLORS.bg_button,
           },
+          headerBackTitleVisible: false,
         })}
       />
 
@@ -278,13 +306,14 @@ const HomeStack = ({ navigation }) => {
           ),
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Ionicons name="chevron-back" size={24} color="white" />
+              <Ionicons name="chevron-back" size={28} color="white" />
             </TouchableOpacity>
           ),
           headerTitleAlign: "center",
           headerStyle: {
             backgroundColor: COLORS.bg_button,
           },
+          headerBackTitleVisible: false,
         })}
       />
 
@@ -301,13 +330,14 @@ const HomeStack = ({ navigation }) => {
           ),
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Ionicons name="chevron-back" size={24} color="white" />
+              <Ionicons name="chevron-back" size={28} color="white" />
             </TouchableOpacity>
           ),
           headerTitleAlign: "center",
           headerStyle: {
             backgroundColor: COLORS.bg_button,
           },
+          headerBackTitleVisible: false,
         })}
       />
     </Stack.Navigator>

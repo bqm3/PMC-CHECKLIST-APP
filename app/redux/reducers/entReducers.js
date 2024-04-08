@@ -261,7 +261,7 @@ export const entReducer = (state = initialState, action) => {
       case type.SET_ENT_CHECKLIST_DETAIL_STATE:
         return {
           ...state,
-          ent_checklist_detail: null,
+          ent_checklist_detail: action.payload.ent_checklist_detail,
           error: false,
           isLoading: action.payload.isLoading,
           message: null,

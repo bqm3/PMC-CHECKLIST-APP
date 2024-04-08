@@ -9,7 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Keyboard,
-  ActivityIndicator
+  ActivityIndicator,
 } from "react-native";
 import React, {
   useRef,
@@ -46,7 +46,7 @@ const DanhmucCalamviec = ({ navigation }) => {
   const snapPoints = useMemo(() => ["90%"], []);
   const [opacity, setOpacity] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
-  const [loadingSubmit, setLoadingSubmit] = useState(false)
+  const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [isCheckUpdate, setIsCheckUpdate] = useState({
     check: false,
     id_calv: null,
@@ -109,20 +109,35 @@ const DanhmucCalamviec = ({ navigation }) => {
         ID_KhoiCV: dataInput.khoicv,
         ID_Duan: user.ID_Duan,
       };
-      setLoadingSubmit(true)
-      await axios
-        .post(BASE_URL + "/ent_calv/create", data, {
-          headers: {
-            Accept: "application/json",
-            Authorization: "Bearer " + authToken,
-          },
-        })
-        .then((response) => {
-          init_calv();
-          handleAdd();
-          handleCloseModal();
-          setLoadingSubmit(false)
-          Alert.alert("PMC Thông báo", response.data.message, [
+      setLoadingSubmit(true);
+    
+      try {
+        await axios
+          .post(BASE_URL + `/ent_calv/create`, data, {
+            headers: {
+              Accept: "application/json",
+              Authorization: "Bearer " + authToken,
+            },
+          })
+          .then((response) => {
+            init_calv();
+            handleAdd();
+            handleCloseModal();
+            setLoadingSubmit(false);
+            Alert.alert("PMC Thông báo", response.data.message, [
+              {
+                text: "Hủy",
+                onPress: () => console.log("Cancel Pressed"),
+                style: "cancel",
+              },
+              { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+            ]);
+          });
+      } catch (error) {
+        setLoadingSubmit(false);
+        if (error.response) {
+          // Lỗi từ phía server (có response từ server)
+          Alert.alert("PMC Thông báo", error.response.data.message, [
             {
               text: "Hủy",
               onPress: () => console.log("Cancel Pressed"),
@@ -130,10 +145,10 @@ const DanhmucCalamviec = ({ navigation }) => {
             },
             { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
           ]);
-        })
-        .catch((err) => {
-          setLoadingSubmit(false)
-          Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
+        } else if (error.request) {
+          // Lỗi không nhận được phản hồi từ server
+          console.log(error.request);
+          Alert.alert("PMC Thông báo", "Không nhận được phản hồi từ máy chủ", [
             {
               text: "Hủy",
               onPress: () => console.log("Cancel Pressed"),
@@ -141,7 +156,19 @@ const DanhmucCalamviec = ({ navigation }) => {
             },
             { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
           ]);
-        });
+        } else {
+          // Lỗi khi cấu hình request
+          console.log("Error", error.message);
+          Alert.alert("PMC Thông báo", "Lỗi khi gửi yêu cầu", [
+            {
+              text: "Hủy",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel",
+            },
+            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+          ]);
+        }
+      }
     }
   };
 
@@ -177,20 +204,34 @@ const DanhmucCalamviec = ({ navigation }) => {
         ID_KhoiCV: dataInput.khoicv,
         ID_Duan: user.ID_Duan,
       };
-      setLoadingSubmit(true)
-      await axios
-        .put(BASE_URL + `/ent_calv/update/${id}`, data, {
-          headers: {
-            Accept: "application/json",
-            Authorization: "Bearer " + authToken,
-          },
-        })
-        .then((response) => {
-          init_calv();
-          handleAdd();
-          handleCloseModal();
-          setLoadingSubmit(false)
-          Alert.alert("PMC Thông báo", response.data.message, [
+      setLoadingSubmit(true);
+      try {
+        await axios
+          .put(BASE_URL + `/ent_calv/update/${id}`, data, {
+            headers: {
+              Accept: "application/json",
+              Authorization: "Bearer " + authToken,
+            },
+          })
+          .then((response) => {
+            init_calv();
+            handleAdd();
+            handleCloseModal();
+            setLoadingSubmit(false);
+            Alert.alert("PMC Thông báo", response.data.message, [
+              {
+                text: "Hủy",
+                onPress: () => console.log("Cancel Pressed"),
+                style: "cancel",
+              },
+              { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+            ]);
+          });
+      } catch (error) {
+        setLoadingSubmit(false);
+        if (error.response) {
+          // Lỗi từ phía server (có response từ server)
+          Alert.alert("PMC Thông báo", error.response.data.message, [
             {
               text: "Hủy",
               onPress: () => console.log("Cancel Pressed"),
@@ -198,10 +239,10 @@ const DanhmucCalamviec = ({ navigation }) => {
             },
             { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
           ]);
-        })
-        .catch((err) => {
-          setLoadingSubmit(false)
-          Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
+        } else if (error.request) {
+          // Lỗi không nhận được phản hồi từ server
+          console.log(error.request);
+          Alert.alert("PMC Thông báo", "Không nhận được phản hồi từ máy chủ", [
             {
               text: "Hủy",
               onPress: () => console.log("Cancel Pressed"),
@@ -209,7 +250,19 @@ const DanhmucCalamviec = ({ navigation }) => {
             },
             { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
           ]);
-        });
+        } else {
+          // Lỗi khi cấu hình request
+          console.log("Error", error.message);
+          Alert.alert("PMC Thông báo", "Lỗi khi gửi yêu cầu", [
+            {
+              text: "Hủy",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel",
+            },
+            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+          ]);
+        }
+      }
     }
   };
 
@@ -295,6 +348,11 @@ const DanhmucCalamviec = ({ navigation }) => {
   const handleSheetChanges = useCallback((index) => {
     if (index === -1) {
       setOpacity(1);
+      setIsCheckUpdate({
+        check: false,
+        id_calv: null,
+      });
+      handleAdd()
     } else {
       setOpacity(0.2);
     }
@@ -332,7 +390,7 @@ const DanhmucCalamviec = ({ navigation }) => {
                 }}
               >
                 <View style={styles.container}>
-                  <Text style={styles.danhmuc}>Danh mục làm việc</Text>
+                  <Text style={styles.danhmuc}>Danh mục ca làm việc</Text>
                   {isLoading === true ? (
                     <View
                       style={{
@@ -344,79 +402,82 @@ const DanhmucCalamviec = ({ navigation }) => {
                     >
                       <ActivityIndicator size="large" color={"white"} />
                     </View>
-                  ):
-                  <>
-                   {ent_calv && ent_calv.length > 0 ? (
-                    <>
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          alignContent: "center",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                        }}
-                      >
-                        <Text style={styles.text}>
-                          Số lượng: {decimalNumber(ent_calv?.length)}
-                        </Text>
-                        <ButtonChecklist
-                          text={"Thêm mới"}
-                          width={"auto"}
-                          color={COLORS.bg_button}
-                          // icon={<Ionicons name="add" size={20} color="white" />}
-                          onPress={handlePresentModalPress}
-                        />
-                      </View>
-
-                      <FlatList
-                        horizontal={false}
-                        contentContainerStyle={{ flexGrow: 1 }}
-                        style={{ marginVertical: 10 }}
-                        data={ent_calv}
-                        renderItem={({ item, index }) => (
-                          <ItemCalamviec
-                            key={index}
-                            item={item}
-                            handleEditEnt={handleEditEnt}
-                            handleAlertDelete={handleAlertDelete}
-                          />
-                        )}
-                        keyExtractor={(item, index) => index.toString()}
-                        scrollEventThrottle={16}
-                        ListFooterComponent={<View style={{ height: 120 }} />}
-                        scrollEnabled={true}
-                      />
-                    </>
                   ) : (
                     <>
-                      <View
-                        style={{
-                          flex: 1,
-                          justifyContent: "center",
-                          alignItems: "center",
-                          marginBottom: 100,
-                        }}
-                      >
-                        <Image
-                          source={require("../../../assets/icons/delete_bg.png")}
-                          resizeMode="contain"
-                          style={{ height: 120, width: 120 }}
-                        />
-                        <Text style={[styles.danhmuc, { paddingVertical: 10 }]}>
-                          Bạn chưa thêm dữ liệu nào
-                        </Text>
-                        <ButtonChecklist
-                          text={"Thêm mới"}
-                          width={"auto"}
-                          color={COLORS.bg_button}
-                          onPress={handlePresentModalPress}
-                        />
-                      </View>
+                      {ent_calv && ent_calv.length > 0 ? (
+                        <>
+                          <View
+                            style={{
+                              flexDirection: "row",
+                              alignContent: "center",
+                              alignItems: "center",
+                              justifyContent: "space-between",
+                            }}
+                          >
+                            <Text style={styles.text}>
+                              Số lượng: {decimalNumber(ent_calv?.length)}
+                            </Text>
+                            <ButtonChecklist
+                              text={"Thêm mới"}
+                              width={"auto"}
+                              color={COLORS.bg_button}
+                              // icon={<Ionicons name="add" size={20} color="white" />}
+                              onPress={handlePresentModalPress}
+                            />
+                          </View>
+
+                          <FlatList
+                            horizontal={false}
+                            contentContainerStyle={{ flexGrow: 1 }}
+                            style={{ marginVertical: 10 }}
+                            data={ent_calv}
+                            renderItem={({ item, index }) => (
+                              <ItemCalamviec
+                                key={index}
+                                item={item}
+                                handleEditEnt={handleEditEnt}
+                                handleAlertDelete={handleAlertDelete}
+                              />
+                            )}
+                            keyExtractor={(item, index) => index.toString()}
+                            scrollEventThrottle={16}
+                            ListFooterComponent={
+                              <View style={{ height: 120 }} />
+                            }
+                            scrollEnabled={true}
+                          />
+                        </>
+                      ) : (
+                        <>
+                          <View
+                            style={{
+                              flex: 1,
+                              justifyContent: "center",
+                              alignItems: "center",
+                              marginBottom: 100,
+                            }}
+                          >
+                            <Image
+                              source={require("../../../assets/icons/delete_bg.png")}
+                              resizeMode="contain"
+                              style={{ height: 120, width: 120 }}
+                            />
+                            <Text
+                              style={[styles.danhmuc, { paddingVertical: 10 }]}
+                            >
+                              Bạn chưa thêm dữ liệu nào
+                            </Text>
+                            <ButtonChecklist
+                              text={"Thêm mới"}
+                              width={"auto"}
+                              color={COLORS.bg_button}
+                              onPress={handlePresentModalPress}
+                            />
+                          </View>
+                        </>
+                      )}
                     </>
                   )}
-                  </>
-                  }
-                 
                 </View>
               </View>
               <BottomSheetModal

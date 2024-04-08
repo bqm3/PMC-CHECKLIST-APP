@@ -13,12 +13,10 @@ import React, { useRef } from "react";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 import { COLORS } from "../../constants/theme";
-import ButtonChecklist from "../Button/ButtonCheckList";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { FontAwesome } from "@expo/vector-icons";
 import VerticalSelect from "../VerticalSelect";
 import SelectDropdown from "react-native-select-dropdown";
-import moment from "moment";
 import ButtonSubmit from "../Button/ButtonSubmit";
 
 const ModalChecklistC = ({

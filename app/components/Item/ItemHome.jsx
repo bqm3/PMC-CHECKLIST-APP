@@ -33,20 +33,20 @@ export default function ItemHome({ item, index, roleUser }) {
           flexDirection: "column",
           justifyContent: "center",
           alignItems: "center",
-          padding: 8,
+          padding: 6,
         }}
       >
         <Image
           source={item.icon}
           resizeMode="contain"
-          style={{ width: 36, height: 36 }}
+          style={{ width: 32, height: 32 }}
         />
         <Text
           style={{
             color: roleUser !== 1 && item?.role === 1 ? 'white' : 'black',
             fontSize: 16,
             fontWeight: "600",
-            padding: 4,
+            padding: 6,
             textAlign: "center",
           }}
         >

@@ -359,19 +359,33 @@ const ThucHienChecklist = ({ navigation }) => {
         Giobd: dataInput.dateHour,
       };
       setLoadingSubmit(true);
-      await axios
+      try {
+        await axios
         .post(BASE_URL + "/tb_checklistc/create-first", data, {
-          headers: {
-            Accept: "application/json",
-            Authorization: "Bearer " + authToken,
-          },
-        })
-        .then((response) => {
-          handleAdd();
+            headers: {
+              Accept: "application/json",
+              Authorization: "Bearer " + authToken,
+            },
+          })
+          .then((response) => {
+            handleAdd();
           int_checklistc();
           handleCloseModal();
           setLoadingSubmit(false);
-          Alert.alert("PMC Thông báo", response.data.message, [
+            Alert.alert("PMC Thông báo", response.data.message, [
+              {
+                text: "Hủy",
+                onPress: () => console.log("Cancel Pressed"),
+                style: "cancel",
+              },
+              { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+            ]);
+          });
+      } catch (error) {
+        setLoadingSubmit(false);
+        if (error.response) {
+          // Lỗi từ phía server (có response từ server)
+          Alert.alert("PMC Thông báo", error.response.data.message, [
             {
               text: "Hủy",
               onPress: () => console.log("Cancel Pressed"),
@@ -379,22 +393,31 @@ const ThucHienChecklist = ({ navigation }) => {
             },
             { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
           ]);
-        })
-        .catch((res) => {
-          setLoadingSubmit(false);
-          Alert.alert(
-            "PMC Thông báo",
-            "Đã có lỗi xảy ra. Vui lòng kiểm tra lại!!",
-            [
-              {
-                text: "Hủy",
-                onPress: () => console.log("Cancel Pressed"),
-                style: "cancel",
-              },
-              { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-            ]
-          );
-        });
+        } else if (error.request) {
+          // Lỗi không nhận được phản hồi từ server
+          console.log(error.request);
+          Alert.alert("PMC Thông báo", "Không nhận được phản hồi từ máy chủ", [
+            {
+              text: "Hủy",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel",
+            },
+            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+          ]);
+        } else {
+          // Lỗi khi cấu hình request
+          console.log("Error", error.message);
+          Alert.alert("PMC Thông báo", "Lỗi khi gửi yêu cầu", [
+            {
+              text: "Hủy",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel",
+            },
+            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+          ]);
+        }
+      }
+      
     }
   };
 

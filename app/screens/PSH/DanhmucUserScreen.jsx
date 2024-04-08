@@ -131,39 +131,39 @@ const DanhmucUserScreen = ({ navigation }) => {
         Emails: dataInput.Emails,
       };
       setLoadingSubmit(true);
-      await axios
-        .post(BASE_URL + "/ent_user/register", data, {
+      try {
+         await axios.post(BASE_URL + "/ent_user/register", data, {
           headers: {
             Accept: "application/json",
             Authorization: "Bearer " + authToken,
           },
-        })
-        .then((response) => {
-          init_users();
-          handleAdd();
-          handleCloseModal();
-          setLoadingSubmit(false);
-          Alert.alert("PMC Thông báo", "Tạo tài khoản user thành công!!", [
-            {
-              text: "Hủy",
-              onPress: () => console.log("Cancel Pressed"),
-              style: "cancel",
-            },
-            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-          ]);
-        })
-        .catch((err) => {
-          console.error("err", err);
-          setLoadingSubmit(false);
-          Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
-            {
-              text: "Hủy",
-              onPress: () => console.log("Cancel Pressed"),
-              style: "cancel",
-            },
-            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-          ]);
         });
+        init_users();
+        handleAdd();
+        handleCloseModal();
+        setLoadingSubmit(false);
+        Alert.alert("PMC Thông báo", "Tạo tài khoản user thành công!!", [
+          {
+            text: "Hủy",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel",
+          },
+          { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+        ]);
+      } catch (error) {
+        if (error.response) {
+          setLoadingSubmit(false);
+          Alert.alert("PMC Thông báo", error.response.data.message, [
+            {
+              text: "Hủy",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel",
+            },
+            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+          ]);
+         
+        }
+      }
     }
   };
 

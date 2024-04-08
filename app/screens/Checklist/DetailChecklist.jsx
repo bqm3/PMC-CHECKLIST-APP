@@ -13,6 +13,7 @@ import {
   Modal,
   TouchableWithoutFeedback,
   Keyboard,
+  Image,
 } from "react-native";
 import React, {
   useRef,
@@ -270,13 +271,11 @@ const DetailChecklist = ({ route, navigation }) => {
         }
       });
     }
-    
 
     setDefaultActionDataChecklist(mergedArrCheck);
     setNewActionDataChecklist(newDataChecklist);
     setDataChecklistFilter(updatedDataChecklist);
   };
-
 
   // click item checklist
   const handleItemClick = (value, it, key) => {
@@ -318,7 +317,6 @@ const DetailChecklist = ({ route, navigation }) => {
         }
       });
     }
-    
 
     setDefaultActionDataChecklist(mergedArrCheck);
     setNewActionDataChecklist(newDataChecklist);
@@ -341,11 +339,9 @@ const DetailChecklist = ({ route, navigation }) => {
       .then((res) => {
         const dataList = res.data.data;
         let filteredData = dataList.map((item) => {
-          const matchingItem = defaultActionDataChecklist.find(
-            (newItem) => {
-             return  newItem.ID_Checklist === item.ID_Checklist
-            }
-          );
+          const matchingItem = defaultActionDataChecklist.find((newItem) => {
+            return newItem.ID_Checklist === item.ID_Checklist;
+          });
           // console.log('matchingItem',matchingItem.ID_Checklist)
           if (matchingItem) {
             return {
@@ -585,7 +581,7 @@ const DetailChecklist = ({ route, navigation }) => {
                     </>
                   )}
 
-                {isLoading === true && (
+                {isLoading === true && dataChecklistFilter?.length == 0 && (
                   <View
                     style={{
                       flex: 1,
@@ -600,6 +596,24 @@ const DetailChecklist = ({ route, navigation }) => {
                       size="large"
                       color={COLORS.bg_white}
                     ></ActivityIndicator>
+                  </View>
+                )}
+                {isLoading === false && dataChecklistFilter?.length == 0 && (
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Image
+                      source={require("../../../assets/icons/delete_bg.png")}
+                      resizeMode="contain"
+                      style={{ height: 120, width: 120 }}
+                    />
+                    <Text style={[styles.danhmuc, { paddingVertical: 10 }]}>
+                      Không còn checklist cho ca làm việc này !
+                    </Text>
                   </View>
                 )}
                 <View
@@ -689,13 +703,11 @@ export default DetailChecklist;
 const styles = StyleSheet.create({
   container: {
     margin: 12,
-    // flex: 1,
   },
   danhmuc: {
     fontSize: 25,
     fontWeight: "700",
     color: "white",
-    // paddingVertical: 40,
   },
   text: { fontSize: 15, color: "white", fontWeight: "600" },
   headerTable: {
@@ -750,7 +762,6 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     borderRadius: 12,
     padding: 16,
-    // alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,

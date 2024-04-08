@@ -130,6 +130,8 @@ const DanhmucChecklist = ({ navigation }) => {
     Maso: "",
     MaQrCode: "",
     Checklist: "",
+    Ghichu: "",
+    Tieuchuan: "",
     Giatridinhdanh: "",
     Giatrinhan: "",
     Sothutu: "",
@@ -322,6 +324,8 @@ const DanhmucChecklist = ({ navigation }) => {
         Sothutu: dataInput.Sothutu,
         Maso: dataInput.Maso,
         MaQrCode: dataInput.MaQrCode,
+        Ghichu: dataInput.Ghichu,
+        Tieuchuan: dataInput.Tieuchuan,
         Checklist: dataInput.Checklist,
         Giatridinhdanh: dataInput.Giatridinhdanh,
         Giatrinhan: dataInput.Giatrinhan,
@@ -410,6 +414,8 @@ const DanhmucChecklist = ({ navigation }) => {
         Sothutu: dataInput.Sothutu,
         Maso: dataInput.Maso,
         MaQrCode: dataInput.MaQrCode,
+        Ghichu: dataInput.Ghichu,
+        Tieuchuan: dataInput.Tieuchuan,
         Checklist: dataInput.Checklist,
         Giatridinhdanh: dataInput.Giatridinhdanh,
         Giatrinhan: dataInput.Giatrinhan,
@@ -558,7 +564,7 @@ const DanhmucChecklist = ({ navigation }) => {
   };
 
   const decimalNumber = (number) => {
-    if (number < 10) return `0${number}`;
+    if (number < 10 && number > 0) return `0${number}`;
     return number;
   };
 
@@ -745,7 +751,7 @@ const DanhmucChecklist = ({ navigation }) => {
                       />
                     </View>
 
-                    {listChecklist?.length > 0 ? (
+                    {listChecklist && listChecklist?.length > 0 ? (
                       <>
                         <ScrollView
                           style={{ flex: 1, marginBottom: 20, marginTop: 20 }}
@@ -774,6 +780,7 @@ const DanhmucChecklist = ({ navigation }) => {
                                 }}
                               >
                                 <DataTable.Title
+                                key={-1}
                                   style={{
                                     alignItems: "center",
                                     width: 50,

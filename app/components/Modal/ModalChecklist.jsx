@@ -170,6 +170,42 @@ const ModalChecklist = ({
               (Ví dụ : Sáng/Tắt, Bật/Tắt, Đạt/Không đạt, On/Off,..)
             </Text>
 
+             {/* Ghi chú  */}
+             <Text style={styles.text}>Ghi chú</Text>
+            <TextInput
+              value={dataInput?.Ghichu}
+              placeholder="Nhập ghi chú"
+              placeholderTextColor="gray"
+              multiline={true}
+              style={[
+                styles.textInput,
+                {
+                  paddingHorizontal: 10,
+                  height: 60,
+                },
+              ]}
+              autoCapitalize="sentences"
+              onChangeText={(val) => handleChangeText("Ghichu", val)}
+            />
+
+            {/* Tiêu chuẩn  */}
+            <Text style={styles.text}>Tiêu chuẩn</Text>
+            <TextInput
+              value={dataInput?.Ghichu}
+              placeholder="Nhập tiêu chuẩn"
+              placeholderTextColor="gray"
+              multiline={true}
+              style={[
+                styles.textInput,
+                {
+                  paddingHorizontal: 10,
+                  height: 60,
+                },
+              ]}
+              autoCapitalize="sentences"
+              onChangeText={(val) => handleChangeText("Tieuchuan", val)}
+            />
+
             {/* Tòa nhà và khối công việc  */}
             <View
               style={{

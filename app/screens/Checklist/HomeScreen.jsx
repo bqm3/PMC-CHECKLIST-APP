@@ -9,10 +9,9 @@ import {
 } from "react-native";
 import { useSelector } from "react-redux";
 import ItemHome from "../../components/Item/ItemHome";
-import { COLORS } from "../../constants/theme";
-import ButtonSubmit from "../../components/Button/ButtonSubmit";
 import CopyRight from "../../components/CopyRight";
 import ItemHomePSH from "../../components/Item/ItemHomePSH";
+import adjust from '../../adjust'
 
 const dataDanhMuc = [
   {
@@ -120,7 +119,7 @@ const HomeScreen = ({ navigation }) => {
             <Text
               style={{
                 color: "white",
-                fontSize: 16,
+                fontSize: adjust(16),
               }}
               numberOfLines={1}
               adjustsFontSizeToFit
@@ -129,7 +128,7 @@ const HomeScreen = ({ navigation }) => {
             </Text>
             <Text
               style={{
-                fontSize: 20,
+                fontSize: adjust(20),
                 color: "white",
                 fontWeight: "700",
                 textTransform: "uppercase",
@@ -172,7 +171,7 @@ const HomeScreen = ({ navigation }) => {
             <Text
               style={{
                 color: "white",
-                fontSize: 15,
+                fontSize: adjust(15),
               }}
             >
               Người Giám sát chỉ thực hiện công việc Check list, Tra cứu và Đổi
@@ -181,7 +180,7 @@ const HomeScreen = ({ navigation }) => {
             <Text
               style={{
                 color: "white",
-                fontSize: 15,
+                fontSize: adjust(15),
               }}
             >
               Giám đốc Tòa nhà toàn quyền sử dụng.

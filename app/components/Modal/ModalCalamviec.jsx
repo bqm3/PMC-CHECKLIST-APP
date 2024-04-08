@@ -33,6 +33,9 @@ const ModalCalamviec = ({
   isCheckUpdate,
   loadingSubmit
 }) => {
+  const defaultKhoi = ent_khoicv?.find(
+    (Khoi) => Khoi.ID_Khoi === dataInput?.khoicv
+  );
   const ref = useRef(null);
   return (
     <KeyboardAvoidingComponent>
@@ -109,7 +112,7 @@ const ModalCalamviec = ({
             // rowStyle={{ height: 50, justifyContent: "center" }}
             defaultButtonText={"Khối công việc"}
             buttonTextStyle={styles.customText}
-            defaultValue={dataInput.khoicv}
+            defaultValue={defaultKhoi}
             onSelect={(selectedItem, index) => {
               handleChangeText("khoicv", selectedItem.ID_Khoi);
             }}

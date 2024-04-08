@@ -51,7 +51,7 @@ const DanhmucCalamviec = ({ navigation }) => {
   const snapPoints = useMemo(() => ["90%"], []);
   const [opacity, setOpacity] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
-  const [loadingSubmit, setLoadingSubmit] = useState(false)
+  const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [isCheckUpdate, setIsCheckUpdate] = useState({
     check: false,
     id_khuvuc: null,
@@ -104,7 +104,6 @@ const DanhmucCalamviec = ({ navigation }) => {
 
   const handlePushDataSave = async () => {
     if (
-      dataInput.makhuvuc === "" ||
       dataInput.khoicv === null ||
       dataInput.toanha === null ||
       dataInput.tenkhuvuc === ""
@@ -126,41 +125,65 @@ const DanhmucCalamviec = ({ navigation }) => {
         MaQrCode: dataInput.qrcode,
         Tenkhuvuc: dataInput.tenkhuvuc,
       };
-      setLoadingSubmit(true)
-      await axios
-        .post(BASE_URL + "/ent_khuvuc/create", data, {
+      setLoadingSubmit(true);
+      try {
+        const response = await axios.post(BASE_URL + "/ent_khuvuc/create", data, {
           headers: {
             Accept: "application/json",
             Authorization: "Bearer " + authToken,
           },
-        })
-        .then((response) => {
-          init_khuvuc();
-          handleAdd();
-          handleCloseModal();
-          setLoadingSubmit(false)
-          Alert.alert("PMC Thông báo", response.data.message, [
-            {
-              text: "Hủy",
-              onPress: () => console.log("Cancel Pressed"),
-              style: "cancel",
-            },
-            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-          ]);
-        })
-        .catch((err) => {
-          setLoadingSubmit(false)
-          Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
-            {
-              text: "Hủy",
-              onPress: () => console.log("Cancel Pressed"),
-              style: "cancel",
-            },
-            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-          ]);
         });
+        init_khuvuc();
+        handleAdd();
+        handleCloseModal();
+        setLoadingSubmit(false);
+        Alert.alert("PMC Thông báo", response.data.message, [
+          {
+            text: "Hủy",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel",
+          },
+          { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+        ]);
+      } catch (error) {
+        setLoadingSubmit(false);
+        if (error.response) {
+          // Lỗi từ phía server (có response từ server)
+          Alert.alert("PMC Thông báo", error.response.data.message, [
+            {
+              text: "Hủy",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel",
+            },
+            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+          ]);
+        } else if (error.request) {
+          // Lỗi không nhận được phản hồi từ server
+          console.log(error.request);
+          Alert.alert("PMC Thông báo", "Không nhận được phản hồi từ máy chủ", [
+            {
+              text: "Hủy",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel",
+            },
+            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+          ]);
+        } else {
+          // Lỗi khi cấu hình request
+          console.log('Error', error.message);
+          Alert.alert("PMC Thông báo", "Lỗi khi gửi yêu cầu", [
+            {
+              text: "Hủy",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel",
+            },
+            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+          ]);
+        }
+      }
     }
   };
+  
 
   const handleEditEnt = (data) => {
     setIsCheckUpdate({
@@ -197,20 +220,34 @@ const DanhmucCalamviec = ({ navigation }) => {
         MaQrCode: dataInput.qrcode,
         Tenkhuvuc: dataInput.tenkhuvuc,
       };
-      setLoadingSubmit(true)
-      await axios
+      setLoadingSubmit(true);
+      try {
+        await axios
         .put(BASE_URL + `/ent_khuvuc/update/${id}`, data, {
-          headers: {
-            Accept: "application/json",
-            Authorization: "Bearer " + authToken,
-          },
-        })
-        .then((response) => {
-          init_khuvuc();
-          handleAdd();
-          handleCloseModal();
-          setLoadingSubmit(false)
-          Alert.alert("PMC Thông báo", response.data.message, [
+            headers: {
+              Accept: "application/json",
+              Authorization: "Bearer " + authToken,
+            },
+          })
+          .then((response) => {
+            init_khuvuc();
+            handleAdd();
+            handleCloseModal();
+            setLoadingSubmit(false);
+            Alert.alert("PMC Thông báo", response.data.message, [
+              {
+                text: "Hủy",
+                onPress: () => console.log("Cancel Pressed"),
+                style: "cancel",
+              },
+              { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+            ]);
+          });
+      } catch (error) {
+        setLoadingSubmit(false);
+        if (error.response) {
+          // Lỗi từ phía server (có response từ server)
+          Alert.alert("PMC Thông báo", error.response.data.message, [
             {
               text: "Hủy",
               onPress: () => console.log("Cancel Pressed"),
@@ -218,10 +255,10 @@ const DanhmucCalamviec = ({ navigation }) => {
             },
             { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
           ]);
-        })
-        .catch((err) => {
-          setLoadingSubmit(false)
-          Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
+        } else if (error.request) {
+          // Lỗi không nhận được phản hồi từ server
+          console.log(error.request);
+          Alert.alert("PMC Thông báo", "Không nhận được phản hồi từ máy chủ", [
             {
               text: "Hủy",
               onPress: () => console.log("Cancel Pressed"),
@@ -229,8 +266,20 @@ const DanhmucCalamviec = ({ navigation }) => {
             },
             { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
           ]);
-        });
-    }
+        } else {
+          // Lỗi khi cấu hình request
+          console.log("Error", error.message);
+          Alert.alert("PMC Thông báo", "Lỗi khi gửi yêu cầu", [
+            {
+              text: "Hủy",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel",
+            },
+            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+          ]);
+        }
+      }
+     }
   };
 
   const handleAlertDelete = async (id) => {
