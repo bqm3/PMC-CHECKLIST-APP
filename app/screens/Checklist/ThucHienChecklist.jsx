@@ -616,7 +616,7 @@ const ThucHienChecklist = ({ navigation }) => {
                     }}
                   >
                     <TouchableOpacity
-                      onPress={() => handleFilterData(true, 0.5)}
+                      // onPress={() => handleFilterData(true, 0.5)}
                       style={{
                         flexDirection: "row",
                         alignItems: "center",

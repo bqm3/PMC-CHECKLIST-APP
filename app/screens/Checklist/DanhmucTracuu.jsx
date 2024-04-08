@@ -407,7 +407,6 @@ const DanhmucTracuu = () => {
                         flexDirection: "row",
                         alignContent: "center",
                         alignItems: "left",
-                        // flex: 1, backgroundColor: 'red'
                       }}
                     >
                       <TouchableOpacity
@@ -534,14 +533,14 @@ const DanhmucTracuu = () => {
                           <Text
                             style={[styles.danhmuc, { paddingVertical: 10 }]}
                           >
-                            Bạn chưa thêm dữ liệu nào
+                            Không có dữ liệu cần tìm
                           </Text>
-                          <ButtonChecklist
+                          {/* <ButtonChecklist
                             text={"Thêm mới"}
                             width={"auto"}
                             color={COLORS.bg_button}
                             onPress={handlePresentModalPress}
-                          />
+                          /> */}
                         </View>
                       </>
                     )}

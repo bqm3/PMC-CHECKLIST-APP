@@ -42,11 +42,7 @@ const ModalPopupDetailChecklist = ({
     const result = await ImagePicker.launchCameraAsync();
 
     if (!result.cancelled) {
-      handleChange(
-        "Anh",
-        result?.assets[0],
-        index
-      );
+      handleChange("Anh", result?.assets[0], dataItem);
       setImage(result?.assets[0]);
     }
   };
@@ -69,7 +65,7 @@ const ModalPopupDetailChecklist = ({
             buttonTextStyle={styles.customText}
             defaultValue={dataItem.valueCheck}
             onSelect={(selectedItem, i) => {
-              handleItemClick(selectedItem, index, "click");
+              handleItemClick(selectedItem, dataItem, "click");
             }}
             renderDropdownIcon={(isOpened) => {
               return (
@@ -127,7 +123,9 @@ const ModalPopupDetailChecklist = ({
             >
               <Entypo name="camera" size={24} color="black" />
             </TouchableOpacity>
-            {image && <Image source={{ uri: image?.uri }} style={styles.image} />}
+            {image && (
+              <Image source={{ uri: image?.uri }} style={styles.image} />
+            )}
           </View>
         </>
       )}
@@ -181,7 +179,7 @@ const ModalPopupDetailChecklist = ({
       <View style={{ marginTop: 10 }}>
         <Button
           onPress={() => {
-            handleChange("GhichuChitiet", ghichu, index);
+            handleChange("GhichuChitiet", ghichu, dataItem);
 
             handlePopupClear();
           }}

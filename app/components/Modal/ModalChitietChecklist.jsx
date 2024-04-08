@@ -19,7 +19,6 @@ const ModalChitietChecklist = ({
   isEnabled,
   handleCheckbox,
   handleChangeFilter,
-  handleToggleFilter,
   handleCloseModal,
   handlePushDataFilter
 }) => {
