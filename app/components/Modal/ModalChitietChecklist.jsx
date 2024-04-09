@@ -78,7 +78,7 @@ const ModalChitietChecklist = ({
                   height: 50,
                 }}
               >
-                <Text style={styles.text}>{selectedItem?.Tenkhuvuc}</Text>
+                <Text  allowFontScaling={false} style={styles.text}>{selectedItem?.Tenkhuvuc}</Text>
               </View>
             );
           }}
@@ -136,7 +136,7 @@ const ModalChitietChecklist = ({
                   height: 50,
                 }}
               >
-                <Text style={styles.text}>{selectedItem?.Tentang}</Text>
+                <Text  allowFontScaling={false} style={styles.text}>{selectedItem?.Tentang}</Text>
               </View>
             );
           }}
@@ -194,7 +194,7 @@ const ModalChitietChecklist = ({
                   height: 50,
                 }}
               >
-                <Text style={styles.text}>{selectedItem?.Toanha}</Text>
+                <Text  allowFontScaling={false} style={styles.text}>{selectedItem?.Toanha}</Text>
               </View>
             );
           }}
@@ -223,7 +223,7 @@ const ModalChitietChecklist = ({
           onValueChange={() => toggleSwitch(isEnabled)}
           value={isEnabled}
         />
-        <Text style={[styles.text, { paddingHorizontal: 0 }]}>Tất cả</Text>
+        <Text  allowFontScaling={false} style={[styles.text, { paddingHorizontal: 0 }]}>Tất cả</Text>
       </View>
       <View style={{ height: 10 }}></View>
       <Button

@@ -28,6 +28,13 @@ const ModalChecklistC = ({
   isLoading
 }) => {
   const ref = useRef(null);
+  const defaultCalv = ent_calv?.find(
+    (calv) => calv.ID_Calv === dataInput?.Calv?.ID_Calv
+  );
+  const defaultGiamsat = ent_giamsat?.find(
+    (Giamsat) => Giamsat.ID_Giamsat !== null && Giamsat.ID_Giamsat === dataInput.ID_Giamsat
+  )
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <KeyboardAvoidingView
@@ -44,8 +51,8 @@ const ModalChecklistC = ({
               }}
             >
               <View style={{ width: "48%" }}>
-                <Text style={styles.text}>Ngày</Text>
-                <TextInput
+                <Text  allowFontScaling={false} style={styles.text}>Ngày</Text>
+                <TextInput allowFontScaling={false} 
                   value={dataInput.dateDay}
                   editable={false}
                   placeholderTextColor="gray"
@@ -59,8 +66,8 @@ const ModalChecklistC = ({
                 />
               </View>
               <View style={{ width: "48%" }}>
-                <Text style={styles.text}>Giờ</Text>
-                <TextInput
+                <Text  allowFontScaling={false} style={styles.text}>Giờ</Text>
+                <TextInput allowFontScaling={false} 
                   value={dataInput.dateHour}
                   editable={false}
                   placeholderTextColor="gray"
@@ -75,7 +82,7 @@ const ModalChecklistC = ({
               </View>
             </View>
             <View>
-              <Text style={styles.text}>Ca làm việc</Text>
+              <Text  allowFontScaling={false} style={styles.text}>Ca làm việc</Text>
               <SelectDropdown
                 ref={ref}
                 data={ent_calv ? ent_calv : []}
@@ -87,7 +94,7 @@ const ModalChecklistC = ({
                 // rowStyle={{ height: 50, justifyContent: "center" }}
                 defaultButtonText={"Ca làm việc"}
                 buttonTextStyle={styles.customText}
-                defaultValue={dataInput?.Calv?.ID_Calv}
+                defaultValue={defaultCalv}
                 onSelect={(selectedItem, index) => {
                   handleChangeText("Calv", selectedItem);
                 }}
@@ -111,12 +118,11 @@ const ModalChecklistC = ({
                         height: 50,
                       }}
                     >
-                      <Text style={styles.text}>{selectedItem?.Tenca} - {selectedItem?.ent_khoicv?.KhoiCV}</Text>
+                      <Text  allowFontScaling={false} style={styles.text}>{selectedItem?.Tenca} - {selectedItem?.ent_khoicv?.KhoiCV}</Text>
                     </View>
                   );
                 }}
                 renderCustomizedRowChild={(item, index) => {
-                  console.log('item', item)
                   return (
                     <VerticalSelect
                       value={item.ID_Calv}
@@ -129,7 +135,7 @@ const ModalChecklistC = ({
               />
             </View>
             <View>
-              <Text style={styles.text}>Nhân viên</Text>
+              <Text  allowFontScaling={false} style={styles.text}>Nhân viên</Text>
               <SelectDropdown
                 ref={ref}
                 data={ent_giamsat ? ent_giamsat : []}
@@ -141,7 +147,7 @@ const ModalChecklistC = ({
                 // rowStyle={{ height: 50, justifyContent: "center" }}
                 defaultButtonText={"Nhân viên"}
                 buttonTextStyle={styles.customText}
-                defaultValue={dataInput.ID_Giamsat}
+                defaultValue={defaultGiamsat}
                 onSelect={(selectedItem, index) => {
                   handleChangeText("ID_Giamsat", selectedItem.ID_Giamsat);
                 }}
@@ -165,7 +171,7 @@ const ModalChecklistC = ({
                         height: 50,
                       }}
                     >
-                      <Text style={styles.text}>{selectedItem?.Hoten}</Text>
+                      <Text  allowFontScaling={false} style={styles.text}>{selectedItem?.Hoten}</Text>
                     </View>
                   );
                 }}

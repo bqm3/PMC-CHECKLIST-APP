@@ -135,7 +135,7 @@ const Profile = () => {
           <ScrollView style={{ flex: 1, margin: 20 }}>
             <Title text={"Thông tin cá nhân"} size={18} top={10} bottom={10} />
             <View style={styles.inputs}>
-              <TextInput
+              <TextInput allowFontScaling={false} 
                 value={user?.UserName}
                 editable={false}
                 placeholder="Nhập tên ca thực hiện checklist"
@@ -150,7 +150,7 @@ const Profile = () => {
               />
             </View>
             <View style={styles.inputs}>
-              <TextInput
+              <TextInput allowFontScaling={false} 
                 value={user?.Emails}
                 editable={false}
                 placeholder="Nhập tên ca thực hiện checklist"
@@ -165,7 +165,7 @@ const Profile = () => {
               />
             </View>
             <View style={styles.inputs}>
-              <TextInput
+              <TextInput allowFontScaling={false} 
                 value={user?.ent_chucvu?.Chucvu}
                 editable={false}
                 placeholder="Nhập tên ca thực hiện checklist"
@@ -180,7 +180,7 @@ const Profile = () => {
               />
             </View>
             <View style={styles.inputs}>
-              <TextInput
+              <TextInput allowFontScaling={false} 
                 value={user?.ent_duan?.Duan}
                 editable={false}
                 placeholder="Tên dự án"
@@ -197,9 +197,9 @@ const Profile = () => {
             <Title text={"Đổi mật khẩu"} size={18} top={10} bottom={10} />
 
             <View style={styles.inputs}>
-              <Text style={styles.text}>Mật khẩu cũ</Text>
+              <Text  allowFontScaling={false} style={styles.text}>Mật khẩu cũ</Text>
               <View style={styles.searchSection}>
-                <TextInput
+                <TextInput allowFontScaling={false} 
                   style={styles.input}
                   placeholder="Mật khẩu cũ"
                   placeholderTextColor="gray"
@@ -228,9 +228,9 @@ const Profile = () => {
               </View>
             </View>
             <View style={styles.inputs}>
-              <Text style={styles.text}>Mật khẩu mới</Text>
+              <Text  allowFontScaling={false} style={styles.text}>Mật khẩu mới</Text>
               <View style={styles.searchSection}>
-                <TextInput
+                <TextInput allowFontScaling={false} 
                   style={styles.input}
                   placeholder="Mật khẩu mới"
                   placeholderTextColor="gray"
@@ -259,9 +259,9 @@ const Profile = () => {
               </View>
             </View>
             <View style={styles.inputs}>
-              <Text style={styles.text}>Nhập lại mật khẩu</Text>
+              <Text  allowFontScaling={false} style={styles.text}>Nhập lại mật khẩu</Text>
               <View style={styles.searchSection}>
-                <TextInput
+                <TextInput allowFontScaling={false} 
                   style={styles.input}
                   placeholder="Nhập lại mật khẩu"
                   placeholderTextColor="gray"

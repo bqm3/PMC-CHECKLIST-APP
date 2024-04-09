@@ -35,7 +35,6 @@ import ButtonChecklist from "../../components/Button/ButtonCheckList";
 import { COLORS, SIZES } from "../../constants/theme";
 import { ent_calv_get, ent_giamsat_get } from "../../redux/actions/entActions";
 import { tb_checklistc_get } from "../../redux/actions/tbActions";
-import ModalChecklist from "../../components/Modal/ModalChecklist";
 import axios from "axios";
 import { BASE_URL } from "../../constants/config";
 import moment from "moment";
@@ -192,14 +191,10 @@ const ThucHienChecklist = ({ navigation }) => {
 
   const reduceImageSize = async (uri) => {
     try {
-      const manipResult = await ImageManipulator.manipulateAsync(
-        uri,
-        [],
-        {
-          compress: 0.5, // Adjust compression quality (0 to 1, where 1 means no compression)
-          format: ImageManipulator.SaveFormat.JPEG, // Set the desired format
-        }
-      );
+      const manipResult = await ImageManipulator.manipulateAsync(uri, [], {
+        compress: 0.5, // Adjust compression quality (0 to 1, where 1 means no compression)
+        format: ImageManipulator.SaveFormat.JPEG, // Set the desired format
+      });
       return manipResult.uri;
     } catch (error) {
       console.log("Error reducing image size:", error);
@@ -215,8 +210,11 @@ const ThucHienChecklist = ({ navigation }) => {
         const file = {
           uri:
             Platform.OS === "android"
-              ?  await reduceImageSize(dataImages?.Anh1?.uri)
-              : (await reduceImageSize(dataImages?.Anh1?.uri)).replace("file://", ""),
+              ? await reduceImageSize(dataImages?.Anh1?.uri)
+              : (await reduceImageSize(dataImages?.Anh1?.uri)).replace(
+                  "file://",
+                  ""
+                ),
           name:
             dataImages?.Anh1?.fileName ||
             Math.floor(Math.random() * Math.floor(99999999999999)) + ".jpeg",
@@ -236,7 +234,10 @@ const ThucHienChecklist = ({ navigation }) => {
           uri:
             Platform.OS === "android"
               ? await reduceImageSize(dataImages?.Anh2?.uri)
-              : (await reduceImageSize(dataImages?.Anh2?.uri)).replace("file://", ""),
+              : (await reduceImageSize(dataImages?.Anh2?.uri)).replace(
+                  "file://",
+                  ""
+                ),
           name:
             dataImages?.Anh2?.fileName ||
             Math.floor(Math.random() * Math.floor(99999999999999)) + ".jpeg",
@@ -256,7 +257,10 @@ const ThucHienChecklist = ({ navigation }) => {
           uri:
             Platform.OS === "android"
               ? await reduceImageSize(dataImages?.Anh3?.uri)
-              : (await reduceImageSize(dataImages?.Anh3?.uri)).replace("file://", ""),
+              : (await reduceImageSize(dataImages?.Anh3?.uri)).replace(
+                  "file://",
+                  ""
+                ),
           name:
             dataImages?.Anh3?.fileName ||
             Math.floor(Math.random() * Math.floor(99999999999999)) + ".jpeg",
@@ -276,7 +280,10 @@ const ThucHienChecklist = ({ navigation }) => {
           uri:
             Platform.OS === "android"
               ? await reduceImageSize(dataImages?.Anh4?.uri)
-              : (await reduceImageSize(dataImages?.Anh4?.uri)).replace("file://", ""),
+              : (await reduceImageSize(dataImages?.Anh4?.uri)).replace(
+                  "file://",
+                  ""
+                ),
           name:
             dataImages?.Anh4?.fileName ||
             Math.floor(Math.random() * Math.floor(999999999)) + ".jpeg",
@@ -306,8 +313,8 @@ const ThucHienChecklist = ({ navigation }) => {
         )
         .then((res) => {
           setLoadingSubmit(false);
-          handleAdd()
-          int_checklistc()
+          handleAdd();
+          int_checklistc();
           bottomSheetModalRef2?.current?.close();
           Alert.alert("PMC Thông báo", "Checklist thành công", [
             {
@@ -361,7 +368,7 @@ const ThucHienChecklist = ({ navigation }) => {
       setLoadingSubmit(true);
       try {
         await axios
-        .post(BASE_URL + "/tb_checklistc/create-first", data, {
+          .post(BASE_URL + "/tb_checklistc/create-first", data, {
             headers: {
               Accept: "application/json",
               Authorization: "Bearer " + authToken,
@@ -369,9 +376,9 @@ const ThucHienChecklist = ({ navigation }) => {
           })
           .then((response) => {
             handleAdd();
-          int_checklistc();
-          handleCloseModal();
-          setLoadingSubmit(false);
+            int_checklistc();
+            handleCloseModal();
+            setLoadingSubmit(false);
             Alert.alert("PMC Thông báo", response.data.message, [
               {
                 text: "Hủy",
@@ -417,13 +424,12 @@ const ThucHienChecklist = ({ navigation }) => {
           ]);
         }
       }
-      
     }
   };
 
   const handleSheetChanges = useCallback((index) => {
     if (index === -1) {
-      setOpacity(1);
+      handleCloseModal()
     } else {
       setOpacity(0.2);
     }
@@ -455,12 +461,13 @@ const ThucHienChecklist = ({ navigation }) => {
 
   const handleCloseModal = () => {
     bottomSheetModalRef?.current?.close();
+    bottomSheetModalRef2?.current?.close();
     setOpacity(1);
+    handleAdd();
   };
 
   const handleToggleModal = () => {
     bottomSheetModalRef2?.current?.present();
-    // setOpacity(0.2);
   };
 
   const handleChecklistDetail = (id1, id2) => {
@@ -541,7 +548,7 @@ const ThucHienChecklist = ({ navigation }) => {
         >
           <DataTable.Cell style={{ width: 120, justifyContent: "center" }}>
             <Text
-              style={{ color: isExistIndex ? "white" : "black", fontSize:15 }}
+              style={{ color: isExistIndex ? "white" : "black", fontSize: 15 }}
               numberOfLines={2}
             >
               {moment(item?.Ngay).format("DD-MM-YYYY")}
@@ -549,7 +556,7 @@ const ThucHienChecklist = ({ navigation }) => {
           </DataTable.Cell>
           <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
             <Text
-              style={{ color: isExistIndex ? "white" : "black", fontSize:15 }}
+              style={{ color: isExistIndex ? "white" : "black", fontSize: 15 }}
               numberOfLines={2}
             >
               {item?.ent_calv?.Tenca}
@@ -557,7 +564,7 @@ const ThucHienChecklist = ({ navigation }) => {
           </DataTable.Cell>
           <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
             <Text
-              style={{ color: isExistIndex ? "white" : "black", fontSize:15 }}
+              style={{ color: isExistIndex ? "white" : "black", fontSize: 15 }}
               numberOfLines={2}
             >
               {item?.ent_khoicv?.KhoiCV}
@@ -565,7 +572,7 @@ const ThucHienChecklist = ({ navigation }) => {
           </DataTable.Cell>
           <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
             <Text
-              style={{ color: isExistIndex ? "white" : "black", fontSize:15 }}
+              style={{ color: isExistIndex ? "white" : "black", fontSize: 15 }}
               numberOfLines={2}
             >
               {item?.ent_giamsat?.Hoten}
@@ -573,7 +580,7 @@ const ThucHienChecklist = ({ navigation }) => {
           </DataTable.Cell>
           <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
             <Text
-              style={{ color: isExistIndex ? "white" : "black", fontSize:15 }}
+              style={{ color: isExistIndex ? "white" : "black", fontSize: 15 }}
               numberOfLines={2}
             >
               {item?.Giobd}
@@ -581,7 +588,7 @@ const ThucHienChecklist = ({ navigation }) => {
           </DataTable.Cell>
           <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
             <Text
-              style={{ color: isExistIndex ? "white" : "black", fontSize:15 }}
+              style={{ color: isExistIndex ? "white" : "black", fontSize: 15 }}
               numberOfLines={2}
             >
               {item?.Giokt}
@@ -589,7 +596,7 @@ const ThucHienChecklist = ({ navigation }) => {
           </DataTable.Cell>
           <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
             <Text
-              style={{ color: isExistIndex ? "white" : "black", fontSize:15 }}
+              style={{ color: isExistIndex ? "white" : "black", fontSize: 15 }}
               numberOfLines={2}
             >
               {" "}
@@ -599,7 +606,7 @@ const ThucHienChecklist = ({ navigation }) => {
 
           <DataTable.Cell style={{ width: 200, justifyContent: "center" }}>
             <Text
-              style={{ color: isExistIndex ? "white" : "black", fontSize:15 }}
+              style={{ color: isExistIndex ? "white" : "black", fontSize: 15 }}
               numberOfLines={3}
             >
               {item?.Ghichu}
@@ -609,6 +616,8 @@ const ThucHienChecklist = ({ navigation }) => {
       </TouchableHighlight>
     );
   };
+
+  console.log('user?.Permission',user?.Permission)
   return (
     <>
       <GestureHandlerRootView style={{ flex: 1 }}>
@@ -651,15 +660,18 @@ const ThucHienChecklist = ({ navigation }) => {
                         resizeMode="contain"
                         style={{ height: 24, width: 24 }}
                       />
-                      <Text style={styles.text}>Lọc dữ liệu</Text>
+                      <Text  allowFontScaling={false} style={styles.text}>Lọc dữ liệu</Text>
                     </TouchableOpacity>
-                    <ButtonChecklist
+                    {
+                      user?.Permission !== 1 &&
+                      <ButtonChecklist
                       text={"Thêm mới"}
                       width={"auto"}
                       color={COLORS.bg_button}
                       // icon={<Ionicons name="add" size={20} color="white" />}
                       onPress={handlePresentModalPress}
                     />
+                    }
                   </View>
                   {isLoading ? (
                     <View
@@ -701,30 +713,28 @@ const ThucHienChecklist = ({ navigation }) => {
                                   {headerList &&
                                     headerList.map((item, index) => {
                                       return (
-                                        <>
-                                          <DataTable.Title
-                                            key={index}
-                                            style={{
-                                              width: item?.width,
-                                              borderRightWidth:
-                                                index === headerList.length - 1
-                                                  ? 0
-                                                  : 2,
-                                              borderRightColor: "white",
-                                              justifyContent: "center",
-                                            }}
-                                            numberOfLines={2}
+                                        <DataTable.Title
+                                          key={index}
+                                          style={{
+                                            width: item?.width,
+                                            borderRightWidth:
+                                              index === headerList.length - 1
+                                                ? 0
+                                                : 2,
+                                            borderRightColor: "white",
+                                            justifyContent: "center",
+                                          }}
+                                          numberOfLines={2}
+                                        >
+                                          <Text
+                                            style={[
+                                              styles.text,
+                                              { color: "black" },
+                                            ]}
                                           >
-                                            <Text
-                                              style={[
-                                                styles.text,
-                                                { color: "black" },
-                                              ]}
-                                            >
-                                              {item?.til}
-                                            </Text>
-                                          </DataTable.Title>
-                                        </>
+                                            {item?.til}
+                                          </Text>
+                                        </DataTable.Title>
                                       );
                                     })}
                                 </DataTable.Header>
@@ -852,7 +862,7 @@ const ThucHienChecklist = ({ navigation }) => {
                 </BottomSheetScrollView>
               </BottomSheetModal>
 
-              {newActionCheckList?.length > 0 && (
+              {newActionCheckList?.length > 0 && user?.Permission !== 1 && (
                 <View
                   style={{
                     width: 60,

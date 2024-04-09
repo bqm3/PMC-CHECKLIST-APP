@@ -377,6 +377,7 @@ const DetailChecklist = ({ route, navigation }) => {
         handleCloseModal();
       })
       .catch((err) => {
+        console.log("err", err);
         Alert.alert("PMC Thông báo", "Tìm kiếm thất bại", [
           {
             text: "Hủy",
@@ -391,6 +392,7 @@ const DetailChecklist = ({ route, navigation }) => {
   // call api submit data checklsit
   const handleSubmit = async () => {
     try {
+      setLoadingSubmit(true);
       let formData = new FormData();
 
       for (const item of newActionDataChecklist) {
@@ -424,9 +426,6 @@ const DetailChecklist = ({ route, navigation }) => {
           formData.append(key, value);
         });
       }
-
-      setLoadingSubmit(true);
-
       await axios.post(BASE_URL + "/tb_checklistchitiet/create", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -435,6 +434,7 @@ const DetailChecklist = ({ route, navigation }) => {
       });
 
       init_checklist();
+      setNewActionDataChecklist([])
       setLoadingSubmit(false);
       Alert.alert("PMC Thông báo", "Checklist thành công", [
         {
@@ -544,10 +544,21 @@ const DetailChecklist = ({ route, navigation }) => {
                         gap: 8,
                       }}
                     >
-                      <Text style={styles.text}>
-                        Số lượng: {decimalNumber(dataChecklistFilter?.length)}{" "}
-                        Checklist
-                      </Text>
+                      <View
+                        style={{
+                          flexDirection: "cloumn",
+                          gap: 8,
+                        }}
+                      >
+                        <Text allowFontScaling={false} style={styles.text}>
+                          Số lượng: {decimalNumber(dataChecklistFilter?.length)}{" "}
+                          Checklist
+                        </Text>
+                        <Text allowFontScaling={false} style={styles.text}>
+                          Đang checklist:{" "}
+                          {decimalNumber(newActionDataChecklist?.length)}
+                        </Text>
+                      </View>
                     </TouchableOpacity>
                     <ButtonChecklist
                       text={"Tìm kiếm"}
@@ -611,7 +622,10 @@ const DetailChecklist = ({ route, navigation }) => {
                       resizeMode="contain"
                       style={{ height: 120, width: 120 }}
                     />
-                    <Text style={[styles.danhmuc, { paddingVertical: 10 }]}>
+                    <Text
+                      allowFontScaling={false}
+                      style={[styles.danhmuc, { paddingVertical: 10 }]}
+                    >
                       Không còn checklist cho ca làm việc này !
                     </Text>
                   </View>
@@ -678,7 +692,7 @@ const DetailChecklist = ({ route, navigation }) => {
             >
               <View style={styles.centeredView}>
                 <View style={styles.modalView}>
-                  <Text style={styles.modalText}>
+                  <Text allowFontScaling={false} style={styles.modalText}>
                     Thông tin checklist chi tiết
                   </Text>
                   <ModalPopupDetailChecklist

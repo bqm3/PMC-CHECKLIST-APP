@@ -101,7 +101,7 @@ const DanhmucGiamsat = ({ navigation }) => {
   }, []); //
 
   const [dataInput, setDataInput] = useState({
-    ID_Duan: null,
+    ID_Duan: user.ID_Duan,
     hoten: "",
     gioitinh: "",
     ngaysinh: "",
@@ -130,7 +130,7 @@ const DanhmucGiamsat = ({ navigation }) => {
       ]);
     } else {
       let data = {
-        ID_Duan: dataInput.ID_Duan,
+        ID_Duan: user.ID_Duan,
         Hoten: dataInput.hoten,
         Gioitinh: dataInput.gioitinh,
         Sodienthoai: dataInput.sodienthoai,
@@ -192,7 +192,7 @@ const DanhmucGiamsat = ({ navigation }) => {
   const handleEditEnt = async (data) => {
     handlePresentModalPress();
     setDataInput({
-      ID_Duan: data.ID_Duan,
+      ID_Duan: user.ID_Duan,
       hoten: data.Hoten,
       gioitinh: data.Gioitinh,
       ngaysinh: data.Ngaysinh,
@@ -220,7 +220,7 @@ const DanhmucGiamsat = ({ navigation }) => {
       ]);
     } else {
       let data = {
-        ID_Duan: dataInput.ID_Duan,
+        ID_Duan: user.ID_Duan,
         Hoten: dataInput.hoten,
         Gioitinh: dataInput.gioitinh,
         Sodienthoai: dataInput.sodienthoai,
@@ -241,7 +241,8 @@ const DanhmucGiamsat = ({ navigation }) => {
         .then((response) => {
           init_giamsat();
           handleAdd();
-          handleCloseModal();setLoadingSubmit(false)
+          handleCloseModal();
+          setLoadingSubmit(false)
           Alert.alert("PMC Thông báo", response.data.message, [
             {
               text: "Hủy",
@@ -252,7 +253,8 @@ const DanhmucGiamsat = ({ navigation }) => {
           ]);
         })
         .catch((err) => {
-          console.log("err", err);setLoadingSubmit(false)
+          console.log('err',err.response)
+          setLoadingSubmit(false)
           Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
             {
               text: "Hủy",
@@ -321,7 +323,7 @@ const DanhmucGiamsat = ({ navigation }) => {
 
   const handleAdd = () => {
     setDataInput({
-      ID_Duan: null,
+      ID_Duan: user.ID_Duan,
       hoten: "",
       gioitinh: "",
       ngaysinh: "",
@@ -329,6 +331,10 @@ const DanhmucGiamsat = ({ navigation }) => {
       ID_Chucvu: null,
       ID_Quyen: null,
       ID_KhoiCV: null,
+    });
+    setIsCheckUpdate({
+      check: false,
+      ID_Giamsat: null,
     });
   };
 
@@ -339,6 +345,7 @@ const DanhmucGiamsat = ({ navigation }) => {
   const handleSheetChanges = useCallback((index) => {
     if (index === -1) {
       setOpacity(1);
+      handleAdd()
     } else {
       setOpacity(0.2);
     }
@@ -382,7 +389,7 @@ const DanhmucGiamsat = ({ navigation }) => {
                 }}
               >
                 <View style={styles.container}>
-                  <Text style={styles.danhmuc}>Danh mục giám sát</Text>
+                  <Text  allowFontScaling={false} style={styles.danhmuc}>Danh mục giám sát</Text>
                   {isLoading === true ? (
                     <View
                       style={{
@@ -406,7 +413,7 @@ const DanhmucGiamsat = ({ navigation }) => {
                           justifyContent: "space-between",
                         }}
                       >
-                        <Text style={styles.text}>
+                        <Text  allowFontScaling={false} style={styles.text}>
                           Số lượng: {decimalNumber(ent_giamsat?.length)}
                         </Text>
                         <ButtonChecklist
@@ -453,7 +460,7 @@ const DanhmucGiamsat = ({ navigation }) => {
                           resizeMode="contain"
                           style={{ height: 120, width: 120 }}
                         />
-                        <Text style={[styles.danhmuc, { paddingVertical: 10 }]}>
+                        <Text  allowFontScaling={false} style={[styles.danhmuc, { paddingVertical: 10 }]}>
                           Bạn chưa thêm dữ liệu nào
                         </Text>
                         <ButtonChecklist
@@ -507,7 +514,7 @@ const DanhmucGiamsat = ({ navigation }) => {
               >
                 <View style={styles.centeredView}>
                   <View style={styles.modalView}>
-                    <Text style={styles.modalText}>Thông tin cá nhân chi tiết</Text>
+                    <Text  allowFontScaling={false} style={styles.modalText}>Thông tin cá nhân chi tiết</Text>
                     <ModalGiamsatInfo 
                     dataModal={dataModal}
                     handleToggleModal={handleToggleModal}
@@ -532,7 +539,7 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: "700",
     color: "white",
-    paddingVertical: 40,
+    // paddingVertical: 40,
   },
   text: { fontSize: 15, color: "white", fontWeight: "600" },
   textInput: {

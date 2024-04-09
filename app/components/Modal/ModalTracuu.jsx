@@ -65,12 +65,12 @@ const ModalTracuu = ({
               }}
             >
               <View style={{ width: "48%" }}>
-                <Text style={styles.text}>Từ ngày</Text>
+                <Text  allowFontScaling={false} style={styles.text}>Từ ngày</Text>
 
                 <TouchableOpacity
                   onPress={() => toggleDatePicker("fromDate", true)}
                 >
-                  <TextInput
+                  <TextInput allowFontScaling={false} 
                     value={filters?.fromDate}
                     placeholder="Từ ngày"
                     placeholderTextColor="gray"
@@ -99,11 +99,11 @@ const ModalTracuu = ({
                 </TouchableOpacity>
               </View>
               <View style={{ width: "48%" }}>
-                <Text style={styles.text}>Đến ngày</Text>
+                <Text  allowFontScaling={false} style={styles.text}>Đến ngày</Text>
                 <TouchableOpacity
                   onPress={() => toggleDatePicker("toDate", true)}
                 >
-                  <TextInput
+                  <TextInput allowFontScaling={false} 
                     value={filters?.toDate}
                     placeholder="Đến ngày"
                     placeholderTextColor="gray"
@@ -133,7 +133,7 @@ const ModalTracuu = ({
               </View>
             </View>
             <View>
-              <Text style={styles.text}>Tòa nhà</Text>
+              <Text  allowFontScaling={false} style={styles.text}>Tòa nhà</Text>
 
               <SelectDropdown
                 data={ent_toanha ? ent_toanha : []}
@@ -170,7 +170,7 @@ const ModalTracuu = ({
                         height: 50,
                       }}
                     >
-                      <Text style={styles.text}>{selectedItem?.Toanha}</Text>
+                      <Text  allowFontScaling={false} style={styles.text}>{selectedItem?.Toanha}</Text>
                     </View>
                   );
                 }}
@@ -187,7 +187,7 @@ const ModalTracuu = ({
               />
             </View>
             <View>
-              <Text style={styles.text}>Khu vực</Text>
+              <Text  allowFontScaling={false} style={styles.text}>Khu vực</Text>
 
               <SelectDropdown
                 data={ent_khuvuc ? ent_khuvuc : []}
@@ -224,7 +224,7 @@ const ModalTracuu = ({
                         height: 50,
                       }}
                     >
-                      <Text style={styles.text}>{selectedItem?.Tenkhuvuc}</Text>
+                      <Text  allowFontScaling={false} style={styles.text}>{selectedItem?.Tenkhuvuc}</Text>
                     </View>
                   );
                 }}
@@ -242,7 +242,7 @@ const ModalTracuu = ({
             </View>
 
             <View>
-              <Text style={styles.text}>Tầng</Text>
+              <Text  allowFontScaling={false} style={styles.text}>Tầng</Text>
 
               <SelectDropdown
                 data={ent_tang ? ent_tang : []}
@@ -279,7 +279,7 @@ const ModalTracuu = ({
                         height: 50,
                       }}
                     >
-                      <Text style={styles.text}>{selectedItem?.Tentang}</Text>
+                      <Text  allowFontScaling={false} style={styles.text}>{selectedItem?.Tentang}</Text>
                     </View>
                   );
                 }}
@@ -309,7 +309,7 @@ const ModalTracuu = ({
                 onValueChange={() => toggleSwitch(isEnabled)}
                 value={isEnabled}
               />
-              <Text style={[styles.text, { paddingHorizontal: 12 }]}>
+              <Text  allowFontScaling={false} style={[styles.text, { paddingHorizontal: 12 }]}>
                 Tất cả
               </Text>
             </View>

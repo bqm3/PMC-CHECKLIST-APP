@@ -32,8 +32,8 @@ const S = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Current Theme: {theme}</Text>
-      <Text style={styles.text}>System Theme: {systemTheme}</Text>
+      <Text  allowFontScaling={false} style={styles.text}>Current Theme: {theme}</Text>
+      <Text  allowFontScaling={false} style={styles.text}>System Theme: {systemTheme}</Text>
       <TouchableOpacity
         onPress={() => toggleTheme('light')}
         style={{
@@ -43,7 +43,7 @@ const S = () => {
           backgroundColor: theme === 'dark' ? '#fff' : '#000',
         }}
       >
-        <Text style={styles.button}>Light Theme</Text>
+        <Text  allowFontScaling={false} style={styles.button}>Light Theme</Text>
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => toggleTheme('dark')}
@@ -54,7 +54,7 @@ const S = () => {
           backgroundColor: theme === 'dark' ? '#fff' : '#000',
         }}
       >
-        <Text style={styles.button}>Dark Theme</Text>
+        <Text  allowFontScaling={false} style={styles.button}>Dark Theme</Text>
       </TouchableOpacity>
       <TouchableOpacity
         onPress={() => useSystemTheme()}
@@ -65,7 +65,7 @@ const S = () => {
           backgroundColor: theme === 'dark' ? '#fff' : '#000',
         }}
       >
-        <Text style={styles.button}>System Theme</Text>
+        <Text  allowFontScaling={false} style={styles.button}>System Theme</Text>
       </TouchableOpacity>
     </View>
   );

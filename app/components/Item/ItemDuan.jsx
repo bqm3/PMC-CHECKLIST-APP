@@ -18,8 +18,8 @@ const ItemDuan = ({ index, item, handleEditEnt, handleAlertDelete }) => {
       }}
     >
       <View>
-        <Text style={[styles.title, { fontSize: 18 }]}>{item?.Duan}</Text>
-        {/* <Text style={styles.title}>{item?.ent_khoicv?.KhoiCV}</Text> */}
+        <Text  allowFontScaling={false} style={[styles.title, { fontSize: 18 }]}>{item?.Duan}</Text>
+        {/* <Text  allowFontScaling={false} style={styles.title}>{item?.ent_khoicv?.KhoiCV}</Text> */}
 
         <View
           style={{
@@ -29,7 +29,7 @@ const ItemDuan = ({ index, item, handleEditEnt, handleAlertDelete }) => {
           }}
         >
           {/* <Feather name="clock" size={16} color="gray" />
-          <Text style={{ paddingVertical: 2, color: "gray", paddingLeft: 4 }}>
+          <Text  allowFontScaling={false} style={{ paddingVertical: 2, color: "gray", paddingLeft: 4 }}>
             Từ {item?.Giobatdau} đến {item?.Gioketthuc}
           </Text> */}
         </View>

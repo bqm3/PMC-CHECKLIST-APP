@@ -7,17 +7,17 @@ const ModalGiamsatInfo = ({ dataModal, handleToggleModal }) => {
   return (
     <View >
       <View style={{marginBottom: 20}}>
-        <Text style={styles.text}>Họ tên: <Text style={{color: COLORS.bg_active}}>{dataModal?.Hoten}</Text></Text>
-        <Text style={styles.text}>
+        <Text  allowFontScaling={false} style={styles.text}>Họ tên: <Text  allowFontScaling={false} style={{color: COLORS.bg_active}}>{dataModal?.Hoten}</Text></Text>
+        <Text  allowFontScaling={false} style={styles.text}>
           Giới tính:{" "}
-          <Text style={{color: COLORS.bg_active}}>{(dataModal?.Gioitinh == "nam" && "Nam") ||
+          <Text  allowFontScaling={false} style={{color: COLORS.bg_active}}>{(dataModal?.Gioitinh == "nam" && "Nam") ||
             (dataModal?.Gioitinh == "nu" && "Nữ") ||
             (dataModal?.Gioitinh == "khac" && "Khác")}
         </Text></Text>
-        <Text style={styles.text}>Ngày sinh: <Text style={{color: COLORS.bg_active}}>{dataModal?.Ngaysinh}</Text></Text>
-        <Text style={styles.text}>Số điện thoại: <Text style={{color: COLORS.bg_active}}>{dataModal?.Sodienthoai}</Text></Text>
-        <Text style={styles.text}>Chức vụ: <Text style={{color: COLORS.bg_active}}>{dataModal?.ent_chucvu.Chucvu}</Text></Text>
-        <Text style={styles.text}>Dự án: <Text style={{color: COLORS.bg_active}}>{dataModal?.ent_duan.Duan}</Text></Text>
+        <Text  allowFontScaling={false} style={styles.text}>Ngày sinh: <Text  allowFontScaling={false} style={{color: COLORS.bg_active}}>{dataModal?.Ngaysinh}</Text></Text>
+        <Text  allowFontScaling={false} style={styles.text}>Số điện thoại: <Text  allowFontScaling={false} style={{color: COLORS.bg_active}}>{dataModal?.Sodienthoai}</Text></Text>
+        <Text  allowFontScaling={false} style={styles.text}>Chức vụ: <Text  allowFontScaling={false} style={{color: COLORS.bg_active}}>{dataModal?.ent_chucvu.Chucvu}</Text></Text>
+        <Text  allowFontScaling={false} style={styles.text}>Dự án: <Text  allowFontScaling={false} style={{color: COLORS.bg_active}}>{dataModal?.ent_duan.Duan}</Text></Text>
       </View>
       <Button 
       color={'white'}

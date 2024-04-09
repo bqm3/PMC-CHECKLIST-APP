@@ -17,10 +17,10 @@ const ItemToanha = ({ index, item, handleEditEnt, handleAlertDelete }) => {
       }}
     >
       <View>
-        <Text style={[styles.title, { fontSize: 18 }]}>
+        <Text  allowFontScaling={false} style={[styles.title, { fontSize: 18 }]}>
           {item?.Toanha} - Số tầng: {item?.Sotang}
         </Text>
-        <Text style={styles.title}>{item?.ent_duan?.Duan}</Text>
+        <Text  allowFontScaling={false} style={styles.title}>{item?.ent_duan?.Duan}</Text>
       </View>
       <View
         style={{

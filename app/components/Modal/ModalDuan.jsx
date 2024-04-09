@@ -29,8 +29,8 @@ const ModalDuan = ({
   return (
     <View style={{ margin: 20 }}>
       <View style={{ justifyContent: "space-around", width: "100%" }}>
-        <Text style={styles.text}>Tên dự án</Text>
-        <TextInput
+        <Text  allowFontScaling={false} style={styles.text}>Tên dự án</Text>
+        <TextInput allowFontScaling={false} 
           value={dataInput.Duan}
           placeholder="Nhập tên dự án thực hiện checklist"
           placeholderTextColor="gray"

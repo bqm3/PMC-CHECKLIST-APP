@@ -9,7 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import React, { useRef } from "react";
+import React, { memo, useRef, useState } from "react";
 import { Dropdown } from "react-native-element-dropdown";
 import { COLORS } from "../../constants/theme";
 import ButtonSubmit from "../Button/ButtonSubmit";
@@ -28,14 +28,14 @@ const ModalChecklist = ({
   handlePushDataSave,
   handlePushDataEdit,
   isCheckUpdate,
-  handleConfirm,
-  handleEditEnt,
   handleChangeTextKhuVuc,
   dataCheckKhuvuc,
   handleDataKhuvuc,
   activeKhuVuc,
   dataKhuVuc,
   loadingSubmit,
+  // setTieuchuan,
+  // tieuChuan,
 }) => {
   const ref = useRef(null);
 
@@ -53,6 +53,22 @@ const ModalChecklist = ({
   );
   const defaultButtonText = defaultTang ? defaultTang : "Tầng";
 
+  // Tạo state cho Tiêu chuẩn và Ghi chú
+  const [tieuchuan, setTieuchuan] = useState(dataInput?.Tieuchuan);
+  const [ghichu, setGhichu] = useState(dataInput?.Ghichu);
+
+  // Tạo state cho Số thứ tự và Mã số
+  const [sothutu, setSothutu] = useState(dataInput?.Sothutu);
+  const [maso, setMaso] = useState(dataInput?.Maso);
+
+  // Tạo state cho Mã Qr code, Tên checklist, Giá trị định danh, Giá trị nhận
+  const [maQrCode, setMaQrCode] = useState(dataInput?.MaQrCode);
+  const [tenChecklist, setTenChecklist] = useState(dataInput?.Checklist);
+  const [giatridinhdanh, setGiatridinhdanh] = useState(
+    dataInput?.Giatridinhdanh
+  );
+  const [giatrinhan, setGiatrinhan] = useState(dataInput?.Giatrinhan);
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <KeyboardAvoidingView
@@ -61,8 +77,9 @@ const ModalChecklist = ({
       >
         <View style={{ margin: 20 }}>
           <View style={{ justifyContent: "space-around", width: "100%" }}>
-            {/* Số thứ tự - Mã số  */}
-            <View
+
+             {/* Tòa nhà và khối công việc  */}
+             <View
               style={{
                 flexDirection: "row",
                 width: "100%",
@@ -70,152 +87,7 @@ const ModalChecklist = ({
               }}
             >
               <View style={{ width: "48%" }}>
-                <Text style={styles.text}>Số thứ tự</Text>
-                <TextInput
-                  value={`${dataInput?.Sothutu}`}
-                  placeholder="Số thứ tự"
-                  placeholderTextColor="gray"
-                  style={[
-                    styles.textInput,
-                    {
-                      paddingHorizontal: 10,
-                    },
-                  ]}
-                  onChangeText={(val) => handleChangeText("Sothutu", val)}
-                  //   pointerEvents="none"
-                />
-              </View>
-              <View style={{ width: "48%" }}>
-                <Text style={styles.text}>Mã số</Text>
-                <TextInput
-                  value={dataInput?.Maso}
-                  placeholder="Mã số"
-                  placeholderTextColor="gray"
-                  style={[
-                    styles.textInput,
-                    {
-                      paddingHorizontal: 10,
-                    },
-                  ]}
-                  onChangeText={(val) => handleChangeText("Maso", val)}
-                  //   pointerEvents="none"
-                />
-              </View>
-            </View>
-            {/* Mã Qr code  */}
-            <Text style={styles.text}>Mã Qr code</Text>
-            <TextInput
-              value={dataInput?.MaQrCode}
-              placeholder="Nhập Qr code"
-              placeholderTextColor="gray"
-              style={[
-                styles.textInput,
-                {
-                  paddingHorizontal: 10,
-                },
-              ]}
-              autoCapitalize="sentences"
-              onChangeText={(val) => handleChangeText("MaQrCode", val)}
-            />
-            {/* Tên checklist  */}
-            <Text style={styles.text}>Tên Checklist</Text>
-            <TextInput
-              value={dataInput?.Checklist}
-              placeholder="Nhập tên Checklist"
-              placeholderTextColor="gray"
-              style={[
-                styles.textInput,
-                {
-                  paddingHorizontal: 10,
-                },
-              ]}
-              autoCapitalize="sentences"
-              onChangeText={(val) => handleChangeText("Checklist", val)}
-            />
-
-            <Text style={styles.text}>Giá trị định danh</Text>
-            <TextInput
-              value={dataInput?.Giatridinhdanh}
-              placeholder="Nhập giá trị định danh"
-              placeholderTextColor="gray"
-              style={[
-                styles.textInput,
-                {
-                  paddingHorizontal: 10,
-                },
-              ]}
-              autoCapitalize="sentences"
-              onChangeText={(val) => handleChangeText("Giatridinhdanh", val)}
-            />
-            <Text style={styles.textNote}>
-              Nếu không có thì không phải nhập
-            </Text>
-
-            <Text style={styles.text}>Giá trị nhận</Text>
-            <TextInput
-              value={dataInput?.Giatrinhan}
-              placeholder="Nhập giá trị nhận"
-              placeholderTextColor="gray"
-              style={[
-                styles.textInput,
-                {
-                  paddingHorizontal: 10,
-                },
-              ]}
-              autoCapitalize="sentences"
-              onChangeText={(val) => handleChangeText("Giatrinhan", val)}
-            />
-            <Text style={[styles.textNote, { color: "red" }]}>
-              Tại ô Giá trị nhận nhập theo định dạng - Giá trị 1/Giá trị 2...
-              (Ví dụ : Sáng/Tắt, Bật/Tắt, Đạt/Không đạt, On/Off,..)
-            </Text>
-
-             {/* Ghi chú  */}
-             <Text style={styles.text}>Ghi chú</Text>
-            <TextInput
-              value={dataInput?.Ghichu}
-              placeholder="Nhập ghi chú"
-              placeholderTextColor="gray"
-              multiline={true}
-              style={[
-                styles.textInput,
-                {
-                  paddingHorizontal: 10,
-                  height: 60,
-                },
-              ]}
-              autoCapitalize="sentences"
-              onChangeText={(val) => handleChangeText("Ghichu", val)}
-            />
-
-            {/* Tiêu chuẩn  */}
-            <Text style={styles.text}>Tiêu chuẩn</Text>
-            <TextInput
-              value={dataInput?.Ghichu}
-              placeholder="Nhập tiêu chuẩn"
-              placeholderTextColor="gray"
-              multiline={true}
-              style={[
-                styles.textInput,
-                {
-                  paddingHorizontal: 10,
-                  height: 60,
-                },
-              ]}
-              autoCapitalize="sentences"
-              onChangeText={(val) => handleChangeText("Tieuchuan", val)}
-            />
-
-            {/* Tòa nhà và khối công việc  */}
-            <View
-              style={{
-                flexDirection: "row",
-                width: "100%",
-                justifyContent: "space-between",
-              }}
-            >
-              <View style={{ width: "48%" }}>
-                <Text style={styles.text}>Tòa nhà</Text>
+                <Text  allowFontScaling={false} style={styles.text}>Tòa nhà</Text>
 
                 <SelectDropdown
                   data={ent_toanha ? ent_toanha : []}
@@ -255,7 +127,7 @@ const ModalChecklist = ({
                           height: 50,
                         }}
                       >
-                        <Text style={styles.text}>{selectedItem?.Toanha}</Text>
+                        <Text  allowFontScaling={false} style={styles.text}>{selectedItem?.Toanha}</Text>
                       </View>
                     );
                   }}
@@ -272,7 +144,7 @@ const ModalChecklist = ({
                 />
               </View>
               <View style={{ width: "48%" }}>
-                <Text style={styles.text}>Khối công việc</Text>
+                <Text  allowFontScaling={false} style={styles.text}>Khối công việc</Text>
 
                 <SelectDropdown
                   data={ent_khoicv ? ent_khoicv : []}
@@ -312,7 +184,7 @@ const ModalChecklist = ({
                           height: 50,
                         }}
                       >
-                        <Text style={styles.text}>{selectedItem?.KhoiCV}</Text>
+                        <Text  allowFontScaling={false} style={styles.text}>{selectedItem?.KhoiCV}</Text>
                       </View>
                     );
                   }}
@@ -339,7 +211,7 @@ const ModalChecklist = ({
               }}
             >
               <View style={{ width: "48%" }}>
-                <Text style={styles.text}>Tầng</Text>
+                <Text  allowFontScaling={false} style={styles.text}>Tầng</Text>
 
                 <SelectDropdown
                   ref={ref}
@@ -376,7 +248,7 @@ const ModalChecklist = ({
                           height: 50,
                         }}
                       >
-                        <Text style={styles.text}>{selectedItem?.Tentang}</Text>
+                        <Text  allowFontScaling={false} style={styles.text}>{selectedItem?.Tentang}</Text>
                       </View>
                     );
                   }}
@@ -395,7 +267,7 @@ const ModalChecklist = ({
               <View style={{ width: "48%" }}>
                 {activeKhuVuc && (
                   <>
-                    <Text style={styles.text}>Khu vực</Text>
+                    <Text  allowFontScaling={false} style={styles.text}>Khu vực</Text>
 
                     <SelectDropdown
                       ref={ref}
@@ -432,7 +304,7 @@ const ModalChecklist = ({
                               height: 50,
                             }}
                           >
-                            <Text style={styles.text}>
+                            <Text  allowFontScaling={false} style={styles.text}>
                               {selectedItem?.Tenkhuvuc}
                             </Text>
                           </View>
@@ -453,6 +325,170 @@ const ModalChecklist = ({
                 )}
               </View>
             </View>
+            
+            {/* Số thứ tự - Mã số  */}
+            <View
+              style={{
+                flexDirection: "row",
+                width: "100%",
+                justifyContent: "space-between",
+              }}
+            >
+              <View style={{ width: "48%" }}>
+                <Text  allowFontScaling={false} style={styles.text}>Số thứ tự</Text>
+                <TextInput allowFontScaling={false} 
+                  value={`${sothutu}`}
+                  placeholder="Số thứ tự"
+                  placeholderTextColor="gray"
+                  style={[
+                    styles.textInput,
+                    {
+                      paddingHorizontal: 10,
+                    },
+                  ]}
+                  onChangeText={(val) => {
+                    setSothutu(val)
+                    handleChangeText("Sothutu", val)
+                  }}
+                  //   pointerEvents="none"
+                />
+              </View>
+              <View style={{ width: "48%" }}>
+                <Text  allowFontScaling={false} style={styles.text}>Mã số</Text>
+                <TextInput allowFontScaling={false} 
+                 value={maso}
+                  placeholder="Mã số"
+                  placeholderTextColor="gray"
+                  style={[
+                    styles.textInput,
+                    {
+                      paddingHorizontal: 10,
+                    },
+                  ]}
+                  
+                  onChangeText={(val) => {
+                    setMaso(val)
+                    handleChangeText("Maso", val)
+                  }}
+                  //   pointerEvents="none"
+                />
+              </View>
+            </View>
+            {/* Mã Qr code  */}
+            <Text  allowFontScaling={false} style={styles.text}>Mã Qr code</Text>
+            <TextInput allowFontScaling={false} 
+              value={maQrCode}
+              placeholder="Nhập Qr code"
+              placeholderTextColor="gray"
+              style={[
+                styles.textInput,
+                {
+                  paddingHorizontal: 10,
+                },
+              ]}
+              autoCapitalize="sentences"
+              onChangeText={(val) => {handleChangeText("MaQrCode", val),setMaQrCode(val)}}
+            />
+            {/* Tên checklist  */}
+            <Text  allowFontScaling={false} style={styles.text}>Tên Checklist</Text>
+            <TextInput allowFontScaling={false} 
+              value={tenChecklist}
+              placeholder="Nhập tên Checklist"
+              placeholderTextColor="gray"
+              style={[
+                styles.textInput,
+                {
+                  paddingHorizontal: 10,
+                },
+              ]}
+              autoCapitalize="sentences"
+              onChangeText={(val) => {handleChangeText("Checklist", val),setTenChecklist(val)}}
+            />
+
+            {/* Tiêu chuẩn  */}
+            <Text  allowFontScaling={false} style={styles.text}>Tiêu chuẩn</Text>
+            <TextInput allowFontScaling={false} 
+              value={tieuchuan}
+              placeholder="Nhập tiêu chuẩn"
+              placeholderTextColor="gray"
+              textAlignVertical="top"
+              multiline={true}
+              blurOnSubmit={true}
+              style={[
+                styles.textInput,
+                {
+                  paddingHorizontal: 10,
+                  height: 70,
+                },
+              ]}
+              onChangeText={(text) => {
+                setTieuchuan(text);
+                handleChangeText("Tieuchuan", text);
+              }}
+            />
+            <Text  allowFontScaling={false} style={styles.text}>Giá trị định danh</Text>
+            <TextInput allowFontScaling={false} 
+              value={giatridinhdanh}
+              placeholder="Nhập giá trị định danh"
+              placeholderTextColor="gray"
+              style={[
+                styles.textInput,
+                {
+                  paddingHorizontal: 10,
+                },
+              ]}
+              autoCapitalize="sentences"
+              onChangeText={(val) => {handleChangeText("Giatridinhdanh", val), setGiatridinhdanh(val)}}
+            />
+            <Text  allowFontScaling={false} style={styles.textNote}>
+              Nếu không có thì không phải nhập
+            </Text>
+
+            <Text  allowFontScaling={false} style={styles.text}>Giá trị nhận</Text>
+            <TextInput allowFontScaling={false} 
+              value={giatrinhan}
+              placeholder="Nhập giá trị nhận"
+              placeholderTextColor="gray"
+              style={[
+                styles.textInput,
+                {
+                  paddingHorizontal: 10,
+                },
+              ]}
+              autoCapitalize="sentences"
+              onChangeText={(val) => {
+                handleChangeText("Giatrinhan", val)
+                setGiatrinhan(val)
+              }}
+            />
+            <Text  allowFontScaling={false} style={[styles.textNote, { color: "red" }]}>
+              Tại ô Giá trị nhận nhập theo định dạng - Giá trị 1/Giá trị 2...
+              (Ví dụ : Sáng/Tắt, Bật/Tắt, Đạt/Không đạt, On/Off,..)
+            </Text>
+
+            {/* Ghi chú  */}
+            <Text  allowFontScaling={false} style={styles.text}>Ghi chú</Text>
+            <TextInput allowFontScaling={false} 
+              value={ghichu}
+              placeholder="Nhập ghi chú"
+              placeholderTextColor="gray"
+              textAlignVertical="top"
+              multiline={true}
+              blurOnSubmit={true}
+              style={[
+                styles.textInput,
+                {
+                  paddingHorizontal: 10,
+                  height: 70,
+                },
+              ]}
+              onChangeText={(text) => {
+                setGhichu(text);
+                handleChangeText("Ghichu", text);
+              }}
+            />
+
+           
 
             <View style={{ height: 20 }}></View>
           </View>

@@ -9,7 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import React, { useRef } from "react";
+import React, { useRef,useState } from "react";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 import { COLORS } from "../../constants/theme";
@@ -53,10 +53,7 @@ const ModalGiamsat = ({
   const ref = useRef(null);
 
   const defaultChucvu = ent_chucvu?.find(
-    (chucvu) => chucvu.ID_Chucvu === dataInput?.ID_Chucvu
-  );
-  const defaultDuan = ent_duan?.find(
-    (duan) => duan.ID_Duan === dataInput?.ID_Duan
+    (chucvu) => chucvu.ID_Chucvu === 2
   );
   const defaultKhoi = ent_khoicv?.find(
     (khoi) => khoi.ID_Khoi === dataInput?.ID_KhoiCV
@@ -64,6 +61,9 @@ const ModalGiamsat = ({
   const defaultGioitinh = dataGioitinh?.find(
     (duan) => duan.value === dataInput?.gioitinh
   );
+
+  const [hoten, sethoten] = useState(dataInput?.hoten);
+  const [sodienthoai, setsodienthoai] = useState(dataInput?.sodienthoai); 
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -73,35 +73,7 @@ const ModalGiamsat = ({
       >
         <View style={{ margin: 20 }}>
           <View style={{ justifyContent: "space-around", width: "100%" }}>
-            <Text style={styles.text}>Họ tên</Text>
-            <TextInput
-              value={dataInput.hoten}
-              placeholder="Nhập họ tên"
-              placeholderTextColor="gray"
-              style={[
-                styles.textInput,
-                {
-                  paddingHorizontal: 10,
-                },
-              ]}
-              onChangeText={(val) => handleChangeText("hoten", val)}
-            />
-
-            <Text style={styles.text}>Số điện thoại</Text>
-            <TextInput
-              keyboardType="numeric"
-              value={dataInput.sodienthoai}
-              placeholder="Nhập số điện thoại"
-              placeholderTextColor="gray"
-              style={[
-                styles.textInput,
-                {
-                  paddingHorizontal: 10,
-                },
-              ]}
-              onChangeText={(val) => handleChangeText("sodienthoai", val)}
-            />
-            <View
+          <View
               style={{
                 flexDirection: "row",
                 width: "100%",
@@ -109,200 +81,8 @@ const ModalGiamsat = ({
               }}
             >
               <View style={{ width: "48%" }}>
-                <Text style={styles.text}>Giới tính</Text>
-
-                <SelectDropdown
-                  data={dataGioitinh ? dataGioitinh : []}
-                  buttonStyle={styles.select}
-                  dropdownStyle={{
-                    borderRadius: 8,
-                    maxHeight: 400,
-                  }}
-                  // rowStyle={{ height: 50, justifyContent: "center" }}
-                  defaultButtonText={"Chọn giới tính"}
-                  buttonTextStyle={styles.customText}
-                  defaultValue={defaultGioitinh}
-                  onSelect={(selectedItem, index) => {
-                    handleChangeText("gioitinh", selectedItem.value);
-                  }}
-                  renderDropdownIcon={(isOpened) => {
-                    return (
-                      <FontAwesome
-                        name={isOpened ? "chevron-up" : "chevron-down"}
-                        color={"#637381"}
-                        size={14}
-                        style={{ marginRight: 10 }}
-                      />
-                    );
-                  }}
-                  dropdownIconPosition={"right"}
-                  buttonTextAfterSelection={(selectedItem, index) => {
-                    return (
-                      <View
-                        style={{
-                          justifyContent: "center",
-                          alignContent: "center",
-                          height: 50,
-                        }}
-                      >
-                        <Text style={styles.text}>{selectedItem?.label}</Text>
-                      </View>
-                    );
-                  }}
-                  renderCustomizedRowChild={(item, index) => {
-                    return (
-                      <VerticalSelect
-                        value={item.value}
-                        label={item.label}
-                        key={index}
-                        selectedItem={dataInput.gioitinh}
-                      />
-                    );
-                  }}
-                />
-              </View>
-              <View style={{ width: "48%" }}>
-                <Text style={styles.text}>Ngày sinh</Text>
-                <TouchableOpacity onPress={toggleDatePicker}>
-                  <TextInput
-                    value={dataInput.ngaysinh}
-                    placeholder="Nhập ngày sinh"
-                    placeholderTextColor="gray"
-                    style={[
-                      styles.textInput,
-                      {
-                        paddingHorizontal: 10,
-                      },
-                    ]}
-                    pointerEvents="none"
-                  />
-                  <DateTimePickerModal
-                    isVisible={isDatePickerVisible}
-                    mode="date"
-                    isDarkModeEnabled={true}
-                    onConfirm={(date) => handleConfirm("ngaysinh", date)}
-                    onCancel={toggleDatePicker}
-                  />
-                </TouchableOpacity>
-              </View>
-            </View>
-
-            <View
-              style={{
-                flexDirection: "row",
-                width: "100%",
-                justifyContent: "space-between",
-              }}
-            >
-              <View style={{ width: "48%" }}>
-                <Text style={styles.text}>Dự án</Text>
-
-                <SelectDropdown
-                  data={ent_duan ? ent_duan : []}
-                  buttonStyle={styles.select}
-                  dropdownStyle={{
-                    borderRadius: 8,
-                    maxHeight: 400,
-                  }}
-                  // rowStyle={{ height: 50, justifyContent: "center" }}
-                  defaultButtonText={"Chọn dự án"}
-                  buttonTextStyle={styles.customText}
-                  defaultValue={defaultDuan}
-                  onSelect={(selectedItem, index) => {
-                    handleChangeText("ID_Duan", selectedItem.ID_Duan);
-                  }}
-                  renderDropdownIcon={(isOpened) => {
-                    return (
-                      <FontAwesome
-                        name={isOpened ? "chevron-up" : "chevron-down"}
-                        color={"#637381"}
-                        size={14}
-                        style={{ marginRight: 10 }}
-                      />
-                    );
-                  }}
-                  dropdownIconPosition={"right"}
-                  buttonTextAfterSelection={(selectedItem, index) => {
-                    return (
-                      <View
-                        style={{
-                          justifyContent: "center",
-                          alignContent: "center",
-                          height: 50,
-                        }}
-                      >
-                        <Text style={styles.text}>{selectedItem?.Duan}</Text>
-                      </View>
-                    );
-                  }}
-                  renderCustomizedRowChild={(item, index) => {
-                    return (
-                      <VerticalSelect
-                        value={item.ID_Duan}
-                        label={item.Duan}
-                        key={index}
-                        selectedItem={dataInput.ID_Duan}
-                      />
-                    );
-                  }}
-                />
-              </View>
-              <View style={{ width: "48%" }}>
-                <Text style={styles.text}>Chức vụ</Text>
-                <SelectDropdown
-                  ref={ref}
-                  data={ent_chucvu ? ent_chucvu : []}
-                  buttonStyle={styles.select}
-                  dropdownStyle={{
-                    borderRadius: 8,
-                    maxHeight: 400,
-                  }}
-                  // rowStyle={{ height: 50, justifyContent: "center" }}
-                  defaultButtonText={"Chọn chức vụ"}
-                  buttonTextStyle={styles.customText}
-                  defaultValue={defaultChucvu}
-                  onSelect={(selectedItem, index) => {
-                    handleChangeText("ID_Chucvu", selectedItem.ID_Chucvu);
-                  }}
-                  renderDropdownIcon={(isOpened) => {
-                    return (
-                      <FontAwesome
-                        name={isOpened ? "chevron-up" : "chevron-down"}
-                        color={"#637381"}
-                        size={14}
-                        style={{ marginRight: 10 }}
-                      />
-                    );
-                  }}
-                  dropdownIconPosition={"right"}
-                  buttonTextAfterSelection={(selectedItem, index) => {
-                    return (
-                      <View
-                        style={{
-                          justifyContent: "center",
-                          alignContent: "center",
-                          height: 50,
-                        }}
-                      >
-                        <Text style={styles.text}>{selectedItem?.Chucvu}</Text>
-                      </View>
-                    );
-                  }}
-                  renderCustomizedRowChild={(item, index) => {
-                    return (
-                      <VerticalSelect
-                        value={item.ID_Chucvu}
-                        label={item.Chucvu}
-                        key={index}
-                        selectedItem={dataInput.ID_Chucvu}
-                      />
-                    );
-                  }}
-                />
-              </View>
-            </View>
-            <View>
-              <Text style={styles.text}>Khối công việc</Text>
+              <View>
+              <Text  allowFontScaling={false} style={styles.text}>Khối công việc</Text>
 
               <SelectDropdown
                 data={ent_khoicv ? ent_khoicv : []}
@@ -338,7 +118,7 @@ const ModalGiamsat = ({
                         height: 50,
                       }}
                     >
-                      <Text style={styles.text}>{selectedItem?.KhoiCV}</Text>
+                      <Text  allowFontScaling={false} style={styles.text}>{selectedItem?.KhoiCV}</Text>
                     </View>
                   );
                 }}
@@ -354,6 +134,177 @@ const ModalGiamsat = ({
                 }}
               />
             </View>
+              </View>
+              <View style={{ width: "48%" }}>
+                <Text  allowFontScaling={false} style={styles.text}>Chức vụ</Text>
+                <SelectDropdown
+                  ref={ref}
+                  data={ent_chucvu ? ent_chucvu : []}
+                  buttonStyle={styles.select}
+                  dropdownStyle={{
+                    borderRadius: 8,
+                    maxHeight: 400,
+                  }}
+                  // rowStyle={{ height: 50, justifyContent: "center" }}
+                  defaultButtonText={"Chọn chức vụ"}
+                  buttonTextStyle={styles.customText}
+                  defaultValue={defaultChucvu}
+                  onSelect={(selectedItem, index) => {
+                    handleChangeText("ID_Chucvu", selectedItem.ID_Chucvu);
+                  }}
+                  renderDropdownIcon={(isOpened) => {
+                    return (
+                      <FontAwesome
+                        name={isOpened ? "chevron-up" : "chevron-down"}
+                        color={"#637381"}
+                        size={14}
+                        style={{ marginRight: 10 }}
+                      />
+                    );
+                  }}
+                  dropdownIconPosition={"right"}
+                  buttonTextAfterSelection={(selectedItem, index) => {
+                    return (
+                      <View
+                        style={{
+                          justifyContent: "center",
+                          alignContent: "center",
+                          height: 50,
+                        }}
+                      >
+                        <Text  allowFontScaling={false} style={styles.text}>{selectedItem?.Chucvu}</Text>
+                      </View>
+                    );
+                  }}
+                  renderCustomizedRowChild={(item, index) => {
+                    return (
+                      <VerticalSelect
+                        value={item.ID_Chucvu}
+                        label={item.Chucvu}
+                        key={index}
+                        selectedItem={dataInput.ID_Chucvu}
+                      />
+                    );
+                  }}
+                />
+              </View>
+            </View>
+           
+            <Text  allowFontScaling={false} style={styles.text}>Họ tên</Text>
+            <TextInput allowFontScaling={false} 
+              value={hoten}
+              placeholder="Nhập họ tên"
+              placeholderTextColor="gray"
+              style={[
+                styles.textInput,
+                {
+                  paddingHorizontal: 10,
+                },
+              ]}
+              onChangeText={(val) => {handleChangeText("hoten", val),sethoten(val)}}
+            />
+
+            <Text  allowFontScaling={false} style={styles.text}>Số điện thoại</Text>
+            <TextInput allowFontScaling={false} 
+              keyboardType="numeric"
+              value={sodienthoai}
+              placeholder="Nhập số điện thoại"
+              placeholderTextColor="gray"
+              style={[
+                styles.textInput,
+                {
+                  paddingHorizontal: 10,
+                },
+              ]}
+              onChangeText={(val) => {handleChangeText("sodienthoai", val),setsodienthoai(val)}}
+            />
+            <View
+              style={{
+                flexDirection: "row",
+                width: "100%",
+                justifyContent: "space-between",
+              }}
+            >
+              <View style={{ width: "48%" }}>
+                <Text  allowFontScaling={false} style={styles.text}>Giới tính</Text>
+
+                <SelectDropdown
+                  data={dataGioitinh ? dataGioitinh : []}
+                  buttonStyle={styles.select}
+                  dropdownStyle={{
+                    borderRadius: 8,
+                    maxHeight: 400,
+                  }}
+                  // rowStyle={{ height: 50, justifyContent: "center" }}
+                  defaultButtonText={"Chọn giới tính"}
+                  buttonTextStyle={styles.customText}
+                  defaultValue={defaultGioitinh}
+                  onSelect={(selectedItem, index) => {
+                    handleChangeText("gioitinh", selectedItem.value);
+                  }}
+                  renderDropdownIcon={(isOpened) => {
+                    return (
+                      <FontAwesome
+                        name={isOpened ? "chevron-up" : "chevron-down"}
+                        color={"#637381"}
+                        size={14}
+                        style={{ marginRight: 10 }}
+                      />
+                    );
+                  }}
+                  dropdownIconPosition={"right"}
+                  buttonTextAfterSelection={(selectedItem, index) => {
+                    return (
+                      <View
+                        style={{
+                          justifyContent: "center",
+                          alignContent: "center",
+                          height: 50,
+                        }}
+                      >
+                        <Text  allowFontScaling={false} style={styles.text}>{selectedItem?.label}</Text>
+                      </View>
+                    );
+                  }}
+                  renderCustomizedRowChild={(item, index) => {
+                    return (
+                      <VerticalSelect
+                        value={item.value}
+                        label={item.label}
+                        key={index}
+                        selectedItem={dataInput.gioitinh}
+                      />
+                    );
+                  }}
+                />
+              </View>
+              <View style={{ width: "48%" }}>
+                <Text  allowFontScaling={false} style={styles.text}>Ngày sinh</Text>
+                <TouchableOpacity onPress={toggleDatePicker}>
+                  <TextInput allowFontScaling={false} 
+                    value={dataInput.ngaysinh}
+                    placeholder="Nhập ngày sinh"
+                    placeholderTextColor="gray"
+                    style={[
+                      styles.textInput,
+                      {
+                        paddingHorizontal: 10,
+                      },
+                    ]}
+                    pointerEvents="none"
+                  />
+                  <DateTimePickerModal
+                    isVisible={isDatePickerVisible}
+                    mode="date"
+                    isDarkModeEnabled={true}
+                    onConfirm={(date) => handleConfirm("ngaysinh", date)}
+                    onCancel={toggleDatePicker}
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+
+           
           </View>
           <View style={{ marginTop: 20 }}>
             <ButtonSubmit

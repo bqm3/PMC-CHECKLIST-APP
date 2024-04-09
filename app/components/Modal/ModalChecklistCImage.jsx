@@ -95,7 +95,7 @@ const ModalChecklistCImage = ({
               }}
             >
               <View style={{ width: "48%" }}>
-                <Text style={styles.text}>Ảnh 1</Text>
+                <Text  allowFontScaling={false} style={styles.text}>Ảnh 1</Text>
                 <View style={styles.container}>
                   <TouchableOpacity
                     style={{
@@ -128,14 +128,14 @@ const ModalChecklistCImage = ({
                       style={styles.buttonImage}
                       onPress={() => handleWebView(image1)}
                     >
-                      <Text style={styles.textImage}>Xem ảnh</Text>
+                      <Text  allowFontScaling={false} style={styles.textImage}>Xem ảnh</Text>
                     </TouchableOpacity>
                   )}
                 </View>
               </View>
 
               <View style={{ width: "48%" }}>
-                <Text style={styles.text}>Ảnh 2</Text>
+                <Text  allowFontScaling={false} style={styles.text}>Ảnh 2</Text>
                 <View style={styles.container}>
                   <TouchableOpacity
                     style={{
@@ -166,7 +166,7 @@ const ModalChecklistCImage = ({
                       style={styles.buttonImage}
                       onPress={() => handleWebView(image2)}
                     >
-                      <Text style={styles.textImage}>Xem ảnh</Text>
+                      <Text  allowFontScaling={false} style={styles.textImage}>Xem ảnh</Text>
                     </TouchableOpacity>
                   )}
                 </View>
@@ -181,7 +181,7 @@ const ModalChecklistCImage = ({
               }}
             >
               <View style={{ width: "48%" }}>
-                <Text style={styles.text}>Ảnh 3</Text>
+                <Text  allowFontScaling={false} style={styles.text}>Ảnh 3</Text>
                 <View style={styles.container}>
                   <TouchableOpacity
                     style={{
@@ -213,14 +213,14 @@ const ModalChecklistCImage = ({
                       style={styles.buttonImage}
                       onPress={() => handleWebView(image3)}
                     >
-                      <Text style={styles.textImage}>Xem ảnh</Text>
+                      <Text  allowFontScaling={false} style={styles.textImage}>Xem ảnh</Text>
                     </TouchableOpacity>
                   )}
                 </View>
               </View>
 
               <View style={{ width: "48%" }}>
-                <Text style={styles.text}>Ảnh 4</Text>
+                <Text  allowFontScaling={false} style={styles.text}>Ảnh 4</Text>
                 <View style={styles.container}>
                   <TouchableOpacity
                     style={{
@@ -251,7 +251,7 @@ const ModalChecklistCImage = ({
                       style={styles.buttonImage}
                       onPress={() => handleWebView(image4)}
                     >
-                      <Text style={styles.textImage}>Xem ảnh</Text>
+                      <Text  allowFontScaling={false} style={styles.textImage}>Xem ảnh</Text>
                     </TouchableOpacity>
                   )}
                 </View>
@@ -282,7 +282,7 @@ const ModalChecklistCImage = ({
         >
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
-              <Text style={styles.modalText}>Hình ảnh checklist</Text>
+              <Text  allowFontScaling={false} style={styles.modalText}>Hình ảnh checklist</Text>
 
               <WebView
                 style={{
@@ -303,7 +303,7 @@ const ModalChecklistCImage = ({
               }}
               style={styles.buttonImage}
             >
-              <Text style={styles.textImage}>Close</Text>
+              <Text  allowFontScaling={false} style={styles.textImage}>Close</Text>
             </TouchableOpacity>
           </View>
         </Modal>

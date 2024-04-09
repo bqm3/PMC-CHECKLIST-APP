@@ -4,7 +4,7 @@ import React from 'react'
 const FilterChecklist = () => {
   return (
     <View>
-      <Text >FilterChecklist</Text>
+      <Text  allowFontScaling={false} >FilterChecklist</Text>
     </View>
   )
 }

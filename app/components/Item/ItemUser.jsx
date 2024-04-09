@@ -17,11 +17,11 @@ const ItemUser = ({ index, item, handleEditEnt, handleAlertDelete }) => {
       }}
     >
       <View>
-        <Text style={[styles.title, { fontSize: 18 }]}>
+        <Text  allowFontScaling={false} style={[styles.title, { fontSize: 18 }]}>
           {item?.ent_duan?.Duan}
         </Text>
-        <Text style={styles.title}>{item?.ent_khoicv?.KhoiCV} - {item?.ent_chucvu?.Chucvu} </Text>
-        <Text style={styles.title}>Tên đăng nhập: {item?.UserName}</Text>
+        <Text  allowFontScaling={false} style={styles.title}>{item?.ent_khoicv?.KhoiCV} - {item?.ent_chucvu?.Chucvu} </Text>
+        <Text  allowFontScaling={false} style={styles.title}>Tên đăng nhập: {item?.UserName}</Text>
       </View>
       <View
         style={{

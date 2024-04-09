@@ -113,6 +113,15 @@ const DanhmucChecklist = ({ navigation }) => {
     ID_Tang: null,
   });
 
+  const [dataCheckKhuvuc, setDataCheckKhuvuc] = useState({
+    ID_KhoiCV: null,
+    ID_Toanha: null,
+  });
+  const [filters, setFilters] = useState({
+    ID_Tang: false,
+    ID_Khuvuc: false,
+  });
+
   const bottomSheetModalRef = useRef(null);
   const snapPoints = useMemo(() => ["90%"], []);
   const [opacity, setOpacity] = useState(1);
@@ -135,15 +144,6 @@ const DanhmucChecklist = ({ navigation }) => {
     Giatridinhdanh: "",
     Giatrinhan: "",
     Sothutu: "",
-  });
-
-  const [dataCheckKhuvuc, setDataCheckKhuvuc] = useState({
-    ID_KhoiCV: null,
-    ID_Toanha: null,
-  });
-  const [filters, setFilters] = useState({
-    ID_Tang: false,
-    ID_Khuvuc: false,
   });
 
   const [isEnabled, setIsEnabled] = useState(true);
@@ -541,9 +541,23 @@ const DanhmucChecklist = ({ navigation }) => {
       Maso: "",
       MaQrCode: "",
       Checklist: "",
+      Ghichu: "",
+      Tieuchuan: "",
       Giatridinhdanh: "",
       Giatrinhan: "",
     });
+    setIsFilterData({
+      ID_Tang: null,
+      ID_Khuvuc: null,
+    });
+    setFilters({
+      ID_Tang: false,
+      ID_Khuvuc: false,
+    });
+    setIsCheckUpdate({
+      check: false,
+      id_checklist: null,
+    })
   };
 
   const handlePresentModalPress = useCallback(() => {
@@ -553,6 +567,9 @@ const DanhmucChecklist = ({ navigation }) => {
   const handleSheetChanges = useCallback((index) => {
     if (index === -1) {
       setOpacity(1);
+      handleAdd()
+      handleCloseModal()
+     
     } else {
       setOpacity(0.2);
     }
@@ -694,7 +711,7 @@ const DanhmucChecklist = ({ navigation }) => {
               }}
             >
               <View style={styles.container}>
-                <Text style={styles.danhmuc}>Danh mục Checklist</Text>
+                <Text  allowFontScaling={false} style={styles.danhmuc}>Danh mục Checklist</Text>
                 <Text
                   style={{
                     fontSize: 18,
@@ -740,7 +757,7 @@ const DanhmucChecklist = ({ navigation }) => {
                           resizeMode="contain"
                           style={{ height: 24, width: 24 }}
                         />
-                        <Text style={styles.text}>Lọc dữ liệu</Text>
+                        <Text  allowFontScaling={false} style={styles.text}>Lọc dữ liệu</Text>
                       </TouchableOpacity>
                       <ButtonChecklist
                         text={"Thêm mới"}
@@ -794,7 +811,6 @@ const DanhmucChecklist = ({ navigation }) => {
                                 {headerList &&
                                   headerList.map((item, index) => {
                                     return (
-                                      <>
                                         <DataTable.Title
                                           key={index}
                                           style={{
@@ -817,7 +833,6 @@ const DanhmucChecklist = ({ navigation }) => {
                                             {item?.til}
                                           </Text>
                                         </DataTable.Title>
-                                      </>
                                     );
                                   })}
                               </DataTable.Header>
@@ -915,6 +930,8 @@ const DanhmucChecklist = ({ navigation }) => {
                   activeKhuVuc={activeKhuVuc}
                   dataKhuVuc={dataKhuVuc}
                   loadingSubmit={loadingSubmit}
+                  // tieuChuan={tieuChuan} 
+                  // setTieuchuan={setTieuchuan}
                 />
               </BottomSheetScrollView>
             </BottomSheetModal>
@@ -970,7 +987,7 @@ const DanhmucChecklist = ({ navigation }) => {
             >
               <View style={styles.centeredView}>
                 <View style={styles.modalView}>
-                  <Text style={styles.modalText}>
+                  <Text  allowFontScaling={false} style={styles.modalText}>
                     Thông tin checlist chi tiết
                   </Text>
                   <ModalChecklistInfo
@@ -992,7 +1009,7 @@ const DanhmucChecklist = ({ navigation }) => {
             >
               <View style={styles.centeredView}>
                 <View style={styles.modalView}>
-                  <Text style={styles.modalText}>
+                  <Text  allowFontScaling={false} style={styles.modalText}>
                     Tìm kiếm thông tin checklist
                   </Text>
                   <ModalChecklistFilter

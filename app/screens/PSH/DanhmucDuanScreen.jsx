@@ -286,7 +286,7 @@ const DanhmucDuanScreen = ({ navigation }) => {
                 }}
               >
                 <View style={styles.container}>
-                  <Text style={styles.danhmuc}>Danh mục dự án</Text>
+                  <Text  allowFontScaling={false} style={styles.danhmuc}>Danh mục dự án</Text>
                   {isLoading === true ? (
                     <View
                       style={{
@@ -310,7 +310,7 @@ const DanhmucDuanScreen = ({ navigation }) => {
                               justifyContent: "space-between",
                             }}
                           >
-                            <Text style={styles.text}>
+                            <Text  allowFontScaling={false} style={styles.text}>
                               Số lượng: {decimalNumber(ent_duan?.length)}
                             </Text>
                             <ButtonChecklist

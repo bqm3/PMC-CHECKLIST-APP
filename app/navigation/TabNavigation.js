@@ -53,7 +53,7 @@ const HomeStack = ({ navigation }) => {
           },
           headerBackTitleVisible: false,
           headerTitle: () => (
-            <Text style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
+            <Text  allowFontScaling={false} style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
               CHECKLIST- PMC
             </Text>
           ),
@@ -80,7 +80,7 @@ const HomeStack = ({ navigation }) => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
+            <Text  allowFontScaling={false} style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
               Thông tin cá nhân
             </Text>
           ),
@@ -104,7 +104,7 @@ const HomeStack = ({ navigation }) => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
+            <Text  allowFontScaling={false} style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
               Thực hiện Checklist
             </Text>
           ),
@@ -128,7 +128,7 @@ const HomeStack = ({ navigation }) => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
+            <Text  allowFontScaling={false} style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
               Danh mục Khu vực
             </Text>
           ),
@@ -152,7 +152,7 @@ const HomeStack = ({ navigation }) => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
+            <Text  allowFontScaling={false} style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
               Danh mục Check list
             </Text>
           ),
@@ -176,7 +176,7 @@ const HomeStack = ({ navigation }) => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
+            <Text  allowFontScaling={false} style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
               Danh mục Giám sát
             </Text>
           ),
@@ -201,7 +201,7 @@ const HomeStack = ({ navigation }) => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
+            <Text  allowFontScaling={false} style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
               Danh mục Ca làm việc
             </Text>
           ),
@@ -226,7 +226,7 @@ const HomeStack = ({ navigation }) => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
+            <Text  allowFontScaling={false} style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
               Danh mục tòa nhà
             </Text>
           ),
@@ -251,7 +251,7 @@ const HomeStack = ({ navigation }) => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
+            <Text  allowFontScaling={false} style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
               Quản lý người dùng
             </Text>
           ),
@@ -275,7 +275,7 @@ const HomeStack = ({ navigation }) => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
+            <Text  allowFontScaling={false} style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
               Danh mục dự án
             </Text>
           ),
@@ -300,7 +300,7 @@ const HomeStack = ({ navigation }) => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
+            <Text  allowFontScaling={false} style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
               Thống kê và tra cứu
             </Text>
           ),
@@ -324,7 +324,7 @@ const HomeStack = ({ navigation }) => {
         options={({ route, navigation }) => ({
           headerShown: true,
           headerTitle: () => (
-            <Text style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
+            <Text  allowFontScaling={false} style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
               Chi tiết Checklist
             </Text>
           ),

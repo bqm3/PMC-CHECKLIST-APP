@@ -304,7 +304,7 @@ const DanhmucToanhaScreen = ({ navigation }) => {
                 }}
               >
                 <View style={styles.container}>
-                  <Text style={styles.danhmuc}>Danh mục tòa nhà</Text>
+                  <Text  allowFontScaling={false} style={styles.danhmuc}>Danh mục tòa nhà</Text>
                   {isLoading === true ? (
                     <View
                       style={{
@@ -328,7 +328,7 @@ const DanhmucToanhaScreen = ({ navigation }) => {
                               justifyContent: "space-between",
                             }}
                           >
-                            <Text style={styles.text}>
+                            <Text  allowFontScaling={false} style={styles.text}>
                               Số lượng: {decimalNumber(ent_toanha?.length)}
                             </Text>
                             <ButtonChecklist

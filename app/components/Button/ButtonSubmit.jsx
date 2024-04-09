@@ -14,24 +14,24 @@ const ButtonSubmit = ({text, onPress, isLoading,backgroundColor, color, width,pV
         borderRadius: 8,
       }}
       onPress={onPress}>
-      {isLoading && (
+      {isLoading  && (
         <ActivityIndicator
           style={{
-            marginRight: 4,
+            // marginRight: 4,
           }}
           size="small"
           color={COLORS.bg_white}
         />
       )}
 
-      <Text 
+      <Text  allowFontScaling={false} 
         style={{
           color: color ? color : 'white',
           fontSize: 15,
           textAlign: 'center',
           fontWeight: 'bold',
           paddingVertical: pV ? pV : 16 ,
-          paddingHorizontal: 10
+          paddingHorizontal: 4
         }}>
         {text ? text : ''}
       </Text>

@@ -52,8 +52,8 @@ const ModalUsers = ({
       >
         <View style={{ margin: 20 }}>
           <View style={{ justifyContent: "space-around", width: "100%" }}>
-            <Text style={styles.text}>Người dùng</Text>
-            <TextInput
+            <Text  allowFontScaling={false} style={styles.text}>Người dùng</Text>
+            <TextInput allowFontScaling={false} 
               value={dataInput?.UserName}
               placeholder="Người dùng"
               placeholderTextColor="gray"
@@ -66,8 +66,8 @@ const ModalUsers = ({
               onChangeText={(val) => handleChangeText("UserName", val)}
             />
 
-            <Text style={styles.text}>Email</Text>
-            <TextInput
+            <Text  allowFontScaling={false} style={styles.text}>Email</Text>
+            <TextInput allowFontScaling={false} 
               value={dataInput?.Emails}
               placeholder="Email"
               placeholderTextColor="gray"
@@ -80,8 +80,8 @@ const ModalUsers = ({
               onChangeText={(val) => handleChangeText("Emails", val)}
             />
 
-            <Text style={styles.text}>Mật khẩu</Text>
-            <TextInput
+            <Text  allowFontScaling={false} style={styles.text}>Mật khẩu</Text>
+            <TextInput allowFontScaling={false} 
               value={dataInput?.Password}
               //   maxLength={}
               secureTextEntry={true}
@@ -96,8 +96,8 @@ const ModalUsers = ({
               onChangeText={(val) => handleChangeText("Password", val)}
             />
 
-            <Text style={styles.text}>Nhập lại mật khẩu</Text>
-            <TextInput
+            <Text  allowFontScaling={false} style={styles.text}>Nhập lại mật khẩu</Text>
+            <TextInput allowFontScaling={false} 
               value={dataInput?.rePassword}
               //   maxLength={}
               secureTextEntry={true}
@@ -120,7 +120,7 @@ const ModalUsers = ({
               }}
             >
               <View style={{ width: "48%" }}>
-                <Text style={styles.text}>Dự án</Text>
+                <Text  allowFontScaling={false} style={styles.text}>Dự án</Text>
 
                 <SelectDropdown
                   data={ent_duan ? ent_duan : []}
@@ -156,7 +156,7 @@ const ModalUsers = ({
                           height: 50,
                         }}
                       >
-                        <Text style={styles.text}>{selectedItem?.Duan}</Text>
+                        <Text  allowFontScaling={false} style={styles.text}>{selectedItem?.Duan}</Text>
                       </View>
                     );
                   }}
@@ -173,7 +173,7 @@ const ModalUsers = ({
                 />
               </View>
               <View style={{ width: "48%" }}>
-                <Text style={styles.text}>Chức vụ</Text>
+                <Text  allowFontScaling={false} style={styles.text}>Chức vụ</Text>
                 <SelectDropdown
                   ref={ref}
                   data={ent_chucvu ? ent_chucvu : []}
@@ -209,7 +209,7 @@ const ModalUsers = ({
                           height: 50,
                         }}
                       >
-                        <Text style={styles.text}>{selectedItem?.Chucvu}</Text>
+                        <Text  allowFontScaling={false} style={styles.text}>{selectedItem?.Chucvu}</Text>
                       </View>
                     );
                   }}
@@ -227,7 +227,7 @@ const ModalUsers = ({
               </View>
             </View>
             <View>
-              <Text style={styles.text}>Khối công việc</Text>
+              <Text  allowFontScaling={false} style={styles.text}>Khối công việc</Text>
 
               <SelectDropdown
                 data={ent_khoicv ? ent_khoicv : []}
@@ -262,7 +262,7 @@ const ModalUsers = ({
                         height: 50,
                       }}
                     >
-                      <Text style={styles.text}>{selectedItem?.KhoiCV}</Text>
+                      <Text  allowFontScaling={false} style={styles.text}>{selectedItem?.KhoiCV}</Text>
                     </View>
                   );
                 }}

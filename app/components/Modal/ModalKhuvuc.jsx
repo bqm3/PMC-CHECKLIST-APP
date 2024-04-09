@@ -7,7 +7,7 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Dropdown } from "react-native-element-dropdown";
 import { COLORS } from "../../constants/theme";
@@ -25,19 +25,37 @@ const ModalKhuvuc = ({
   handlePushDataSave,
   handlePushDataEdit,
   isCheckUpdate,
-  loadingSubmit
+  loadingSubmit,
 }) => {
   const ref = useRef(null);
 
-  const defaultKhoiCV= ent_khoicv?.find(khoicv => khoicv.ID_Khoi === dataInput?.khoicv);
-  const defaultToanha = ent_toanha?.find(duan => duan.ID_Toanha === dataInput?.toanha);
+  const defaultKhoiCV = ent_khoicv?.find(
+    (khoicv) => khoicv.ID_Khoi === dataInput?.khoicv
+  );
+  const defaultToanha = ent_toanha?.find(
+    (duan) => duan.ID_Toanha === dataInput?.toanha
+  );
+
+  const [formData, setFormData] = useState({
+    tenkhuvuc: dataInput.tenkhuvuc,
+    qrcode: dataInput.qrcode,
+    makhuvuc: dataInput.makhuvuc,
+    sothutu: dataInput.sothutu,
+  });
+
+  const handleChange = (key, value) => {
+    setFormData({
+      ...formData,
+      [key]: value,
+    });
+  };
 
   return (
     <View style={{ margin: 20 }}>
       <View style={{ justifyContent: "space-around", width: "100%" }}>
-        <Text style={styles.text}>Tên khu vực</Text>
-        <TextInput
-          value={dataInput.tenkhuvuc}
+        <Text  allowFontScaling={false} style={styles.text}>Tên khu vực</Text>
+        <TextInput allowFontScaling={false} 
+          value={formData.tenkhuvuc}
           placeholder="Nhập tên khu vực thực hiện checklist"
           placeholderTextColor="gray"
           style={[
@@ -47,11 +65,13 @@ const ModalKhuvuc = ({
             },
           ]}
           autoCapitalize="sentences"
-          onChangeText={(val) => handleChangeText("tenkhuvuc", val)}
+          onChangeText={(val) => {
+            handleChangeText("tenkhuvuc", val), handleChange("tenkhuvuc", val);
+          }}
         />
-        <Text style={styles.text}>Mã Qr code</Text>
-        <TextInput
-          value={dataInput.qrcode}
+        <Text  allowFontScaling={false} style={styles.text}>Mã Qr code</Text>
+        <TextInput allowFontScaling={false} 
+          value={formData.qrcode}
           placeholder="Nhập mã Qr code"
           placeholderTextColor="gray"
           style={[
@@ -61,7 +81,10 @@ const ModalKhuvuc = ({
             },
           ]}
           autoCapitalize="sentences"
-          onChangeText={(val) => handleChangeText("qrcode", val)}
+          onChangeText={(val) => {
+            handleChangeText("qrcode", val);
+            handleChange("qrcode", val);
+          }}
         />
         <View
           style={{
@@ -71,9 +94,9 @@ const ModalKhuvuc = ({
           }}
         >
           <View style={{ width: "48%" }}>
-            <Text style={styles.text}>Mã khu vực</Text>
-            <TextInput
-              value={dataInput.makhuvuc}
+            <Text  allowFontScaling={false} style={styles.text}>Mã khu vực</Text>
+            <TextInput allowFontScaling={false} 
+              value={formData.makhuvuc}
               placeholder="Nhập mã khu vực thực hiện checklist"
               placeholderTextColor="gray"
               style={[
@@ -83,13 +106,16 @@ const ModalKhuvuc = ({
                 },
               ]}
               autoCapitalize="sentences"
-              onChangeText={(val) => handleChangeText("makhuvuc", val)}
+              onChangeText={(val) => {
+                handleChangeText("makhuvuc", val);
+                handleChange("makhuvuc", val);
+              }}
             />
           </View>
           <View style={{ width: "48%" }}>
-            <Text style={styles.text}>Số thứ tự</Text>
-            <TextInput
-              value={dataInput.sothutu}
+            <Text  allowFontScaling={false} style={styles.text}>Số thứ tự</Text>
+            <TextInput allowFontScaling={false} 
+              value={formData.sothutu}
               placeholder="Nhập số thứ tự khu vực thực hiện checklist"
               placeholderTextColor="gray"
               style={[
@@ -99,7 +125,10 @@ const ModalKhuvuc = ({
                 },
               ]}
               autoCapitalize="sentences"
-              onChangeText={(val) => handleChangeText("sothutu", val)}
+              onChangeText={(val) => {
+                handleChangeText("sothutu", val);
+                handleChange("sothutu", val);
+              }}
             />
           </View>
         </View>
@@ -112,7 +141,7 @@ const ModalKhuvuc = ({
           }}
         >
           <View style={{ width: "48%" }}>
-            <Text style={styles.text}>Khối công việc</Text>
+            <Text  allowFontScaling={false} style={styles.text}>Khối công việc</Text>
             <SelectDropdown
               data={ent_khoicv ? ent_khoicv : []}
               buttonStyle={styles.select}
@@ -147,7 +176,7 @@ const ModalKhuvuc = ({
                       height: 50,
                     }}
                   >
-                    <Text style={styles.text}>{selectedItem?.KhoiCV}</Text>
+                    <Text  allowFontScaling={false} style={styles.text}>{selectedItem?.KhoiCV}</Text>
                   </View>
                 );
               }}
@@ -164,7 +193,7 @@ const ModalKhuvuc = ({
             />
           </View>
           <View style={{ width: "48%" }}>
-            <Text style={styles.text}>Tòa nhà</Text>
+            <Text  allowFontScaling={false} style={styles.text}>Tòa nhà</Text>
             <SelectDropdown
               data={ent_toanha ? ent_toanha : []}
               buttonStyle={styles.select}
@@ -199,7 +228,7 @@ const ModalKhuvuc = ({
                       height: 50,
                     }}
                   >
-                    <Text style={styles.text}>{selectedItem?.Toanha}</Text>
+                    <Text  allowFontScaling={false} style={styles.text}>{selectedItem?.Toanha}</Text>
                   </View>
                 );
               }}
@@ -222,7 +251,7 @@ const ModalKhuvuc = ({
           text={isCheckUpdate.check ? "Cập nhật" : "Lưu"}
           width={"auto"}
           backgroundColor={COLORS.bg_button}
-          color={'white'}
+          color={"white"}
           isLoading={loadingSubmit}
           onPress={
             isCheckUpdate.check

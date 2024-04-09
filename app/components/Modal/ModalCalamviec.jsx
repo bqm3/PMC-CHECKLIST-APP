@@ -31,7 +31,7 @@ const ModalCalamviec = ({
   handlePushDataSave,
   handlePushDataEdit,
   isCheckUpdate,
-  loadingSubmit
+  loadingSubmit,
 }) => {
   const defaultKhoi = ent_khoicv?.find(
     (Khoi) => Khoi.ID_Khoi === dataInput?.khoicv
@@ -41,66 +41,9 @@ const ModalCalamviec = ({
     <KeyboardAvoidingComponent>
       <View style={{ margin: 20 }}>
         <View style={{ justifyContent: "space-around", width: "100%" }}>
-          <Text style={styles.text}>Tên ca</Text>
-          <TextInput
-            value={dataInput.tenca}
-            placeholder="Nhập tên ca thực hiện checklist"
-            placeholderTextColor="gray"
-            style={[
-              styles.textInput,
-              {
-                paddingHorizontal: 10,
-              },
-            ]}
-            autoCapitalize="sentences"
-            onChangeText={(val) => handleChangeText("tenca", val)}
-          />
-
-          <Text style={styles.text}>Giờ bắt đầu</Text>
-          <TouchableOpacity onPress={() => showDatePicker("giobd")}>
-            <TextInput
-              value={dataInput.giobd}
-              placeholder="Nhập giờ bắt đầu ca làm việc"
-              placeholderTextColor="gray"
-              style={[
-                styles.textInput,
-                {
-                  paddingHorizontal: 10,
-                },
-              ]}
-              pointerEvents="none"
-            />
-            <DateTimePickerModal
-              isVisible={isDatePickerVisible.giobd}
-              mode="time"
-              isDarkModeEnabled={true}
-              onConfirm={(date) => handleConfirm("giobd", date)}
-              onCancel={hideDatePicker}
-            />
-          </TouchableOpacity>
-          <Text style={styles.text}>Giờ kết thúc</Text>
-          <TouchableOpacity onPress={() => showDatePicker("giokt")}>
-            <TextInput
-              value={dataInput.giokt}
-              placeholder="Nhập giờ kết thúc ca làm việc"
-              placeholderTextColor="gray"
-              style={[
-                styles.textInput,
-                {
-                  paddingHorizontal: 10,
-                },
-              ]}
-              pointerEvents="none"
-            />
-            <DateTimePickerModal
-              isVisible={isDatePickerVisible.giokt}
-              mode="time"
-              isDarkModeEnabled={true}
-              onConfirm={(date) => handleConfirm("giokt", date)}
-              onCancel={hideDatePicker}
-            />
-          </TouchableOpacity>
-          <Text style={styles.text}>Khối công việc</Text>
+          <Text allowFontScaling={false} style={styles.text}>
+            Khối công việc
+          </Text>
 
           <SelectDropdown
             data={ent_khoicv ? ent_khoicv : []}
@@ -136,7 +79,9 @@ const ModalCalamviec = ({
                     height: 50,
                   }}
                 >
-                  <Text style={styles.text}>{selectedItem?.KhoiCV}</Text>
+                  <Text allowFontScaling={false} style={styles.text}>
+                    {selectedItem?.KhoiCV}
+                  </Text>
                 </View>
               );
             }}
@@ -151,12 +96,80 @@ const ModalCalamviec = ({
               );
             }}
           />
+          <Text allowFontScaling={false} style={styles.text}>
+            Tên ca
+          </Text>
+          <TextInput
+            allowFontScaling={false}
+            value={dataInput.tenca}
+            placeholder="Nhập tên ca thực hiện checklist"
+            placeholderTextColor="gray"
+            style={[
+              styles.textInput,
+              {
+                paddingHorizontal: 10,
+              },
+            ]}
+            autoCapitalize="sentences"
+            onChangeText={(val) => handleChangeText("tenca", val)}
+          />
+
+          <Text allowFontScaling={false} style={styles.text}>
+            Giờ bắt đầu
+          </Text>
+          <TouchableOpacity onPress={() => showDatePicker("giobd")}>
+            <TextInput
+              allowFontScaling={false}
+              value={dataInput.giobd}
+              placeholder="Nhập giờ bắt đầu ca làm việc"
+              placeholderTextColor="gray"
+              style={[
+                styles.textInput,
+                {
+                  paddingHorizontal: 10,
+                },
+              ]}
+              pointerEvents="none"
+            />
+            <DateTimePickerModal
+              isVisible={isDatePickerVisible.giobd}
+              mode="time"
+              isDarkModeEnabled={true}
+              onConfirm={(date) => handleConfirm("giobd", date)}
+              onCancel={hideDatePicker}
+            />
+          </TouchableOpacity>
+          <Text allowFontScaling={false} style={styles.text}>
+            Giờ kết thúc
+          </Text>
+          <TouchableOpacity onPress={() => showDatePicker("giokt")}>
+            <TextInput
+              allowFontScaling={false}
+              value={dataInput.giokt}
+              placeholder="Nhập giờ kết thúc ca làm việc"
+              placeholderTextColor="gray"
+              style={[
+                styles.textInput,
+                {
+                  paddingHorizontal: 10,
+                },
+              ]}
+              pointerEvents="none"
+            />
+            <DateTimePickerModal
+              isVisible={isDatePickerVisible.giokt}
+              mode="time"
+              isDarkModeEnabled={true}
+              onConfirm={(date) => handleConfirm("giokt", date)}
+              onCancel={hideDatePicker}
+            />
+          </TouchableOpacity>
         </View>
         <View style={{ marginTop: 20 }}>
           <ButtonSubmit
             text={isCheckUpdate.check ? "Cập nhật" : "Lưu"}
             width={"auto"}
-            color={'white'}
+            color={"white"}
             backgroundColor={COLORS.bg_button}
             isLoading={loadingSubmit}
             onPress={

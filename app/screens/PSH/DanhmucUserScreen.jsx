@@ -358,7 +358,7 @@ const DanhmucUserScreen = ({ navigation }) => {
                 }}
               >
                 <View style={styles.container}>
-                  <Text style={styles.danhmuc}>
+                  <Text  allowFontScaling={false} style={styles.danhmuc}>
                     Danh mục quản lý người dùng
                   </Text>
                   {isLoading === true ? (
@@ -384,7 +384,7 @@ const DanhmucUserScreen = ({ navigation }) => {
                               justifyContent: "space-between",
                             }}
                           >
-                            <Text style={styles.text}>
+                            <Text  allowFontScaling={false} style={styles.text}>
                               Số lượng: {decimalNumber(ent_users?.length)}
                             </Text>
                             <ButtonChecklist
@@ -491,7 +491,7 @@ const DanhmucUserScreen = ({ navigation }) => {
               >
                 <View style={styles.centeredView}>
                   <View style={styles.modalView}>
-                    <Text style={styles.modalText}>
+                    <Text  allowFontScaling={false} style={styles.modalText}>
                       Thông tin cá nhân chi tiết
                     </Text>
                     <ModalGiamsatInfo

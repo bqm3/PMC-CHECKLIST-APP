@@ -71,7 +71,7 @@ const ModalChecklistFilter = ({
                   height: 50,
                 }}
               >
-                <Text style={styles.text}>{selectedItem?.Tenkhuvuc}</Text>
+                <Text  allowFontScaling={false} style={styles.text}>{selectedItem?.Tenkhuvuc}</Text>
               </View>
             );
           }}
@@ -128,7 +128,7 @@ const ModalChecklistFilter = ({
                   height: 50,
                 }}
               >
-                <Text style={styles.text}>{selectedItem?.Tentang}</Text>
+                <Text  allowFontScaling={false} style={styles.text}>{selectedItem?.Tentang}</Text>
               </View>
             );
           }}
@@ -157,7 +157,7 @@ const ModalChecklistFilter = ({
           onValueChange={()=>toggleSwitch(isEnabled)}
           value={isEnabled}
         />
-        <Text style={[styles.text, { paddingHorizontal: 0 }]}>Tất cả</Text>
+        <Text  allowFontScaling={false} style={[styles.text, { paddingHorizontal: 0 }]}>Tất cả</Text>
       </View>
       <View style={{ height: 10 }}></View>
       <Button

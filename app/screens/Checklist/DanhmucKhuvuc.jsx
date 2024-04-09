@@ -127,12 +127,16 @@ const DanhmucCalamviec = ({ navigation }) => {
       };
       setLoadingSubmit(true);
       try {
-        const response = await axios.post(BASE_URL + "/ent_khuvuc/create", data, {
-          headers: {
-            Accept: "application/json",
-            Authorization: "Bearer " + authToken,
-          },
-        });
+        const response = await axios.post(
+          BASE_URL + "/ent_khuvuc/create",
+          data,
+          {
+            headers: {
+              Accept: "application/json",
+              Authorization: "Bearer " + authToken,
+            },
+          }
+        );
         init_khuvuc();
         handleAdd();
         handleCloseModal();
@@ -159,7 +163,6 @@ const DanhmucCalamviec = ({ navigation }) => {
           ]);
         } else if (error.request) {
           // Lỗi không nhận được phản hồi từ server
-          console.log(error.request);
           Alert.alert("PMC Thông báo", "Không nhận được phản hồi từ máy chủ", [
             {
               text: "Hủy",
@@ -170,7 +173,6 @@ const DanhmucCalamviec = ({ navigation }) => {
           ]);
         } else {
           // Lỗi khi cấu hình request
-          console.log('Error', error.message);
           Alert.alert("PMC Thông báo", "Lỗi khi gửi yêu cầu", [
             {
               text: "Hủy",
@@ -183,7 +185,6 @@ const DanhmucCalamviec = ({ navigation }) => {
       }
     }
   };
-  
 
   const handleEditEnt = (data) => {
     setIsCheckUpdate({
@@ -223,7 +224,7 @@ const DanhmucCalamviec = ({ navigation }) => {
       setLoadingSubmit(true);
       try {
         await axios
-        .put(BASE_URL + `/ent_khuvuc/update/${id}`, data, {
+          .put(BASE_URL + `/ent_khuvuc/update/${id}`, data, {
             headers: {
               Accept: "application/json",
               Authorization: "Bearer " + authToken,
@@ -257,7 +258,6 @@ const DanhmucCalamviec = ({ navigation }) => {
           ]);
         } else if (error.request) {
           // Lỗi không nhận được phản hồi từ server
-          console.log(error.request);
           Alert.alert("PMC Thông báo", "Không nhận được phản hồi từ máy chủ", [
             {
               text: "Hủy",
@@ -268,7 +268,6 @@ const DanhmucCalamviec = ({ navigation }) => {
           ]);
         } else {
           // Lỗi khi cấu hình request
-          console.log("Error", error.message);
           Alert.alert("PMC Thông báo", "Lỗi khi gửi yêu cầu", [
             {
               text: "Hủy",
@@ -279,7 +278,7 @@ const DanhmucCalamviec = ({ navigation }) => {
           ]);
         }
       }
-     }
+    }
   };
 
   const handleAlertDelete = async (id) => {
@@ -343,7 +342,7 @@ const DanhmucCalamviec = ({ navigation }) => {
 
   const handleSheetChanges = useCallback((index) => {
     if (index === -1) {
-      setOpacity(1);
+      handleCloseModal()
     } else {
       setOpacity(0.2);
     }
@@ -352,10 +351,22 @@ const DanhmucCalamviec = ({ navigation }) => {
   const handleCloseModal = () => {
     bottomSheetModalRef?.current?.close();
     setOpacity(1);
+    setIsCheckUpdate({
+      check: false,
+      id_khuvuc: null,
+    });
+    setDataInput({
+      toanha: null,
+      khoicv: null,
+      makhuvuc: "",
+      sothutu: 0,
+      qrcode: "",
+      tenkhuvuc: "",
+    });
   };
 
   const decimalNumber = (number) => {
-    if (number < 10) return `0${number}`;
+    if (number < 10 && number > 0) return `0${number}`;
     return number;
   };
 
@@ -381,7 +392,7 @@ const DanhmucCalamviec = ({ navigation }) => {
                 }}
               >
                 <View style={styles.container}>
-                  <Text style={styles.danhmuc}>Danh mục khu vực</Text>
+                  <Text  allowFontScaling={false} style={styles.danhmuc}>Danh mục khu vực</Text>
                   {isLoading === true ? (
                     <View
                       style={{
@@ -405,7 +416,7 @@ const DanhmucCalamviec = ({ navigation }) => {
                               justifyContent: "space-between",
                             }}
                           >
-                            <Text style={styles.text}>
+                            <Text  allowFontScaling={false} style={styles.text}>
                               Số lượng: {decimalNumber(ent_khuvuc?.length)}
                             </Text>
                             <ButtonChecklist
@@ -509,7 +520,7 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: "700",
     color: "white",
-    paddingVertical: 40,
+    // paddingVertical: 40,
   },
   text: { fontSize: 15, color: "white", fontWeight: "600" },
   textInput: {

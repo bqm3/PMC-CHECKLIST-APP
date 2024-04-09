@@ -390,7 +390,7 @@ const DanhmucCalamviec = ({ navigation }) => {
                 }}
               >
                 <View style={styles.container}>
-                  <Text style={styles.danhmuc}>Danh mục ca làm việc</Text>
+                  <Text  allowFontScaling={false} style={styles.danhmuc}>Danh mục ca làm việc</Text>
                   {isLoading === true ? (
                     <View
                       style={{
@@ -414,7 +414,7 @@ const DanhmucCalamviec = ({ navigation }) => {
                               justifyContent: "space-between",
                             }}
                           >
-                            <Text style={styles.text}>
+                            <Text  allowFontScaling={false} style={styles.text}>
                               Số lượng: {decimalNumber(ent_calv?.length)}
                             </Text>
                             <ButtonChecklist
@@ -520,7 +520,6 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: "700",
     color: "white",
-    paddingVertical: 40,
   },
   text: { fontSize: 15, color: "white", fontWeight: "600" },
   textInput: {

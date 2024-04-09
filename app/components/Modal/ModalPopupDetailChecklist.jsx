@@ -51,7 +51,7 @@ const ModalPopupDetailChecklist = ({
     <View style={{ width: SIZES.width - 60 }}>
       {step === 1 && (
         <View>
-          <Text style={styles.text}>Trạng thái</Text>
+          <Text  allowFontScaling={false} style={styles.text}>Trạng thái</Text>
           <SelectDropdown
             ref={ref}
             data={dataItem.Giatrinhan ? dataItem.Giatrinhan : []}
@@ -87,7 +87,7 @@ const ModalPopupDetailChecklist = ({
                     height: 50,
                   }}
                 >
-                  <Text style={[styles.text]}>{selectedItem}</Text>
+                  <Text  allowFontScaling={false} style={[styles.text]}>{selectedItem}</Text>
                 </View>
               );
             }}
@@ -131,14 +131,17 @@ const ModalPopupDetailChecklist = ({
       )}
       {step === 3 && (
         <View>
-          <Text style={styles.text}>Ghi chú</Text>
-          <TextInput
+          <Text  allowFontScaling={false} style={styles.text}>Ghi chú</Text>
+          <TextInput allowFontScaling={false} 
             value={ghichu}
             placeholder="Thêm ghi chú"
             placeholderTextColor="gray"
             multiline={true}
             blurOnSubmit={true}
-            onChangeText={(text) => setGhichu(text)}
+            onChangeText={(text) => {
+              setGhichu(text)
+              
+            }}
             style={[
               styles.textInput,
               {

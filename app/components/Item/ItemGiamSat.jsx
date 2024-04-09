@@ -17,10 +17,10 @@ const ItemGiamSat = ({ item,handleEditEnt,handleAlertDelete ,handleToggleModal})
       }}
     >
       <View style={{ width: "70%" }}>
-        <Text style={[styles.title, { fontSize: 18 }]}>{item.Hoten}</Text>
+        <Text  allowFontScaling={false} style={[styles.title, { fontSize: 18 }]}>{item.Hoten}</Text>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 4, paddingVertical:2 }}>
-          <Text style={styles.title}>{item?.ent_chucvu?.Chucvu} - {item?.ent_duan?.Duan}</Text>
-          <Text style={styles.title}></Text>
+          <Text  allowFontScaling={false} style={styles.title}>{item?.ent_chucvu?.Chucvu} - {item?.ent_duan?.Duan}</Text>
+          <Text  allowFontScaling={false} style={styles.title}></Text>
         </View>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
           <Image
@@ -28,7 +28,7 @@ const ItemGiamSat = ({ item,handleEditEnt,handleAlertDelete ,handleToggleModal})
             resizeMode="contain"
             style={{ height: 16, width: 16 }}
           />
-          <Text style={styles.title}>{item?.Sodienthoai}</Text>
+          <Text  allowFontScaling={false} style={styles.title}>{item?.Sodienthoai}</Text>
         </View>
        
       </View>

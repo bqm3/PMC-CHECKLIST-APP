@@ -33,8 +33,8 @@ import {
     return (
       <View style={{ margin: 20 }}>
         <View style={{ justifyContent: "space-around", width: "100%" }}>
-          <Text style={styles.text}>Tên tòa nhà</Text>
-          <TextInput
+          <Text  allowFontScaling={false} style={styles.text}>Tên tòa nhà</Text>
+          <TextInput allowFontScaling={false} 
             value={dataInput.Toanha}
             placeholder="Nhập tên tòa nhà"
             placeholderTextColor="gray"
@@ -47,8 +47,8 @@ import {
             autoCapitalize="sentences"
             onChangeText={(val) => handleChangeText("Toanha", val)}
           />
-          <Text style={styles.text}>Số tầng</Text>
-          <TextInput
+          <Text  allowFontScaling={false} style={styles.text}>Số tầng</Text>
+          <TextInput allowFontScaling={false} 
             value={dataInput.Sotang.toString()}
             placeholder="Nhập số tầng"
             placeholderTextColor="gray"
@@ -65,7 +65,7 @@ import {
         
            
             <View>
-              <Text style={styles.text}>Dự án</Text>
+              <Text  allowFontScaling={false} style={styles.text}>Dự án</Text>
               <SelectDropdown
                 data={ent_duan ? ent_duan : []}
                 buttonStyle={styles.select}
@@ -100,7 +100,7 @@ import {
                         height: 50,
                       }}
                     >
-                      <Text style={styles.text}>{selectedItem?.Duan}</Text>
+                      <Text  allowFontScaling={false} style={styles.text}>{selectedItem?.Duan}</Text>
                     </View>
                   );
                 }}

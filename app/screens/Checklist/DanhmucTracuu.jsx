@@ -85,7 +85,6 @@ const headerList = [
     til: "Kết quả",
     width: 100,
   },
-  
 ];
 
 const DanhmucTracuu = () => {
@@ -210,6 +209,7 @@ const DanhmucTracuu = () => {
         setIsLoading(false);
       });
   };
+  console.log('filters',filters)
 
   useEffect(() => {
     fetchData(filters);
@@ -378,7 +378,9 @@ const DanhmucTracuu = () => {
               }}
             >
               <View style={styles.container}>
-                <Text style={styles.danhmuc}>Tra cứu</Text>
+                <Text allowFontScaling={false} style={styles.danhmuc}>
+                  Tra cứu
+                </Text>
                 <Text
                   style={{
                     fontSize: 18,
@@ -422,7 +424,9 @@ const DanhmucTracuu = () => {
                           resizeMode="contain"
                           style={{ height: 24, width: 24 }}
                         />
-                        <Text style={styles.text}>Lọc dữ liệu</Text>
+                        <Text allowFontScaling={false} style={styles.text}>
+                          Lọc dữ liệu
+                        </Text>
                       </TouchableOpacity>
                     </View>
 
@@ -617,7 +621,9 @@ const DanhmucTracuu = () => {
             >
               <View style={styles.centeredView}>
                 <View style={styles.modalView}>
-                  <Text style={styles.modalText}>Thông tin Checklist</Text>
+                  <Text allowFontScaling={false} style={styles.modalText}>
+                    Thông tin Checklist
+                  </Text>
 
                   <ScrollView>
                     {newActionCheckList[0]?.Anh !== null &&
@@ -642,28 +648,28 @@ const DanhmucTracuu = () => {
                         gap: 4,
                       }}
                     >
-                      <Text style={styles.textModal}>
+                      <Text allowFontScaling={false} style={styles.textModal}>
                         Tầng:{" "}
                         {
                           newActionCheckList[0]?.ent_checklist?.ent_tang
                             ?.Tentang
                         }
                       </Text>
-                      <Text style={styles.textModal}>
+                      <Text allowFontScaling={false} style={styles.textModal}>
                         Khu vực:{" "}
                         {
                           newActionCheckList[0]?.ent_checklist?.ent_khuvuc
                             ?.Tenkhuvuc
                         }
                       </Text>
-                      <Text style={styles.textModal}>
+                      <Text allowFontScaling={false} style={styles.textModal}>
                         Tòa nhà:{" "}
                         {
                           newActionCheckList[0]?.ent_checklist?.ent_khuvuc
                             ?.ent_toanha?.Toanha
                         }
                       </Text>
-                      <Text style={styles.textModal}>
+                      <Text allowFontScaling={false} style={styles.textModal}>
                         Ghi chú: {newActionCheckList[0]?.Ghichu}
                       </Text>
                     </View>
@@ -673,7 +679,9 @@ const DanhmucTracuu = () => {
                   onPress={() => handleModalShow(false, 1)}
                   style={styles.buttonImage}
                 >
-                  <Text style={styles.textImage}>Close</Text>
+                  <Text allowFontScaling={false} style={styles.textImage}>
+                    Close
+                  </Text>
                 </TouchableOpacity>
               </View>
             </Modal>

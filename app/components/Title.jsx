@@ -4,7 +4,7 @@ import React from 'react';
 const Title = ({text, top, size, bottom}) => {
   return (
     <View>
-      <Text 
+      <Text  allowFontScaling={false} 
         style={{
           color: 'white',
           fontSize: size ? size: 15,
