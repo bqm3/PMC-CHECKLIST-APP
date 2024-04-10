@@ -83,6 +83,7 @@ const ModalChecklistC = ({
             </View>
             <View>
               <Text  allowFontScaling={false} style={styles.text}>Ca làm việc</Text>
+              {ent_calv && ent_calv?.length > 0 ? (
               <SelectDropdown
                 ref={ref}
                 data={ent_calv ? ent_calv : []}
@@ -133,9 +134,15 @@ const ModalChecklistC = ({
                   );
                 }}
               />
+               ) : (
+                  <Text allowFontScaling={false} style={styles.errorText}>
+                    Không có dữ liệu ca làm việc.
+                  </Text>
+                )}
             </View>
             <View>
               <Text  allowFontScaling={false} style={styles.text}>Nhân viên</Text>
+              {ent_giamsat && ent_giamsat?.length > 0 ? (
               <SelectDropdown
                 ref={ref}
                 data={ent_giamsat ? ent_giamsat : []}
@@ -186,6 +193,11 @@ const ModalChecklistC = ({
                   );
                 }}
               />
+               ) : (
+                  <Text allowFontScaling={false} style={styles.errorText}>
+                    Không có dữ liệu nhân viên.
+                  </Text>
+                )}
             </View>
             <View style={{ marginTop: 20 }}>
             <ButtonSubmit

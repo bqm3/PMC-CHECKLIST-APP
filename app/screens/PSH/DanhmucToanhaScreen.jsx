@@ -265,7 +265,8 @@ const DanhmucToanhaScreen = ({ navigation }) => {
 
   const handleSheetChanges = useCallback((index) => {
     if (index === -1) {
-      setOpacity(1);
+      handleCloseModal();
+      handleAdd()
     } else {
       setOpacity(0.2);
     }

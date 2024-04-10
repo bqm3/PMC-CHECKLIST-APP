@@ -97,7 +97,7 @@ const DanhmucTracuu = () => {
   const [newActionCheckList, setNewActionCheckList] = useState([]);
 
   const bottomSheetModalRef = useRef(null);
-  const snapPoints = useMemo(() => ["85%"], []);
+  const snapPoints = useMemo(() => ["80%"], []);
   const [opacity, setOpacity] = useState(1);
   const [page, setPage] = React.useState(0);
   const [numberOfItemsPerPage, onItemsPerPageChange] = React.useState(
@@ -209,7 +209,6 @@ const DanhmucTracuu = () => {
         setIsLoading(false);
       });
   };
-  console.log('filters',filters)
 
   useEffect(() => {
     fetchData(filters);

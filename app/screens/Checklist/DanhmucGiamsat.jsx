@@ -106,7 +106,7 @@ const DanhmucGiamsat = ({ navigation }) => {
     gioitinh: "",
     ngaysinh: "",
     sodienthoai: "",
-    ID_Chucvu: null,
+    ID_Chucvu: 2,
     ID_Quyen: null,
     ID_KhoiCV: null,
   });
@@ -328,7 +328,7 @@ const DanhmucGiamsat = ({ navigation }) => {
       gioitinh: "",
       ngaysinh: "",
       sodienthoai: "",
-      ID_Chucvu: null,
+      ID_Chucvu: 2,
       ID_Quyen: null,
       ID_KhoiCV: null,
     });

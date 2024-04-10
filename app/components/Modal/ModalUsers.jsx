@@ -9,7 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 import { COLORS } from "../../constants/theme";
@@ -35,7 +35,7 @@ const ModalUsers = ({
   const ref = useRef(null);
 
   const defaultChucvu = ent_chucvu?.find(
-    (chucvu) => chucvu.ID_Chucvu === dataInput?.Permission
+    (chucvu) => chucvu.ID_Chucvu === (dataInput.Permission || 2)
   );
   const defaultDuan = ent_duan?.find(
     (duan) => duan.ID_Duan === dataInput?.ID_Duan
@@ -43,6 +43,11 @@ const ModalUsers = ({
   const defaultKhoi = ent_khoicv?.find(
     (khoi) => khoi.ID_Khoi === dataInput?.ID_KhoiCV
   );
+
+  const [UserName, setUserName] = useState(dataInput?.UserName);
+  const [Emails, setEmails] = useState(dataInput?.Emails);
+  const [Password, setPassword] = useState(dataInput?.Password);
+  const [rePassword, setrePassword] = useState(dataInput?.rePassword);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -52,66 +57,6 @@ const ModalUsers = ({
       >
         <View style={{ margin: 20 }}>
           <View style={{ justifyContent: "space-around", width: "100%" }}>
-            <Text  allowFontScaling={false} style={styles.text}>Người dùng</Text>
-            <TextInput allowFontScaling={false} 
-              value={dataInput?.UserName}
-              placeholder="Người dùng"
-              placeholderTextColor="gray"
-              style={[
-                styles.textInput,
-                {
-                  paddingHorizontal: 10,
-                },
-              ]}
-              onChangeText={(val) => handleChangeText("UserName", val)}
-            />
-
-            <Text  allowFontScaling={false} style={styles.text}>Email</Text>
-            <TextInput allowFontScaling={false} 
-              value={dataInput?.Emails}
-              placeholder="Email"
-              placeholderTextColor="gray"
-              style={[
-                styles.textInput,
-                {
-                  paddingHorizontal: 10,
-                },
-              ]}
-              onChangeText={(val) => handleChangeText("Emails", val)}
-            />
-
-            <Text  allowFontScaling={false} style={styles.text}>Mật khẩu</Text>
-            <TextInput allowFontScaling={false} 
-              value={dataInput?.Password}
-              //   maxLength={}
-              secureTextEntry={true}
-              placeholder="Mật khẩu"
-              placeholderTextColor="gray"
-              style={[
-                styles.textInput,
-                {
-                  paddingHorizontal: 10,
-                },
-              ]}
-              onChangeText={(val) => handleChangeText("Password", val)}
-            />
-
-            <Text  allowFontScaling={false} style={styles.text}>Nhập lại mật khẩu</Text>
-            <TextInput allowFontScaling={false} 
-              value={dataInput?.rePassword}
-              //   maxLength={}
-              secureTextEntry={true}
-              placeholder="Nhập lại mật khẩu"
-              placeholderTextColor="gray"
-              style={[
-                styles.textInput,
-                {
-                  paddingHorizontal: 10,
-                },
-              ]}
-              onChangeText={(val) => handleChangeText("rePassword", val)}
-            />
-
             <View
               style={{
                 flexDirection: "row",
@@ -120,8 +65,10 @@ const ModalUsers = ({
               }}
             >
               <View style={{ width: "48%" }}>
-                <Text  allowFontScaling={false} style={styles.text}>Dự án</Text>
-
+                <Text allowFontScaling={false} style={styles.text}>
+                  Dự án
+                </Text>
+                {ent_duan && ent_duan?.length > 0 ? (
                 <SelectDropdown
                   data={ent_duan ? ent_duan : []}
                   buttonStyle={styles.select}
@@ -156,7 +103,9 @@ const ModalUsers = ({
                           height: 50,
                         }}
                       >
-                        <Text  allowFontScaling={false} style={styles.text}>{selectedItem?.Duan}</Text>
+                        <Text allowFontScaling={false} style={styles.text}>
+                          {selectedItem?.Duan}
+                        </Text>
                       </View>
                     );
                   }}
@@ -171,64 +120,80 @@ const ModalUsers = ({
                     );
                   }}
                 />
+                 ) : (
+                  <Text allowFontScaling={false} style={styles.errorText}>
+                    Không có dữ liệu dự án.
+                  </Text>
+                )}
               </View>
               <View style={{ width: "48%" }}>
-                <Text  allowFontScaling={false} style={styles.text}>Chức vụ</Text>
-                <SelectDropdown
-                  ref={ref}
-                  data={ent_chucvu ? ent_chucvu : []}
-                  buttonStyle={styles.select}
-                  dropdownStyle={{
-                    borderRadius: 8,
-                    maxHeight: 400,
-                  }}
-                  // rowStyle={{ height: 50, justifyContent: "center" }}
-                  defaultButtonText={"Chọn chức vụ"}
-                  buttonTextStyle={styles.customText}
-                  defaultValue={defaultChucvu}
-                  onSelect={(selectedItem, index) => {
-                    handleChangeText("Permission", selectedItem.ID_Chucvu);
-                  }}
-                  renderDropdownIcon={(isOpened) => {
-                    return (
-                      <FontAwesome
-                        name={isOpened ? "chevron-up" : "chevron-down"}
-                        color={"#637381"}
-                        size={14}
-                        style={{ marginRight: 10 }}
-                      />
-                    );
-                  }}
-                  dropdownIconPosition={"right"}
-                  buttonTextAfterSelection={(selectedItem, index) => {
-                    return (
-                      <View
-                        style={{
-                          justifyContent: "center",
-                          alignContent: "center",
-                          height: 50,
-                        }}
-                      >
-                        <Text  allowFontScaling={false} style={styles.text}>{selectedItem?.Chucvu}</Text>
-                      </View>
-                    );
-                  }}
-                  renderCustomizedRowChild={(item, index) => {
-                    return (
-                      <VerticalSelect
-                        value={item.ID_Chucvu}
-                        label={item.Chucvu}
-                        key={index}
-                        selectedItem={dataInput?.Permission}
-                      />
-                    );
-                  }}
-                />
+                <Text allowFontScaling={false} style={styles.text}>
+                  Chức vụ
+                </Text>
+                {ent_chucvu && ent_chucvu?.length > 0 ? (
+                  <SelectDropdown
+                    ref={ref}
+                    data={ent_chucvu}
+                    buttonStyle={styles.select}
+                    dropdownStyle={{
+                      borderRadius: 8,
+                      maxHeight: 400,
+                    }}
+                    defaultButtonText={"Chọn chức vụ"}
+                    buttonTextStyle={styles.customText}
+                    defaultValue={defaultChucvu}
+                    onSelect={(selectedItem, index) => {
+                      handleChangeText("Permission", selectedItem.ID_Chucvu);
+                    }}
+                    renderDropdownIcon={(isOpened) => {
+                      return (
+                        <FontAwesome
+                          name={isOpened ? "chevron-up" : "chevron-down"}
+                          color={"#637381"}
+                          size={14}
+                          style={{ marginRight: 10 }}
+                        />
+                      );
+                    }}
+                    dropdownIconPosition={"right"}
+                    buttonTextAfterSelection={(selectedItem, index) => {
+                      return (
+                        <View
+                          style={{
+                            justifyContent: "center",
+                            alignContent: "center",
+                            height: 50,
+                          }}
+                        >
+                          <Text allowFontScaling={false} style={styles.text}>
+                            {selectedItem?.Chucvu}
+                          </Text>
+                        </View>
+                      );
+                    }}
+                    renderCustomizedRowChild={(item, index) => {
+                      return (
+                        <VerticalSelect
+                          value={item.ID_Chucvu}
+                          label={item.Chucvu}
+                          key={index}
+                          selectedItem={dataInput?.Permission}
+                        />
+                      );
+                    }}
+                  />
+                ) : (
+                  <Text allowFontScaling={false} style={styles.errorText}>
+                    Không có dữ liệu chức vụ.
+                  </Text>
+                )}
               </View>
             </View>
             <View>
-              <Text  allowFontScaling={false} style={styles.text}>Khối công việc</Text>
-
+              <Text allowFontScaling={false} style={styles.text}>
+                Khối công việc
+              </Text>
+              {ent_khoicv && ent_khoicv?.length > 0 ? (
               <SelectDropdown
                 data={ent_khoicv ? ent_khoicv : []}
                 buttonStyle={styles.select}
@@ -262,7 +227,9 @@ const ModalUsers = ({
                         height: 50,
                       }}
                     >
-                      <Text  allowFontScaling={false} style={styles.text}>{selectedItem?.KhoiCV}</Text>
+                      <Text allowFontScaling={false} style={styles.text}>
+                        {selectedItem?.KhoiCV}
+                      </Text>
                     </View>
                   );
                 }}
@@ -277,7 +244,84 @@ const ModalUsers = ({
                   );
                 }}
               />
+              ) : (
+                  <Text allowFontScaling={false} style={styles.errorText}>
+                    Không có dữ liệu công việc.
+                  </Text>
+                )}
             </View>
+
+            <Text allowFontScaling={false} style={styles.text}>
+              Người dùng
+            </Text>
+            <TextInput
+              allowFontScaling={false}
+              value={UserName}
+              placeholder="Người dùng"
+              placeholderTextColor="gray"
+              style={[
+                styles.textInput,
+                {
+                  paddingHorizontal: 10,
+                },
+              ]}
+              onChangeText={(val) => {handleChangeText("UserName", val), setUserName(val)}}
+            />
+
+            <Text allowFontScaling={false} style={styles.text}>
+              Email
+            </Text>
+            <TextInput
+              allowFontScaling={false}
+              value={Emails}
+              placeholder="Email"
+              placeholderTextColor="gray"
+              style={[
+                styles.textInput,
+                {
+                  paddingHorizontal: 10,
+                },
+              ]}
+              onChangeText={(val) => {handleChangeText("Emails", val),setEmails(val)}}
+            />
+
+            <Text allowFontScaling={false} style={styles.text}>
+              Mật khẩu
+            </Text>
+            <TextInput
+              allowFontScaling={false}
+              value={Password}
+              //   maxLength={}
+              secureTextEntry={true}
+              placeholder="Mật khẩu"
+              placeholderTextColor="gray"
+              style={[
+                styles.textInput,
+                {
+                  paddingHorizontal: 10,
+                },
+              ]}
+              onChangeText={(val) => {handleChangeText("Password", val),setPassword(val)}}
+            />
+
+            <Text allowFontScaling={false} style={styles.text}>
+              Nhập lại mật khẩu
+            </Text>
+            <TextInput
+              allowFontScaling={false}
+              value={rePassword}
+              //   maxLength={}
+              secureTextEntry={true}
+              placeholder="Nhập lại mật khẩu"
+              placeholderTextColor="gray"
+              style={[
+                styles.textInput,
+                {
+                  paddingHorizontal: 10,
+                },
+              ]}
+              onChangeText={(val) => {handleChangeText("rePassword", val),setrePassword(val)}}
+            />
           </View>
           <View style={{ marginTop: 20 }}>
             <ButtonSubmit
@@ -360,4 +404,8 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     fontSize: 15,
   },
+  errorText: {
+    fontWeight: "500",
+    fontSize: 15,
+  }
 });

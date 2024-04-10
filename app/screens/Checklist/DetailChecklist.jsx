@@ -50,7 +50,7 @@ import { BASE_URL } from "../../constants/config";
 const DetailChecklist = ({ route, navigation }) => {
   const { ID_ChecklistC, ID_KhoiCV } = route.params;
   const dispath = useDispatch();
-  const { ent_checklist_detail, ent_tang, ent_khuvuc, ent_toanha, isLoading } =
+  const { ent_checklist_detail, ent_tang, ent_khuvuc, ent_toanha, isLoadingDetail, isLoading } =
     useSelector((state) => state.entReducer);
 
   const { user, authToken } = useSelector((state) => state.authReducer);
@@ -121,6 +121,19 @@ const DetailChecklist = ({ route, navigation }) => {
     });
     setDataChecklistFilter(processedData);
     setDataChecklist(processedData);
+
+    const processedData2 = ent_checklist_detail?.map((item) => {
+      return {
+        ...item,
+        Giatrinhan: item?.Giatrinhan?.split("/"),
+        valueCheck: "Đạt",
+        GhichuChitiet: "asdf asdf  asdf ad df asdf ",
+        ID_ChecklistC: ID_ChecklistC,
+        Anh: null,
+        gioht: moment().format("LTS"),
+      };
+    });
+    setNewActionDataChecklist(processedData2);
   }, [ent_checklist_detail, loadingSubmit]);
 
   // change filter all data
@@ -157,24 +170,7 @@ const DetailChecklist = ({ route, navigation }) => {
         return item;
       });
 
-      // const mergedArrCheck = [...defaultActionDataChecklist];
-
-      // // Duyệt qua mảng arrCheck2
-      // newActionDataChecklist.forEach((item2) => {
-      //   // Kiểm tra xem item2.id đã tồn tại trong mergedArrCheck chưa
-      //   const found = mergedArrCheck.some((item) => item.id === item2.id);
-      //   // Nếu không tìm thấy, thêm item2 vào mergedArrCheck
-      //   if (!found) {
-      //     mergedArrCheck.push(item2);
-      //   }
-      // });
-
-      // const newDataChecklist = filteredData.filter(
-      //   (item) => item.valueCheck !== null
-      // );
-
       setDataChecklistFilter(filteredData);
-      // setNewActionDataChecklist(mergedArrCheck);
     }
   };
 
@@ -391,11 +387,11 @@ const DetailChecklist = ({ route, navigation }) => {
 
   // call api submit data checklsit
   const handleSubmit = async () => {
-    try {
-      setLoadingSubmit(true);
-      let formData = new FormData();
+    setLoadingSubmit(true);
+    const formData = new FormData();
 
-      for (const item of newActionDataChecklist) {
+    await Promise.all(
+      newActionDataChecklist.map(async (item) => {
         const itemInfo = {
           ID_ChecklistC: ID_ChecklistC,
           ID_Checklist: item.ID_Checklist,
@@ -418,14 +414,15 @@ const DetailChecklist = ({ route, navigation }) => {
           };
 
           formData.append(`Images`, file);
-
-          itemInfo.Anh = `${file.name}`;
+          itemInfo.Anh = file.name;
         }
 
         Object.entries(itemInfo).forEach(([key, value]) => {
           formData.append(key, value);
         });
-      }
+      })
+    );
+    try {
       await axios.post(BASE_URL + "/tb_checklistchitiet/create", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -434,7 +431,7 @@ const DetailChecklist = ({ route, navigation }) => {
       });
 
       init_checklist();
-      setNewActionDataChecklist([])
+      setNewActionDataChecklist([]);
       setLoadingSubmit(false);
       Alert.alert("PMC Thông báo", "Checklist thành công", [
         {
@@ -446,10 +443,9 @@ const DetailChecklist = ({ route, navigation }) => {
       ]);
     } catch (error) {
       setLoadingSubmit(false);
-      Alert.alert(
-        "PMC Thông báo",
-        "Đã có lỗi xảy ra. Vui lòng kiểm tra lại!!",
-        [
+      if (error.response) {
+        // Lỗi từ phía server (có response từ server)
+        Alert.alert("PMC Thông báo", error.response.data.message, [
           {
             text: "Hủy",
             onPress: () => console.log("Cancel Pressed"),
@@ -458,6 +454,7 @@ const DetailChecklist = ({ route, navigation }) => {
           { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
         ]
       );
+    }
     }
   };
 
@@ -609,12 +606,14 @@ const DetailChecklist = ({ route, navigation }) => {
                     ></ActivityIndicator>
                   </View>
                 )}
+
                 {isLoading === false && dataChecklistFilter?.length == 0 && (
                   <View
                     style={{
                       flex: 1,
                       justifyContent: "center",
                       alignItems: "center",
+                      marginBottom: 80,
                     }}
                   >
                     <Image

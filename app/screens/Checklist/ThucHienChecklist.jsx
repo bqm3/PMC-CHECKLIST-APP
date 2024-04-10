@@ -42,7 +42,7 @@ import ModalChecklistC from "../../components/Modal/ModalChecklistC";
 import ModalChecklistCImage from "../../components/Modal/ModalChecklistCImage";
 import * as ImageManipulator from "expo-image-manipulator";
 
-const numberOfItemsPerPageList = [10, 15, 20];
+const numberOfItemsPerPageList = [20, 30, 50];
 
 const headerList = [
   {
@@ -96,11 +96,10 @@ const ThucHienChecklist = ({ navigation }) => {
   const snapPoints = useMemo(() => ["90%"], []);
   const [opacity, setOpacity] = useState(1);
   const [page, setPage] = React.useState(0);
+
   const [numberOfItemsPerPage, onItemsPerPageChange] = React.useState(
-    numberOfItemsPerPageList[1]
+    numberOfItemsPerPageList[0]
   );
-  const from = page * numberOfItemsPerPage;
-  const to = Math.min((page + 1) * numberOfItemsPerPage, data?.length);
 
   const [newActionCheckList, setNewActionCheckList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -151,8 +150,8 @@ const ThucHienChecklist = ({ navigation }) => {
   }, []); //
 
   useEffect(() => {
-    setData(tb_checklistc);
-  }, [tb_checklistc]);
+    setData(tb_checklistc?.data);
+  }, [tb_checklistc, page]);
 
   const init_ca = async () => {
     await dispath(ent_calv_get());
@@ -162,14 +161,14 @@ const ThucHienChecklist = ({ navigation }) => {
     await dispath(ent_giamsat_get());
   };
 
-  const int_checklistc = async () => {
-    await dispath(tb_checklistc_get());
+  const int_checklistc = async (page, limit) => {
+    await dispath(tb_checklistc_get({page: page, limit: limit}));
   };
 
   useEffect(() => {
     init_ca();
     int_giamsat();
-    int_checklistc();
+    int_checklistc(page, numberOfItemsPerPage);
   }, []);
 
   const toggleTodo = async (item) => {
@@ -617,7 +616,6 @@ const ThucHienChecklist = ({ navigation }) => {
     );
   };
 
-  console.log('user?.Permission',user?.Permission)
   return (
     <>
       <GestureHandlerRootView style={{ flex: 1 }}>
@@ -745,34 +743,31 @@ const ThucHienChecklist = ({ navigation }) => {
                                       `${item?.ID_ChecklistC}_${index}`
                                     }
                                     scrollEnabled={false}
-                                    data={data?.slice(
-                                      page * numberOfItemsPerPage,
-                                      page * numberOfItemsPerPage +
-                                        numberOfItemsPerPage
-                                    )}
+                                    data={data}
                                     renderItem={_renderItem}
                                   />
                                 )}
                                 <DataTable.Pagination
-                                  style={{ justifyContent: "flex-start" }}
-                                  page={page}
-                                  numberOfPages={Math.ceil(
-                                    data?.length / numberOfItemsPerPage
-                                  )}
-                                  onPageChange={(page) => setPage(page)}
-                                  label={`${from + 1}-${to} đến ${
-                                    data?.length
-                                  }`}
-                                  showFastPaginationControls
-                                  numberOfItemsPerPageList={
-                                    numberOfItemsPerPageList
-                                  }
-                                  numberOfItemsPerPage={numberOfItemsPerPage}
-                                  onItemsPerPageChange={onItemsPerPageChange}
-                                  selectPageDropdownLabel={
-                                    "Hàng trên mỗi trang"
-                                  }
-                                />
+                                style={{ justifyContent: "flex-start" }}
+                                page={page}
+                                numberOfPages={Math.ceil(
+                                  tb_checklistc?.totalPages
+                                )}
+                                onPageChange={(page) => {
+                                  setPage(page)
+                                  int_checklistc(page, numberOfItemsPerPage)
+                                }}
+                                label={`Từ ${page + 1} đến ${
+                                  tb_checklistc?.totalPages
+                                }`}
+                                showFastPaginationControls
+                                numberOfItemsPerPageList={
+                                  numberOfItemsPerPageList
+                                }
+                                numberOfItemsPerPage={numberOfItemsPerPage}
+                                onItemsPerPageChange={onItemsPerPageChange}
+                                selectPageDropdownLabel={"Hàng trên mỗi trang"}
+                              />
                               </ScrollView>
                             </DataTable>
                           </ScrollView>

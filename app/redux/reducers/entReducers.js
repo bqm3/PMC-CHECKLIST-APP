@@ -13,6 +13,7 @@ const initialState = {
   ent_users: [],
   error: false,
   isLoading: false,
+  isLoadingDetail: false,
   message: null,
 };
 
@@ -263,7 +264,7 @@ export const entReducer = (state = initialState, action) => {
           ...state,
           ent_checklist_detail: action.payload.ent_checklist_detail,
           error: false,
-          isLoading: action.payload.isLoading,
+          isLoadingDetail: action.payload.isLoading,
           message: null,
         };
       case type.SET_ENT_CHECKLIST_DETAIL_SUCCESS:
@@ -271,7 +272,7 @@ export const entReducer = (state = initialState, action) => {
           ...state,
           ent_checklist_detail: action.payload.ent_checklist_detail,
           error: false,
-          isLoading: action.payload.isLoading,
+          isLoadingDetail: action.payload.isLoading,
           message: null,
         };
       case type.SET_ENT_CHECKLIST_DETAIL_FAIL:
@@ -279,7 +280,7 @@ export const entReducer = (state = initialState, action) => {
           ...state,
           ent_checklist_detail: action.payload.ent_checklist_detail,
           error: false,
-          isLoading: action.payload.isLoading,
+          isLoadingDetail: action.payload.isLoading,
           message: null,
         };
       

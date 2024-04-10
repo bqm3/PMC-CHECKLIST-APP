@@ -87,7 +87,7 @@ const DanhmucUserScreen = ({ navigation }) => {
 
   const [dataInput, setDataInput] = useState({
     ID_Duan: null,
-    Permission: null,
+    Permission: 2,
     ID_KhoiCV: null,
     UserName: "",
     Password: "",
@@ -185,7 +185,7 @@ const DanhmucUserScreen = ({ navigation }) => {
     });
   };
 
-  const handlePushDataEdit = async (id) => {
+  const handlePushDataEdit = async () => {
     if (dataInput.UserName === "" || dataInput.Password === null) {
       Alert.alert("PMC Thông báo", "Thiếu thông tin ca làm việc", [
         {
@@ -216,7 +216,7 @@ const DanhmucUserScreen = ({ navigation }) => {
       setLoadingSubmit(true);
 
       await axios
-        .put(BASE_URL + `/ent_user/update/${id}`, data, {
+        .put(BASE_URL + `/ent_user/update/${isCheckUpdate?.ID_User}`, data, {
           headers: {
             Accept: "application/json",
             Authorization: "Bearer " + authToken,
@@ -237,7 +237,6 @@ const DanhmucUserScreen = ({ navigation }) => {
           ]);
         })
         .catch((err) => {
-          console.log("err", err);
           setLoadingSubmit(false);
           Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
             {
@@ -304,7 +303,7 @@ const DanhmucUserScreen = ({ navigation }) => {
       Password: "",
       Emails: "",
       rePassword: "",
-      Permission: null,
+      Permission: 2,
       ID_KhoiCV: null,
     });
   };
@@ -316,6 +315,7 @@ const DanhmucUserScreen = ({ navigation }) => {
   const handleSheetChanges = useCallback((index) => {
     if (index === -1) {
       setOpacity(1);
+      handleCloseModal()
     } else {
       setOpacity(0.2);
     }
@@ -323,16 +323,18 @@ const DanhmucUserScreen = ({ navigation }) => {
 
   const handleToggleModal = (isCheck, data, opacity) => {
     setDataModal(data);
-    setModalVisible(isCheck), setOpacity(opacity);
+    setModalVisible(isCheck);
+    setOpacity(opacity);
   };
 
   const handleCloseModal = () => {
     bottomSheetModalRef?.current?.close();
     setOpacity(1);
+    handleAdd()
   };
 
   const decimalNumber = (number) => {
-    if (number < 10) return `0${number}`;
+    if (number < 10 && number > 0) return `0${number}`;
     return number;
   };
 

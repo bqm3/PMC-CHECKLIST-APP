@@ -134,7 +134,7 @@ const ModalTracuu = ({
             </View>
             <View>
               <Text  allowFontScaling={false} style={styles.text}>Tòa nhà</Text>
-
+              {ent_toanha && ent_toanha?.length > 0 ? (
               <SelectDropdown
                 data={ent_toanha ? ent_toanha : []}
                 buttonStyle={styles.select}
@@ -185,10 +185,15 @@ const ModalTracuu = ({
                   );
                 }}
               />
+               ) : (
+                  <Text allowFontScaling={false} style={styles.errorText}>
+                    Không có dữ liệu tòa nhà.
+                  </Text>
+                )}
             </View>
             <View>
               <Text  allowFontScaling={false} style={styles.text}>Khu vực</Text>
-
+              {ent_khuvuc && ent_khuvuc?.length > 0 ? (
               <SelectDropdown
                 data={ent_khuvuc ? ent_khuvuc : []}
                 buttonStyle={styles.select}
@@ -239,11 +244,16 @@ const ModalTracuu = ({
                   );
                 }}
               />
+               ) : (
+                  <Text allowFontScaling={false} style={styles.errorText}>
+                    Không có dữ liệu khu vực.
+                  </Text>
+                )}
             </View>
 
             <View>
               <Text  allowFontScaling={false} style={styles.text}>Tầng</Text>
-
+              {ent_tang && ent_tang?.length > 0 ? (
               <SelectDropdown
                 data={ent_tang ? ent_tang : []}
                 buttonStyle={styles.select}
@@ -294,6 +304,11 @@ const ModalTracuu = ({
                   );
                 }}
               />
+               ) : (
+                  <Text allowFontScaling={false} style={styles.errorText}>
+                    Không có dữ liệu tầng.
+                  </Text>
+                )}
             </View>
             <View style={{ height: 10 }}></View>
             <View

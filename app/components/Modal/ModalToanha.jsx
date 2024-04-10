@@ -66,6 +66,7 @@ import {
            
             <View>
               <Text  allowFontScaling={false} style={styles.text}>Dự án</Text>
+              {ent_duan && ent_duan?.length > 0 ? (
               <SelectDropdown
                 data={ent_duan ? ent_duan : []}
                 buttonStyle={styles.select}
@@ -115,6 +116,11 @@ import {
                   );
                 }}
               />
+              ) : (
+                  <Text allowFontScaling={false} style={styles.errorText}>
+                    Không có dữ liệu tầng.
+                  </Text>
+                )}
             </View>
           </View>
         

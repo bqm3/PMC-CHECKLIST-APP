@@ -5,6 +5,7 @@ import {COLORS, SIZES} from '../../constants/theme';
 const Button = ({onPress, text, backgroundColor, color, border, width, isLoading}) => {
   return (
     <TouchableOpacity
+      disabled={isLoading}
       style={{
         backgroundColor: backgroundColor ? backgroundColor : 'white',
         padding: SIZES.padding,

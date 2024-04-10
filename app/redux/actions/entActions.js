@@ -193,18 +193,18 @@ export const ent_chucvu_get = () => {
   };
 };
 
-export const ent_checklist_get = () => {
+export const ent_checklist_get = (pag) => {
   return async (dispatch) => {
     try {
       const token = await AsyncStorage.getItem("tokenUser");
       if (token !== null) {
-        const response = await axios.get(BASE_URL + `/ent_checklist/`, {
+        const response = await axios.get(BASE_URL + `/ent_checklist/?page=${pag.page}&limit=${pag.limit}`, {
           headers: {
             Accept: "application/json",
             Authorization: "Bearer " + token,
           },
         });
-        const data = response.data.data;
+        const data = response.data;
         dispatch({
           type: type.SET_ENT_CHECKLIST_SUCCESS,
           payload: {
@@ -256,9 +256,7 @@ export const ent_checklist_get_detail = (ID_KhoiCV, ID_ChecklistC) => {
             isLoading: false
           },
         });
-      } else {
-        console.error("initialized error");
-      }
+      } 
     } catch (err) {
       dispatch({
         type: type.SET_ENT_CHECKLIST_FAIL,

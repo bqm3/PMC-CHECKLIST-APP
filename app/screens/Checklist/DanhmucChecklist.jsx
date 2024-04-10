@@ -48,7 +48,7 @@ import ActionCheckboxAll from "../../components/Active/ActiveCheckboxAll";
 import ModalChecklistInfo from "../../components/Modal/ModalChecklistInfo";
 import ModalChecklistFilter from "../../components/Modal/ModalChecklistFilter";
 
-const numberOfItemsPerPageList = [10, 15, 20];
+const numberOfItemsPerPageList = [50, 100, 150];
 
 const headerList = [
   {
@@ -126,12 +126,11 @@ const DanhmucChecklist = ({ navigation }) => {
   const snapPoints = useMemo(() => ["90%"], []);
   const [opacity, setOpacity] = useState(1);
   const [page, setPage] = React.useState(0);
+
   const [numberOfItemsPerPage, onItemsPerPageChange] = React.useState(
-    numberOfItemsPerPageList[1]
+    numberOfItemsPerPageList[0]
   );
 
-  const from = page * numberOfItemsPerPage;
-  const to = Math.min((page + 1) * numberOfItemsPerPage, listChecklist?.length);
   const [dataInput, setDataInput] = useState({
     ID_Khuvuc: null,
     ID_Tang: null,
@@ -151,16 +150,16 @@ const DanhmucChecklist = ({ navigation }) => {
 
   const [status, setStatus] = useState(false);
 
-  const init_checklist = async () => {
-    await dispath(ent_checklist_get());
+  const init_checklist = async (page, limit) => {
+    await dispath(ent_checklist_get({page: page, limit: limit}));
   };
 
   const init_khuvuc = async () => {
     await dispath(ent_khuvuc_get());
   };
   useEffect(() => {
-    setListChecklist(ent_checklist);
-  }, [ent_checklist]);
+    setListChecklist(ent_checklist.data);
+  }, [ent_checklist, page]);
 
   const init_tang = async () => {
     await dispath(ent_tang_get());
@@ -175,7 +174,7 @@ const DanhmucChecklist = ({ navigation }) => {
   };
 
   useEffect(() => {
-    init_checklist();
+    init_checklist(page, numberOfItemsPerPage);
     init_khuvuc();
     init_tang();
     init_khoicv();
@@ -339,7 +338,8 @@ const DanhmucChecklist = ({ navigation }) => {
           },
         })
         .then((response) => {
-          init_checklist();
+          setPage(0)
+          init_checklist(0, numberOfItemsPerPage);
           handleAdd();
           handleCloseModal();
           setLoadingSubmit(false);
@@ -354,7 +354,6 @@ const DanhmucChecklist = ({ navigation }) => {
         })
         .catch((err) => {
           setLoadingSubmit(false);
-          console.log("err", err);
           Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
             {
               text: "Hủy",
@@ -430,7 +429,8 @@ const DanhmucChecklist = ({ navigation }) => {
           },
         })
         .then((response) => {
-          init_checklist();
+          setPage(0)
+          init_checklist(0, numberOfItemsPerPage);
           handleAdd();
           handleCloseModal();
           setNewActionCheckList([]);
@@ -480,9 +480,9 @@ const DanhmucChecklist = ({ navigation }) => {
       })
       .then((response) => {
         handleAdd();
-        init_checklist();
+        setPage(0)
+        init_checklist(0, numberOfItemsPerPage);
         setNewActionCheckList([]);
-        // handleCloseModal();
         Alert.alert("PMC Thông báo", response.data.message, [
           {
             text: "Hủy",
@@ -843,11 +843,7 @@ const DanhmucChecklist = ({ navigation }) => {
                                     `${item?.ID_Khuvuc}_${index}`
                                   }
                                   scrollEnabled={false}
-                                  data={listChecklist?.slice(
-                                    page * numberOfItemsPerPage,
-                                    page * numberOfItemsPerPage +
-                                      numberOfItemsPerPage
-                                  )}
+                                  data={listChecklist}
                                   renderItem={_renderItem}
                                 />
                               )}
@@ -855,11 +851,14 @@ const DanhmucChecklist = ({ navigation }) => {
                                 style={{ justifyContent: "flex-start" }}
                                 page={page}
                                 numberOfPages={Math.ceil(
-                                  listChecklist?.length / numberOfItemsPerPage
+                                  ent_checklist?.totalPages
                                 )}
-                                onPageChange={(page) => setPage(page)}
-                                label={`${from + 1}-${to} đến ${
-                                  listChecklist?.length
+                                onPageChange={(page) => {
+                                  setPage(page)
+                                  init_checklist(page, numberOfItemsPerPage)
+                                }}
+                                label={`Từ ${page + 1} đến ${
+                                  ent_checklist?.totalPages
                                 }`}
                                 showFastPaginationControls
                                 numberOfItemsPerPageList={

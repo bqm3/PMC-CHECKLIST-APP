@@ -203,7 +203,6 @@ const DanhmucDuanScreen = ({ navigation }) => {
   };
 
   const handlePushDataDelete = async (id) => {
-    console.log("id", id);
     await axios
       .put(BASE_URL + `/ent_duan/delete/${id}`, [], {
         headers: {
