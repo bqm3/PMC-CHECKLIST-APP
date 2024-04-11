@@ -46,6 +46,7 @@ import ModalPopupDetailChecklist from "../../components/Modal/ModalPopupDetailCh
 import moment from "moment";
 import axios from "axios";
 import { BASE_URL } from "../../constants/config";
+import QRCodeScreen from "../QRCodeScreen";
 
 const DetailChecklist = ({ route, navigation }) => {
   const { ID_ChecklistC, ID_KhoiCV } = route.params;
@@ -74,6 +75,7 @@ const DetailChecklist = ({ route, navigation }) => {
   const [opacity, setOpacity] = useState(1);
   const [index, setIndex] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisibleQr, setModalVisibleQr] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [isEnabled, setIsEnabled] = useState(true);
 
@@ -321,8 +323,7 @@ const DetailChecklist = ({ route, navigation }) => {
   // call api filter data checklist
   const handlePushDataFilter = async () => {
     try {
-      console.log('filterData',filterData)
-      await axios.post(
+      const res = await axios.post(
         BASE_URL + `/ent_checklist/filter/${ID_KhoiCV}/${ID_ChecklistC}`,
         filterData,
         {
@@ -368,6 +369,96 @@ const DetailChecklist = ({ route, navigation }) => {
       );
 
       setDataChecklistFilter(filteredData);
+      handleCloseModal();
+    } catch (error) {
+      console.log("error", error);
+      if (error.response) {
+        // Lỗi từ phía server (có response từ server)
+        Alert.alert("PMC Thông báo", error.response.data.message, [
+          {
+            text: "Hủy",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel",
+          },
+          { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+        ]);
+      } else if (error.request) {
+        // Lỗi không nhận được phản hồi từ server
+        Alert.alert("PMC Thông báo", "Không nhận được phản hồi từ máy chủ", [
+          {
+            text: "Hủy",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel",
+          },
+          { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+        ]);
+      } else {
+        // Lỗi khi cấu hình request
+        Alert.alert("PMC Thông báo", "Lỗi khi gửi yêu cầu", [
+          {
+            text: "Hủy",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel",
+          },
+          { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+        ]);
+      }
+    }
+  };
+
+  const handlePushDataFilterQr = async (value) => {
+    const data = {
+      MaQrCode: value
+    }
+    try {
+      const res = await axios.post(
+        BASE_URL + `/ent_checklist/filter_qr/${ID_KhoiCV}/${ID_ChecklistC}`,
+        data,
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: "Bearer " + authToken,
+          },
+        }
+      );
+      const dataList = res.data.data;
+      let filteredData = dataList.map((item) => {
+        const matchingItem = defaultActionDataChecklist.find((newItem) => {
+          return newItem.ID_Checklist === item.ID_Checklist;
+        });
+        if (matchingItem) {
+          return {
+            ...item,
+            valueCheck: matchingItem.valueCheck,
+            GhichuChitiet: matchingItem.GhichuChitiet,
+            Anh: matchingItem.Anh,
+            gioht: matchingItem.gioht,
+            ID_ChecklistC: ID_ChecklistC,
+          };
+        } else {
+          return {
+            ...item,
+            valueCheck: null,
+            GhichuChitiet: "",
+            Anh: null,
+            gioht: moment().format("LTS"),
+            ID_ChecklistC: ID_ChecklistC,
+          };
+        }
+      });
+
+      const newDataChecklist = filteredData.filter(
+        (item) => item.valueCheck !== null
+      );
+
+      // Thêm các phần tử mới từ newDataChecklist vào newActionDataChecklist
+      setNewActionDataChecklist((prevState) =>
+        prevState?.concat(newDataChecklist)
+      );
+
+      setDataChecklistFilter(filteredData);
+      setOpacity(1)
+      setModalVisibleQr(false)
       handleCloseModal();
     } catch (error) {
       if (error.response) {
@@ -697,6 +788,10 @@ const DetailChecklist = ({ route, navigation }) => {
                     text={"Scan QR Code"}
                     backgroundColor={"white"}
                     color={"black"}
+                    onPress={() => {
+                      setModalVisibleQr(true);
+                      setOpacity(0.2);
+                    }}
                   />
                   <Button
                     text={"Hoàn Thành"}
@@ -755,6 +850,27 @@ const DetailChecklist = ({ route, navigation }) => {
                     index={index}
                     handleChange={handleChange}
                   />
+                </View>
+              </View>
+            </Modal>
+
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={modalVisibleQr}
+              onRequestClose={() => {
+                Alert.alert("Modal has been closed.");
+                setModalVisibleQr(!modalVisibleQr);
+                setOpacity(1);
+              }}
+            >
+              <View
+                style={[styles.centeredView, { width: "100%", height: "80%" }]}
+              >
+                <View
+                  style={[styles.modalView, { width: "80%", height: "60%" }]}
+                >
+                  <QRCodeScreen setModalVisibleQr={setModalVisibleQr} setOpacity={setOpacity} handlePushDataFilterQr={handlePushDataFilterQr}/>
                 </View>
               </View>
             </Modal>

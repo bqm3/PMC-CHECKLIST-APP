@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, StyleSheet, Button } from "react-native";
+import { Text, View, StyleSheet } from "react-native";
 import { CameraView, Camera } from "expo-camera/next";
+import { COLORS } from "../constants/theme";
+import Button from "../components/Button/Button";
 
-export default function QRCodeScreen() {
+export default function QRCodeScreen({
+  setModalVisibleQr,
+  setOpacity,
+  handlePushDataFilterQr,
+}) {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
 
@@ -17,7 +23,9 @@ export default function QRCodeScreen() {
 
   const handleBarCodeScanned = ({ type, data }) => {
     setScanned(true);
-    alert(`Bar code with type ${type} and data ${data} has been scanned!`);
+    if ((type, data)) {
+      handlePushDataFilterQr(data);
+    }
   };
 
   if (hasPermission === null) {
@@ -29,16 +37,45 @@ export default function QRCodeScreen() {
 
   return (
     <View style={styles.container}>
-      <CameraView
-        onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
-        barcodeScannerSettings={{
-          barcodeTypes: ["qr", "pdf417"],
+      <View style={{ width: "100%", height: "100%" }}>
+        <CameraView
+          onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
+          barcodeScannerSettings={{
+            barcodeTypes: ["qr", "pdf417"],
+          }}
+          style={[StyleSheet.absoluteFillObject, { borderRadius: 12 }]}
+        />
+      </View>
+      {/* {scanned && ( */}
+      <View
+        style={{
+          position: "absolute",
+          bottom: 40,
+          flexDirection: "row",
+          justifyContent: "space-around",
+          alignItems: "center",
+          width: "100%",
         }}
-        style={StyleSheet.absoluteFillObject}
-      />
-      {scanned && (
-        <Button title={"Tap to Scan Again"} onPress={() => setScanned(false)} />
-      )}
+      >
+        <Button
+          text={"Đóng"}
+          backgroundColor={"white"}
+          color={"black"}
+          onPress={() => {
+            setModalVisibleQr(false);
+            setOpacity(1);
+          }}
+        />
+        <Button
+          text={"Quét lại"}
+          // isLoading={loadingSubmit}
+          backgroundColor={COLORS.bg_button}
+          color={"white"}
+          onPress={() => setScanned(false)}
+        />
+        {/* text, backgroundColor, color */}
+      </View>
+      {/* )} */}
     </View>
   );
 }
@@ -46,7 +83,10 @@ export default function QRCodeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    width: "100%",
+    height: "100%",
     flexDirection: "column",
     justifyContent: "center",
+    alignItems: "center",
   },
 });
