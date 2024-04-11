@@ -208,7 +208,8 @@ const DanhmucGiamsat = ({ navigation }) => {
     });
   };
 
-  const handlePushDataEdit = async (id) => {
+
+  const handlePushDataEdit = async () => {
     if (dataInput.hoten === "" || dataInput.sodienthoai === null) {
       Alert.alert("PMC Thông báo", "Thiếu thông tin ca làm việc", [
         {
@@ -232,7 +233,7 @@ const DanhmucGiamsat = ({ navigation }) => {
       setLoadingSubmit(true)
 
       await axios
-        .put(BASE_URL + `/ent_giamsat/update/${id}`, data, {
+        .put(BASE_URL + `/ent_giamsat/update/${isCheckUpdate.ID_Giamsat}`, data, {
           headers: {
             Accept: "application/json",
             Authorization: "Bearer " + authToken,

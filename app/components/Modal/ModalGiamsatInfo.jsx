@@ -18,6 +18,7 @@ const ModalGiamsatInfo = ({ dataModal, handleToggleModal }) => {
         <Text  allowFontScaling={false} style={styles.text}>Số điện thoại: <Text  allowFontScaling={false} style={{color: COLORS.bg_active}}>{dataModal?.Sodienthoai}</Text></Text>
         <Text  allowFontScaling={false} style={styles.text}>Chức vụ: <Text  allowFontScaling={false} style={{color: COLORS.bg_active}}>{dataModal?.ent_chucvu.Chucvu}</Text></Text>
         <Text  allowFontScaling={false} style={styles.text}>Dự án: <Text  allowFontScaling={false} style={{color: COLORS.bg_active}}>{dataModal?.ent_duan.Duan}</Text></Text>
+        <Text  allowFontScaling={false} style={styles.text}>Khối công việc: <Text  allowFontScaling={false} style={{color: COLORS.bg_active}}>{dataModal?.ent_khoicv.KhoiCV}</Text></Text>
       </View>
       <Button 
       color={'white'}

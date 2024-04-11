@@ -378,6 +378,7 @@ const styles = StyleSheet.create({
     color: "#05375a",
     width: "88%",
     fontSize: 16,
+    height: 40
   },
   errorMsg: {
     color: "#FF0000",

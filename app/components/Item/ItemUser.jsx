@@ -20,7 +20,10 @@ const ItemUser = ({ index, item, handleEditEnt, handleAlertDelete }) => {
         <Text  allowFontScaling={false} style={[styles.title, { fontSize: 18 }]}>
           {item?.ent_duan?.Duan}
         </Text>
-        <Text  allowFontScaling={false} style={styles.title}>{item?.ent_khoicv?.KhoiCV} - {item?.ent_chucvu?.Chucvu} </Text>
+        
+        <Text  allowFontScaling={false} style={styles.title}>{item?.ent_chucvu?.Chucvu} 
+        {item?.ent_khoicv?.KhoiCV ? ` - ` : ``}
+        {item?.ent_khoicv?.KhoiCV} </Text>
         <Text  allowFontScaling={false} style={styles.title}>Tên đăng nhập: {item?.UserName}</Text>
       </View>
       <View
@@ -52,5 +55,5 @@ const ItemUser = ({ index, item, handleEditEnt, handleAlertDelete }) => {
 export default ItemUser;
 
 const styles = StyleSheet.create({
-  title: { paddingVertical: 2, color: "black", fontWeight: "600" },
+  title: { paddingVertical: 2, color: "black", fontWeight: "600", fontSize:15 },
 });

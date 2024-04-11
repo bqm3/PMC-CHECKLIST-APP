@@ -17,9 +17,9 @@ const ItemGiamSat = ({ item,handleEditEnt,handleAlertDelete ,handleToggleModal})
       }}
     >
       <View style={{ width: "70%" }}>
-        <Text  allowFontScaling={false} style={[styles.title, { fontSize: 18 }]}>{item.Hoten}</Text>
+        <Text  allowFontScaling={false} style={[styles.title, { fontSize: 18 }]}>{item.Hoten} - {item?.ent_khoicv?.KhoiCV}</Text>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 4, paddingVertical:2 }}>
-          <Text  allowFontScaling={false} style={styles.title}>{item?.ent_chucvu?.Chucvu} - {item?.ent_duan?.Duan}</Text>
+          <Text  allowFontScaling={false} style={styles.title}>{item?.ent_duan?.Duan} - {item?.ent_chucvu?.Chucvu}</Text>
           <Text  allowFontScaling={false} style={styles.title}></Text>
         </View>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
@@ -70,5 +70,5 @@ const ItemGiamSat = ({ item,handleEditEnt,handleAlertDelete ,handleToggleModal})
 export default ItemGiamSat;
 
 const styles = StyleSheet.create({
-  title: { paddingVertical: 2, color: "black", fontWeight: "600" },
+  title: { paddingVertical: 2, color: "black", fontWeight: "600", fontSize:15 },
 });

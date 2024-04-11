@@ -162,7 +162,7 @@ const ThucHienChecklist = ({ navigation }) => {
   };
 
   const int_checklistc = async (page, limit) => {
-    await dispath(tb_checklistc_get({page: page, limit: limit}));
+    await dispath(tb_checklistc_get({ page: page, limit: limit }));
   };
 
   useEffect(() => {
@@ -428,7 +428,7 @@ const ThucHienChecklist = ({ navigation }) => {
 
   const handleSheetChanges = useCallback((index) => {
     if (index === -1) {
-      handleCloseModal()
+      handleCloseModal();
     } else {
       setOpacity(0.2);
     }
@@ -658,18 +658,19 @@ const ThucHienChecklist = ({ navigation }) => {
                         resizeMode="contain"
                         style={{ height: 24, width: 24 }}
                       />
-                      <Text  allowFontScaling={false} style={styles.text}>Lọc dữ liệu</Text>
+                      <Text allowFontScaling={false} style={styles.text}>
+                        Lọc dữ liệu
+                      </Text>
                     </TouchableOpacity>
-                    {
-                      user?.Permission !== 1 &&
+                    {user?.Permission !== 1 && (
                       <ButtonChecklist
-                      text={"Thêm mới"}
-                      width={"auto"}
-                      color={COLORS.bg_button}
-                      // icon={<Ionicons name="add" size={20} color="white" />}
-                      onPress={handlePresentModalPress}
-                    />
-                    }
+                        text={"Thêm mới"}
+                        width={"auto"}
+                        color={COLORS.bg_button}
+                        // icon={<Ionicons name="add" size={20} color="white" />}
+                        onPress={handlePresentModalPress}
+                      />
+                    )}
                   </View>
                   {isLoading ? (
                     <View
@@ -748,26 +749,28 @@ const ThucHienChecklist = ({ navigation }) => {
                                   />
                                 )}
                                 <DataTable.Pagination
-                                style={{ justifyContent: "flex-start" }}
-                                page={page}
-                                numberOfPages={Math.ceil(
-                                  tb_checklistc?.totalPages
-                                )}
-                                onPageChange={(page) => {
-                                  setPage(page)
-                                  int_checklistc(page, numberOfItemsPerPage)
-                                }}
-                                label={`Từ ${page + 1} đến ${
-                                  tb_checklistc?.totalPages
-                                }`}
-                                showFastPaginationControls
-                                numberOfItemsPerPageList={
-                                  numberOfItemsPerPageList
-                                }
-                                numberOfItemsPerPage={numberOfItemsPerPage}
-                                onItemsPerPageChange={onItemsPerPageChange}
-                                selectPageDropdownLabel={"Hàng trên mỗi trang"}
-                              />
+                                  style={{ justifyContent: "flex-start" }}
+                                  page={page}
+                                  numberOfPages={Math.ceil(
+                                    tb_checklistc?.totalPages
+                                  )}
+                                  onPageChange={(page) => {
+                                    setPage(page);
+                                    int_checklistc(page, numberOfItemsPerPage);
+                                  }}
+                                  label={`Từ ${page + 1} đến ${
+                                    tb_checklistc?.totalPages
+                                  }`}
+                                  showFastPaginationControls
+                                  numberOfItemsPerPageList={
+                                    numberOfItemsPerPageList
+                                  }
+                                  numberOfItemsPerPage={numberOfItemsPerPage}
+                                  onItemsPerPageChange={onItemsPerPageChange}
+                                  selectPageDropdownLabel={
+                                    "Hàng trên mỗi trang"
+                                  }
+                                />
                               </ScrollView>
                             </DataTable>
                           </ScrollView>
@@ -792,12 +795,14 @@ const ThucHienChecklist = ({ navigation }) => {
                             >
                               Bạn chưa thêm dữ liệu nào
                             </Text>
-                            <ButtonChecklist
-                              text={"Thêm mới"}
-                              width={"auto"}
-                              color={COLORS.bg_button}
-                              onPress={handlePresentModalPress}
-                            />
+                            {user?.Permission !== 1 && (
+                              <ButtonChecklist
+                                text={"Thêm mới"}
+                                width={"auto"}
+                                color={COLORS.bg_button}
+                                onPress={handlePresentModalPress}
+                              />
+                            )}
                           </View>
                         </>
                       )}
