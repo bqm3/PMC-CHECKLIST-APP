@@ -8,6 +8,7 @@ export default function QRCodeScreen({
   setModalVisibleQr,
   setOpacity,
   handlePushDataFilterQr,
+  setIsScan
 }) {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
@@ -22,6 +23,7 @@ export default function QRCodeScreen({
   }, []);
 
   const handleBarCodeScanned = ({ type, data }) => {
+    setIsScan(true)
     setScanned(true);
     if ((type, data)) {
       handlePushDataFilterQr(data);

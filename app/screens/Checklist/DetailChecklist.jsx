@@ -44,7 +44,7 @@ import Button from "../../components/Button/Button";
 import ModalChitietChecklist from "../../components/Modal/ModalChitietChecklist";
 import ModalPopupDetailChecklist from "../../components/Modal/ModalPopupDetailChecklist";
 import moment from "moment";
-import axios from "axios";
+import axios, { isCancel } from "axios";
 import { BASE_URL } from "../../constants/config";
 import QRCodeScreen from "../QRCodeScreen";
 
@@ -78,6 +78,7 @@ const DetailChecklist = ({ route, navigation }) => {
   const [modalVisibleQr, setModalVisibleQr] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [isEnabled, setIsEnabled] = useState(true);
+  const [isScan, setIsScan] = useState(false);
 
   const [filterData, setFilterData] = useState({
     ID_Khuvuc: null,
@@ -147,24 +148,7 @@ const DetailChecklist = ({ route, navigation }) => {
         ID_Toanha: false,
       });
 
-      let filteredData = dataChecklist.map((item) => {
-        const matchingItem = defaultActionDataChecklist.find(
-          (newItem) => newItem.ID_Checklist === item.ID_Checklist
-        );
-        if (matchingItem) {
-          return {
-            ...item,
-            valueCheck: matchingItem.valueCheck,
-            GhichuChitiet: matchingItem.GhichuChitiet,
-            Anh: matchingItem.Anh,
-            gioht: matchingItem.gioht,
-            ID_ChecklistC: ID_ChecklistC,
-          };
-        }
-        return item;
-      });
-
-      setDataChecklistFilter(filteredData);
+      showAllChecklist();
     }
   };
 
@@ -222,6 +206,32 @@ const DetailChecklist = ({ route, navigation }) => {
     setModalVisible(false);
     setIndex(null);
   }, []);
+
+  const showAllChecklist = () => {
+    let filteredData = dataChecklist.map((item) => {
+      const matchingItem = defaultActionDataChecklist.find(
+        (newItem) => newItem.ID_Checklist === item.ID_Checklist
+      );
+      if (matchingItem) {
+        return {
+          ...item,
+          valueCheck: matchingItem.valueCheck,
+          GhichuChitiet: matchingItem.GhichuChitiet,
+          Anh: matchingItem.Anh,
+          gioht: matchingItem.gioht,
+          ID_ChecklistC: ID_ChecklistC,
+        };
+      }
+      return item;
+    });
+
+    setDataChecklistFilter(filteredData);
+  };
+
+  const toggleScan = () => {
+    setIsScan(!isScan);
+    showAllChecklist();
+  };
 
   // set data checklist and image || ghichu
   const handleSetData = (key, data, it) => {
@@ -408,8 +418,8 @@ const DetailChecklist = ({ route, navigation }) => {
 
   const handlePushDataFilterQr = async (value) => {
     const data = {
-      MaQrCode: value
-    }
+      MaQrCode: value,
+    };
     try {
       const res = await axios.post(
         BASE_URL + `/ent_checklist/filter_qr/${ID_KhoiCV}/${ID_ChecklistC}`,
@@ -457,8 +467,8 @@ const DetailChecklist = ({ route, navigation }) => {
       );
 
       setDataChecklistFilter(filteredData);
-      setOpacity(1)
-      setModalVisibleQr(false)
+      setOpacity(1);
+      setModalVisibleQr(false);
       handleCloseModal();
     } catch (error) {
       if (error.response) {
@@ -700,6 +710,16 @@ const DetailChecklist = ({ route, navigation }) => {
                         </Text>
                       </View>
                     </TouchableOpacity>
+
+                    {isScan && (
+                      <ButtonChecklist
+                        text={"Tất cả"}
+                        width={"auto"}
+                        color={COLORS.bg_button}
+                        onPress={toggleScan}
+                      />
+                    )}
+
                     <ButtonChecklist
                       text={"Tìm kiếm"}
                       width={"auto"}
@@ -859,7 +879,6 @@ const DetailChecklist = ({ route, navigation }) => {
               transparent={true}
               visible={modalVisibleQr}
               onRequestClose={() => {
-                Alert.alert("Modal has been closed.");
                 setModalVisibleQr(!modalVisibleQr);
                 setOpacity(1);
               }}
@@ -870,7 +889,12 @@ const DetailChecklist = ({ route, navigation }) => {
                 <View
                   style={[styles.modalView, { width: "80%", height: "60%" }]}
                 >
-                  <QRCodeScreen setModalVisibleQr={setModalVisibleQr} setOpacity={setOpacity} handlePushDataFilterQr={handlePushDataFilterQr}/>
+                  <QRCodeScreen
+                    setModalVisibleQr={setModalVisibleQr}
+                    setOpacity={setOpacity}
+                    handlePushDataFilterQr={handlePushDataFilterQr}
+                    setIsScan={setIsScan}
+                  />
                 </View>
               </View>
             </Modal>
