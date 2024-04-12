@@ -22,7 +22,7 @@ import WebViewImage from "../screens/WebViewImage";
 
 const Stack = createNativeStackNavigator();
 
-const Back = ({navigation, title}) => {
+const Back = ({ navigation, title }) => {
   return (
     <TouchableOpacity
       onPress={() =>
@@ -53,7 +53,10 @@ const HomeStack = ({ navigation }) => {
           },
           headerBackTitleVisible: false,
           headerTitle: () => (
-            <Text  allowFontScaling={false} style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
+            <Text
+              allowFontScaling={false}
+              style={{ fontSize: 20, fontWeight: "700", color: "white" }}
+            >
               CHECKLIST- PMC
             </Text>
           ),
@@ -68,7 +71,7 @@ const HomeStack = ({ navigation }) => {
             // <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
             //   <FontAwesome5 name="user-alt" size={28} color="white" />
             // </TouchableOpacity>
-            <Back navigation={navigation} title={'Profile'}/>
+            <Back navigation={navigation} title={"Profile"} />
           ),
         })}
       />
@@ -80,13 +83,18 @@ const HomeStack = ({ navigation }) => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text  allowFontScaling={false} style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
+            <Text
+              allowFontScaling={false}
+              style={{ fontSize: 20, fontWeight: "700", color: "white" }}
+            >
               Thông tin cá nhân
             </Text>
           ),
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Ionicons name="chevron-back" size={28} color="white" />
+              {Platform.OS === "ios" && (
+                <Ionicons name="chevron-back" size={28} color="white" />
+              )}
             </TouchableOpacity>
           ),
           headerTitleAlign: "center",
@@ -104,13 +112,18 @@ const HomeStack = ({ navigation }) => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text  allowFontScaling={false} style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
+            <Text
+              allowFontScaling={false}
+              style={{ fontSize: 20, fontWeight: "700", color: "white" }}
+            >
               Thực hiện Checklist
             </Text>
           ),
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Ionicons name="chevron-back" size={28} color="white" />
+              {Platform.OS === "ios" && (
+                <Ionicons name="chevron-back" size={28} color="white" />
+              )}
             </TouchableOpacity>
           ),
           headerTitleAlign: "center",
@@ -128,13 +141,18 @@ const HomeStack = ({ navigation }) => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text  allowFontScaling={false} style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
+            <Text
+              allowFontScaling={false}
+              style={{ fontSize: 20, fontWeight: "700", color: "white" }}
+            >
               Danh mục Khu vực
             </Text>
           ),
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Ionicons name="chevron-back" size={28} color="white" />
+              {Platform.OS === "ios" && (
+                <Ionicons name="chevron-back" size={28} color="white" />
+              )}
             </TouchableOpacity>
           ),
           headerTitleAlign: "center",
@@ -152,13 +170,18 @@ const HomeStack = ({ navigation }) => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text  allowFontScaling={false} style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
+            <Text
+              allowFontScaling={false}
+              style={{ fontSize: 20, fontWeight: "700", color: "white" }}
+            >
               Danh mục Check list
             </Text>
           ),
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Ionicons name="chevron-back" size={28} color="white" />
+              {Platform.OS === "ios" && (
+                <Ionicons name="chevron-back" size={28} color="white" />
+              )}
             </TouchableOpacity>
           ),
           headerTitleAlign: "center",
@@ -176,13 +199,18 @@ const HomeStack = ({ navigation }) => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text  allowFontScaling={false} style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
+            <Text
+              allowFontScaling={false}
+              style={{ fontSize: 20, fontWeight: "700", color: "white" }}
+            >
               Danh mục Giám sát
             </Text>
           ),
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Ionicons name="chevron-back" size={28} color="white" />
+              {Platform.OS === "ios" && (
+                <Ionicons name="chevron-back" size={28} color="white" />
+              )}
             </TouchableOpacity>
           ),
           headerTitleAlign: "center",
@@ -201,13 +229,18 @@ const HomeStack = ({ navigation }) => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text  allowFontScaling={false} style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
+            <Text
+              allowFontScaling={false}
+              style={{ fontSize: 20, fontWeight: "700", color: "white" }}
+            >
               Danh mục Ca làm việc
             </Text>
           ),
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Ionicons name="chevron-back" size={28} color="white" />
+              {Platform.OS === "ios" && (
+                <Ionicons name="chevron-back" size={28} color="white" />
+              )}
             </TouchableOpacity>
           ),
           headerTitleAlign: "center",
@@ -226,13 +259,18 @@ const HomeStack = ({ navigation }) => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text  allowFontScaling={false} style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
+            <Text
+              allowFontScaling={false}
+              style={{ fontSize: 20, fontWeight: "700", color: "white" }}
+            >
               Danh mục tòa nhà
             </Text>
           ),
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Ionicons name="chevron-back" size={28} color="white" />
+              {Platform.OS === "ios" && (
+                <Ionicons name="chevron-back" size={28} color="white" />
+              )}
             </TouchableOpacity>
           ),
           headerTitleAlign: "center",
@@ -251,13 +289,18 @@ const HomeStack = ({ navigation }) => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text  allowFontScaling={false} style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
+            <Text
+              allowFontScaling={false}
+              style={{ fontSize: 20, fontWeight: "700", color: "white" }}
+            >
               Quản lý người dùng
             </Text>
           ),
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Ionicons name="chevron-back" size={28} color="white" />
+              {Platform.OS === "ios" && (
+                <Ionicons name="chevron-back" size={28} color="white" />
+              )}
             </TouchableOpacity>
           ),
           headerTitleAlign: "center",
@@ -275,13 +318,18 @@ const HomeStack = ({ navigation }) => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text  allowFontScaling={false} style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
+            <Text
+              allowFontScaling={false}
+              style={{ fontSize: 20, fontWeight: "700", color: "white" }}
+            >
               Danh mục dự án
             </Text>
           ),
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Ionicons name="chevron-back" size={28} color="white" />
+              {Platform.OS === "ios" && (
+                <Ionicons name="chevron-back" size={28} color="white" />
+              )}
             </TouchableOpacity>
           ),
           headerTitleAlign: "center",
@@ -300,13 +348,18 @@ const HomeStack = ({ navigation }) => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text  allowFontScaling={false} style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
+            <Text
+              allowFontScaling={false}
+              style={{ fontSize: 20, fontWeight: "700", color: "white" }}
+            >
               Thống kê và tra cứu
             </Text>
           ),
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Ionicons name="chevron-back" size={28} color="white" />
+              {Platform.OS === "ios" && (
+                <Ionicons name="chevron-back" size={28} color="white" />
+              )}
             </TouchableOpacity>
           ),
           headerTitleAlign: "center",
@@ -324,13 +377,18 @@ const HomeStack = ({ navigation }) => {
         options={({ route, navigation }) => ({
           headerShown: true,
           headerTitle: () => (
-            <Text  allowFontScaling={false} style={{ fontSize: 20, fontWeight: "700", color: "white" }}>
+            <Text
+              allowFontScaling={false}
+              style={{ fontSize: 20, fontWeight: "700", color: "white" }}
+            >
               Chi tiết Checklist
             </Text>
           ),
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.goBack()}>
-              <Ionicons name="chevron-back" size={28} color="white" />
+              {Platform.OS === "ios" && (
+                <Ionicons name="chevron-back" size={28} color="white" />
+              )}
             </TouchableOpacity>
           ),
           headerTitleAlign: "center",

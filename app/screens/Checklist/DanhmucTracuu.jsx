@@ -456,7 +456,6 @@ const DanhmucTracuu = () => {
                                 {headerList &&
                                   headerList.map((item, index) => {
                                     return (
-                                      <>
                                         <DataTable.Title
                                           key={index}
                                           style={{
@@ -479,7 +478,6 @@ const DanhmucTracuu = () => {
                                             {item?.til}
                                           </Text>
                                         </DataTable.Title>
-                                      </>
                                     );
                                   })}
                               </DataTable.Header>
@@ -538,12 +536,7 @@ const DanhmucTracuu = () => {
                           >
                             Không có dữ liệu cần tìm
                           </Text>
-                          {/* <ButtonChecklist
-                            text={"Thêm mới"}
-                            width={"auto"}
-                            color={COLORS.bg_button}
-                            onPress={handlePresentModalPress}
-                          /> */}
+                         
                         </View>
                       </>
                     )}
@@ -629,8 +622,8 @@ const DanhmucTracuu = () => {
                       newActionCheckList[0]?.Anh !== "" && (
                         <WebView
                           style={{
-                            width: SIZES.width * 0.8,
-                            height: SIZES.height * 0.52,
+                            width: SIZES.width * 0.75,
+                            height: SIZES.height * 0.5,
                             justifyContent: "center",
                             alignContent: "center",
                           }}
@@ -669,6 +662,18 @@ const DanhmucTracuu = () => {
                         }
                       </Text>
                       <Text allowFontScaling={false} style={styles.textModal}>
+                        Khối công việc: {newActionCheckList[0]?.tb_checklistc?.ent_khoicv?.KhoiCV}
+                      </Text>
+                      <Text allowFontScaling={false} style={styles.textModal}>
+                        Người checklist: {newActionCheckList[0]?.tb_checklistc?.ent_giamsat?.Hoten}
+                      </Text>
+                      <Text allowFontScaling={false} style={styles.textModal}>
+                        Ca làm việc: {newActionCheckList[0]?.tb_checklistc?.ent_calv?.Tenca} ({newActionCheckList[0]?.tb_checklistc?.ent_calv?.Giobatdau} - {newActionCheckList[0]?.tb_checklistc?.ent_calv?.Gioketthuc})
+                      </Text>
+                      <Text allowFontScaling={false} style={styles.textModal}>
+                        Kết quả: {newActionCheckList[0]?.Ketqua}
+                      </Text>
+                      <Text allowFontScaling={false} style={styles.textModal}>
                         Ghi chú: {newActionCheckList[0]?.Ghichu}
                       </Text>
                     </View>
@@ -702,7 +707,6 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: "700",
     color: "white",
-    // paddingVertical: 40,
   },
   text: { fontSize: 15, color: "white", fontWeight: "600" },
   textModal: { fontSize: 15, color: "black", fontWeight: "600" },

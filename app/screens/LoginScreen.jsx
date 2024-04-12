@@ -213,7 +213,7 @@ const LoginScreen = ({ navigation }) => {
                           handleChangeText("Password", val)
                         }
                         secureTextEntry={!show}
-                        onSubmitEditing={() => handleSubmit()}
+                        // onSubmitEditing={() => handleSubmit()}
                       />
                       <TouchableOpacity
                         style={{
@@ -347,7 +347,7 @@ const styles = StyleSheet.create({
   label: {
     color: "white",
     margin: 4,
-    fontWeight: 700,
+    fontWeight: "700",
     textDecorationLine: "underline",
     textAlign: "center",
   },

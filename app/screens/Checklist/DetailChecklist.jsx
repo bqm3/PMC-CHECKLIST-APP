@@ -79,6 +79,7 @@ const DetailChecklist = ({ route, navigation }) => {
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [isEnabled, setIsEnabled] = useState(true);
   const [isScan, setIsScan] = useState(false);
+  const [showNameDuan, setShowNameDuan] = useState("");
 
   const [filterData, setFilterData] = useState({
     ID_Khuvuc: null,
@@ -207,6 +208,7 @@ const DetailChecklist = ({ route, navigation }) => {
     setIndex(null);
   }, []);
 
+  // show all checklist
   const showAllChecklist = () => {
     let filteredData = dataChecklist.map((item) => {
       const matchingItem = defaultActionDataChecklist.find(
@@ -228,9 +230,11 @@ const DetailChecklist = ({ route, navigation }) => {
     setDataChecklistFilter(filteredData);
   };
 
+  // toggle scan and show all checklist
   const toggleScan = () => {
     setIsScan(!isScan);
     showAllChecklist();
+    setShowNameDuan("");
   };
 
   // set data checklist and image || ghichu
@@ -470,6 +474,11 @@ const DetailChecklist = ({ route, navigation }) => {
       setOpacity(1);
       setModalVisibleQr(false);
       handleCloseModal();
+      setShowNameDuan(
+        `${dataList[0]?.ent_khuvuc?.Tenkhuvuc || ""} - ${
+          dataList[0]?.ent_khuvuc?.ent_toanha?.Toanha || ""
+        } `
+      );
     } catch (error) {
       if (error.response) {
         // Lỗi từ phía server (có response từ server)
@@ -728,6 +737,17 @@ const DetailChecklist = ({ route, navigation }) => {
                     />
                   </View>
                 </View>
+                {showNameDuan !== "" && (
+                  <Text
+                    allowFontScaling={false}
+                    style={[
+                      styles.text,
+                      { paddingHorizontal: 12, fontSize: 18 },
+                    ]}
+                  >
+                    Khu vực: {showNameDuan}
+                  </Text>
+                )}
                 {isLoadingDetail === false &&
                   dataChecklistFilter &&
                   dataChecklistFilter?.length > 0 && (
@@ -790,7 +810,9 @@ const DetailChecklist = ({ route, navigation }) => {
                         allowFontScaling={false}
                         style={[styles.danhmuc, { paddingVertical: 10 }]}
                       >
-                        Không còn checklist cho ca làm việc này !
+                        {isScan
+                          ? "Không thấy checklist cho khu vực này"
+                          : "Không còn checklist cho ca làm việc này !"}
                       </Text>
                     </View>
                   )}
