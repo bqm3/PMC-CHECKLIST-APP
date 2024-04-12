@@ -163,7 +163,7 @@ const LoginScreen = ({ navigation }) => {
         >
           <BottomSheetModalProvider>
             <ImageBackground
-              source={require("../../assets/bg_company.jpg")}
+              source={require("../../assets/bg_new.png")}
               resizeMode="cover"
               style={styles.defaultFlex}
             >
@@ -308,13 +308,7 @@ const LoginScreen = ({ navigation }) => {
               </BottomSheetScrollView>
             </BottomSheetModal>
           </BottomSheetModalProvider>
-          {/* {isKeyboardVisible === true ? (
-            <></>
-          ) : (
-            <>
-              <CopyRight />
-            </>
-          )} */}
+        
         </KeyboardAvoidingView>
       </GestureHandlerRootView>
     </>

@@ -80,7 +80,7 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <ImageBackground
-      source={require("../../../assets/thumbnail.png")}
+      source={require("../../../assets/bg_new.png")}
       resizeMode="cover"
       style={{ flex: 1 }}
     >

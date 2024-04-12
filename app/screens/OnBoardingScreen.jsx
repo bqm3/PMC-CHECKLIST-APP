@@ -23,7 +23,7 @@ const OnBoardingScreen = ({ navigation }) => {
   return (
     <HideKeyboard>
       <ImageBackground
-        source={require("../../assets/bg_company.jpg")}
+        source={require("../../assets/bg_new.png")}
         resizeMode="cover"
         style={styles.defaultFlex}
       >
