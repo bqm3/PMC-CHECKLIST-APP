@@ -151,7 +151,7 @@ const ThucHienChecklist = ({ navigation }) => {
 
   useEffect(() => {
     setData(tb_checklistc?.data);
-  }, [tb_checklistc, page]);
+  }, [tb_checklistc]);
 
   const init_ca = async () => {
     await dispath(ent_calv_get());
@@ -161,14 +161,19 @@ const ThucHienChecklist = ({ navigation }) => {
     await dispath(ent_giamsat_get());
   };
 
-  const int_checklistc = async (page, limit) => {
-    await dispath(tb_checklistc_get({ page: page, limit: limit }));
+  const int_checklistc = async () => {
+    await dispath(tb_checklistc_get({ page: page, limit: numberOfItemsPerPage }));
   };
+
+  useEffect(() => {
+    int_checklistc()
+  }, [numberOfItemsPerPage, page]);
+
 
   useEffect(() => {
     init_ca();
     int_giamsat();
-    int_checklistc(page, numberOfItemsPerPage);
+    int_checklistc();
   }, []);
 
   const toggleTodo = async (item) => {
@@ -188,29 +193,21 @@ const ThucHienChecklist = ({ navigation }) => {
     }
   };
 
-  const reduceImageSize = async (uri) => {
-    try {
-      const manipResult = await ImageManipulator.manipulateAsync(uri, [], {
-        compress: 0.5, // Adjust compression quality (0 to 1, where 1 means no compression)
-        format: ImageManipulator.SaveFormat.JPEG, // Set the desired format
-      });
-      return manipResult.uri;
-    } catch (error) {
-      console.log("Error reducing image size:", error);
-      return uri; // Return original URI in case of error
-    }
-  };
+  React.useEffect(() => {
+    setPage(0);
+  }, [numberOfItemsPerPage]);
 
   const handlePushDataImagesSave = async (id) => {
     try {
+       setLoadingSubmit(true);
       let formData = new FormData();
       // Iterate over the keys of dataImages object
       if (dataImages.Anh1) {
         const file = {
           uri:
             Platform.OS === "android"
-              ? await reduceImageSize(dataImages?.Anh1?.uri)
-              : (await reduceImageSize(dataImages?.Anh1?.uri)).replace(
+              ? await (dataImages?.Anh1?.uri)
+              : (await (dataImages?.Anh1?.uri)).replace(
                   "file://",
                   ""
                 ),
@@ -232,8 +229,8 @@ const ThucHienChecklist = ({ navigation }) => {
         const file = {
           uri:
             Platform.OS === "android"
-              ? await reduceImageSize(dataImages?.Anh2?.uri)
-              : (await reduceImageSize(dataImages?.Anh2?.uri)).replace(
+              ? await (dataImages?.Anh2?.uri)
+              : (await (dataImages?.Anh2?.uri)).replace(
                   "file://",
                   ""
                 ),
@@ -255,8 +252,8 @@ const ThucHienChecklist = ({ navigation }) => {
         const file = {
           uri:
             Platform.OS === "android"
-              ? await reduceImageSize(dataImages?.Anh3?.uri)
-              : (await reduceImageSize(dataImages?.Anh3?.uri)).replace(
+              ? await (dataImages?.Anh3?.uri)
+              : (await (dataImages?.Anh3?.uri)).replace(
                   "file://",
                   ""
                 ),
@@ -278,8 +275,8 @@ const ThucHienChecklist = ({ navigation }) => {
         const file = {
           uri:
             Platform.OS === "android"
-              ? await reduceImageSize(dataImages?.Anh4?.uri)
-              : (await reduceImageSize(dataImages?.Anh4?.uri)).replace(
+              ? await (dataImages?.Anh4?.uri)
+              : (await (dataImages?.Anh4?.uri)).replace(
                   "file://",
                   ""
                 ),
@@ -297,7 +294,7 @@ const ThucHienChecklist = ({ navigation }) => {
         formData.append(`Anh4`, file?.name);
         formData.append("Giochupanh4", dateHour);
       }
-      setLoadingSubmit(true);
+     
       await axios
         .put(
           BASE_URL +
@@ -312,9 +309,9 @@ const ThucHienChecklist = ({ navigation }) => {
         )
         .then((res) => {
           setLoadingSubmit(false);
-          handleAdd();
           int_checklistc();
-          bottomSheetModalRef2?.current?.close();
+          handleCloseSheetImage()
+          // bottomSheetModalRef2?.current?.close();
           Alert.alert("PMC Thông báo", "Checklist thành công", [
             {
               text: "Hủy",
@@ -325,6 +322,7 @@ const ThucHienChecklist = ({ navigation }) => {
           ]);
         })
         .catch((err) => {
+          console.log('err',err)
           setLoadingSubmit(false);
           // Handle the error appropriately, e.g., displaying an error message
           Alert.alert(
@@ -333,10 +331,9 @@ const ThucHienChecklist = ({ navigation }) => {
             [
               {
                 text: "Hủy",
-                onPress: () => console.log("Cancel Pressed"),
                 style: "cancel",
               },
-              { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+              { text: "Xác nhận"},
             ]
           );
         });
@@ -376,7 +373,7 @@ const ThucHienChecklist = ({ navigation }) => {
           .then((response) => {
             handleAdd();
             int_checklistc();
-            handleCloseModal();
+            handleCloseSheetImage();
             setLoadingSubmit(false);
             Alert.alert("PMC Thông báo", response.data.message, [
               {
@@ -428,10 +425,26 @@ const ThucHienChecklist = ({ navigation }) => {
 
   const handleSheetChanges = useCallback((index) => {
     if (index === -1) {
-      handleCloseModal();
+      bottomSheetModalRef?.current?.close();
+      setOpacity(1);
+      handleAdd();
     } else {
       setOpacity(0.2);
     }
+  }, []);
+
+  const handleSheetChanges2 = useCallback((index) => {
+    if (index === -1) {
+      bottomSheetModalRef2?.current?.close();
+      setOpacity(1);
+      handleAdd();
+    } else {
+      setOpacity(0.2);
+    }
+  }, []);
+
+  const handleCloseSheetImage = useCallback(() => {
+    bottomSheetModalRef?.current?.close();
   }, []);
 
   const handlePresentModalPress = useCallback(() => {
@@ -456,13 +469,6 @@ const ThucHienChecklist = ({ navigation }) => {
       Giochupanh4: null,
       Anh4: null,
     });
-  };
-
-  const handleCloseModal = () => {
-    bottomSheetModalRef?.current?.close();
-    bottomSheetModalRef2?.current?.close();
-    setOpacity(1);
-    handleAdd();
   };
 
   const handleToggleModal = () => {
@@ -620,7 +626,7 @@ const ThucHienChecklist = ({ navigation }) => {
     <>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          behavior={Platform.OS === "ios" ? "padding" : null}
           style={{ flex: 1 }}
         >
           <BottomSheetModalProvider>
@@ -653,14 +659,9 @@ const ThucHienChecklist = ({ navigation }) => {
                         gap: 8,
                       }}
                     >
-                      <Image
-                        source={require("../../../assets/icons/filter_icon.png")}
-                        resizeMode="contain"
-                        style={{ height: 24, width: 24 }}
-                      />
-                      <Text allowFontScaling={false} style={styles.text}>
-                        Lọc dữ liệu
-                      </Text>
+                   
+                      <>
+                      </>
                     </TouchableOpacity>
                     {user?.Permission !== 1 && (
                       <ButtonChecklist
@@ -686,7 +687,6 @@ const ThucHienChecklist = ({ navigation }) => {
                   ) : (
                     <>
                       {data && data?.length > 0 ? (
-                        <>
                           <ScrollView
                             style={{ flex: 1, marginBottom: 20, marginTop: 20 }}
                           >
@@ -756,7 +756,6 @@ const ThucHienChecklist = ({ navigation }) => {
                                   )}
                                   onPageChange={(page) => {
                                     setPage(page);
-                                    int_checklistc(page, numberOfItemsPerPage);
                                   }}
                                   label={`Từ ${page + 1} đến ${
                                     tb_checklistc?.totalPages
@@ -774,9 +773,7 @@ const ThucHienChecklist = ({ navigation }) => {
                               </ScrollView>
                             </DataTable>
                           </ScrollView>
-                        </>
                       ) : (
-                        <>
                           <View
                             style={{
                               flex: 1,
@@ -804,7 +801,6 @@ const ThucHienChecklist = ({ navigation }) => {
                               />
                             )}
                           </View>
-                        </>
                       )}
                     </>
                   )}
@@ -844,7 +840,7 @@ const ThucHienChecklist = ({ navigation }) => {
                 ref={bottomSheetModalRef2}
                 index={0}
                 snapPoints={snapPoints}
-                onChange={handleSheetChanges}
+                onChange={handleSheetChanges2}
               >
                 <BottomSheetScrollView style={styles.contentContainer}>
                   <ModalChecklistCImage

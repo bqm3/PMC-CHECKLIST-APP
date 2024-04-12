@@ -267,7 +267,7 @@ const DanhmucDuanScreen = ({ navigation }) => {
     <>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          behavior={Platform.OS === "ios" ? "padding" : null}
           style={{ flex: 1 }}
         >
           <BottomSheetModalProvider>

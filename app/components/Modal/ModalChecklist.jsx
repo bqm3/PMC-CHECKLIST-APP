@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
+  Keyboard,
 } from "react-native";
 import React, { memo, useRef, useState } from "react";
 import { Dropdown } from "react-native-element-dropdown";
@@ -17,6 +18,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { FontAwesome } from "@expo/vector-icons";
 import VerticalSelect from "../VerticalSelect";
 import SelectDropdown from "react-native-select-dropdown";
+import { useHeaderHeight } from "@react-navigation/elements";
 
 const ModalChecklist = ({
   ent_tang,
@@ -34,11 +36,12 @@ const ModalChecklist = ({
   activeKhuVuc,
   dataKhuVuc,
   loadingSubmit,
+  TouchableWithoutFeedback,
   // setTieuchuan,
   // tieuChuan,
 }) => {
   const ref = useRef(null);
-
+  const height = useHeaderHeight();
   const defaultTang = ent_tang?.find(
     (tang) => tang.ID_Tang === dataInput?.ID_Tang
   );
@@ -72,8 +75,9 @@ const ModalChecklist = ({
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1 }}
+        keyboardVerticalOffset={height + 47}
+        behavior={Platform.OS === "ios" ? "padding" : null}
       >
         <View style={{ margin: 20 }}>
           <View style={{ justifyContent: "space-around", width: "100%" }}>
@@ -110,6 +114,8 @@ const ModalChecklist = ({
                         ID_Toanha: selectedItem.ID_Toanha,
                         ID_KhoiCV: dataCheckKhuvuc.ID_KhoiCV,
                       });
+
+                    
                     }}
                     renderDropdownIcon={(isOpened) => {
                       return (
@@ -131,8 +137,8 @@ const ModalChecklist = ({
                             height: 50,
                           }}
                         >
-                          <Text allowFontScaling={false} style={styles.text}>
-                            {selectedItem?.Toanha}
+                          <Text allowFontScaling={false} style={[styles.text]}>
+                            {selectedItem?.Toanha}  
                           </Text>
                         </View>
                       );

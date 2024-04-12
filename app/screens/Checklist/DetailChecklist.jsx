@@ -385,7 +385,6 @@ const DetailChecklist = ({ route, navigation }) => {
       setDataChecklistFilter(filteredData);
       handleCloseModal();
     } catch (error) {
-      console.log("error", error);
       if (error.response) {
         // Lỗi từ phía server (có response từ server)
         Alert.alert("PMC Thông báo", error.response.data.message, [
@@ -669,7 +668,7 @@ const DetailChecklist = ({ route, navigation }) => {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        behavior={Platform.OS === "ios" ? "padding" : null}
         style={{ flex: 1 }}
       >
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
@@ -808,7 +807,7 @@ const DetailChecklist = ({ route, navigation }) => {
                       />
                       <Text
                         allowFontScaling={false}
-                        style={[styles.danhmuc, { paddingVertical: 10 }]}
+                        style={[styles.danhmuc, { padding: 10 }]}
                       >
                         {isScan
                           ? "Không thấy checklist cho khu vực này"

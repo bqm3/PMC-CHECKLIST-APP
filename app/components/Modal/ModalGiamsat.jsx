@@ -64,7 +64,7 @@ const ModalGiamsat = ({
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        behavior={Platform.OS === "ios" ? "padding" : null}
         style={{ flex: 1 }}
       >
         <View style={{ margin: 20 }}>
@@ -153,7 +153,6 @@ const ModalGiamsat = ({
                       borderRadius: 8,
                       maxHeight: 400,
                     }}
-                    // rowStyle={{ height: 50, justifyContent: "center" }}
                     defaultButtonText={"Chọn chức vụ"}
                     buttonTextStyle={styles.customText}
                     defaultValue={defaultChucvu}

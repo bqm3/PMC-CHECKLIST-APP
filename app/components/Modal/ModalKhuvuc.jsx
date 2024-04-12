@@ -49,6 +49,7 @@ const ModalKhuvuc = ({
       [key]: value,
     });
   };
+  console.log("dataInput.toanha", dataInput.toanha);
 
   return (
     <View style={{ margin: 20 }}>
@@ -153,6 +154,7 @@ const ModalKhuvuc = ({
                 }}
                 dropdownIconPosition={"right"}
                 buttonTextAfterSelection={(selectedItem, index) => {
+                  console.log('selectedItem?.Toanha',selectedItem?.Toanha)
                   return (
                     <View
                       style={{

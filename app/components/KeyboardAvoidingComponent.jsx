@@ -13,7 +13,7 @@ const KeyboardAvoidingComponent = ({style, children}) => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        behavior={Platform.OS === "ios" ? "padding" : null}
         style={styles.container}
         keyboardVerticalOffset={0}
       >

@@ -40,7 +40,7 @@ import Checkbox from "../components/Active/Checkbox";
 
 const HideKeyboard = ({ children }) => (
   <TouchableWithoutFeedback
-    behavior={Platform.OS === "ios" ? "padding" : "height"}
+    behavior={Platform.OS === "ios" ? "padding" : null}
     onPress={() => Keyboard.dismiss()}
   >
     {children}
@@ -158,7 +158,7 @@ const LoginScreen = ({ navigation }) => {
     <>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
+          behavior={Platform.OS === "ios" ? "padding" : null}
           style={{ flex: 1 }}
         >
           <BottomSheetModalProvider>
@@ -378,7 +378,7 @@ const styles = StyleSheet.create({
     color: "#05375a",
     width: "88%",
     fontSize: 16,
-    height: 40
+    height: 50,
   },
   errorMsg: {
     color: "#FF0000",

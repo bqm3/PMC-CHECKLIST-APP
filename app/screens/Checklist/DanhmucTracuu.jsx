@@ -45,7 +45,7 @@ import { BASE_URL } from "../../constants/config";
 import moment from "moment";
 import ModalTracuu from "../../components/Modal/ModalTracuu";
 
-const numberOfItemsPerPageList = [10, 15, 20];
+const numberOfItemsPerPageList = [20, 30, 50];
 
 const headerList = [
   {
@@ -89,7 +89,7 @@ const headerList = [
 
 const DanhmucTracuu = () => {
   const dispath = useDispatch();
-  const { ent_tang, ent_khuvuc, ent_checklist, ent_khoicv, ent_toanha } =
+  const { ent_tang, ent_khuvuc, ent_toanha } =
     useSelector((state) => state.entReducer);
   const { user, authToken } = useSelector((state) => state.authReducer);
 
@@ -101,17 +101,15 @@ const DanhmucTracuu = () => {
   const [opacity, setOpacity] = useState(1);
   const [page, setPage] = React.useState(0);
   const [numberOfItemsPerPage, onItemsPerPageChange] = React.useState(
-    numberOfItemsPerPageList[1]
+    numberOfItemsPerPageList[0]
   );
+
   const [isLoading, setIsLoading] = useState(false);
   const [isShowChecklist, setIsShowChecklist] = useState(false);
   const [isDatePickerVisible, setDatePickerVisibility] = useState({
     fromDate: false,
     toDate: false,
   });
-
-  const from = page * numberOfItemsPerPage;
-  const to = Math.min((page + 1) * numberOfItemsPerPage, data?.length);
 
   const [isEnabled, setIsEnabled] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
@@ -194,14 +192,14 @@ const DanhmucTracuu = () => {
   const fetchData = async (filter) => {
     setIsLoading(true);
     await axios
-      .post(BASE_URL + "/tb_checklistchitiet/filters", filter, {
+      .post(BASE_URL + `/tb_checklistchitiet/filters?page=${page}&limit=${numberOfItemsPerPage}`, filter, {
         headers: {
           Accept: "application/json",
           Authorization: "Bearer " + authToken,
         },
       })
       .then((res) => {
-        setData(res.data.data);
+        setData(res.data);
         handlePresentModalClose();
         setIsLoading(false);
       })
@@ -212,7 +210,7 @@ const DanhmucTracuu = () => {
 
   useEffect(() => {
     fetchData(filters);
-  }, []);
+  }, [page, numberOfItemsPerPage]);
 
   const _renderItem = ({ item, index }) => {
     const isExistIndex = newActionCheckList?.find(
@@ -354,13 +352,17 @@ const DanhmucTracuu = () => {
 
   const handleModalShow = (active, op) => {
     setModalVisible(active);
-    setOpacity(op);
+    setOpacity(Number(op));
   };
+
+  React.useEffect(() => {
+    setPage(0);
+  }, [numberOfItemsPerPage]);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        behavior={Platform.OS === "ios" ? "padding" : null}
         style={{ flex: 1 }}
       >
         <BottomSheetModalProvider>
@@ -388,7 +390,7 @@ const DanhmucTracuu = () => {
                     paddingBottom: 20,
                   }}
                 >
-                  Số lượng: {decimalNumber(data?.length)}
+                  Số lượng: {decimalNumber(data?.data?.length)}
                 </Text>
                 {isLoading === true ? (
                   <View
@@ -429,7 +431,7 @@ const DanhmucTracuu = () => {
                       </TouchableOpacity>
                     </View>
 
-                    {data && data?.length > 0 ? (
+                    {data.data && data?.data?.length > 0 ? (
                       <>
                         <ScrollView
                           style={{ flex: 1, marginBottom: 20, marginTop: 20 }}
@@ -482,17 +484,13 @@ const DanhmucTracuu = () => {
                                   })}
                               </DataTable.Header>
 
-                              {data && data?.length > 0 && (
+                              {data?.data && data?.data?.length > 0 && (
                                 <FlatList
                                   keyExtractor={(item, index) =>
                                     `${item?.ID_ChecklistC}_${index}`
                                   }
                                   scrollEnabled={false}
-                                  data={data?.slice(
-                                    page * numberOfItemsPerPage,
-                                    page * numberOfItemsPerPage +
-                                      numberOfItemsPerPage
-                                  )}
+                                  data={data?.data}
                                   renderItem={_renderItem}
                                 />
                               )}
@@ -500,10 +498,15 @@ const DanhmucTracuu = () => {
                                 style={{ justifyContent: "flex-start" }}
                                 page={page}
                                 numberOfPages={Math.ceil(
-                                  data?.length / numberOfItemsPerPage
+                                  data?.totalPages
                                 )}
-                                onPageChange={(page) => setPage(page)}
-                                label={`${from + 1}-${to} đến ${data?.length}`}
+                                onPageChange={(page) => {
+                                  setPage(page)
+                                  // fetchData()
+                                }}
+                                label={`Từ ${page + 1} đến ${
+                                  data?.totalPages
+                                }`}
                                 showFastPaginationControls
                                 numberOfItemsPerPageList={
                                   numberOfItemsPerPageList
