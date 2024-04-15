@@ -89,7 +89,9 @@ const ModalChecklist = ({
                 justifyContent: "space-between",
               }}
             >
-              <View style={{ width: "48%" }}>
+             
+            </View>
+            <View style={{ width: "100%" }}>
                 <Text allowFontScaling={false} style={styles.text}>
                   Tòa nhà
                 </Text>
@@ -160,7 +162,7 @@ const ModalChecklist = ({
                   </Text>
                 )}
               </View>
-              <View style={{ width: "48%" }}>
+              <View style={{ width: "100%" }}>
                 <Text allowFontScaling={false} style={styles.text}>
                   Khối công việc
                 </Text>
@@ -226,7 +228,6 @@ const ModalChecklist = ({
                   </Text>
                 )}
               </View>
-            </View>
 
             {/* Tầng và khu vực  */}
             <View

@@ -13,6 +13,7 @@ import {
   ActivityIndicator,
   Modal,
   TouchableHighlight,
+  Linking,
 } from "react-native";
 import React, {
   useRef,
@@ -32,7 +33,8 @@ import {
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Feather } from "@expo/vector-icons";
 import { DataTable } from "react-native-paper";
-import ButtonChecklist from "../../components/Button/ButtonCheckList";
+import * as FileSystem from "expo-file-system";
+// import * as MediaLibrary from 'expo-media-library';
 import { COLORS, SIZES } from "../../constants/theme";
 import {
   ent_tang_get,
@@ -89,8 +91,9 @@ const headerList = [
 
 const DanhmucTracuu = () => {
   const dispath = useDispatch();
-  const { ent_tang, ent_khuvuc, ent_toanha } =
-    useSelector((state) => state.entReducer);
+  const { ent_tang, ent_khuvuc, ent_toanha } = useSelector(
+    (state) => state.entReducer
+  );
   const { user, authToken } = useSelector((state) => state.authReducer);
 
   const [data, setData] = useState([]);
@@ -125,6 +128,8 @@ const DanhmucTracuu = () => {
     ID_Khuvuc: null,
     ID_Tang: null,
   });
+
+  const [downloadProgress, setDownloadProgress] = useState(null);
 
   const init_toanha = async () => {
     await dispath(ent_toanha_get());
@@ -192,17 +197,53 @@ const DanhmucTracuu = () => {
   const fetchData = async (filter) => {
     setIsLoading(true);
     await axios
-      .post(BASE_URL + `/tb_checklistchitiet/filters?page=${page}&limit=${numberOfItemsPerPage}`, filter, {
-        headers: {
-          Accept: "application/json",
-          Authorization: "Bearer " + authToken,
-        },
-      })
+      .post(
+        BASE_URL +
+          `/tb_checklistchitiet/filters?page=${page}&limit=${numberOfItemsPerPage}`,
+        filter,
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: "Bearer " + authToken,
+          },
+        }
+      )
       .then((res) => {
         setData(res.data);
         handlePresentModalClose();
         setIsLoading(false);
       })
+      .catch((err) => {
+        setIsLoading(false);
+      });
+  };
+
+  const callback = (downloadProgress) => {
+    const progress =
+      downloadProgress.totalBytesWritten /
+      downloadProgress.totalBytesExpectedToWrite;
+    setDownloadProgress(progress);
+  };
+
+  const fetchDataExcel = async () => {
+    setIsLoading(true);
+    await axios
+      .post(BASE_URL + `/tb_checklistchitiet/excel-checklist`, data, {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer " + authToken,
+        },
+      })
+      .then(async (res) => {
+        const filePath = res.data.filePath;
+        setIsLoading(false);
+        const supported = await Linking.canOpenURL(filePath);
+
+        if (supported) {
+          await Linking.openURL(filePath);
+        }
+      })
+
       .catch((err) => {
         setIsLoading(false);
       });
@@ -458,28 +499,28 @@ const DanhmucTracuu = () => {
                                 {headerList &&
                                   headerList.map((item, index) => {
                                     return (
-                                        <DataTable.Title
-                                          key={index}
-                                          style={{
-                                            width: item?.width,
-                                            borderRightWidth:
-                                              index === headerList.length - 1
-                                                ? 0
-                                                : 2,
-                                            borderRightColor: "white",
-                                            justifyContent: "center",
-                                          }}
-                                          numberOfLines={2}
+                                      <DataTable.Title
+                                        key={index}
+                                        style={{
+                                          width: item?.width,
+                                          borderRightWidth:
+                                            index === headerList.length - 1
+                                              ? 0
+                                              : 2,
+                                          borderRightColor: "white",
+                                          justifyContent: "center",
+                                        }}
+                                        numberOfLines={2}
+                                      >
+                                        <Text
+                                          style={[
+                                            styles.text,
+                                            { color: "black" },
+                                          ]}
                                         >
-                                          <Text
-                                            style={[
-                                              styles.text,
-                                              { color: "black" },
-                                            ]}
-                                          >
-                                            {item?.til}
-                                          </Text>
-                                        </DataTable.Title>
+                                          {item?.til}
+                                        </Text>
+                                      </DataTable.Title>
                                     );
                                   })}
                               </DataTable.Header>
@@ -497,16 +538,12 @@ const DanhmucTracuu = () => {
                               <DataTable.Pagination
                                 style={{ justifyContent: "flex-start" }}
                                 page={page}
-                                numberOfPages={Math.ceil(
-                                  data?.totalPages
-                                )}
+                                numberOfPages={Math.ceil(data?.totalPages)}
                                 onPageChange={(page) => {
-                                  setPage(page)
+                                  setPage(page);
                                   // fetchData()
                                 }}
-                                label={`Từ ${page + 1} đến ${
-                                  data?.totalPages
-                                }`}
+                                label={`Từ ${page + 1} đến ${data?.totalPages}`}
                                 showFastPaginationControls
                                 numberOfItemsPerPageList={
                                   numberOfItemsPerPageList
@@ -539,7 +576,6 @@ const DanhmucTracuu = () => {
                           >
                             Không có dữ liệu cần tìm
                           </Text>
-                         
                         </View>
                       </>
                     )}
@@ -602,6 +638,13 @@ const DanhmucTracuu = () => {
                     </TouchableOpacity>
                   </>
                 )}
+
+                <TouchableOpacity
+                  style={[styles.button]}
+                  onPress={fetchDataExcel}
+                >
+                  <Feather name="save" size={26} color="white" />
+                </TouchableOpacity>
               </View>
             )}
 
@@ -665,13 +708,33 @@ const DanhmucTracuu = () => {
                         }
                       </Text>
                       <Text allowFontScaling={false} style={styles.textModal}>
-                        Khối công việc: {newActionCheckList[0]?.tb_checklistc?.ent_khoicv?.KhoiCV}
+                        Khối công việc:{" "}
+                        {
+                          newActionCheckList[0]?.tb_checklistc?.ent_khoicv
+                            ?.KhoiCV
+                        }
                       </Text>
                       <Text allowFontScaling={false} style={styles.textModal}>
-                        Người checklist: {newActionCheckList[0]?.tb_checklistc?.ent_giamsat?.Hoten}
+                        Người checklist:{" "}
+                        {
+                          newActionCheckList[0]?.tb_checklistc?.ent_giamsat
+                            ?.Hoten
+                        }
                       </Text>
                       <Text allowFontScaling={false} style={styles.textModal}>
-                        Ca làm việc: {newActionCheckList[0]?.tb_checklistc?.ent_calv?.Tenca} ({newActionCheckList[0]?.tb_checklistc?.ent_calv?.Giobatdau} - {newActionCheckList[0]?.tb_checklistc?.ent_calv?.Gioketthuc})
+                        Ca làm việc:{" "}
+                        {newActionCheckList[0]?.tb_checklistc?.ent_calv?.Tenca}{" "}
+                        (
+                        {
+                          newActionCheckList[0]?.tb_checklistc?.ent_calv
+                            ?.Giobatdau
+                        }{" "}
+                        -{" "}
+                        {
+                          newActionCheckList[0]?.tb_checklistc?.ent_calv
+                            ?.Gioketthuc
+                        }
+                        )
                       </Text>
                       <Text allowFontScaling={false} style={styles.textModal}>
                         Kết quả: {newActionCheckList[0]?.Ketqua}
