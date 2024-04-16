@@ -157,8 +157,8 @@ const HomeScreen = ({ navigation }) => {
               data={dataDanhMuc}
               renderItem={renderItem}
               ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
-              contentContainerStyle={{ gap: 20 }}
-              columnWrapperStyle={{ gap: 20 }}
+              contentContainerStyle={{ gap: 16 }}
+              columnWrapperStyle={{ gap: 16 }}
             />
           </View>
           <View

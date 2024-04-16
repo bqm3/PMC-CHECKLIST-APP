@@ -95,7 +95,7 @@ const ModalKhuvuc = ({
             </Text>
           )}
         </View>
-
+ 
         <View style={{ width: "100%" }}>
           <Text allowFontScaling={false} style={styles.text}>
             Tòa nhà
