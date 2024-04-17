@@ -639,12 +639,14 @@ const DanhmucTracuu = () => {
                   </>
                 )}
 
-                <TouchableOpacity
+              { user && user.Permission === 1 &&
+                  <TouchableOpacity
                   style={[styles.button]}
                   onPress={fetchDataExcel}
                 >
                   <Feather name="save" size={26} color="white" />
                 </TouchableOpacity>
+              }
               </View>
             )}
 

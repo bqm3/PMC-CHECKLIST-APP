@@ -346,16 +346,17 @@ const ModalChecklist = ({
                                 allowFontScaling={false}
                                 style={styles.text}
                               >
-                                {selectedItem?.Tenkhuvuc}
+                                 {selectedItem?.Tenkhuvuc} 
                               </Text>
                             </View>
                           );
                         }}
                         renderCustomizedRowChild={(item, index) => {
+                          console.log('item', item)
                           return (
                             <VerticalSelect
                               value={item.ID_Khuvuc}
-                              label={item.Tenkhuvuc}
+                              label={`${item.Tenkhuvuc} - ${item?.ent_toanha.Toanha}`}
                               key={index}
                               selectedItem={dataInput?.ID_Khuvuc}
                             />

@@ -13,7 +13,6 @@ import React, { useRef, useState } from "react";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 import { COLORS } from "../../constants/theme";
-import ButtonChecklist from "../Button/ButtonCheckList";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { FontAwesome } from "@expo/vector-icons";
 import VerticalSelect from "../VerticalSelect";
@@ -60,6 +59,8 @@ const ModalGiamsat = ({
 
   const [hoten, sethoten] = useState(dataInput?.hoten);
   const [sodienthoai, setsodienthoai] = useState(dataInput?.sodienthoai);
+
+  console.log('isDatePickerVisible',isDatePickerVisible)
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -314,7 +315,7 @@ const ModalGiamsat = ({
                   <TextInput
                     allowFontScaling={false}
                     value={dataInput.ngaysinh}
-                    placeholder="Nhập ngày sinh"
+                    placeholder="yyyy-mm-dd"
                     placeholderTextColor="gray"
                     style={[
                       styles.textInput,

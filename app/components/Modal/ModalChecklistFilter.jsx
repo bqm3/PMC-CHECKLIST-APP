@@ -71,7 +71,7 @@ const ModalChecklistFilter = ({
                   height: 50,
                 }}
               >
-                <Text  allowFontScaling={false} style={styles.text}>{selectedItem?.Tenkhuvuc}</Text>
+                <Text  allowFontScaling={false} style={styles.text}> {selectedItem?.Tenkhuvuc}</Text>
               </View>
             );
           }}
@@ -79,7 +79,7 @@ const ModalChecklistFilter = ({
             return (
               <VerticalSelect
                 value={item.ID_Khuvuc}
-                label={item.Tenkhuvuc}
+                label={`${item.Tenkhuvuc} - ${item?.ent_toanha.Toanha}`}
                 key={index}
                 selectedItem={isFilterData.ID_Khuvuc}
               />
