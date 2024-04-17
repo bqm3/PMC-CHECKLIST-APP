@@ -28,6 +28,7 @@
     "expo-file-system": "~16.0.8",
     "expo-image-manipulator": "~11.8.0",
     "expo-image-picker": "~14.7.1",
+    "expo-location": "~16.5.5",
     "expo-status-bar": "~1.11.1",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",

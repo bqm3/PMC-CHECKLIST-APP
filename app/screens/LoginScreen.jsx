@@ -22,13 +22,13 @@ import React, {
   useCallback,
 } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import * as Location from 'expo-location';
 import { Provider, useDispatch, useSelector } from "react-redux";
 import { login } from "../redux/actions/authActions";
 import { COLORS, SIZES } from "../constants/theme";
 import Title from "../components/Title";
 import ButtonSubmit from "../components/Button/ButtonSubmit";
 import LoginContext from "../context/LoginContext";
-import CopyRight from "../components/CopyRight";
 import {
   BottomSheetModal,
   BottomSheetView,
@@ -38,14 +38,6 @@ import {
 import DataLicense from "../components/DataLicense";
 import Checkbox from "../components/Active/Checkbox";
 
-const HideKeyboard = ({ children }) => (
-  <TouchableWithoutFeedback
-    behavior={Platform.OS === "ios" ? "padding" : null}
-    onPress={() => Keyboard.dismiss()}
-  >
-    {children}
-  </TouchableWithoutFeedback>
-);
 
 const LoginScreen = ({ navigation }) => {
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
@@ -67,6 +59,9 @@ const LoginScreen = ({ navigation }) => {
     Emails: "",
     Duan: "",
   });
+
+  const [location, setLocation] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
 
   const handleSubmit = async () => {
     if (isChecked === false) {
@@ -154,6 +149,29 @@ const LoginScreen = ({ navigation }) => {
     bottomSheetModalRef?.current?.present();
   }, []);
 
+  useEffect(() => {
+    (async () => {
+      
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setErrorMsg('Permission to access location was denied');
+        
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+    })();
+  }, []);
+
+  let text = 'Waiting..';
+  if (errorMsg) {
+    text = errorMsg;
+  } else if (location) {
+    text = JSON.stringify(location);
+  }
+  console.log('text',text)
+
   return (
     <>
       <GestureHandlerRootView style={{ flex: 1 }}>
@@ -184,6 +202,7 @@ const LoginScreen = ({ navigation }) => {
                     }}
                   >
                     <View style={{ height: 20 }}></View>
+                    <Text style={styles.paragraph}>{text}</Text>
                     <View style={styles.action}>
                       <TextInput
                         allowFontScaling={false}
@@ -423,5 +442,9 @@ const styles = StyleSheet.create({
   inputSearchStyle: {
     height: 40,
     fontSize: 16,
+  },
+  paragraph: {
+    fontSize: 18,
+    textAlign: 'center',
   },
 });

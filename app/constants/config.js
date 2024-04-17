@@ -1,1 +1,1 @@
-export const BASE_URL="https://pmc-api-checklist-production.up.railway.app/api"
+export const BASE_URL="http://93.127.199.152:6868/api"

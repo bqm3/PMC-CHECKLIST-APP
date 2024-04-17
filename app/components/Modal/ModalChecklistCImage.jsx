@@ -12,14 +12,14 @@ import {
   Modal,
 } from "react-native";
 import { WebView } from "react-native-webview";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { FontAwesome, Entypo } from "@expo/vector-icons";
 import { COLORS, SIZES } from "../../constants/theme";
 import Button from "../Button/Button";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import moment from "moment";
 import * as ImagePicker from "expo-image-picker";
-import * as ImageManipulator from "expo-image-manipulator";
+import * as Location from 'expo-location';
 
 const ModalChecklistCImage = ({
   handlePushDataSave,
@@ -42,6 +42,9 @@ const ModalChecklistCImage = ({
 
   const [image, setImage] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+
+  const [location, setLocation] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
 
   const pickImage = async (text, hour, onPress, setOpen) => {
     // Ask the user for the permission to access the camera
@@ -73,6 +76,26 @@ const ModalChecklistCImage = ({
       setOpen(true);
     }
   };
+
+  const onPressLocation = async () => {
+    let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setErrorMsg('Permission to access location was denied');
+        
+        return;
+      }
+
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+  }
+
+  let text = 'Waiting..';
+  if (errorMsg) {
+    text = errorMsg;
+  } else if (location) {
+    text = JSON.stringify(location);
+  }
+  console.log('text',text)
 
   const handleWebView = (image) => {
     setModalVisible(true);
@@ -110,7 +133,10 @@ const ModalChecklistCImage = ({
                       height: 100,
                     }}
                     onPress={() =>
+                     {
                       pickImage("Anh1", "Giochupanh1", setImage1, setOpenImage1)
+                      onPressLocation()
+                     }
                     }
                   >
                     <Entypo name="camera" size={24} color="black" />
