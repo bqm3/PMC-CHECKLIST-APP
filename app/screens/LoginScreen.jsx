@@ -202,7 +202,7 @@ const LoginScreen = ({ navigation }) => {
                     }}
                   >
                     <View style={{ height: 20 }}></View>
-                    <Text style={styles.paragraph}>{text}</Text>
+                    {/* <Text style={styles.paragraph}>{text}</Text> */}
                     <View style={styles.action}>
                       <TextInput
                         allowFontScaling={false}

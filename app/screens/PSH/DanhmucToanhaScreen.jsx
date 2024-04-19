@@ -257,6 +257,10 @@ const DanhmucToanhaScreen = ({ navigation }) => {
       Sotang: 0,
      
     });
+    setIsCheckUpdate({
+      check: false,
+      ID_Toanha: null,
+    })
   };
 
   const handlePresentModalPress = useCallback(() => {
@@ -420,16 +424,7 @@ const DanhmucToanhaScreen = ({ navigation }) => {
                    handlePushDataEdit={handlePushDataEdit}
                    loadingSubmit={loadingSubmit}
                   />
-                  {/* <ModalKhuvuc
-                    ent_khoicv={ent_khoicv}
-                    ent_toanha={ent_toanha}
-                    handleChangeText={handleChangeText}
-                    dataInput={dataInput}
-                    handlePushDataSave={handlePushDataSave}
-                    isCheckUpdate={isCheckUpdate}
-                    handlePushDataEdit={handlePushDataEdit}
-                    loadingSubmit={loadingSubmit}
-                  /> */}
+                 
                 </BottomSheetScrollView>
               </BottomSheetModal>
             </ImageBackground>

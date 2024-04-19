@@ -7,7 +7,7 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Dropdown } from "react-native-element-dropdown";
 import { COLORS } from "../../constants/theme";
@@ -26,12 +26,14 @@ const ModalDuan = ({
   loadingSubmit,
 }) => {
 
+  const [duan, setDuan] = useState(dataInput?.Duan)
+
   return (
     <View style={{ margin: 20 }}>
       <View style={{ justifyContent: "space-around", width: "100%" }}>
         <Text  allowFontScaling={false} style={styles.text}>Tên dự án</Text>
         <TextInput allowFontScaling={false} 
-          value={dataInput.Duan}
+          value={duan}
           placeholder="Nhập tên dự án thực hiện checklist"
           placeholderTextColor="gray"
           style={[
@@ -41,7 +43,10 @@ const ModalDuan = ({
             },
           ]}
           autoCapitalize="sentences"
-          onChangeText={(val) => handleChangeText("Duan", val)}
+          onChangeText={(val) => {
+            handleChangeText("Duan", val)
+            setDuan(val)
+          }}
         />
       </View>
       <View style={{ marginTop: 20 }}>

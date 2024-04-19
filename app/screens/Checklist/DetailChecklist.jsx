@@ -270,7 +270,7 @@ const DetailChecklist = ({ route, navigation }) => {
       }
     } else {
       // Duyệt qua mảng arrCheck2
-      if (key === "Anh" || key === "GhichuChitiet") {
+      if (key === "Anh" || key === "GhichuChitiet" ) {
         newDataChecklistImage.forEach((item) => {
           const found = mergedArrImage.some(
             (existingItem) => existingItem.ID_Checklist === item.ID_Checklist
@@ -515,9 +515,19 @@ const DetailChecklist = ({ route, navigation }) => {
 
   // call api submit data checklsit
   const handleSubmit = async () => {
+    // Kiểm tra nếu defaultActionDataChecklist rỗng
+    if (defaultActionDataChecklist.length === 0 && dataChecklistFaild.length === 0) {
+      // Hiển thị thông báo cho người dùng
+      Alert.alert("PMC Thông báo", "Không có checklist để kiểm tra!", [
+        { text: "OK", onPress: () => console.log("OK Pressed") },
+      ]);
+      // Kết thúc hàm sớm nếu mảng rỗng
+      return;
+    }
+  
     setLoadingSubmit(true);
     const formData = new FormData();
-
+  
     // Tạo mảng các promise cho mỗi item trong dataChecklistFaild
     const requests = dataChecklistFaild.map(async (item) => {
       const itemInfo = {
@@ -528,27 +538,24 @@ const DetailChecklist = ({ route, navigation }) => {
         Ghichu: item.GhichuChitiet || "",
         Anh: "",
       };
-
+  
       if (item.Anh) {
         const file = {
-          uri:
-            Platform.OS === "android"
-              ? item?.Anh?.uri
-              : item?.Anh?.uri.replace("file://", ""),
-          name:
-            item?.Anh?.fileName ||
-            Math.floor(Math.random() * Math.floor(999999999)) + ".jpg",
+          uri: Platform.OS === "android"
+            ? item?.Anh?.uri
+            : item?.Anh?.uri.replace("file://", ""),
+          name: item?.Anh?.fileName || Math.floor(Math.random() * Math.floor(999999999)) + ".jpg",
           type: item?.Anh?.type || "image/jpeg",
         };
-
+  
         formData.append(`Images`, file);
         itemInfo.Anh = file.name;
       }
-
+  
       Object.entries(itemInfo).forEach(([key, value]) => {
         formData.append(key, value);
       });
-
+  
       // Trả về promise cho mỗi item
       return axios.post(BASE_URL + "/tb_checklistchitiet/create", formData, {
         headers: {
@@ -557,12 +564,15 @@ const DetailChecklist = ({ route, navigation }) => {
         },
       });
     });
-
+  
+   
+  
     const updatedDefaultActionDataChecklist = defaultActionDataChecklist.filter(
       (item) => {
         return !item.Anh !== null && !item.GhichuChitiet !== "";
       }
     );
+    
     const descriptions = [
       updatedDefaultActionDataChecklist
         .map(
@@ -572,7 +582,7 @@ const DetailChecklist = ({ route, navigation }) => {
         .join(","),
     ];
     const descriptionsJSON = JSON.stringify(descriptions);
-
+  
     const requestDone = axios.post(
       BASE_URL + "/tb_checklistchitietdone/create",
       { Description: descriptionsJSON },
@@ -583,11 +593,11 @@ const DetailChecklist = ({ route, navigation }) => {
         },
       }
     );
-
+  
     try {
       // Gộp cả hai mảng promise và đợi cho tất cả các promise hoàn thành
       await Promise.all([...requests, requestDone]);
-
+  
       // Hiển thị cảnh báo sau khi tất cả các yêu cầu hoàn thành
       Alert.alert("PMC Thông báo", "Checklist thành công", [
         {
@@ -597,7 +607,7 @@ const DetailChecklist = ({ route, navigation }) => {
         },
         { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
       ]);
-
+  
       // Thiết lập lại dữ liệu và cờ loading
       init_checklist();
       setNewActionDataChecklist([]);
@@ -619,6 +629,7 @@ const DetailChecklist = ({ route, navigation }) => {
       }
     }
   };
+  
   // view item flatlist
   const renderItem = (item, index) => {
     return (

@@ -239,6 +239,10 @@ const DanhmucDuanScreen = ({ navigation }) => {
     setDataInput({
       Duan: "",
     });
+    setIsCheckUpdate({
+      check: false,
+      ID_Duan: null,
+    })
   };
 
   const handlePresentModalPress = useCallback(() => {
@@ -248,6 +252,7 @@ const DanhmucDuanScreen = ({ navigation }) => {
   const handleSheetChanges = useCallback((index) => {
     if (index === -1) {
       setOpacity(1);
+      handleAdd()
     } else {
       setOpacity(0.2);
     }

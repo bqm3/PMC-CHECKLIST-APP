@@ -36,9 +36,6 @@ const ModalChecklist = ({
   activeKhuVuc,
   dataKhuVuc,
   loadingSubmit,
-  TouchableWithoutFeedback,
-  // setTieuchuan,
-  // tieuChuan,
 }) => {
   const ref = useRef(null);
   const height = useHeaderHeight();
@@ -270,17 +267,10 @@ const ModalChecklist = ({
                     dropdownIconPosition={"right"}
                     buttonTextAfterSelection={(selectedItem, index) => {
                       return (
-                        <View
-                          style={{
-                            justifyContent: "center",
-                            alignContent: "center",
-                            height: 50,
-                          }}
-                        >
-                          <Text allowFontScaling={false} style={styles.text}>
+                       
+                          <Text allowFontScaling={false} style={styles.text} numberOfLines={3}>
                             {selectedItem?.Tentang}
                           </Text>
-                        </View>
                       );
                     }}
                     renderCustomizedRowChild={(item, index) => {
@@ -328,31 +318,24 @@ const ModalChecklist = ({
                               name={isOpened ? "chevron-up" : "chevron-down"}
                               color={"#637381"}
                               size={14}
-                              style={{ marginRight: 10 }}
+                              style={{ marginRight: 10}}
                             />
                           );
                         }}
                         dropdownIconPosition={"right"}
                         buttonTextAfterSelection={(selectedItem, index) => {
                           return (
-                            <View
-                              style={{
-                                justifyContent: "center",
-                                alignContent: "center",
-                                height: 50,
-                              }}
-                            >
+                          
                               <Text
                                 allowFontScaling={false}
-                                style={styles.text}
+                                style={[styles.text]}
+                                numberOfLines={3}
                               >
                                  {selectedItem?.Tenkhuvuc} 
                               </Text>
-                            </View>
                           );
                         }}
                         renderCustomizedRowChild={(item, index) => {
-                          console.log('item', item)
                           return (
                             <VerticalSelect
                               value={item.ID_Khuvuc}
@@ -641,7 +624,6 @@ const styles = StyleSheet.create({
     borderColor: "gray",
     height: 48,
     backgroundColor: "white",
-    zIndex: 1,
   },
   customText: {
     fontWeight: "600",

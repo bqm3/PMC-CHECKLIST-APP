@@ -140,7 +140,6 @@ const ModalPopupDetailChecklist = ({
             blurOnSubmit={true}
             onChangeText={(text) => {
               setGhichu(text)
-              
             }}
             style={[
               styles.textInput,
@@ -182,9 +181,8 @@ const ModalPopupDetailChecklist = ({
       <View style={{ marginTop: 10 }}>
         <Button
           onPress={() => {
-            handleChange("GhichuChitiet", ghichu, dataItem);
-
             handlePopupClear();
+            handleChange("GhichuChitiet", ghichu, dataItem);
           }}
           backgroundColor={COLORS.bg_button}
           border={COLORS.bg_button}

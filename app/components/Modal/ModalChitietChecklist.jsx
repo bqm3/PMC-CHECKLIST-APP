@@ -83,7 +83,6 @@ const ModalChitietChecklist = ({
             );
           }}
           renderCustomizedRowChild={(item, index) => {
-            console.log('item', item)
             return (
               <VerticalSelect
                 value={item.ID_Khuvuc}

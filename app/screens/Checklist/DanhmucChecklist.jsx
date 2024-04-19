@@ -571,7 +571,6 @@ const DanhmucChecklist = ({ navigation }) => {
 
   const handleSheetChanges = useCallback((index) => {
     if (index === -1) {
-      setOpacity(1);
       handleAdd();
       handleCloseModal();
     } else {
