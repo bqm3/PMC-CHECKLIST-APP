@@ -19,7 +19,7 @@ import Button from "../Button/Button";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import moment from "moment";
 import * as ImagePicker from "expo-image-picker";
-import * as Location from 'expo-location';
+import * as Location from "expo-location";
 
 const ModalChecklistCImage = ({
   handlePushDataSave,
@@ -44,6 +44,7 @@ const ModalChecklistCImage = ({
   const [modalVisible, setModalVisible] = useState(false);
 
   const [location, setLocation] = useState(null);
+  const [address, setAddress] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
 
   const pickImage = async (text, hour, onPress, setOpen) => {
@@ -79,23 +80,28 @@ const ModalChecklistCImage = ({
 
   const onPressLocation = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied');
-        
-        return;
-      }
+    if (status !== 'granted') {
+      alert('Permission to access location was denied');
+      return;
+    }
 
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
-  }
+    // Get the current location
+    let currentLocation = await Location.getCurrentPositionAsync({});
+    setLocation(currentLocation);
 
-  let text = 'Waiting..';
+    // Convert location to address
+    let { coords } = currentLocation;
+    let reverseGeocodedAddress = await Location.reverseGeocodeAsync(coords);
+    setAddress(reverseGeocodedAddress);
+  };
+
+  let text = "Waiting..";
   if (errorMsg) {
     text = errorMsg;
   } else if (location) {
     text = JSON.stringify(location);
   }
-  console.log('text',text)
+  console.log("text", text, address);
 
   const handleWebView = (image) => {
     setModalVisible(true);
@@ -117,8 +123,11 @@ const ModalChecklistCImage = ({
                 justifyContent: "space-between",
               }}
             >
+              
               <View style={{ width: "48%" }}>
-                <Text  allowFontScaling={false} style={styles.text}>Ảnh 1</Text>
+                <Text allowFontScaling={false} style={styles.text}>
+                  Ảnh 1
+                </Text>
                 <View style={styles.container}>
                   <TouchableOpacity
                     style={{
@@ -132,16 +141,19 @@ const ModalChecklistCImage = ({
                       justifyContent: "center",
                       height: 100,
                     }}
-                    onPress={() =>
-                     {
-                      pickImage("Anh1", "Giochupanh1", setImage1, setOpenImage1)
-                      onPressLocation()
-                     }
-                    }
+                    onPress={() => {
+                      pickImage(
+                        "Anh1",
+                        "Giochupanh1",
+                        setImage1,
+                        setOpenImage1
+                      );
+                      onPressLocation();
+                    }}
                   >
                     <Entypo name="camera" size={24} color="black" />
                   </TouchableOpacity>
-
+                  
                   {image1 !== null && openImage1 === true && (
                     <Image
                       source={{ uri: image1.uri ? image1.uri : image1 }}
@@ -154,14 +166,18 @@ const ModalChecklistCImage = ({
                       style={styles.buttonImage}
                       onPress={() => handleWebView(image1)}
                     >
-                      <Text  allowFontScaling={false} style={styles.textImage}>Xem ảnh</Text>
+                      <Text allowFontScaling={false} style={styles.textImage}>
+                        Xem ảnh
+                      </Text>
                     </TouchableOpacity>
                   )}
                 </View>
               </View>
 
               <View style={{ width: "48%" }}>
-                <Text  allowFontScaling={false} style={styles.text}>Ảnh 2</Text>
+                <Text allowFontScaling={false} style={styles.text}>
+                  Ảnh 2
+                </Text>
                 <View style={styles.container}>
                   <TouchableOpacity
                     style={{
@@ -174,9 +190,15 @@ const ModalChecklistCImage = ({
                       justifyContent: "center",
                       height: 100,
                     }}
-                    onPress={() =>
-                      pickImage("Anh2", "Giochupanh2", setImage2, setOpenImage2)
-                    }
+                    onPress={() => {
+                      pickImage(
+                        "Anh2",
+                        "Giochupanh2",
+                        setImage2,
+                        setOpenImage2
+                      );
+                      onPressLocation();
+                    }}
                   >
                     <Entypo name="camera" size={24} color="black" />
                   </TouchableOpacity>
@@ -192,7 +214,9 @@ const ModalChecklistCImage = ({
                       style={styles.buttonImage}
                       onPress={() => handleWebView(image2)}
                     >
-                      <Text  allowFontScaling={false} style={styles.textImage}>Xem ảnh</Text>
+                      <Text allowFontScaling={false} style={styles.textImage}>
+                        Xem ảnh
+                      </Text>
                     </TouchableOpacity>
                   )}
                 </View>
@@ -207,7 +231,9 @@ const ModalChecklistCImage = ({
               }}
             >
               <View style={{ width: "48%" }}>
-                <Text  allowFontScaling={false} style={styles.text}>Ảnh 3</Text>
+                <Text allowFontScaling={false} style={styles.text}>
+                  Ảnh 3
+                </Text>
                 <View style={styles.container}>
                   <TouchableOpacity
                     style={{
@@ -239,14 +265,18 @@ const ModalChecklistCImage = ({
                       style={styles.buttonImage}
                       onPress={() => handleWebView(image3)}
                     >
-                      <Text  allowFontScaling={false} style={styles.textImage}>Xem ảnh</Text>
+                      <Text allowFontScaling={false} style={styles.textImage}>
+                        Xem ảnh
+                      </Text>
                     </TouchableOpacity>
                   )}
                 </View>
               </View>
 
               <View style={{ width: "48%" }}>
-                <Text  allowFontScaling={false} style={styles.text}>Ảnh 4</Text>
+                <Text allowFontScaling={false} style={styles.text}>
+                  Ảnh 4
+                </Text>
                 <View style={styles.container}>
                   <TouchableOpacity
                     style={{
@@ -277,7 +307,9 @@ const ModalChecklistCImage = ({
                       style={styles.buttonImage}
                       onPress={() => handleWebView(image4)}
                     >
-                      <Text  allowFontScaling={false} style={styles.textImage}>Xem ảnh</Text>
+                      <Text allowFontScaling={false} style={styles.textImage}>
+                        Xem ảnh
+                      </Text>
                     </TouchableOpacity>
                   )}
                 </View>
@@ -308,7 +340,9 @@ const ModalChecklistCImage = ({
         >
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
-              <Text  allowFontScaling={false} style={styles.modalText}>Hình ảnh checklist</Text>
+              <Text allowFontScaling={false} style={styles.modalText}>
+                Hình ảnh checklist
+              </Text>
 
               <WebView
                 style={{
@@ -329,7 +363,9 @@ const ModalChecklistCImage = ({
               }}
               style={styles.buttonImage}
             >
-              <Text  allowFontScaling={false} style={styles.textImage}>Close</Text>
+              <Text allowFontScaling={false} style={styles.textImage}>
+                Close
+              </Text>
             </TouchableOpacity>
           </View>
         </Modal>

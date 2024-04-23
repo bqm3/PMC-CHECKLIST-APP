@@ -151,14 +151,16 @@ const DanhmucChecklist = ({ navigation }) => {
   const [status, setStatus] = useState(false);
 
   const init_checklist = async () => {
-    await dispath(ent_checklist_get({ page: page, limit: numberOfItemsPerPage }));
+    await dispath(
+      ent_checklist_get({ page: page, limit: numberOfItemsPerPage })
+    );
   };
 
   const init_khuvuc = async () => {
     await dispath(ent_khuvuc_get());
   };
   useEffect(() => {
-    init_checklist()
+    init_checklist();
   }, [numberOfItemsPerPage, page]);
 
   useEffect(() => {
@@ -223,19 +225,36 @@ const DanhmucChecklist = ({ navigation }) => {
   }, [numberOfItemsPerPage]);
 
   const toggleTodo = async () => {
-    if (
-      newActionCheckList?.length > 0 &&
-      newActionCheckList?.length < listChecklist?.length
-    ) {
-      setNewActionCheckList(listChecklist);
-      setStatus(true);
-    } else if (newActionCheckList?.length === 0) {
-      setNewActionCheckList(listChecklist);
-      setStatus(true);
+    // Calculate the lengths of newActionCheckList and listChecklist.data
+    const newActionLength = newActionCheckList?.length ?? 0;
+    const listChecklistLength = listChecklist?.data?.length ?? 0;
+
+    // Determine the new action checklist data and status
+    let newActionCheckListData;
+    let newStatus;
+
+    if (newActionLength === 0) {
+      // If newActionCheckList is empty, fill it with listChecklist.data
+      newActionCheckListData = listChecklist.data;
+      newStatus = true;
+    } else if (newActionLength > 0 && newActionLength < listChecklistLength) {
+      // If newActionCheckList is partially filled
+      newActionCheckListData = status ? [] : listChecklist.data;
+      newStatus = !status;
+    } else if (newActionLength === listChecklistLength && status) {
+      // If newActionCheckList is fully filled and status is true
+      newActionCheckListData = [];
+      newStatus = false;
     } else {
-      setNewActionCheckList([]);
-      setStatus(false);
+      // Default case: clear newActionCheckList and set status to false
+      newActionCheckListData = [];
+      newStatus = false;
     }
+
+    // Update state based on the calculated newStatus and newActionCheckListData
+    setNewActionCheckList(newActionCheckListData);
+    setStatus(newStatus);
+    setIsCheckbox(newStatus);
   };
 
   const handleToggle = async (data) => {
@@ -691,7 +710,12 @@ const DanhmucChecklist = ({ navigation }) => {
     );
   };
 
-  var arrayId = newActionCheckList?.map((item) => item?.ID_Checklist);
+  let arrayId;
+  if (Array.isArray(newActionCheckList)) {
+    arrayId = newActionCheckList.map((item) => item?.ID_Checklist);
+  } else {
+    arrayId = [];
+  }
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -775,70 +799,71 @@ const DanhmucChecklist = ({ navigation }) => {
                     </View>
 
                     {listChecklist?.data && listChecklist?.data?.length > 0 ? (
-                        <ScrollView
-                          style={{ flex: 1, marginBottom: 20, marginTop: 20 }}
+                      <ScrollView
+                        style={{ flex: 1, marginBottom: 20, marginTop: 20 }}
+                      >
+                        <DataTable
+                          style={{
+                            backgroundColor: "white",
+                            borderRadius: 8,
+                          }}
                         >
-                          <DataTable
-                            style={{
-                              backgroundColor: "white",
-                              borderRadius: 8,
+                          <ScrollView
+                            horizontal
+                            contentContainerStyle={{
+                              flexDirection: "column",
                             }}
                           >
-                            <ScrollView
-                              horizontal
-                              contentContainerStyle={{
-                                flexDirection: "column",
+                            <DataTable.Header
+                              style={{
+                                backgroundColor: "#eeeeee",
+                                borderTopRightRadius: 8,
+                                borderTopLeftRadius: 8,
                               }}
                             >
-                              <DataTable.Header
+                              <DataTable.Title
+                                key={-1}
                                 style={{
-                                  backgroundColor: "#eeeeee",
-                                  borderTopRightRadius: 8,
-                                  borderTopLeftRadius: 8,
+                                  alignItems: "center",
+                                  width: 50,
                                 }}
                               >
-                                <DataTable.Title
-                                  key={-1}
-                                  style={{
-                                    alignItems: "center",
-                                    width: 50,
-                                  }}
-                                >
-                                  <ActionCheckboxAll
-                                    toggleTodo={toggleTodo}
-                                    status={status}
-                                  />
-                                </DataTable.Title>
-                                {headerList &&
-                                  headerList.map((item, index) => {
-                                    return (
-                                      <DataTable.Title
-                                        key={index}
-                                        style={{
-                                          width: item?.width,
-                                          borderRightWidth:
-                                            index === headerList.length - 1
-                                              ? 0
-                                              : 2,
-                                          borderRightColor: "white",
-                                          paddingLeft: 4,
-                                        }}
-                                        numberOfLines={2}
+                                <ActionCheckboxAll
+                                  toggleTodo={toggleTodo}
+                                  status={status}
+                                />
+                              </DataTable.Title>
+                              {headerList &&
+                                headerList.map((item, index) => {
+                                  return (
+                                    <DataTable.Title
+                                      key={index}
+                                      style={{
+                                        width: item?.width,
+                                        borderRightWidth:
+                                          index === headerList.length - 1
+                                            ? 0
+                                            : 2,
+                                        borderRightColor: "white",
+                                        paddingLeft: 4,
+                                      }}
+                                      numberOfLines={2}
+                                    >
+                                      <Text
+                                        style={[
+                                          styles.text,
+                                          { color: "black" },
+                                        ]}
                                       >
-                                        <Text
-                                          style={[
-                                            styles.text,
-                                            { color: "black" },
-                                          ]}
-                                        >
-                                          {item?.til}
-                                        </Text>
-                                      </DataTable.Title>
-                                    );
-                                  })}
-                              </DataTable.Header>
+                                        {item?.til}
+                                      </Text>
+                                    </DataTable.Title>
+                                  );
+                                })}
+                            </DataTable.Header>
 
-                              {listChecklist?.data && listChecklist?.data?.length > 0 && (
+                            {listChecklist?.data &&
+                              listChecklist?.data?.length > 0 && (
                                 <FlatList
                                   keyExtractor={(item, index) =>
                                     `${item?.ID_Khuvuc}_${index}`
@@ -848,30 +873,30 @@ const DanhmucChecklist = ({ navigation }) => {
                                   renderItem={_renderItem}
                                 />
                               )}
-                              <DataTable.Pagination
-                                style={{ justifyContent: "flex-start" }}
-                                page={page}
-                                numberOfPages={Math.ceil(
-                                  ent_checklist?.totalPages
-                                )}
-                                onPageChange={(page) => {
-                                  setPage(page);
-                                  init_checklist(page, numberOfItemsPerPage);
-                                }}
-                                label={`Từ ${page + 1} đến ${
-                                  ent_checklist?.totalPages
-                                }`}
-                                showFastPaginationControls
-                                numberOfItemsPerPageList={
-                                  numberOfItemsPerPageList
-                                }
-                                numberOfItemsPerPage={numberOfItemsPerPage}
-                                onItemsPerPageChange={onItemsPerPageChange}
-                                selectPageDropdownLabel={"Hàng trên mỗi trang"}
-                              />
-                            </ScrollView>
-                          </DataTable>
-                        </ScrollView>
+                            <DataTable.Pagination
+                              style={{ justifyContent: "flex-start" }}
+                              page={page}
+                              numberOfPages={Math.ceil(
+                                ent_checklist?.totalPages
+                              )}
+                              onPageChange={(page) => {
+                                setPage(page);
+                                init_checklist(page, numberOfItemsPerPage);
+                              }}
+                              label={`Từ ${page + 1} đến ${
+                                ent_checklist?.totalPages
+                              }`}
+                              showFastPaginationControls
+                              numberOfItemsPerPageList={
+                                numberOfItemsPerPageList
+                              }
+                              numberOfItemsPerPage={numberOfItemsPerPage}
+                              onItemsPerPageChange={onItemsPerPageChange}
+                              selectPageDropdownLabel={"Hàng trên mỗi trang"}
+                            />
+                          </ScrollView>
+                        </DataTable>
+                      </ScrollView>
                     ) : (
                       <>
                         <View
@@ -892,12 +917,12 @@ const DanhmucChecklist = ({ navigation }) => {
                           >
                             Bạn chưa thêm dữ liệu nào
                           </Text>
-                          <ButtonChecklist
+                          {/* <ButtonChecklist
                             text={"Thêm mới"}
                             width={"auto"}
                             color={COLORS.bg_button}
                             onPress={handlePresentModalPress}
-                          />
+                          /> */}
                         </View>
                       </>
                     )}

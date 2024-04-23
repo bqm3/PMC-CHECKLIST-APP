@@ -57,7 +57,7 @@ const HomeStack = ({ navigation }) => {
               allowFontScaling={false}
               style={{ fontSize: 20, fontWeight: "700", color: "white" }}
             >
-              CHECKLIST- PMC
+              CHECKLIST - PMC
             </Text>
           ),
           headerTitleAlign: "center",

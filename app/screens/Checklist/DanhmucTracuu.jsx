@@ -607,20 +607,21 @@ const DanhmucTracuu = () => {
               </BottomSheetScrollView>
             </BottomSheetModal>
 
-            {newActionCheckList?.length > 0 && isShowChecklist && (
-              <View
-                style={{
-                  width: 60,
-                  position: "absolute",
-                  right: 20,
-                  bottom: 50,
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  gap: 10,
-                }}
-              >
-                {newActionCheckList[0]?.Anh !== null &&
+            <View
+              style={{
+                width: 60,
+                position: "absolute",
+                right: 20,
+                bottom: 50,
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                gap: 10,
+              }}
+            >
+              {newActionCheckList?.length > 0 &&
+                isShowChecklist &&
+                (newActionCheckList[0]?.Anh !== null &&
                 newActionCheckList[0]?.Anh !== "" ? (
                   <TouchableOpacity
                     style={styles.button}
@@ -637,18 +638,17 @@ const DanhmucTracuu = () => {
                       <Feather name="eye" size={26} color="white" />
                     </TouchableOpacity>
                   </>
-                )}
+                ))}
 
-              { user && user.Permission === 1 &&
-                  <TouchableOpacity
+              {user && user.Permission === 1 && (
+                <TouchableOpacity
                   style={[styles.button]}
                   onPress={fetchDataExcel}
                 >
                   <Feather name="save" size={26} color="white" />
                 </TouchableOpacity>
-              }
-              </View>
-            )}
+              )}
+            </View>
 
             <Modal
               animationType="slide"

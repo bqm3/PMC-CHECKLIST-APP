@@ -435,7 +435,6 @@ const ThucHienChecklist = ({ navigation }) => {
 
   const handleSheetChanges2 = useCallback((index) => {
     if (index === -1) {
-      bottomSheetModalRef2?.current?.close();
       setOpacity(1);
       handleAdd();
     } else {
