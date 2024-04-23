@@ -14,9 +14,8 @@ import React, { useRef } from "react";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 import { COLORS } from "../../constants/theme";
-import ButtonChecklist from "../Button/ButtonCheckList";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { FontAwesome } from "@expo/vector-icons";
+import { FontAwesome, AntDesign } from "@expo/vector-icons";
 import VerticalSelect from "../VerticalSelect";
 import SelectDropdown from "react-native-select-dropdown";
 import moment from "moment";
@@ -65,27 +64,45 @@ const ModalTracuu = ({
               }}
             >
               <View style={{ width: "48%" }}>
-                <Text  allowFontScaling={false} style={styles.text}>Từ ngày</Text>
+                <Text allowFontScaling={false} style={styles.text}>
+                  Từ ngày
+                </Text>
 
                 <TouchableOpacity
                   onPress={() => toggleDatePicker("fromDate", true)}
                 >
-                  <TextInput allowFontScaling={false} 
-                    value={filters?.fromDate}
-                    placeholder="Từ ngày"
-                    placeholderTextColor="gray"
-                    style={[
-                      styles.textInput,
-                      {
-                        paddingHorizontal: 10,
-                      },
-                    ]}
-                    pointerEvents="none"
-                  />
+                  <View style={styles.action}>
+                    <TextInput
+                      allowFontScaling={false}
+                      value={filters?.fromDate}
+                      placeholder="Từ ngày"
+                      placeholderTextColor="gray"
+                      style={
+                        {
+                          paddingLeft: 12,
+                          color: "#05375a",
+                          width: "70%",
+                          fontSize: 16,
+                          height: 50,
+                        }}
+                      pointerEvents="none"
+                    />
+                    <TouchableOpacity
+                      onPress={() => toggleDatePicker("fromDate", true)}
+                      style={{
+                        justifyContent:'center',
+                        alignItems:'center',
+                        height: 50,
+                        width: 50,
+                      }}
+                    >
+                      <AntDesign name="calendar" size={24} color="black" />
+                    </TouchableOpacity>
+                  </View>
                   <DateTimePickerModal
                     isVisible={isDatePickerVisible?.fromDate}
                     mode="date"
-                    //   date={new Date(filters?.fromDate)}
+                    display="inline"
                     isDarkModeEnabled={true}
                     onConfirm={(date) => {
                       handleChangeFilters(
@@ -99,26 +116,44 @@ const ModalTracuu = ({
                 </TouchableOpacity>
               </View>
               <View style={{ width: "48%" }}>
-                <Text  allowFontScaling={false} style={styles.text}>Đến ngày</Text>
+                <Text allowFontScaling={false} style={styles.text}>
+                  Đến ngày
+                </Text>
                 <TouchableOpacity
                   onPress={() => toggleDatePicker("toDate", true)}
                 >
-                  <TextInput allowFontScaling={false} 
-                    value={filters?.toDate}
-                    placeholder="Đến ngày"
-                    placeholderTextColor="gray"
-                    style={[
-                      styles.textInput,
-                      {
-                        paddingHorizontal: 10,
-                      },
-                    ]}
-                    pointerEvents="none"
-                  />
+                  <View style={styles.action}>
+                    <TextInput
+                      allowFontScaling={false}
+                      value={filters?.toDate}
+                      placeholder="Đến ngày"
+                      placeholderTextColor="gray"
+                      style={
+                        {
+                          paddingLeft: 12,
+                          color: "#05375a",
+                          width: "70%",
+                          fontSize: 16,
+                          height: 50,
+                        }}
+                      pointerEvents="none"
+                    />
+                    <TouchableOpacity
+                      onPress={() => toggleDatePicker("toDate", true)}
+                      style={{
+                        justifyContent:'center',
+                        alignItems:'center',
+                        height: 50,
+                        width: 50,
+                      }}
+                    >
+                      <AntDesign name="calendar" size={24} color="black" />
+                    </TouchableOpacity>
+                  </View>
                   <DateTimePickerModal
                     isVisible={isDatePickerVisible?.toDate}
                     mode="date"
-                    //   date={new Date(filters?.lastDate)}
+                    display="inline"
                     isDarkModeEnabled={true}
                     onConfirm={(date) => {
                       handleChangeFilters(
@@ -133,182 +168,195 @@ const ModalTracuu = ({
               </View>
             </View>
             <View>
-              <Text  allowFontScaling={false} style={styles.text}>Tòa nhà</Text>
+              <Text allowFontScaling={false} style={styles.text}>
+                Tòa nhà
+              </Text>
               {ent_toanha && ent_toanha?.length > 0 ? (
-              <SelectDropdown
-                data={ent_toanha ? ent_toanha : []}
-                buttonStyle={styles.select}
-                dropdownStyle={{
-                  borderRadius: 8,
-                  maxHeight: 400,
-                }}
-                // rowStyle={{ height: 50, justifyContent: "center" }}
-                defaultButtonText={"Tòa nhà"}
-                buttonTextStyle={styles.customText}
-                defaultValue={defaultToanha}
-                onSelect={(selectedItem, index) => {
-                  handleChangeFilters("ID_Toanha", selectedItem?.ID_Toanha);
-                }}
-                renderDropdownIcon={(isOpened) => {
-                  return (
-                    <FontAwesome
-                      name={isOpened ? "chevron-up" : "chevron-down"}
-                      color={"#637381"}
-                      size={14}
-                      style={{ marginRight: 10 }}
-                    />
-                  );
-                }}
-                dropdownIconPosition={"right"}
-                buttonTextAfterSelection={(selectedItem, index) => {
-                  return (
-                    <View
-                      key={index}
-                      style={{
-                        justifyContent: "center",
-                        alignContent: "center",
-                        height: 50,
-                      }}
-                    >
-                      <Text  allowFontScaling={false} style={styles.text}>{selectedItem?.Toanha}</Text>
-                    </View>
-                  );
-                }}
-                renderCustomizedRowChild={(item, index) => {
-                  return (
-                    <VerticalSelect
-                      value={item.ID_Toanha}
-                      label={item.Toanha}
-                      key={index}
-                      selectedItem={filters?.ID_Toanha}
-                    />
-                  );
-                }}
-              />
-               ) : (
-                  <Text allowFontScaling={false} style={styles.errorText}>
-                    Không có dữ liệu tòa nhà.
-                  </Text>
-                )}
+                <SelectDropdown
+                  data={ent_toanha ? ent_toanha : []}
+                  buttonStyle={styles.select}
+                  dropdownStyle={{
+                    borderRadius: 8,
+                    maxHeight: 400,
+                  }}
+                  // rowStyle={{ height: 50, justifyContent: "center" }}
+                  defaultButtonText={"Tòa nhà"}
+                  buttonTextStyle={styles.customText}
+                  defaultValue={defaultToanha}
+                  onSelect={(selectedItem, index) => {
+                    handleChangeFilters("ID_Toanha", selectedItem?.ID_Toanha);
+                  }}
+                  renderDropdownIcon={(isOpened) => {
+                    return (
+                      <FontAwesome
+                        name={isOpened ? "chevron-up" : "chevron-down"}
+                        color={"#637381"}
+                        size={14}
+                        style={{ marginRight: 10 }}
+                      />
+                    );
+                  }}
+                  dropdownIconPosition={"right"}
+                  buttonTextAfterSelection={(selectedItem, index) => {
+                    return (
+                      <View
+                        key={index}
+                        style={{
+                          justifyContent: "center",
+                          alignContent: "center",
+                          height: 50,
+                        }}
+                      >
+                        <Text allowFontScaling={false} style={styles.text}>
+                          {selectedItem?.Toanha}
+                        </Text>
+                      </View>
+                    );
+                  }}
+                  renderCustomizedRowChild={(item, index) => {
+                    return (
+                      <VerticalSelect
+                        value={item.ID_Toanha}
+                        label={item.Toanha}
+                        key={index}
+                        selectedItem={filters?.ID_Toanha}
+                      />
+                    );
+                  }}
+                />
+              ) : (
+                <Text allowFontScaling={false} style={styles.errorText}>
+                  Không có dữ liệu tòa nhà.
+                </Text>
+              )}
             </View>
             <View>
-              <Text  allowFontScaling={false} style={styles.text}>Khu vực</Text>
+              <Text allowFontScaling={false} style={styles.text}>
+                Khu vực
+              </Text>
               {ent_khuvuc && ent_khuvuc?.length > 0 ? (
-              <SelectDropdown
-                data={ent_khuvuc ? ent_khuvuc : []}
-                buttonStyle={styles.select}
-                dropdownStyle={{
-                  borderRadius: 8,
-                  maxHeight: 400,
-                }}
-                // rowStyle={{ height: 50, justifyContent: "center" }}
-                defaultButtonText={"Khu vực"}
-                buttonTextStyle={styles.customText}
-                defaultValue={defaultKhuvuc}
-                onSelect={(selectedItem, index) => {
-                  handleChangeFilters("ID_Khuvuc", selectedItem?.ID_Khuvuc);
-                }}
-                renderDropdownIcon={(isOpened) => {
-                  return (
-                    <FontAwesome
-                      name={isOpened ? "chevron-up" : "chevron-down"}
-                      color={"#637381"}
-                      size={14}
-                      style={{ marginRight: 10 }}
-                    />
-                  );
-                }}
-                dropdownIconPosition={"right"}
-                buttonTextAfterSelection={(selectedItem, index) => {
-                  return (
-                    <View
-                      key={index}
-                      style={{
-                        justifyContent: "center",
-                        alignContent: "center",
-                        height: 50,
-                      }}
-                    >
-                      <Text  allowFontScaling={false} style={styles.text}> {selectedItem?.Tenkhuvuc}</Text>
-                    </View>
-                  );
-                }}
-                renderCustomizedRowChild={(item, index) => {
-                  return (
-                    <VerticalSelect
-                      value={item.ID_Khuvuc}
-                      label={`${item.Tenkhuvuc} - ${item?.ent_toanha.Toanha}`}
-                      key={index}
-                      selectedItem={filters?.ID_Khuvuc}
-                    />
-                  );
-                }}
-              />
-               ) : (
-                  <Text allowFontScaling={false} style={styles.errorText}>
-                    Không có dữ liệu khu vực.
-                  </Text>
-                )}
+                <SelectDropdown
+                  data={ent_khuvuc ? ent_khuvuc : []}
+                  buttonStyle={styles.select}
+                  dropdownStyle={{
+                    borderRadius: 8,
+                    maxHeight: 400,
+                  }}
+                  // rowStyle={{ height: 50, justifyContent: "center" }}
+                  defaultButtonText={"Khu vực"}
+                  buttonTextStyle={styles.customText}
+                  defaultValue={defaultKhuvuc}
+                  onSelect={(selectedItem, index) => {
+                    handleChangeFilters("ID_Khuvuc", selectedItem?.ID_Khuvuc);
+                  }}
+                  renderDropdownIcon={(isOpened) => {
+                    return (
+                      <FontAwesome
+                        name={isOpened ? "chevron-up" : "chevron-down"}
+                        color={"#637381"}
+                        size={14}
+                        style={{ marginRight: 10 }}
+                      />
+                    );
+                  }}
+                  dropdownIconPosition={"right"}
+                  buttonTextAfterSelection={(selectedItem, index) => {
+                    return (
+                      <View
+                        key={index}
+                        style={{
+                          justifyContent: "center",
+                          alignContent: "center",
+                          height: 50,
+                        }}
+                      >
+                        <Text allowFontScaling={false} style={styles.text}>
+                          {" "}
+                          {selectedItem?.Tenkhuvuc}
+                        </Text>
+                      </View>
+                    );
+                  }}
+                  renderCustomizedRowChild={(item, index) => {
+                    return (
+                      <VerticalSelect
+                        value={item.ID_Khuvuc}
+                        label={`${item.Tenkhuvuc} - ${item?.ent_toanha.Toanha}`}
+                        key={index}
+                        selectedItem={filters?.ID_Khuvuc}
+                      />
+                    );
+                  }}
+                />
+              ) : (
+                <Text allowFontScaling={false} style={styles.errorText}>
+                  Không có dữ liệu khu vực.
+                </Text>
+              )}
             </View>
 
             <View>
-              <Text  allowFontScaling={false} style={styles.text}>Tầng</Text>
+              <Text allowFontScaling={false} style={styles.text}>
+                Tầng
+              </Text>
               {ent_tang && ent_tang?.length > 0 ? (
-              <SelectDropdown
-                data={ent_tang ? ent_tang : []}
-                buttonStyle={styles.select}
-                dropdownStyle={{
-                  borderRadius: 8,
-                  maxHeight: 400,
-                }}
-                // rowStyle={{ height: 50, justifyContent: "center" }}
-                defaultButtonText={"Tầng"}
-                buttonTextStyle={styles.customText}
-                defaultValue={defaultTang}
-                onSelect={(selectedItem, index) => {
-                  handleChangeFilters("ID_Tang", selectedItem?.ID_Tang);
-                }}
-                renderDropdownIcon={(isOpened) => {
-                  return (
-                    <FontAwesome
-                      name={isOpened ? "chevron-up" : "chevron-down"}
-                      color={"#637381"}
-                      size={14}
-                      style={{ marginRight: 10 }}
-                    />
-                  );
-                }}
-                dropdownIconPosition={"right"}
-                buttonTextAfterSelection={(selectedItem, index) => {
-                  return (
-                    <View
-                      key={index}
-                      style={{
-                        justifyContent: "center",
-                        alignContent: "center",
-                        height: 50,
-                      }}
-                    >
-                      <Text  allowFontScaling={false} style={styles.text}>{selectedItem?.Tentang}</Text>
-                    </View>
-                  );
-                }}
-                renderCustomizedRowChild={(item, index) => {
-                  return (
-                    <VerticalSelect
-                      value={item.ID_Tang}
-                      label={item.Tentang}
-                      key={index}
-                      selectedItem={filters?.ID_Tang}
-                    />
-                  );
-                }}
-              />
-               ) : (
-                  <Text allowFontScaling={false} style={styles.errorText}>
-                    Không có dữ liệu tầng.
-                  </Text>
-                )}
+                <SelectDropdown
+                  data={ent_tang ? ent_tang : []}
+                  buttonStyle={styles.select}
+                  dropdownStyle={{
+                    borderRadius: 8,
+                    maxHeight: 400,
+                  }}
+                  // rowStyle={{ height: 50, justifyContent: "center" }}
+                  defaultButtonText={"Tầng"}
+                  buttonTextStyle={styles.customText}
+                  defaultValue={defaultTang}
+                  onSelect={(selectedItem, index) => {
+                    handleChangeFilters("ID_Tang", selectedItem?.ID_Tang);
+                  }}
+                  renderDropdownIcon={(isOpened) => {
+                    return (
+                      <FontAwesome
+                        name={isOpened ? "chevron-up" : "chevron-down"}
+                        color={"#637381"}
+                        size={14}
+                        style={{ marginRight: 10 }}
+                      />
+                    );
+                  }}
+                  dropdownIconPosition={"right"}
+                  buttonTextAfterSelection={(selectedItem, index) => {
+                    return (
+                      <View
+                        key={index}
+                        style={{
+                          justifyContent: "center",
+                          alignContent: "center",
+                          height: 50,
+                        }}
+                      >
+                        <Text allowFontScaling={false} style={styles.text}>
+                          {selectedItem?.Tentang}
+                        </Text>
+                      </View>
+                    );
+                  }}
+                  renderCustomizedRowChild={(item, index) => {
+                    return (
+                      <VerticalSelect
+                        value={item.ID_Tang}
+                        label={item.Tentang}
+                        key={index}
+                        selectedItem={filters?.ID_Tang}
+                      />
+                    );
+                  }}
+                />
+              ) : (
+                <Text allowFontScaling={false} style={styles.errorText}>
+                  Không có dữ liệu tầng.
+                </Text>
+              )}
             </View>
             <View style={{ height: 10 }}></View>
             <View
@@ -324,7 +372,10 @@ const ModalTracuu = ({
                 onValueChange={() => toggleSwitch(isEnabled)}
                 value={isEnabled}
               />
-              <Text  allowFontScaling={false} style={[styles.text, { paddingHorizontal: 12 }]}>
+              <Text
+                allowFontScaling={false}
+                style={[styles.text, { paddingHorizontal: 12 }]}
+              >
                 Tất cả
               </Text>
             </View>
@@ -376,6 +427,21 @@ const styles = StyleSheet.create({
     height: 48,
     paddingVertical: 4,
     backgroundColor: "white",
+  },
+  action: {
+    height: 50,
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 8,
+    backgroundColor: "white",
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 0,
+      height: 9,
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 9.22,
+    elevation: 12,
   },
   dropdown: {
     height: 48,
