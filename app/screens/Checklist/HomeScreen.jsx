@@ -50,6 +50,12 @@ const dataDanhMuc = [
     icon: require("../../../assets/icons/o-06.png"),
     role: 1,
   },
+  {
+    id: 7,
+    path: "Danh mục Hạng mục",
+    icon: require("../../../assets/icons/o-03.png"),
+    role: 1,
+  },
 ];
 
 const dataDanhMucPSH = [

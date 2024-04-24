@@ -3,11 +3,11 @@ import { Text, View, TouchableOpacity, StyleSheet } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import { COLORS } from "../../constants/theme";
 
-const Checkbox = ({ isCheck, onPress }) => {
+const Checkbox = ({ isCheck, onPress, color }) => {
   
   return (
-    <TouchableOpacity style={[styles.box]} onPress={onPress}>
-      {isCheck && <Entypo name="check" size={20} color={'white'} />}
+    <TouchableOpacity style={[styles.box, {borderColor: color? color: 'white'}]} onPress={onPress}>
+      {isCheck && <Entypo name="check" size={20} color={color? color: 'white'} />}
     </TouchableOpacity>
   );
 };
@@ -19,7 +19,6 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderWidth: 2,
-    borderColor:"white",
     borderRadius: 2,
     justifyContent: "center",
     alignItems: "center",

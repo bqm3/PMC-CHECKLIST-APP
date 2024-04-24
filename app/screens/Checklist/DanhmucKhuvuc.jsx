@@ -204,7 +204,7 @@ const DanhmucCalamviec = ({ navigation }) => {
 
   const handlePushDataEdit = async (id) => {
     if (dataInput.tenca === "" || dataInput.khoicv === null) {
-      Alert.alert("PMC Thông báo", "Thiếu thông tin ca làm việc", [
+      Alert.alert("PMC Thông báo", "Thiếu thông tin khu vực", [
         {
           text: "Hủy",
           onPress: () => console.log("Cancel Pressed"),

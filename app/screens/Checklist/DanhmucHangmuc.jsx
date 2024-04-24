@@ -8,7 +8,6 @@ import {
   Image,
   KeyboardAvoidingView,
   Platform,
-  Keyboard,
   ActivityIndicator,
 } from "react-native";
 import React, {
@@ -30,16 +29,23 @@ import moment from "moment";
 import ButtonChecklist from "../../components/Button/ButtonCheckList";
 import { COLORS, SIZES } from "../../constants/theme";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
-import ItemCalamviec from "../../components/Item/ItemCalamviec";
 
-import { ent_khoicv_get, ent_calv_get } from "../../redux/actions/entActions";
+import {
+  ent_toanha_get,
+  ent_khoicv_get,
+  ent_khuvuc_get,
+  ent_hangmuc_get,
+} from "../../redux/actions/entActions";
 import axios from "axios";
 import { BASE_URL } from "../../constants/config";
-import ModalCalamviec from "../../components/Modal/ModalCalamviec";
+import ItemKhuVuc from "../../components/Item/ItemKhuVuc";
+import ModalKhuvuc from "../../components/Modal/ModalKhuvuc";
+import ItemHangmuc from "../../components/Item/ItemHangmuc";
+import ModalHangmuc from "../../components/Modal/ModalHangmuc";
 
-const DanhmucCalamviec = ({ navigation }) => {
+const DanhmucHangmuc = ({ navigation }) => {
   const dispath = useDispatch();
-  const { ent_khoicv, ent_calv } = useSelector((state) => state.entReducer);
+  const { ent_khuvuc, ent_hangmuc } = useSelector((state) => state.entReducer);
   const { user, authToken } = useSelector((state) => state.authReducer);
 
   const bottomSheetModalRef = useRef(null);
@@ -49,20 +55,20 @@ const DanhmucCalamviec = ({ navigation }) => {
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [isCheckUpdate, setIsCheckUpdate] = useState({
     check: false,
-    id_calv: null,
+    ID_Hangmuc: null,
   });
 
-  const init_khoicv = async () => {
-    await dispath(ent_khoicv_get());
+  const init_khuvuc = async () => {
+    await dispath(ent_khuvuc_get());
   };
 
-  const init_calv = async () => {
-    await dispath(ent_calv_get());
+  const init_hangmuc = async () => {
+    await dispath(ent_hangmuc_get());
   };
 
   useEffect(() => {
-    init_khoicv();
-    init_calv();
+    init_khuvuc();
+    init_hangmuc();
   }, []);
 
   useEffect(() => {
@@ -76,12 +82,11 @@ const DanhmucCalamviec = ({ navigation }) => {
     return () => clearTimeout(timeoutId);
   }, []); //
 
-  const dateHour = moment(new Date()).format("LT");
   const [dataInput, setDataInput] = useState({
-    tenca: "",
-    giobd: dateHour,
-    giokt: dateHour,
-    khoicv: null,
+    ID_Khuvuc: null,
+    MaQrCode: "",
+    Hangmuc: "",
+    Tieuchuankt: "",
   });
 
   const handleChangeText = (key, value) => {
@@ -91,10 +96,9 @@ const DanhmucCalamviec = ({ navigation }) => {
     }));
   };
 
-  console.log('dataInput',dataInput)
   const handlePushDataSave = async () => {
-    if (dataInput.tenca === "" || dataInput.khoicv === null) {
-      Alert.alert("PMC Thông báo", "Thiếu thông tin ca làm việc", [
+    if (dataInput.Tieuchuankt === "" || dataInput.Hangmuc === "") {
+      Alert.alert("PMC Thông báo", "Thiếu thông tin hạng mục", [
         {
           text: "Hủy",
           onPress: () => console.log("Cancel Pressed"),
@@ -104,38 +108,39 @@ const DanhmucCalamviec = ({ navigation }) => {
       ]);
     } else {
       let data = {
-        Tenca: dataInput.tenca,
-        Giobatdau: dataInput.giobd,
-        Gioketthuc: dataInput.giokt,
-        ID_KhoiCV: dataInput.khoicv,
-        ID_Duan: user.ID_Duan,
+        ID_Khuvuc: dataInput.ID_Khuvuc,
+        MaQrCode: dataInput.MaQrCode,
+        Hangmuc: dataInput.Hangmuc,
+        Tieuchuankt: dataInput.Tieuchuankt,
       };
       setLoadingSubmit(true);
-    
       try {
-        await axios
-          .post(BASE_URL + `/ent_calv/create`, data, {
+        const response = await axios.post(
+          BASE_URL + "/ent_hangmuc/create",
+          data,
+          {
             headers: {
               Accept: "application/json",
               Authorization: "Bearer " + authToken,
             },
-          })
-          .then((response) => {
-            init_calv();
-            handleAdd();
-            handleCloseModal();
-            setLoadingSubmit(false);
-            Alert.alert("PMC Thông báo", response.data.message, [
-              {
-                text: "Hủy",
-                onPress: () => console.log("Cancel Pressed"),
-                style: "cancel",
-              },
-              { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-            ]);
-          });
+          }
+        );
+        init_hangmuc();
+        handleAdd();
+        handleCloseModal();
+        handlePresentModalClose()
+        setLoadingSubmit(false);
+        Alert.alert("PMC Thông báo", response.data.message, [
+          {
+            text: "Hủy",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel",
+          },
+          { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+        ]);
       } catch (error) {
         setLoadingSubmit(false);
+       
         if (error.response) {
           // Lỗi từ phía server (có response từ server)
           Alert.alert("PMC Thông báo", error.response.data.message, [
@@ -148,7 +153,6 @@ const DanhmucCalamviec = ({ navigation }) => {
           ]);
         } else if (error.request) {
           // Lỗi không nhận được phản hồi từ server
-          console.log(error.request);
           Alert.alert("PMC Thông báo", "Không nhận được phản hồi từ máy chủ", [
             {
               text: "Hủy",
@@ -159,7 +163,6 @@ const DanhmucCalamviec = ({ navigation }) => {
           ]);
         } else {
           // Lỗi khi cấu hình request
-          console.log("Error", error.message);
           Alert.alert("PMC Thông báo", "Lỗi khi gửi yêu cầu", [
             {
               text: "Hủy",
@@ -173,23 +176,23 @@ const DanhmucCalamviec = ({ navigation }) => {
     }
   };
 
-  const handleEditEnt = async (data) => {
-    handlePresentModalPress();
-    setDataInput({
-      tenca: data.Tenca,
-      giobd: data.Giobatdau,
-      giokt: data.Gioketthuc,
-      khoicv: data.ID_KhoiCV,
-    });
+  const handleEditEnt = (data) => {
     setIsCheckUpdate({
       check: true,
-      id_calv: data.ID_Calv,
+      ID_Hangmuc: data.ID_Hangmuc,
+    });
+    handlePresentModalPress();
+    setDataInput({
+      ID_Khuvuc: data.ID_Khuvuc,
+      MaQrCode: data.MaQrCode,
+      Hangmuc: data.Hangmuc,
+      Tieuchuankt: data.Tieuchuankt,
     });
   };
 
   const handlePushDataEdit = async (id) => {
-    if (dataInput.tenca === "" || dataInput.khoicv === null) {
-      Alert.alert("PMC Thông báo", "Thiếu thông tin ca làm việc", [
+    if (dataInput.Tieuchuankt === "" || dataInput.Hangmuc === "") {
+      Alert.alert("PMC Thông báo", "Thiếu thông tin hạng mục", [
         {
           text: "Hủy",
           onPress: () => console.log("Cancel Pressed"),
@@ -199,25 +202,25 @@ const DanhmucCalamviec = ({ navigation }) => {
       ]);
     } else {
       let data = {
-        Tenca: dataInput.tenca,
-        Giobatdau: dataInput.giobd,
-        Gioketthuc: dataInput.giokt,
-        ID_KhoiCV: dataInput.khoicv,
-        ID_Duan: user.ID_Duan,
+        ID_Khuvuc: dataInput.ID_Khuvuc,
+        MaQrCode: dataInput.MaQrCode,
+        Hangmuc: dataInput.Hangmuc,
+        Tieuchuankt: dataInput.Tieuchuankt,
       };
       setLoadingSubmit(true);
       try {
         await axios
-          .put(BASE_URL + `/ent_calv/update/${id}`, data, {
+          .put(BASE_URL + `/ent_hangmuc/update/${id}`, data, {
             headers: {
               Accept: "application/json",
               Authorization: "Bearer " + authToken,
             },
           })
           .then((response) => {
-            init_calv();
+            init_hangmuc();
             handleAdd();
             handleCloseModal();
+            handlePresentModalClose()
             setLoadingSubmit(false);
             Alert.alert("PMC Thông báo", response.data.message, [
               {
@@ -242,7 +245,6 @@ const DanhmucCalamviec = ({ navigation }) => {
           ]);
         } else if (error.request) {
           // Lỗi không nhận được phản hồi từ server
-          console.log(error.request);
           Alert.alert("PMC Thông báo", "Không nhận được phản hồi từ máy chủ", [
             {
               text: "Hủy",
@@ -253,7 +255,6 @@ const DanhmucCalamviec = ({ navigation }) => {
           ]);
         } else {
           // Lỗi khi cấu hình request
-          console.log("Error", error.message);
           Alert.alert("PMC Thông báo", "Lỗi khi gửi yêu cầu", [
             {
               text: "Hủy",
@@ -268,7 +269,7 @@ const DanhmucCalamviec = ({ navigation }) => {
   };
 
   const handleAlertDelete = async (id) => {
-    Alert.alert("PMC Thông báo", "Bạn có muốn xóa ca làm việc", [
+    Alert.alert("PMC Thông báo", "Bạn có muốn xóa hạng mục làm việc", [
       {
         text: "Hủy",
         onPress: () => console.log("Cancel Pressed"),
@@ -280,14 +281,14 @@ const DanhmucCalamviec = ({ navigation }) => {
 
   const handlePushDataDelete = async (id) => {
     await axios
-      .put(BASE_URL + `/ent_calv/delete/${id}`, [], {
+      .put(BASE_URL + `/ent_hangmuc/delete/${id}`, [], {
         headers: {
           Accept: "application/json",
           Authorization: "Bearer " + authToken,
         },
       })
       .then((response) => {
-        init_calv();
+        init_hangmuc();
         handleAdd();
         handleCloseModal();
         Alert.alert("PMC Thông báo", response.data.message, [
@@ -300,7 +301,6 @@ const DanhmucCalamviec = ({ navigation }) => {
         ]);
       })
       .catch((err) => {
-        console.log("err0", err);
         Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
           {
             text: "Hủy",
@@ -312,37 +312,12 @@ const DanhmucCalamviec = ({ navigation }) => {
       });
   };
 
-  const [isDatePickerVisible, setDatePickerVisibility] = useState({
-    giobd: false,
-    giokt: false,
-  });
-
-  const showDatePicker = (key) => {
-    setDatePickerVisibility((data) => ({
-      ...data,
-      [key]: true,
-    }));
-  };
-
-  const hideDatePicker = () => {
-    setDatePickerVisibility(false);
-  };
-
-  const handleConfirm = (key, date) => {
-    handleChangeText(key, moment(date).format("LT"));
-    hideDatePicker();
-  };
-
   const handleAdd = () => {
     setDataInput({
-      tenca: "",
-      giobd: dateHour,
-      giokt: dateHour,
-      khoicv: null,
-    });
-    setIsCheckUpdate({
-      check: false,
-      id_calv: null,
+      ID_Khuvuc: null,
+      MaQrCode: "",
+      Hangmuc: "",
+      Tieuchuankt: "",
     });
   };
 
@@ -350,22 +325,34 @@ const DanhmucCalamviec = ({ navigation }) => {
     bottomSheetModalRef.current?.present();
   }, []);
 
+  const handlePresentModalClose = useCallback(() => {
+    bottomSheetModalRef.current?.close();
+  }, []);
+
   const handleSheetChanges = useCallback((index) => {
     if (index === -1) {
-      setOpacity(1);
-      handleAdd()
+      handleCloseModal();
     } else {
       setOpacity(0.2);
     }
   }, []);
 
   const handleCloseModal = () => {
-    bottomSheetModalRef?.current?.close();
     setOpacity(1);
+    setIsCheckUpdate({
+      check: false,
+      ID_Hangmuc: null,
+    });
+    setDataInput({
+      ID_Khuvuc: null,
+      MaQrCode: "",
+      Hangmuc: "",
+      Tieuchuankt: "",
+    });
   };
 
   const decimalNumber = (number) => {
-    if (number < 10) return `0${number}`;
+    if (number < 10 && number > 0) return `0${number}`;
     return number;
   };
 
@@ -391,7 +378,9 @@ const DanhmucCalamviec = ({ navigation }) => {
                 }}
               >
                 <View style={styles.container}>
-                  <Text  allowFontScaling={false} style={styles.danhmuc}>Danh mục ca làm việc</Text>
+                  <Text allowFontScaling={false} style={styles.danhmuc}>
+                    Danh mục hạng mục
+                  </Text>
                   {isLoading === true ? (
                     <View
                       style={{
@@ -405,7 +394,7 @@ const DanhmucCalamviec = ({ navigation }) => {
                     </View>
                   ) : (
                     <>
-                      {ent_calv && ent_calv.length > 0 ? (
+                      {ent_hangmuc && ent_hangmuc.length > 0 ? (
                         <>
                           <View
                             style={{
@@ -415,14 +404,13 @@ const DanhmucCalamviec = ({ navigation }) => {
                               justifyContent: "space-between",
                             }}
                           >
-                            <Text  allowFontScaling={false} style={styles.text}>
-                              Số lượng: {decimalNumber(ent_calv?.length)}
+                            <Text allowFontScaling={false} style={styles.text}>
+                              Số lượng: {decimalNumber(ent_hangmuc?.length)}
                             </Text>
                             <ButtonChecklist
                               text={"Thêm mới"}
                               width={"auto"}
                               color={COLORS.bg_button}
-                              // icon={<Ionicons name="add" size={20} color="white" />}
                               onPress={handlePresentModalPress}
                             />
                           </View>
@@ -431,9 +419,9 @@ const DanhmucCalamviec = ({ navigation }) => {
                             horizontal={false}
                             contentContainerStyle={{ flexGrow: 1 }}
                             style={{ marginVertical: 10 }}
-                            data={ent_calv}
+                            data={ent_hangmuc}
                             renderItem={({ item, index }) => (
-                              <ItemCalamviec
+                              <ItemHangmuc
                                 key={index}
                                 item={item}
                                 handleEditEnt={handleEditEnt}
@@ -488,16 +476,12 @@ const DanhmucCalamviec = ({ navigation }) => {
                 onChange={handleSheetChanges}
               >
                 <BottomSheetScrollView style={styles.contentContainer}>
-                  <ModalCalamviec
-                    ent_khoicv={ent_khoicv}
+                  <ModalHangmuc
+                    ent_khuvuc={ent_khuvuc}
+                    ent_hangmuc={ent_hangmuc}
                     handleChangeText={handleChangeText}
-                    showDatePicker={showDatePicker}
-                    isDatePickerVisible={isDatePickerVisible}
-                    handleConfirm={handleConfirm}
-                    hideDatePicker={hideDatePicker}
                     dataInput={dataInput}
                     handlePushDataSave={handlePushDataSave}
-                    handleEditEnt={handleEditEnt}
                     isCheckUpdate={isCheckUpdate}
                     handlePushDataEdit={handlePushDataEdit}
                     loadingSubmit={loadingSubmit}
@@ -521,6 +505,7 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: "700",
     color: "white",
+    // paddingVertical: 40,
   },
   text: { fontSize: 15, color: "white", fontWeight: "600" },
   textInput: {
@@ -560,4 +545,4 @@ const styles = StyleSheet.create({
   row: { flexDirection: "row", backgroundColor: "#FFF1C1" },
 });
 
-export default DanhmucCalamviec;
+export default DanhmucHangmuc;

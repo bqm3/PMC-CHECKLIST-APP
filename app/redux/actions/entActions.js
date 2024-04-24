@@ -58,6 +58,34 @@ export const ent_calv_get = () => {
   };
 };
 
+export const ent_calv_filter = (id) => {
+  return async (dispatch) => {
+    try {
+      const token = await AsyncStorage.getItem("tokenUser");
+
+      if (token !== null) {
+        const response = await axios.post(BASE_URL + `/ent_calv`,{ID_KhoiCV: id}, {
+          headers: {
+            Accept: "application/json",
+            Authorization: "Bearer " + token,
+          },
+        });
+        const data = response.data.data;
+        dispatch({
+          type: type.SET_ENT_CALV_SUCCESS,
+          payload: {
+            ent_calv: data,
+          },
+        });
+      } else {
+        console.error("initialized error");
+      }
+    } catch (err) {
+      console.log("err", err);
+    }
+  };
+};
+
 export const ent_giamsat_get = () => {
   return async (dispatch) => {
     try {
@@ -226,7 +254,7 @@ export const ent_checklist_get = (pag) => {
   };
 };
 
-export const ent_checklist_get_detail = (ID_KhoiCV, ID_ChecklistC) => {
+export const ent_checklist_get_detail = (ID_KhoiCV, ID_ChecklistC, ID_Calv) => {
   return async (dispatch) => {
     dispatch({
       type: type.SET_ENT_CHECKLIST_STATE,
@@ -240,7 +268,7 @@ export const ent_checklist_get_detail = (ID_KhoiCV, ID_ChecklistC) => {
       
       if (token !== null) {
         const response = await axios.get(
-          BASE_URL + `/ent_checklist/${ID_KhoiCV}/${ID_ChecklistC}`,
+          BASE_URL + `/ent_checklist/${ID_KhoiCV}/${ID_ChecklistC}/${ID_Calv}`,
           {
             headers: {
               Accept: "application/json",
@@ -293,6 +321,33 @@ export const ent_tang_get = () => {
       }
     } catch (err) {
       console.log("err", err);
+    }
+  };
+};
+
+export const ent_hangmuc_get = () => {
+  return async (dispatch) => {
+    try {
+      const token = await AsyncStorage.getItem("tokenUser");
+      if (token !== null) {
+        const response = await axios.get(BASE_URL + "/ent_hangmuc", {
+          headers: {
+            Accept: "application/json",
+            Authorization: "Bearer " + token,
+          },
+        });
+        const data = response.data.data;
+        dispatch({
+          type: type.SET_ENT_HANGMUC_SUCCESS,
+          payload: {
+            ent_hangmuc: data,
+          },
+        });
+      } else {
+        console.error("initialized error");
+      }
+    } catch (err) {
+      console.log("err HANGMUC", err);
     }
   };
 };

@@ -11,6 +11,7 @@ const initialState = {
   ent_tang: [],
   ent_toanha: [],
   ent_users: [],
+  ent_hangmuc: [],
   error: false,
   isLoading: false,
   isLoadingDetail: false,
@@ -283,7 +284,31 @@ export const entReducer = (state = initialState, action) => {
           isLoadingDetail: action.payload.isLoading,
           message: null,
         };
-      
+        case type.SET_ENT_HANGMUC_STATE:
+          return {
+            ...state,
+            ent_hangmuc: null,
+            error: false,
+            isLoading: true,
+            message: null,
+          };
+        case type.SET_ENT_HANGMUC_SUCCESS:
+          return {
+            ...state,
+            ent_hangmuc: action.payload.ent_hangmuc,
+            error: false,
+            isLoading: false,
+            message: null,
+          };
+        case type.SET_ENT_HANGMUC_FAIL:
+          return {
+            ...state,
+            ent_hangmuc: null,
+            error: false,
+            isLoading: true,
+            message: null,
+          };
+          
     case type.SET_LOGOUT:
       return {
         ...state,

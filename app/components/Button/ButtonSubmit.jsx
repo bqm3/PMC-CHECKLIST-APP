@@ -5,6 +5,7 @@ import {COLORS} from '../../constants/theme';
 const ButtonSubmit = ({text, onPress, isLoading,backgroundColor, color, width,pV}) => {
   return (
     <TouchableOpacity
+    disabled={isLoading}
       style={{
         width: width ? width: '100%',
         backgroundColor: backgroundColor,

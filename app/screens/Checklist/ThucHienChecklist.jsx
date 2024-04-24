@@ -474,10 +474,11 @@ const ThucHienChecklist = ({ navigation }) => {
     bottomSheetModalRef2?.current?.present();
   };
 
-  const handleChecklistDetail = (id1, id2) => {
+  const handleChecklistDetail = (id1, id2, id3) => {
     navigation.navigate("Chi tiết Checklist", {
       ID_ChecklistC: id1,
       ID_KhoiCV: id2,
+      ID_Calv: id3
     });
   };
 
@@ -620,6 +621,7 @@ const ThucHienChecklist = ({ navigation }) => {
       </TouchableHighlight>
     );
   };
+  console.log('newActionCheckList[0]',newActionCheckList[0])
 
   return (
     <>
@@ -888,7 +890,8 @@ const ThucHienChecklist = ({ navigation }) => {
                         onPress={() =>
                           handleChecklistDetail(
                             newActionCheckList[0]?.ID_ChecklistC,
-                            newActionCheckList[0]?.ID_KhoiCV
+                            newActionCheckList[0]?.ID_KhoiCV,
+                            newActionCheckList[0]?.ID_Calv,
                           )
                         }
                       >

@@ -17,6 +17,7 @@ import ButtonSubmit from "../Button/ButtonSubmit";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { FontAwesome } from "@expo/vector-icons";
 import VerticalSelect from "../VerticalSelect";
+import VerticalSelectMul from "../Vertical/VerticalSelectMul";
 import SelectDropdown from "react-native-select-dropdown";
 import { useHeaderHeight } from "@react-navigation/elements";
 
@@ -25,6 +26,8 @@ const ModalChecklist = ({
   ent_khuvuc,
   ent_toanha,
   ent_khoicv,
+  ent_calv,
+  ent_hangmuc,
   handleChangeText,
   dataInput,
   handlePushDataSave,
@@ -36,6 +39,8 @@ const ModalChecklist = ({
   activeKhuVuc,
   dataKhuVuc,
   loadingSubmit,
+  setCalvFilter,
+  calvFilter
 }) => {
   const ref = useRef(null);
   const height = useHeaderHeight();
@@ -51,6 +56,11 @@ const ModalChecklist = ({
   const defaultKhuvuc = ent_khuvuc?.find(
     (Khuvuc) => Khuvuc.ID_Khuvuc === dataInput?.ID_Khuvuc
   );
+
+  const defaultHangmuc = ent_hangmuc?.find(
+    (Hangmuc) => Hangmuc.ID_Hangmuc === dataInput?.ID_Hangmuc
+  );
+
   const defaultButtonText = defaultTang ? defaultTang : "Tầng";
 
   // Tạo state cho Tiêu chuẩn và Ghi chú
@@ -68,6 +78,19 @@ const ModalChecklist = ({
     dataInput?.Giatridinhdanh
   );
   const [giatrinhan, setGiatrinhan] = useState(dataInput?.Giatrinhan);
+
+  const handleSelect = (selectedItem, index) => {
+    const isAlreadySelected = calvFilter.includes(selectedItem.ID_Calv);
+    
+    // If the item is already selected, remove it from the array
+    if (isAlreadySelected) {
+        setCalvFilter(calvFilter.filter(id => id !== selectedItem.ID_Calv));
+    } else {
+        // Otherwise, add the item to the array
+        setCalvFilter([...calvFilter, selectedItem.ID_Calv]);
+    }
+};
+
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -226,15 +249,7 @@ const ModalChecklist = ({
                 )}
               </View>
 
-            {/* Tầng và khu vực  */}
-            <View
-              style={{
-                flexDirection: "row",
-                width: "100%",
-                justifyContent: "space-between",
-              }}
-            >
-              <View style={{ width: "48%" }}>
+              <View style={{ width: "100%" }}>
                 <Text allowFontScaling={false} style={styles.text}>
                   Tầng
                 </Text>
@@ -290,6 +305,16 @@ const ModalChecklist = ({
                   </Text>
                 )}
               </View>
+
+            {/* Tầng và khu vực  */}
+            <View
+              style={{
+                flexDirection: "row",
+                width: "100%",
+                justifyContent: "space-between",
+              }}
+            >
+             
               <View style={{ width: "48%" }}>
                 {activeKhuVuc && (
                   <>
@@ -354,7 +379,129 @@ const ModalChecklist = ({
                   </>
                 )}
               </View>
+              <View style={{ width: "48%" }}>
+                <Text allowFontScaling={false} style={styles.text}>
+                Hạng mục
+                </Text>
+                {ent_hangmuc && ent_hangmuc?.length > 0 ? (
+                  <SelectDropdown
+                    ref={ref}
+                    data={ent_hangmuc ? ent_hangmuc : []}
+                    buttonStyle={styles.select}
+                    dropdownStyle={{
+                      borderRadius: 8,
+                      maxHeight: 400,
+                    }}
+                    // rowStyle={{ height: 50, justifyContent: "center" }}
+                    defaultButtonText={"Hạng mục"}
+                    buttonTextStyle={styles.customText}
+                    defaultValue={defaultHangmuc}
+                    onSelect={(selectedItem, index) => {
+                      handleChangeText("ID_Hangmuc", selectedItem.ID_Hangmuc);
+                    }}
+                    renderDropdownIcon={(isOpened) => {
+                      return (
+                        <FontAwesome
+                          name={isOpened ? "chevron-up" : "chevron-down"}
+                          color={"#637381"}
+                          size={14}
+                          style={{ marginRight: 10 }}
+                        />
+                      );
+                    }}
+                    dropdownIconPosition={"right"}
+                    buttonTextAfterSelection={(selectedItem, index) => {
+                      return (
+                       
+                          <Text allowFontScaling={false} style={styles.text} numberOfLines={3}>
+                            {selectedItem?.Hangmuc}
+                          </Text>
+                      );
+                    }}
+                    renderCustomizedRowChild={(item, index) => {
+                      return (
+                        <VerticalSelect
+                          value={item.ID_Hangmuc}
+                          label={item.Hangmuc}
+                          key={index}
+                          selectedItem={dataInput?.ID_Hangmuc}
+                        />
+                      );
+                    }}
+                  />
+                ) : (
+                  <Text allowFontScaling={false} style={styles.errorText}>
+                    Không có dữ liệu tầng.
+                  </Text>
+                )}
+              </View>
             </View>
+
+            {/* Ca làm việc  */}
+            <View style={{ width: "100%" }}>
+                <Text allowFontScaling={false} style={styles.text}>
+                  Ca làm việc
+                </Text>
+                {ent_calv && ent_calv?.length > 0 ? (
+                  <SelectDropdown
+                    data={ent_calv ? ent_calv : []}
+                    buttonStyle={styles.select}
+                    dropdownStyle={{
+                      borderRadius: 8,
+                      maxHeight: 400,
+                    }}
+                    // rowStyle={{ height: 50, justifyContent: "center" }}
+                    defaultButtonText={"Ca làm việc"}
+                    buttonTextStyle={styles.customText}
+                    // defaultValue={defaultKhoi}
+                    onSelect={(selectedItem, index) => { 
+                      handleSelect(selectedItem, index)
+                    }}
+                    renderDropdownIcon={(isOpened) => {
+                      return (
+                        <FontAwesome
+                          name={isOpened ? "chevron-up" : "chevron-down"}
+                          color={"#637381"}
+                          size={14}
+                          style={{ marginRight: 10 }}
+                        />
+                      );
+                    }}
+                    dropdownIconPosition={"right"}
+                    buttonTextAfterSelection={(selectedItem, index) => {
+                      return (
+                        <View
+                          style={{
+                            justifyContent: "center",
+                            alignContent: "center",
+                            height: 50,
+                          }}
+                        >
+                          <Text allowFontScaling={false} style={styles.text}>
+                          Ca làm việc
+                          </Text>
+                        </View>
+                      );
+                    }}
+                    renderCustomizedRowChild={(item, index) => {
+                      return (
+                        <VerticalSelectMul
+                          value={item.ID_Calv}
+                          item={item}
+                          label={`${item.Tenca} - ${item?.ent_khoicv?.KhoiCV}`}
+                          key={index}
+                          selectedItem={calvFilter}
+                          handleSelect={handleSelect}
+                        />
+                      );
+                    }}
+                  />
+                ) : (
+                  <Text allowFontScaling={false} style={styles.errorText}>
+                    Không có dữ liệu ca làm việc.
+                  </Text>
+                )}
+              </View>
 
             {/* Số thứ tự - Mã số  */}
             <View
@@ -409,10 +556,12 @@ const ModalChecklist = ({
                 />
               </View>
             </View>
+            
             {/* Mã Qr code  */}
             <Text allowFontScaling={false} style={styles.text}>
               Mã Qr code
             </Text>
+
             <TextInput
               allowFontScaling={false}
               value={maQrCode}
@@ -429,6 +578,7 @@ const ModalChecklist = ({
                 handleChangeText("MaQrCode", val), setMaQrCode(val);
               }}
             />
+            
             {/* Tên checklist  */}
             <Text allowFontScaling={false} style={styles.text}>
               Tên Checklist

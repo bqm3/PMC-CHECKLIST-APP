@@ -1,21 +1,15 @@
 import {
-  ScrollView,
   StyleSheet,
-  Alert,
   Text,
   View,
   TextInput,
   TouchableOpacity,
-  KeyboardAvoidingView,
-  Platform,
 } from "react-native";
 import React, { useRef } from "react";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import { Dropdown } from "react-native-element-dropdown";
 import { COLORS } from "../../constants/theme";
-import ButtonChecklist from "../Button/ButtonCheckList";
 import KeyboardAvoidingComponent from "../KeyboardAvoidingComponent";
-import { FontAwesome } from "@expo/vector-icons";
+import { FontAwesome, AntDesign } from "@expo/vector-icons";
 import VerticalSelect from "../VerticalSelect";
 import SelectDropdown from "react-native-select-dropdown";
 import ButtonSubmit from "../Button/ButtonSubmit";
@@ -36,6 +30,7 @@ const ModalCalamviec = ({
   const defaultKhoi = ent_khoicv?.find(
     (Khoi) => Khoi.ID_Khoi === dataInput?.khoicv
   );
+
   const ref = useRef(null);
   return (
     <KeyboardAvoidingComponent>
@@ -118,19 +113,33 @@ const ModalCalamviec = ({
             Giờ bắt đầu
           </Text>
           <TouchableOpacity onPress={() => showDatePicker("giobd")}>
-            <TextInput
-              allowFontScaling={false}
-              value={dataInput.giobd}
-              placeholder="Nhập giờ bắt đầu ca làm việc"
-              placeholderTextColor="gray"
-              style={[
-                styles.textInput,
-                {
-                  paddingHorizontal: 10,
-                },
-              ]}
-              pointerEvents="none"
-            />
+            <View style={styles.action}>
+              <TextInput
+                allowFontScaling={false}
+                value={dataInput.giobd}
+                placeholder="Nhập giờ bắt đầu ca làm việc"
+                placeholderTextColor="gray"
+                style={{
+                  paddingLeft: 12,
+                  color: "#05375a",
+                  width: "80%",
+                  fontSize: 16,
+                  height: 50,
+                }}
+                pointerEvents="none"
+              />
+              <TouchableOpacity
+                onPress={() => showDatePicker("giobd")}
+                style={{
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: 50,
+                  width: 50,
+                }}
+              >
+                <AntDesign name="calendar" size={24} color="black" />
+              </TouchableOpacity>
+            </View>
             <DateTimePickerModal
               isVisible={isDatePickerVisible.giobd}
               mode="time"
@@ -143,19 +152,33 @@ const ModalCalamviec = ({
             Giờ kết thúc
           </Text>
           <TouchableOpacity onPress={() => showDatePicker("giokt")}>
-            <TextInput
-              allowFontScaling={false}
-              value={dataInput.giokt}
-              placeholder="Nhập giờ kết thúc ca làm việc"
-              placeholderTextColor="gray"
-              style={[
-                styles.textInput,
-                {
-                  paddingHorizontal: 10,
-                },
-              ]}
-              pointerEvents="none"
-            />
+          <View style={styles.action}>
+              <TextInput
+                allowFontScaling={false}
+                value={dataInput.giokt}
+                placeholder="Nhập giờ kết thúc ca làm việc"
+                placeholderTextColor="gray"
+                style={{
+                  paddingLeft: 12,
+                  color: "#05375a",
+                  width: "80%",
+                  fontSize: 16,
+                  height: 50,
+                }}
+                pointerEvents="none"
+              />
+              <TouchableOpacity
+                onPress={() => showDatePicker("giokt")}
+                style={{
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: 50,
+                  width: 50,
+                }}
+              >
+                <AntDesign name="calendar" size={24} color="black" />
+              </TouchableOpacity>
+            </View>
             <DateTimePickerModal
               isVisible={isDatePickerVisible.giokt}
               mode="time"
@@ -204,10 +227,10 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     backgroundColor: "white",
   },
-  dropdown: {
-    height: 48,
-    paddingHorizontal: 10,
-    backgroundColor: "white",
+  action: {
+    height: 50,
+    flexDirection: "row",
+    alignItems: "center",
     borderRadius: 8,
     backgroundColor: "white",
     shadowColor: "#000000",
@@ -217,6 +240,21 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.22,
     shadowRadius: 9.22,
+    elevation: 12,
+  },
+  dropdown: {
+    height: 48,
+    paddingHorizontal: 10,
+    backgroundColor: "white",
+    borderRadius: 8,
+    backgroundColor: "white",
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0,
+    shadowRadius: 4,
     elevation: 12,
   },
   head: {

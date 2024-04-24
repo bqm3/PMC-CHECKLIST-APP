@@ -39,6 +39,8 @@ import {
   ent_khuvuc_get,
   ent_toanha_get,
   ent_khoicv_get,
+  ent_calv_filter,
+  ent_hangmuc_get
 } from "../../redux/actions/entActions";
 import ModalChecklist from "../../components/Modal/ModalChecklist";
 import axios from "axios";
@@ -92,7 +94,7 @@ const headerList = [
 
 const DanhmucChecklist = ({ navigation }) => {
   const dispath = useDispatch();
-  const { ent_tang, ent_khuvuc, ent_checklist, ent_khoicv, ent_toanha } =
+  const { ent_tang, ent_khuvuc, ent_checklist, ent_khoicv, ent_toanha, ent_calv, ent_hangmuc } =
     useSelector((state) => state.entReducer);
   const { user, authToken } = useSelector((state) => state.authReducer);
 
@@ -122,6 +124,8 @@ const DanhmucChecklist = ({ navigation }) => {
     ID_Khuvuc: false,
   });
 
+  const [calvFilter, setCalvFilter] = useState([])
+
   const bottomSheetModalRef = useRef(null);
   const snapPoints = useMemo(() => ["90%"], []);
   const [opacity, setOpacity] = useState(1);
@@ -134,6 +138,7 @@ const DanhmucChecklist = ({ navigation }) => {
   const [dataInput, setDataInput] = useState({
     ID_Khuvuc: null,
     ID_Tang: null,
+    ID_Hangmuc: null,
     Sothutu: "",
     Maso: "",
     MaQrCode: "",
@@ -179,13 +184,38 @@ const DanhmucChecklist = ({ navigation }) => {
     await dispath(ent_toanha_get());
   };
 
+
+  const init_hangmuc = async () => {
+    await dispath(ent_hangmuc_get());
+  };
+  
+
+  const init_calv = async (id) => {
+    await dispath(ent_calv_filter(id));
+  };
+
+
   useEffect(() => {
     init_checklist();
     init_khuvuc();
     init_tang();
     init_khoicv();
     init_toanha();
+    init_hangmuc()
+    init_calv(null)
   }, []);
+
+  useEffect(() => {
+    init_calv(dataCheckKhuvuc.ID_KhoiCV)
+  },[dataCheckKhuvuc.ID_KhoiCV])
+
+  useEffect(() => {
+    const calvIds = ent_calv.map(item => item.ID_Calv);
+    
+    // Update the state with the extracted ID_Calv values
+    setCalvFilter(calvIds);
+  },[ent_calv])
+
 
   const toggleSwitch = (isEnabled) => {
     setIsEnabled(!isEnabled);
@@ -344,6 +374,7 @@ const DanhmucChecklist = ({ navigation }) => {
     } else {
       let data = {
         ID_Khuvuc: dataInput.ID_Khuvuc,
+        ID_Hangmuc: dataInput.ID_Hangmuc,
         ID_Tang: dataInput.ID_Tang,
         Sothutu: dataInput.Sothutu,
         Maso: dataInput.Maso,
@@ -353,22 +384,38 @@ const DanhmucChecklist = ({ navigation }) => {
         Checklist: dataInput.Checklist,
         Giatridinhdanh: dataInput.Giatridinhdanh,
         Giatrinhan: dataInput.Giatrinhan,
+        sCalv: calvFilter
       };
       setLoadingSubmit(true);
-      await axios
-        .post(BASE_URL + "/ent_checklist/create", data, {
-          headers: {
-            Accept: "application/json",
-            Authorization: "Bearer " + authToken,
+      try {
+        const response = await axios.post(
+          BASE_URL + "/ent_checklist/create",
+          data,
+          {
+            headers: {
+              Accept: "application/json",
+              Authorization: "Bearer " + authToken,
+            },
+          }
+        );
+        setPage(0);
+        init_checklist(0, numberOfItemsPerPage);
+        handleAdd();
+        handleCloseModal();
+        setLoadingSubmit(false);
+        Alert.alert("PMC Thông báo", response.data.message, [
+          {
+            text: "Hủy",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel",
           },
-        })
-        .then((response) => {
-          setPage(0);
-          init_checklist(0, numberOfItemsPerPage);
-          handleAdd();
-          handleCloseModal();
-          setLoadingSubmit(false);
-          Alert.alert("PMC Thông báo", response.data.message, [
+          { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+        ]);
+      } catch (error) {
+        setLoadingSubmit(false);
+        if (error.response) {
+          // Lỗi từ phía server (có response từ server)
+          Alert.alert("PMC Thông báo", error.response.data.message, [
             {
               text: "Hủy",
               onPress: () => console.log("Cancel Pressed"),
@@ -376,10 +423,9 @@ const DanhmucChecklist = ({ navigation }) => {
             },
             { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
           ]);
-        })
-        .catch((err) => {
-          setLoadingSubmit(false);
-          Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
+        } else if (error.request) {
+          // Lỗi không nhận được phản hồi từ server
+          Alert.alert("PMC Thông báo", "Không nhận được phản hồi từ máy chủ", [
             {
               text: "Hủy",
               onPress: () => console.log("Cancel Pressed"),
@@ -387,7 +433,18 @@ const DanhmucChecklist = ({ navigation }) => {
             },
             { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
           ]);
-        });
+        } else {
+          // Lỗi khi cấu hình request
+          Alert.alert("PMC Thông báo", "Lỗi khi gửi yêu cầu", [
+            {
+              text: "Hủy",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel",
+            },
+            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+          ]);
+        }
+      }
     }
   };
 
@@ -396,6 +453,7 @@ const DanhmucChecklist = ({ navigation }) => {
     setDataInput({
       ID_Khuvuc: data.ID_Khuvuc,
       ID_Tang: data.ID_Tang,
+      ID_Hangmuc: data.ID_Hangmuc,
       Sothutu: data.Sothutu,
       Maso: data.Maso,
       MaQrCode: data.MaQrCode,
@@ -435,6 +493,7 @@ const DanhmucChecklist = ({ navigation }) => {
       let data = {
         ID_Khuvuc: dataInput.ID_Khuvuc,
         ID_Tang: dataInput.ID_Tang,
+        ID_Hangmuc: dataInput.ID_Hangmuc,
         Sothutu: dataInput.Sothutu,
         Maso: dataInput.Maso,
         MaQrCode: dataInput.MaQrCode,
@@ -561,6 +620,7 @@ const DanhmucChecklist = ({ navigation }) => {
     setDataInput({
       ID_Khuvuc: null,
       ID_Tang: null,
+      ID_Hangmuc: null,
       Sothutu: "",
       Maso: "",
       MaQrCode: "",
@@ -947,6 +1007,8 @@ const DanhmucChecklist = ({ navigation }) => {
                   ent_khuvuc={ent_khuvuc}
                   ent_khoicv={ent_khoicv}
                   ent_toanha={ent_toanha}
+                  ent_hangmuc={ent_hangmuc}
+                  ent_calv={ent_calv}
                   handleChangeText={handleChangeText}
                   handleDataKhuvuc={handleDataKhuvuc}
                   handleChangeTextKhuVuc={handleChangeTextKhuVuc}
@@ -958,6 +1020,8 @@ const DanhmucChecklist = ({ navigation }) => {
                   activeKhuVuc={activeKhuVuc}
                   dataKhuVuc={dataKhuVuc}
                   loadingSubmit={loadingSubmit}
+                  setCalvFilter={setCalvFilter}
+                  calvFilter={calvFilter}
                 />
               </BottomSheetScrollView>
             </BottomSheetModal>

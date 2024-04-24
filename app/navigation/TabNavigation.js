@@ -19,6 +19,7 @@ import DanhmucToanhaScreen from "../screens/PSH/DanhmucToanhaScreen";
 import DanhmucDuanScreen from "../screens/PSH/DanhmucDuanScreen";
 import DanhmucUserScreen from "../screens/PSH/DanhmucUserScreen";
 import WebViewImage from "../screens/WebViewImage";
+import DanhmucHangmuc from "../screens/Checklist/DanhmucHangmuc";
 
 const Stack = createNativeStackNavigator();
 
@@ -117,6 +118,36 @@ const HomeStack = ({ navigation }) => {
               style={{ fontSize: 20, fontWeight: "700", color: "white" }}
             >
               Thực hiện Checklist
+            </Text>
+          ),
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              {Platform.OS === "ios" && (
+                <Ionicons name="chevron-back" size={28} color="white" />
+              )}
+            </TouchableOpacity>
+          ),
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: COLORS.bg_button,
+          },
+          headerBackTitleVisible: false,
+        })}
+      />
+
+      <Stack.Screen
+        name="Danh mục Hạng mục"
+        component={DanhmucHangmuc}
+        lazy={false}
+        options={({ navigation, route }) => ({
+          headerShown: true,
+
+          headerTitle: () => (
+            <Text
+              allowFontScaling={false}
+              style={{ fontSize: 20, fontWeight: "700", color: "white" }}
+            >
+              Hạng mục
             </Text>
           ),
           headerLeft: () => (
