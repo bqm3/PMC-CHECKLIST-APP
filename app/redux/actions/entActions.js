@@ -254,7 +254,7 @@ export const ent_checklist_get = (pag) => {
   };
 };
 
-export const ent_checklist_get_detail = (ID_KhoiCV, ID_ChecklistC, ID_Calv) => {
+export const ent_checklist_get_detail = (ID_KhoiCV, ID_ChecklistC, ID_Calv, ID_Hangmuc) => {
   return async (dispatch) => {
     dispatch({
       type: type.SET_ENT_CHECKLIST_STATE,
@@ -268,7 +268,7 @@ export const ent_checklist_get_detail = (ID_KhoiCV, ID_ChecklistC, ID_Calv) => {
       
       if (token !== null) {
         const response = await axios.get(
-          BASE_URL + `/ent_checklist/${ID_KhoiCV}/${ID_ChecklistC}/${ID_Calv}`,
+          BASE_URL + `/ent_checklist/${ID_KhoiCV}/${ID_ChecklistC}/${ID_Calv}/${ID_Hangmuc}`,
           {
             headers: {
               Accept: "application/json",
@@ -293,7 +293,7 @@ export const ent_checklist_get_detail = (ID_KhoiCV, ID_ChecklistC, ID_Calv) => {
           isLoading: false
         },
       });
-      console.log("err123", err);
+      console.log("ent_checklist_get_detail", err);
     }
   };
 };

@@ -36,6 +36,7 @@ import {
   ent_khuvuc_get,
   ent_tang_get,
   ent_toanha_get,
+  ent_hangmuc_get
 } from "../../redux/actions/entActions";
 import ButtonChecklist from "../../components/Button/ButtonCheckList";
 import { COLORS, SIZES } from "../../constants/theme";
@@ -49,13 +50,14 @@ import { BASE_URL } from "../../constants/config";
 import QRCodeScreen from "../QRCodeScreen";
 
 const DetailChecklist = ({ route, navigation }) => {
-  const { ID_ChecklistC, ID_KhoiCV, ID_Calv } = route.params;
+  const { ID_ChecklistC, ID_KhoiCV, ID_Calv, ID_Hangmuc } = route.params;
   const dispath = useDispatch();
   const {
     ent_checklist_detail,
     ent_tang,
     ent_khuvuc,
     ent_toanha,
+    ent_hangmuc,
     isLoadingDetail,
     isLoading,
   } = useSelector((state) => state.entReducer);
@@ -85,16 +87,18 @@ const DetailChecklist = ({ route, navigation }) => {
     ID_Khuvuc: null,
     ID_Tang: null,
     ID_Toanha: null,
+    ID_Hangmuc: null,
   });
 
   const [isFilter, setIsFilter] = useState({
     ID_Tang: false,
     ID_Khuvuc: false,
     ID_Toanha: null,
+    ID_Hangmuc: null,
   });
 
   const init_checklist = async () => {
-    await dispath(ent_checklist_get_detail(ID_KhoiCV, ID_ChecklistC, ID_Calv));
+    await dispath(ent_checklist_get_detail(ID_KhoiCV, ID_ChecklistC, ID_Calv, ID_Hangmuc));
   };
 
   const init_ent_khuvuc = async () => {
@@ -109,11 +113,16 @@ const DetailChecklist = ({ route, navigation }) => {
     await dispath(ent_tang_get());
   };
 
+  const init_ent_hangmuc = async () => {
+    await dispath(ent_hangmuc_get())
+  }
+
   useEffect(() => {
     init_checklist();
     init_ent_khuvuc();
     init_ent_toanha();
     init_ent_tang();
+    init_ent_hangmuc()
   }, []);
 
   // load add field item initstate
@@ -338,7 +347,7 @@ const DetailChecklist = ({ route, navigation }) => {
   const handlePushDataFilter = async () => {
     try {
       const res = await axios.post(
-        BASE_URL + `/ent_checklist/filter/${ID_KhoiCV}/${ID_ChecklistC}`,
+        BASE_URL + `/ent_checklist/filter/${ID_KhoiCV}/${ID_ChecklistC}/${ID_Calv}/${ID_Hangmuc}`,
         filterData,
         {
           headers: {
@@ -579,17 +588,14 @@ const DetailChecklist = ({ route, navigation }) => {
 
     const descriptions = [
       updatedDefaultActionDataChecklist
-        .map(
-          (item) =>
-            `${ID_ChecklistC}/${item.ID_Checklist}/${item.valueCheck}/${item.gioht}`
-        )
+        .map((item) => `${item.ID_Checklist}/${item.valueCheck}/${item.gioht}`)
         .join(","),
     ];
     const descriptionsJSON = JSON.stringify(descriptions);
 
     const requestDone = axios.post(
       BASE_URL + "/tb_checklistchitietdone/create",
-      { Description: descriptionsJSON },
+      { Description: descriptionsJSON, ID_ChecklistC: ID_ChecklistC },
       {
         headers: {
           Accept: "application/json",

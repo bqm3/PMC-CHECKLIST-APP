@@ -8,7 +8,7 @@ export default function QRCodeScreen({
   setModalVisibleQr,
   setOpacity,
   handlePushDataFilterQr,
-  setIsScan
+  setIsScan,
 }) {
   const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
@@ -23,7 +23,7 @@ export default function QRCodeScreen({
   }, []);
 
   const handleBarCodeScanned = ({ type, data }) => {
-    setIsScan(true)
+    setIsScan(true);
     setScanned(true);
     if ((type, data)) {
       handlePushDataFilterQr(data);
@@ -70,12 +70,10 @@ export default function QRCodeScreen({
         />
         <Button
           text={"Quét lại"}
-          // isLoading={loadingSubmit}
           backgroundColor={COLORS.bg_button}
           color={"white"}
           onPress={() => setScanned(false)}
         />
-        {/* text, backgroundColor, color */}
       </View>
       {/* )} */}
     </View>

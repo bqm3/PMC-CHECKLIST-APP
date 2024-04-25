@@ -475,7 +475,7 @@ const ThucHienChecklist = ({ navigation }) => {
   };
 
   const handleChecklistDetail = (id1, id2, id3) => {
-    navigation.navigate("Chi tiết Checklist", {
+    navigation.navigate("Thực hiện hạng mục", {
       ID_ChecklistC: id1,
       ID_KhoiCV: id2,
       ID_Calv: id3
