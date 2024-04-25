@@ -18,18 +18,17 @@ import React, { useState, useEffect } from "react";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { ent_hangmuc_get } from "../../redux/actions/entActions";
+import { ent_khuvuc_get } from "../../redux/actions/entActions";
 import { COLORS, SIZES } from "../../constants/theme";
 import Button from "../../components/Button/Button";
 import axios from "axios";
 import { BASE_URL } from "../../constants/config";
 import QRCodeScreen from "../QRCodeScreen";
 
-const ThucHienHangmuc = ({ route, navigation }) => {
-  const { ID_ChecklistC, ID_KhoiCV, ID_Calv, ID_Khuvuc } = route.params;
+const ThucHienKhuvuc = ({ route, navigation }) => {
+  const { ID_ChecklistC, ID_KhoiCV, ID_Calv } = route.params;
   const dispath = useDispatch();
-  const { ent_hangmuc } = useSelector((state) => state.entReducer);
-  const [hangMuc, setHangMuc] = useState(ent_hangmuc)
+  const {  ent_khuvuc } = useSelector((state) => state.entReducer);
 
   const { user, authToken } = useSelector((state) => state.authReducer);
 
@@ -40,37 +39,21 @@ const ThucHienHangmuc = ({ route, navigation }) => {
   const [modalVisibleQr, setModalVisibleQr] = useState(false);
   const [dataSelect, setDataSelect] = useState([]);
 
-  const int_hangmuc = async () => {
-    await dispath(ent_hangmuc_get());
+  
+  const int_khuvuc = async () => {
+    await dispath(ent_khuvuc_get());
   };
 
   useEffect(() => {
-    int_hangmuc();
+    int_khuvuc();
   }, []);
-
-  const asyncHangMuc = async () => {
-    await axios.get(BASE_URL+`/ent_hangmuc/filter/${ID_Khuvuc}`, {
-      headers: {
-        Accept: "application/json",
-        Authorization: "Bearer " + authToken,
-      },
-    })
-    .then((res)=> {
-      setHangMuc(res.data.data)
-    })
-    .catch((err) => console.log('err',err))
-  }
-
-  useEffect(()=> {
-    asyncHangMuc()
-  }, [ID_Khuvuc])
 
   const handlePushDataFilterQr = async (value) => {
     const data = {
       MaQrCode: value,
     };
     try {
-      const res = await axios.post(BASE_URL + `/ent_hangmuc/filter_qr`, data, {
+      const res = await axios.post(BASE_URL + `/ent_khuvuc/filter_qr`, data, {
         headers: {
           Accept: "application/json",
           Authorization: "Bearer " + authToken,
@@ -78,11 +61,11 @@ const ThucHienHangmuc = ({ route, navigation }) => {
       });
       const resData = res.data.data
       if (resData.length >= 1) {
-        navigation.navigate("Chi tiết Checklist", {
+        navigation.navigate("Thực hiện hạng mục", {
           ID_ChecklistC: ID_ChecklistC,
           ID_KhoiCV: ID_KhoiCV,
           ID_Calv: ID_Calv,
-          ID_Hangmuc: resData[0].ID_Hangmuc,
+          ID_Khuvuc: resData[0].ID_Khuvuc,
         });
         setIsScan(false);
         setModalVisibleQr(false);
@@ -90,7 +73,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
       } else if (resData.length === 0) {
         Alert.alert(
           "PMC Thông báo",
-          "Không tìm thấy hạng mục có mã Qr phù hợp",
+          "Không tìm thấy khu vực có mã Qr phù hợp",
           [
             {
               text: "Hủy",
@@ -154,11 +137,11 @@ const ThucHienHangmuc = ({ route, navigation }) => {
   };
 
   const handleSubmit = () => {
-    navigation.navigate("Chi tiết Checklist", {
+    navigation.navigate("Thực hiện hạng mục", {
       ID_ChecklistC: ID_ChecklistC,
       ID_KhoiCV: ID_KhoiCV,
       ID_Calv: ID_Calv,
-      ID_Hangmuc: dataSelect[0].ID_Hangmuc,
+      ID_Khuvuc: dataSelect[0].ID_Khuvuc,
     });
   };
 
@@ -192,7 +175,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
             }}
             numberOfLines={5}
           >
-            {item?.Hangmuc}
+            {item?.Tenkhuvuc} - {item?.ent_toanha?.Toanha}
           </Text>
         </View>
       </TouchableOpacity>
@@ -249,8 +232,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
                         }}
                       >
                         <Text allowFontScaling={false} style={styles.text}>
-                          Số lượng: {decimalNumber(hangMuc?.length)} hạng
-                          mục
+                          Số lượng: {decimalNumber(ent_khuvuc?.length)} khu vực
                         </Text>
                       </View>
                     </TouchableOpacity>
@@ -258,8 +240,8 @@ const ThucHienHangmuc = ({ route, navigation }) => {
                 </View>
 
                 {isLoadingDetail === false &&
-                  hangMuc &&
-                  hangMuc?.length > 0 && (
+                  ent_khuvuc &&
+                  ent_khuvuc?.length > 0 && (
                     <>
                       <FlatList
                         style={{
@@ -267,7 +249,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
                           flex: 1,
                           marginBottom: 100,
                         }}
-                        data={hangMuc}
+                        data={ent_khuvuc}
                         renderItem={({ item, index, separators }) =>
                           renderItem(item, index)
                         }
@@ -281,7 +263,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
                     </>
                   )}
 
-                {isLoadingDetail === true && hangMuc?.length == 0 && (
+                {isLoadingDetail === true && ent_khuvuc?.length == 0 && (
                   <View
                     style={{
                       flex: 1,
@@ -299,7 +281,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
                   </View>
                 )}
 
-                {isLoadingDetail === false && hangMuc?.length == 0 && (
+                {isLoadingDetail === false && ent_khuvuc?.length == 0 && (
                   <View
                     style={{
                       flex: 1,
@@ -318,8 +300,8 @@ const ThucHienHangmuc = ({ route, navigation }) => {
                       style={[styles.danhmuc, { padding: 10 }]}
                     >
                       {isScan
-                        ? "Không thấy hạng mục cho khu vực này"
-                        : "Không còn hạng mục cho ca làm việc này !"}
+                        ? "Không thấy khu vực này"
+                        : "Không còn ca làm việc này !"}
                     </Text>
                   </View>
                 )}
@@ -344,7 +326,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
                   />
                   {dataSelect[0] && (
                     <Button
-                      text={"Checklist"}
+                      text={"Khu vực"}
                       isLoading={loadingSubmit}
                       backgroundColor={COLORS.bg_button}
                       color={"white"}
@@ -386,7 +368,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
   );
 };
 
-export default ThucHienHangmuc;
+export default ThucHienKhuvuc;
 
 const styles = StyleSheet.create({
   container: {

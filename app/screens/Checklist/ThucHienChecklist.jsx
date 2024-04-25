@@ -50,25 +50,23 @@ const headerList = [
     width: 120,
   },
   {
+    til: "Số lượng",
+    width: 100,
+  },
+  {
     til: "Tên ca",
     width: 150,
   },
-  {
-    til: "Khối công việc",
-    width: 150,
-  },
+
   {
     til: "Nhân viên",
     width: 150,
   },
   {
-    til: "Giờ bắt đầu",
+    til: "Giờ bắt đầu - Giờ kết thúc",
     width: 150,
   },
-  {
-    til: "Giờ kết thúc",
-    width: 150,
-  },
+
   {
     til: "Tình trạng",
     width: 150,
@@ -162,13 +160,14 @@ const ThucHienChecklist = ({ navigation }) => {
   };
 
   const int_checklistc = async () => {
-    await dispath(tb_checklistc_get({ page: page, limit: numberOfItemsPerPage }));
+    await dispath(
+      tb_checklistc_get({ page: page, limit: numberOfItemsPerPage })
+    );
   };
 
   useEffect(() => {
-    int_checklistc()
+    int_checklistc();
   }, [numberOfItemsPerPage, page]);
-
 
   useEffect(() => {
     init_ca();
@@ -199,18 +198,15 @@ const ThucHienChecklist = ({ navigation }) => {
 
   const handlePushDataImagesSave = async (id) => {
     try {
-       setLoadingSubmit(true);
+      setLoadingSubmit(true);
       let formData = new FormData();
       // Iterate over the keys of dataImages object
       if (dataImages.Anh1) {
         const file = {
           uri:
             Platform.OS === "android"
-              ? await (dataImages?.Anh1?.uri)
-              : (await (dataImages?.Anh1?.uri)).replace(
-                  "file://",
-                  ""
-                ),
+              ? await dataImages?.Anh1?.uri
+              : (await dataImages?.Anh1?.uri).replace("file://", ""),
           name:
             dataImages?.Anh1?.fileName ||
             Math.floor(Math.random() * Math.floor(99999999999999)) + ".jpeg",
@@ -229,11 +225,8 @@ const ThucHienChecklist = ({ navigation }) => {
         const file = {
           uri:
             Platform.OS === "android"
-              ? await (dataImages?.Anh2?.uri)
-              : (await (dataImages?.Anh2?.uri)).replace(
-                  "file://",
-                  ""
-                ),
+              ? await dataImages?.Anh2?.uri
+              : (await dataImages?.Anh2?.uri).replace("file://", ""),
           name:
             dataImages?.Anh2?.fileName ||
             Math.floor(Math.random() * Math.floor(99999999999999)) + ".jpeg",
@@ -252,11 +245,8 @@ const ThucHienChecklist = ({ navigation }) => {
         const file = {
           uri:
             Platform.OS === "android"
-              ? await (dataImages?.Anh3?.uri)
-              : (await (dataImages?.Anh3?.uri)).replace(
-                  "file://",
-                  ""
-                ),
+              ? await dataImages?.Anh3?.uri
+              : (await dataImages?.Anh3?.uri).replace("file://", ""),
           name:
             dataImages?.Anh3?.fileName ||
             Math.floor(Math.random() * Math.floor(99999999999999)) + ".jpeg",
@@ -275,11 +265,8 @@ const ThucHienChecklist = ({ navigation }) => {
         const file = {
           uri:
             Platform.OS === "android"
-              ? await (dataImages?.Anh4?.uri)
-              : (await (dataImages?.Anh4?.uri)).replace(
-                  "file://",
-                  ""
-                ),
+              ? await dataImages?.Anh4?.uri
+              : (await dataImages?.Anh4?.uri).replace("file://", ""),
           name:
             dataImages?.Anh4?.fileName ||
             Math.floor(Math.random() * Math.floor(999999999)) + ".jpeg",
@@ -294,7 +281,7 @@ const ThucHienChecklist = ({ navigation }) => {
         formData.append(`Anh4`, file?.name);
         formData.append("Giochupanh4", dateHour);
       }
-     
+
       await axios
         .put(
           BASE_URL +
@@ -310,7 +297,7 @@ const ThucHienChecklist = ({ navigation }) => {
         .then((res) => {
           setLoadingSubmit(false);
           int_checklistc();
-          handleCloseSheetImage()
+          handleCloseSheetImage();
           // bottomSheetModalRef2?.current?.close();
           Alert.alert("PMC Thông báo", "Checklist thành công", [
             {
@@ -322,7 +309,7 @@ const ThucHienChecklist = ({ navigation }) => {
           ]);
         })
         .catch((err) => {
-          console.log('err',err)
+          console.log("err", err);
           setLoadingSubmit(false);
           // Handle the error appropriately, e.g., displaying an error message
           Alert.alert(
@@ -333,7 +320,7 @@ const ThucHienChecklist = ({ navigation }) => {
                 text: "Hủy",
                 style: "cancel",
               },
-              { text: "Xác nhận"},
+              { text: "Xác nhận" },
             ]
           );
         });
@@ -475,10 +462,10 @@ const ThucHienChecklist = ({ navigation }) => {
   };
 
   const handleChecklistDetail = (id1, id2, id3) => {
-    navigation.navigate("Thực hiện hạng mục", {
+    navigation.navigate("Thực hiện khu vực", {
       ID_ChecklistC: id1,
       ID_KhoiCV: id2,
-      ID_Calv: id3
+      ID_Calv: id3,
     });
   };
 
@@ -559,22 +546,47 @@ const ThucHienChecklist = ({ navigation }) => {
               {moment(item?.Ngay).format("DD-MM-YYYY")}
             </Text>
           </DataTable.Cell>
-          <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
+          <DataTable.Cell style={{ width: 100, justifyContent: "center" }}>
             <Text
               style={{ color: isExistIndex ? "white" : "black", fontSize: 15 }}
               numberOfLines={2}
             >
-              {item?.ent_calv?.Tenca}
+              {item?.TongC}/{item?.Tong}
             </Text>
           </DataTable.Cell>
           <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
-            <Text
-              style={{ color: isExistIndex ? "white" : "black", fontSize: 15 }}
-              numberOfLines={2}
+            <View
+              style={{
+                color: isExistIndex ? "white" : "black",
+                fontSize: 15,
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+              numberOfLines={4}
             >
-              {item?.ent_khoicv?.KhoiCV}
-            </Text>
+              <Text
+                style={{
+                  color: isExistIndex ? "white" : "black",
+                  fontSize: 16,
+                  fontWeight: "700",
+                }}
+                numberOfLines={2}
+              >
+                {item?.ent_khoicv?.KhoiCV}
+              </Text>
+              <Text
+                style={{
+                  color: isExistIndex ? "white" : "black",
+                  fontSize: 15,
+                }}
+                numberOfLines={2}
+              >
+                {item?.ent_calv?.Tenca}
+              </Text>
+            </View>
           </DataTable.Cell>
+
           <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
             <Text
               style={{ color: isExistIndex ? "white" : "black", fontSize: 15 }}
@@ -584,21 +596,38 @@ const ThucHienChecklist = ({ navigation }) => {
             </Text>
           </DataTable.Cell>
           <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
-            <Text
-              style={{ color: isExistIndex ? "white" : "black", fontSize: 15 }}
-              numberOfLines={2}
+            <View
+              style={{
+                color: isExistIndex ? "white" : "black",
+                fontSize: 15,
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+              numberOfLines={4}
             >
-              {item?.Giobd}
-            </Text>
+              <Text
+                style={{
+                  color: isExistIndex ? "white" : "black",
+                  fontSize: 15,
+                }}
+                numberOfLines={2}
+              >
+                {item?.Giobd}
+              </Text>
+              <Text>-</Text>
+              <Text
+                style={{
+                  color: isExistIndex ? "white" : "black",
+                  fontSize: 15,
+                }}
+                numberOfLines={2}
+              >
+                {item?.Giokt}
+              </Text>
+            </View>
           </DataTable.Cell>
-          <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
-            <Text
-              style={{ color: isExistIndex ? "white" : "black", fontSize: 15 }}
-              numberOfLines={2}
-            >
-              {item?.Giokt}
-            </Text>
-          </DataTable.Cell>
+
           <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
             <Text
               style={{ color: isExistIndex ? "white" : "black", fontSize: 15 }}
@@ -659,9 +688,7 @@ const ThucHienChecklist = ({ navigation }) => {
                         gap: 8,
                       }}
                     >
-                   
-                      <>
-                      </>
+                      <></>
                     </TouchableOpacity>
                     {user?.Permission !== 1 && (
                       <ButtonChecklist
@@ -687,120 +714,118 @@ const ThucHienChecklist = ({ navigation }) => {
                   ) : (
                     <>
                       {data && data?.length > 0 ? (
-                          <ScrollView
-                            style={{ flex: 1, marginBottom: 20, marginTop: 20 }}
-                          >
-                            <DataTable
-                              style={{
-                                backgroundColor: "white",
-                                borderRadius: 8,
-                              }}
-                            >
-                              <ScrollView
-                                horizontal
-                                contentContainerStyle={{
-                                  flexDirection: "column",
-                                }}
-                              >
-                                <DataTable.Header
-                                  style={{
-                                    backgroundColor: "#eeeeee",
-                                    borderTopRightRadius: 8,
-                                    borderTopLeftRadius: 8,
-                                  }}
-                                >
-                                  {headerList &&
-                                    headerList.map((item, index) => {
-                                      return (
-                                        <DataTable.Title
-                                          key={index}
-                                          style={{
-                                            width: item?.width,
-                                            borderRightWidth:
-                                              index === headerList.length - 1
-                                                ? 0
-                                                : 2,
-                                            borderRightColor: "white",
-                                            justifyContent: "center",
-                                          }}
-                                          numberOfLines={2}
-                                        >
-                                          <Text
-                                            style={[
-                                              styles.text,
-                                              { color: "black" },
-                                            ]}
-                                          >
-                                            {item?.til}
-                                          </Text>
-                                        </DataTable.Title>
-                                      );
-                                    })}
-                                </DataTable.Header>
-
-                                {data && data?.length > 0 && (
-                                  <FlatList
-                                    keyExtractor={(item, index) =>
-                                      `${item?.ID_ChecklistC}_${index}`
-                                    }
-                                    scrollEnabled={false}
-                                    data={data}
-                                    renderItem={_renderItem}
-                                  />
-                                )}
-                                <DataTable.Pagination
-                                  style={{ justifyContent: "flex-start" }}
-                                  page={page}
-                                  numberOfPages={Math.ceil(
-                                    tb_checklistc?.totalPages
-                                  )}
-                                  onPageChange={(page) => {
-                                    setPage(page);
-                                  }}
-                                  label={`Từ ${page + 1} đến ${
-                                    tb_checklistc?.totalPages
-                                  }`}
-                                  showFastPaginationControls
-                                  numberOfItemsPerPageList={
-                                    numberOfItemsPerPageList
-                                  }
-                                  numberOfItemsPerPage={numberOfItemsPerPage}
-                                  onItemsPerPageChange={onItemsPerPageChange}
-                                  selectPageDropdownLabel={
-                                    "Hàng trên mỗi trang"
-                                  }
-                                />
-                              </ScrollView>
-                            </DataTable>
-                          </ScrollView>
-                      ) : (
-                          <View
+                        <ScrollView
+                          style={{ flex: 1, marginBottom: 20, marginTop: 20 }}
+                        >
+                          <DataTable
                             style={{
-                              flex: 1,
-                              justifyContent: "center",
-                              alignItems: "center",
-                              marginBottom: 120,
+                              backgroundColor: "white",
+                              borderRadius: 8,
                             }}
                           >
-                            <Image
-                              source={require("../../../assets/icons/delete_bg.png")}
-                              resizeMode="contain"
-                              style={{ height: 120, width: 120 }}
-                            />
-                            <Text
-                              style={[styles.danhmuc, { paddingVertical: 10 }]}
+                            <ScrollView
+                              horizontal
+                              contentContainerStyle={{
+                                flexDirection: "column",
+                              }}
                             >
-                              Bạn chưa thêm dữ liệu nào
-                            </Text>
-                            {user?.Permission !== 1 && (
-                              <ButtonChecklist
-                                text={"Thêm mới"}
-                                width={"auto"}
-                                color={COLORS.bg_button}
-                                onPress={handlePresentModalPress}
+                              <DataTable.Header
+                                style={{
+                                  backgroundColor: "#eeeeee",
+                                  borderTopRightRadius: 8,
+                                  borderTopLeftRadius: 8,
+                                }}
+                              >
+                                {headerList &&
+                                  headerList.map((item, index) => {
+                                    return (
+                                      <DataTable.Title
+                                        key={index}
+                                        style={{
+                                          width: item?.width,
+                                          borderRightWidth:
+                                            index === headerList.length - 1
+                                              ? 0
+                                              : 2,
+                                          borderRightColor: "white",
+                                          justifyContent: "center",
+                                        }}
+                                        numberOfLines={2}
+                                      >
+                                        <Text
+                                          style={[
+                                            styles.text,
+                                            { color: "black" },
+                                          ]}
+                                        >
+                                          {item?.til}
+                                        </Text>
+                                      </DataTable.Title>
+                                    );
+                                  })}
+                              </DataTable.Header>
+
+                              {data && data?.length > 0 && (
+                                <FlatList
+                                  keyExtractor={(item, index) =>
+                                    `${item?.ID_ChecklistC}_${index}`
+                                  }
+                                  scrollEnabled={false}
+                                  data={data}
+                                  renderItem={_renderItem}
+                                />
+                              )}
+                              <DataTable.Pagination
+                                style={{ justifyContent: "flex-start" }}
+                                page={page}
+                                numberOfPages={Math.ceil(
+                                  tb_checklistc?.totalPages
+                                )}
+                                onPageChange={(page) => {
+                                  setPage(page);
+                                }}
+                                label={`Từ ${page + 1} đến ${
+                                  tb_checklistc?.totalPages
+                                }`}
+                                showFastPaginationControls
+                                numberOfItemsPerPageList={
+                                  numberOfItemsPerPageList
+                                }
+                                numberOfItemsPerPage={numberOfItemsPerPage}
+                                onItemsPerPageChange={onItemsPerPageChange}
+                                selectPageDropdownLabel={"Hàng trên mỗi trang"}
                               />
-                            )}
-                          </View>
+                            </ScrollView>
+                          </DataTable>
+                        </ScrollView>
+                      ) : (
+                        <View
+                          style={{
+                            flex: 1,
+                            justifyContent: "center",
+                            alignItems: "center",
+                            marginBottom: 120,
+                          }}
+                        >
+                          <Image
+                            source={require("../../../assets/icons/delete_bg.png")}
+                            resizeMode="contain"
+                            style={{ height: 120, width: 120 }}
+                          />
+                          <Text
+                            style={[styles.danhmuc, { paddingVertical: 10 }]}
+                          >
+                            Bạn chưa thêm dữ liệu nào
+                          </Text>
+                          {user?.Permission !== 1 && (
+                            <ButtonChecklist
+                              text={"Thêm mới"}
+                              width={"auto"}
+                              color={COLORS.bg_button}
+                              onPress={handlePresentModalPress}
+                            />
+                          )}
+                        </View>
                       )}
                     </>
                   )}
@@ -890,7 +915,7 @@ const ThucHienChecklist = ({ navigation }) => {
                           handleChecklistDetail(
                             newActionCheckList[0]?.ID_ChecklistC,
                             newActionCheckList[0]?.ID_KhoiCV,
-                            newActionCheckList[0]?.ID_Calv,
+                            newActionCheckList[0]?.ID_Calv
                           )
                         }
                       >

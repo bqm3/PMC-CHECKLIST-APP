@@ -1,14 +1,10 @@
 import {
-  Pressable,
   StyleSheet,
   Text,
   View,
   Image,
   TouchableOpacity,
   TextInput,
-  TouchableWithoutFeedback,
-  Keyboard,
-  Platform,
 } from "react-native";
 import React, { useRef, useState } from "react";
 import SelectDropdown from "react-native-select-dropdown";
@@ -17,6 +13,7 @@ import VerticalSelect from "../VerticalSelect";
 import Button from "../Button/Button";
 import { COLORS, SIZES } from "../../constants/theme";
 import * as ImagePicker from "expo-image-picker";
+import { AntDesign } from "@expo/vector-icons";
 
 const ModalPopupDetailChecklist = ({
   handlePopupClear,
@@ -29,6 +26,7 @@ const ModalPopupDetailChecklist = ({
   const [step, setStep] = useState(1);
   const [image, setImage] = useState(dataItem?.Anh);
   const [ghichu, setGhichu] = useState(dataItem?.GhichuChitiet);
+  const [clearImage, setClearImage] = useState(false);
 
   const pickImage = async () => {
     // Ask the user for the permission to access the camera
@@ -51,7 +49,9 @@ const ModalPopupDetailChecklist = ({
     <View style={{ width: SIZES.width - 60 }}>
       {step === 1 && (
         <View>
-          <Text  allowFontScaling={false} style={styles.text}>Trạng thái</Text>
+          <Text allowFontScaling={false} style={styles.text}>
+            Trạng thái
+          </Text>
           <SelectDropdown
             ref={ref}
             data={dataItem.Giatrinhan ? dataItem.Giatrinhan : []}
@@ -87,7 +87,9 @@ const ModalPopupDetailChecklist = ({
                     height: 50,
                   }}
                 >
-                  <Text  allowFontScaling={false} style={[styles.text]}>{selectedItem}</Text>
+                  <Text allowFontScaling={false} style={[styles.text]}>
+                    {selectedItem}
+                  </Text>
                 </View>
               );
             }}
@@ -123,23 +125,39 @@ const ModalPopupDetailChecklist = ({
             >
               <Entypo name="camera" size={24} color="black" />
             </TouchableOpacity>
-            {image && (
-              <Image source={{ uri: image?.uri }} style={styles.image} />
-            )}
+            <View
+              style={{ flexDirection: "row", alignItems: "center", gap: 30 }}
+            >
+              {image && (
+                <Image source={{ uri: image?.uri }} style={styles.image} />
+              )}
+              {image && (
+                <TouchableOpacity
+                  onPress={() => setImage()}
+                  style={{ flexDirection: "row", alignItems: "center", gap: 2 }}
+                >
+                  <AntDesign name="close" size={24} color="black" />
+                  <Text style={{ fontSize: 16, fontWeight: "600" }}>Clear</Text>
+                </TouchableOpacity>
+              )}
+            </View>
           </View>
         </>
       )}
       {step === 3 && (
         <View>
-          <Text  allowFontScaling={false} style={styles.text}>Ghi chú</Text>
-          <TextInput allowFontScaling={false} 
+          <Text allowFontScaling={false} style={styles.text}>
+            Ghi chú
+          </Text>
+          <TextInput
+            allowFontScaling={false}
             value={ghichu}
             placeholder="Thêm ghi chú"
             placeholderTextColor="gray"
             multiline={true}
             blurOnSubmit={true}
             onChangeText={(text) => {
-              setGhichu(text)
+              setGhichu(text);
             }}
             style={[
               styles.textInput,
@@ -183,6 +201,7 @@ const ModalPopupDetailChecklist = ({
           onPress={() => {
             handlePopupClear();
             handleChange("GhichuChitiet", ghichu, dataItem);
+            handleChange("Anh", image, dataItem);
           }}
           backgroundColor={COLORS.bg_button}
           border={COLORS.bg_button}

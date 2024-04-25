@@ -36,7 +36,7 @@ import {
   ent_khuvuc_get,
   ent_tang_get,
   ent_toanha_get,
-  ent_hangmuc_get
+  ent_hangmuc_get,
 } from "../../redux/actions/entActions";
 import ButtonChecklist from "../../components/Button/ButtonCheckList";
 import { COLORS, SIZES } from "../../constants/theme";
@@ -61,6 +61,8 @@ const DetailChecklist = ({ route, navigation }) => {
     isLoadingDetail,
     isLoading,
   } = useSelector((state) => state.entReducer);
+
+  console.log('ID_Hangmuc',ID_ChecklistC, ID_KhoiCV, ID_Calv, ID_Hangmuc)
 
   const { user, authToken } = useSelector((state) => state.authReducer);
 
@@ -93,12 +95,14 @@ const DetailChecklist = ({ route, navigation }) => {
   const [isFilter, setIsFilter] = useState({
     ID_Tang: false,
     ID_Khuvuc: false,
-    ID_Toanha: null,
-    ID_Hangmuc: null,
+    ID_Toanha: false,
+    ID_Hangmuc: false,
   });
 
   const init_checklist = async () => {
-    await dispath(ent_checklist_get_detail(ID_KhoiCV, ID_ChecklistC, ID_Calv, ID_Hangmuc));
+    await dispath(
+      ent_checklist_get_detail(ID_KhoiCV, ID_ChecklistC, ID_Calv, ID_Hangmuc)
+    );
   };
 
   const init_ent_khuvuc = async () => {
@@ -114,15 +118,15 @@ const DetailChecklist = ({ route, navigation }) => {
   };
 
   const init_ent_hangmuc = async () => {
-    await dispath(ent_hangmuc_get())
-  }
+    await dispath(ent_hangmuc_get());
+  };
 
   useEffect(() => {
     init_checklist();
     init_ent_khuvuc();
     init_ent_toanha();
     init_ent_tang();
-    init_ent_hangmuc()
+    init_ent_hangmuc();
   }, []);
 
   // load add field item initstate
@@ -253,7 +257,10 @@ const DetailChecklist = ({ route, navigation }) => {
 
     let newDataChecklist;
 
-    newDataChecklist = data.filter((item) => item.valueCheck !== null);
+    newDataChecklist = data.filter(
+      (item) =>
+        item.valueCheck !== null 
+    );
 
     let newDataChecklistImage = data.filter((item) => {
       return (
@@ -347,7 +354,8 @@ const DetailChecklist = ({ route, navigation }) => {
   const handlePushDataFilter = async () => {
     try {
       const res = await axios.post(
-        BASE_URL + `/ent_checklist/filter/${ID_KhoiCV}/${ID_ChecklistC}/${ID_Calv}/${ID_Hangmuc}`,
+        BASE_URL +
+          `/ent_checklist/filter/${ID_KhoiCV}/${ID_ChecklistC}/${ID_Calv}/${ID_Hangmuc}`,
         filterData,
         {
           headers: {
@@ -582,7 +590,11 @@ const DetailChecklist = ({ route, navigation }) => {
 
     const updatedDefaultActionDataChecklist = defaultActionDataChecklist.filter(
       (item) => {
-        return !item.Anh !== null && !item.GhichuChitiet !== "";
+        return (
+          !item.Anh !== null &&
+          !item.GhichuChitiet !== "" &&
+          item.valueCheck === item.Giatridinhdanh
+        );
       }
     );
 
@@ -595,7 +607,11 @@ const DetailChecklist = ({ route, navigation }) => {
 
     const requestDone = axios.post(
       BASE_URL + "/tb_checklistchitietdone/create",
-      { Description: descriptionsJSON, ID_ChecklistC: ID_ChecklistC },
+      {
+        Description: descriptionsJSON,
+        ID_ChecklistC: ID_ChecklistC,
+        checklistLength: updatedDefaultActionDataChecklist.length,
+      },
       {
         headers: {
           Accept: "application/json",

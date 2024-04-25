@@ -22,7 +22,7 @@ import React, {
   useCallback,
 } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import * as Location from 'expo-location';
+import * as Location from "expo-location";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import { login } from "../redux/actions/authActions";
 import { COLORS, SIZES } from "../constants/theme";
@@ -37,7 +37,6 @@ import {
 } from "@gorhom/bottom-sheet";
 import DataLicense from "../components/DataLicense";
 import Checkbox from "../components/Active/Checkbox";
-
 
 const LoginScreen = ({ navigation }) => {
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
@@ -151,11 +150,10 @@ const LoginScreen = ({ navigation }) => {
 
   useEffect(() => {
     (async () => {
-      
       let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied');
-        
+      if (status !== "granted") {
+        setErrorMsg("Permission to access location was denied");
+
         return;
       }
 
@@ -164,13 +162,12 @@ const LoginScreen = ({ navigation }) => {
     })();
   }, []);
 
-  let text = 'Waiting..';
+  let text = "Waiting..";
   if (errorMsg) {
     text = errorMsg;
   } else if (location) {
     text = JSON.stringify(location);
   }
-  console.log('text',text)
 
   return (
     <>
@@ -327,7 +324,6 @@ const LoginScreen = ({ navigation }) => {
               </BottomSheetScrollView>
             </BottomSheetModal>
           </BottomSheetModalProvider>
-        
         </KeyboardAvoidingView>
       </GestureHandlerRootView>
     </>
@@ -445,6 +441,6 @@ const styles = StyleSheet.create({
   },
   paragraph: {
     fontSize: 18,
-    textAlign: 'center',
+    textAlign: "center",
   },
 });
