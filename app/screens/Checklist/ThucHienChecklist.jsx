@@ -621,7 +621,6 @@ const ThucHienChecklist = ({ navigation }) => {
       </TouchableHighlight>
     );
   };
-  console.log('newActionCheckList[0]',newActionCheckList[0])
 
   return (
     <>

@@ -27,7 +27,7 @@ const ModalChecklist = ({
   ent_toanha,
   ent_khoicv,
   ent_calv,
-  ent_hangmuc,
+  hangMuc,
   handleChangeText,
   dataInput,
   handlePushDataSave,
@@ -57,7 +57,7 @@ const ModalChecklist = ({
     (Khuvuc) => Khuvuc.ID_Khuvuc === dataInput?.ID_Khuvuc
   );
 
-  const defaultHangmuc = ent_hangmuc?.find(
+  const defaultHangmuc = hangMuc?.find(
     (Hangmuc) => Hangmuc.ID_Hangmuc === dataInput?.ID_Hangmuc
   );
 
@@ -81,15 +81,15 @@ const ModalChecklist = ({
 
   const handleSelect = (selectedItem, index) => {
     const isAlreadySelected = calvFilter.includes(selectedItem.ID_Calv);
-    
+
     // If the item is already selected, remove it from the array
     if (isAlreadySelected) {
-        setCalvFilter(calvFilter.filter(id => id !== selectedItem.ID_Calv));
+      setCalvFilter(calvFilter.filter((id) => id !== selectedItem.ID_Calv));
     } else {
-        // Otherwise, add the item to the array
-        setCalvFilter([...calvFilter, selectedItem.ID_Calv]);
+      // Otherwise, add the item to the array
+      setCalvFilter([...calvFilter, selectedItem.ID_Calv]);
     }
-};
+  };
 
 
   return (
@@ -306,7 +306,7 @@ const ModalChecklist = ({
                 )}
               </View>
 
-            {/* Tầng và khu vực  */}
+            {/* hạng mục và khu vực  */}
             <View
               style={{
                 flexDirection: "row",
@@ -364,7 +364,7 @@ const ModalChecklist = ({
                           return (
                             <VerticalSelect
                               value={item.ID_Khuvuc}
-                              label={`${item.Tenkhuvuc} - ${item?.ent_toanha.Toanha}`}
+                              label={`${item.Tenkhuvuc} - ${item?.ent_khoicv.KhoiCV}`}
                               key={index}
                               selectedItem={dataInput?.ID_Khuvuc}
                             />
@@ -379,62 +379,64 @@ const ModalChecklist = ({
                   </>
                 )}
               </View>
-              <View style={{ width: "48%" }}>
-                <Text allowFontScaling={false} style={styles.text}>
-                Hạng mục
-                </Text>
-                {ent_hangmuc && ent_hangmuc?.length > 0 ? (
-                  <SelectDropdown
-                    ref={ref}
-                    data={ent_hangmuc ? ent_hangmuc : []}
-                    buttonStyle={styles.select}
-                    dropdownStyle={{
-                      borderRadius: 8,
-                      maxHeight: 400,
-                    }}
-                    // rowStyle={{ height: 50, justifyContent: "center" }}
-                    defaultButtonText={"Hạng mục"}
-                    buttonTextStyle={styles.customText}
-                    defaultValue={defaultHangmuc}
-                    onSelect={(selectedItem, index) => {
-                      handleChangeText("ID_Hangmuc", selectedItem.ID_Hangmuc);
-                    }}
-                    renderDropdownIcon={(isOpened) => {
-                      return (
-                        <FontAwesome
-                          name={isOpened ? "chevron-up" : "chevron-down"}
-                          color={"#637381"}
-                          size={14}
-                          style={{ marginRight: 10 }}
-                        />
-                      );
-                    }}
-                    dropdownIconPosition={"right"}
-                    buttonTextAfterSelection={(selectedItem, index) => {
-                      return (
-                       
-                          <Text allowFontScaling={false} style={styles.text} numberOfLines={3}>
-                            {selectedItem?.Hangmuc}
-                          </Text>
-                      );
-                    }}
-                    renderCustomizedRowChild={(item, index) => {
-                      return (
-                        <VerticalSelect
-                          value={item.ID_Hangmuc}
-                          label={item.Hangmuc}
-                          key={index}
-                          selectedItem={dataInput?.ID_Hangmuc}
-                        />
-                      );
-                    }}
-                  />
-                ) : (
-                  <Text allowFontScaling={false} style={styles.errorText}>
-                    Không có dữ liệu tầng.
-                  </Text>
-                )}
-              </View>
+             { 
+               <View style={{ width: "48%" }}>
+               <Text allowFontScaling={false} style={styles.text}>
+               Hạng mục
+               </Text>
+               {hangMuc && hangMuc?.length > 0 ? (
+                 <SelectDropdown
+                   ref={ref}
+                   data={hangMuc ? hangMuc : []}
+                   buttonStyle={styles.select}
+                   dropdownStyle={{
+                     borderRadius: 8,
+                     maxHeight: 400,
+                   }}
+                   // rowStyle={{ height: 50, justifyContent: "center" }}
+                   defaultButtonText={"Hạng mục"}
+                   buttonTextStyle={styles.customText}
+                   defaultValue={defaultHangmuc}
+                   onSelect={(selectedItem, index) => {
+                     handleChangeText("ID_Hangmuc", selectedItem.ID_Hangmuc);
+                   }}
+                   renderDropdownIcon={(isOpened) => {
+                     return (
+                       <FontAwesome
+                         name={isOpened ? "chevron-up" : "chevron-down"}
+                         color={"#637381"}
+                         size={14}
+                         style={{ marginRight: 10 }}
+                       />
+                     );
+                   }}
+                   dropdownIconPosition={"right"}
+                   buttonTextAfterSelection={(selectedItem, index) => {
+                     return (
+                      
+                         <Text allowFontScaling={false} style={styles.text} numberOfLines={3}>
+                           {selectedItem?.Hangmuc}
+                         </Text>
+                     );
+                   }}
+                   renderCustomizedRowChild={(item, index) => {
+                     return (
+                       <VerticalSelect
+                         value={item.ID_Hangmuc}
+                         label={`${item.Hangmuc}`}
+                         key={index}
+                         selectedItem={dataInput?.ID_Hangmuc}
+                       />
+                     );
+                   }}
+                 />
+               ) : (
+                 <Text allowFontScaling={false} style={styles.errorText}>
+                   Không có dữ liệu hạng mục.
+                 </Text>
+               )}
+             </View>
+             }
             </View>
 
             {/* Ca làm việc  */}

@@ -40,7 +40,7 @@ import {
   ent_toanha_get,
   ent_khoicv_get,
   ent_calv_filter,
-  ent_hangmuc_get
+  ent_hangmuc_get,
 } from "../../redux/actions/entActions";
 import ModalChecklist from "../../components/Modal/ModalChecklist";
 import axios from "axios";
@@ -57,18 +57,18 @@ const headerList = [
     til: "Tên checklist",
     width: 150,
   },
-  {
-    til: "Giá trị nhận",
-    width: 120,
-  },
-  {
-    til: "Tòa nhà",
-    width: 120,
-  },
-  {
-    til: "Tầng",
-    width: 120,
-  },
+  // {
+  //   til: "Giá trị nhận",
+  //   width: 120,
+  // },
+  // {
+  //   til: "Tòa nhà",
+  //   width: 120,
+  // },
+  // {
+  //   til: "Tầng",
+  //   width: 120,
+  // },
   {
     til: "Khu vực",
     width: 120,
@@ -78,24 +78,31 @@ const headerList = [
     width: 120,
   },
 
-  {
-    til: "Giá trị định danh",
-    width: 150,
-  },
-  {
-    til: "Mã checklist",
-    width: 100,
-  },
-  {
-    til: "Số thứ tự",
-    width: 100,
-  },
+  // {
+  //   til: "Giá trị định danh",
+  //   width: 150,
+  // },
+  // {
+  //   til: "Mã checklist",
+  //   width: 100,
+  // },
+  // {
+  //   til: "Số thứ tự",
+  //   width: 100,
+  // },
 ];
 
 const DanhmucChecklist = ({ navigation }) => {
   const dispath = useDispatch();
-  const { ent_tang, ent_khuvuc, ent_checklist, ent_khoicv, ent_toanha, ent_calv, ent_hangmuc } =
-    useSelector((state) => state.entReducer);
+  const {
+    ent_tang,
+    ent_khuvuc,
+    ent_checklist,
+    ent_khoicv,
+    ent_toanha,
+    ent_calv,
+    ent_hangmuc,
+  } = useSelector((state) => state.entReducer);
   const { user, authToken } = useSelector((state) => state.authReducer);
 
   const [listChecklist, setListChecklist] = useState([]);
@@ -124,7 +131,7 @@ const DanhmucChecklist = ({ navigation }) => {
     ID_Khuvuc: false,
   });
 
-  const [calvFilter, setCalvFilter] = useState([])
+  const [calvFilter, setCalvFilter] = useState([]);
 
   const bottomSheetModalRef = useRef(null);
   const snapPoints = useMemo(() => ["90%"], []);
@@ -149,11 +156,13 @@ const DanhmucChecklist = ({ navigation }) => {
     Giatrinhan: "",
     Sothutu: "",
   });
+  const [hangMuc, setHangMuc] = useState(ent_hangmuc)
 
   const [isEnabled, setIsEnabled] = useState(true);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
 
   const [status, setStatus] = useState(false);
+  
 
   const init_checklist = async () => {
     await dispath(
@@ -184,16 +193,13 @@ const DanhmucChecklist = ({ navigation }) => {
     await dispath(ent_toanha_get());
   };
 
-
   const init_hangmuc = async () => {
     await dispath(ent_hangmuc_get());
   };
-  
 
   const init_calv = async (id) => {
     await dispath(ent_calv_filter(id));
   };
-
 
   useEffect(() => {
     init_checklist();
@@ -201,21 +207,37 @@ const DanhmucChecklist = ({ navigation }) => {
     init_tang();
     init_khoicv();
     init_toanha();
-    init_hangmuc()
-    init_calv(null)
+    init_hangmuc();
+    init_calv(null);
   }, []);
 
-  useEffect(() => {
-    init_calv(dataCheckKhuvuc.ID_KhoiCV)
-  },[dataCheckKhuvuc.ID_KhoiCV])
+  const asyncHangMuc = async () => {
+    await axios.get(BASE_URL+`/ent_hangmuc/filter/${dataInput?.ID_Khuvuc}`, {
+      headers: {
+        Accept: "application/json",
+        Authorization: "Bearer " + authToken,
+      },
+    })
+    .then((res)=> {
+      setHangMuc(res.data.data)
+    })
+    .catch((err) => console.log('err',err))
+  }
+
+  useEffect(()=> {
+    asyncHangMuc()
+  }, [dataInput.ID_Khuvuc])
 
   useEffect(() => {
-    const calvIds = ent_calv.map(item => item.ID_Calv);
-    
+    init_calv(dataCheckKhuvuc.ID_KhoiCV);
+  }, [dataCheckKhuvuc.ID_KhoiCV]);
+
+  useEffect(() => {
+    const calvIds = ent_calv.map((item) => item.ID_Calv);
+
     // Update the state with the extracted ID_Calv values
     setCalvFilter(calvIds);
-  },[ent_calv])
-
+  }, [ent_calv]);
 
   const toggleSwitch = (isEnabled) => {
     setIsEnabled(!isEnabled);
@@ -384,7 +406,7 @@ const DanhmucChecklist = ({ navigation }) => {
         Checklist: dataInput.Checklist,
         Giatridinhdanh: dataInput.Giatridinhdanh,
         Giatrinhan: dataInput.Giatrinhan,
-        sCalv: calvFilter
+        sCalv: calvFilter,
       };
       setLoadingSubmit(true);
       try {
@@ -503,24 +525,40 @@ const DanhmucChecklist = ({ navigation }) => {
         Giatridinhdanh: dataInput.Giatridinhdanh,
         Giatrinhan: dataInput.Giatrinhan,
         Sothutu: dataInput.Sothutu,
+        sCalv: calvFilter,
       };
-      setLoadingSubmit(true);
-      await axios
-        .put(BASE_URL + `/ent_checklist/update/${id}`, data, {
-          headers: {
-            Accept: "application/json",
-            Authorization: "Bearer " + authToken,
-          },
-        })
-        .then((response) => {
-          setPage(0);
-          init_checklist(0, numberOfItemsPerPage);
-          handleAdd();
-          handleCloseModal();
-          setNewActionCheckList([]);
-          setStatus(false);
-          setLoadingSubmit(false);
-          Alert.alert("PMC Thông báo", response.data.message, [
+      try {
+        setLoadingSubmit(true);
+        await axios
+          .put(BASE_URL + `/ent_checklist/update/${id}`, data, {
+            headers: {
+              Accept: "application/json",
+              Authorization: "Bearer " + authToken,
+            },
+          })
+          .then((response) => {
+            setPage(0);
+            init_checklist(0, numberOfItemsPerPage);
+            handleAdd();
+            handleCloseModal();
+            setNewActionCheckList([]);
+            setStatus(false);
+            setLoadingSubmit(false);
+            Alert.alert("PMC Thông báo", response.data.message, [
+              {
+                text: "Hủy",
+                onPress: () => console.log("Cancel Pressed"),
+                style: "cancel",
+              },
+              { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+            ]);
+          })
+      } catch (error) {
+        setLoadingSubmit(false);
+       
+        if (error.response) {
+          // Lỗi từ phía server (có response từ server)
+          Alert.alert("PMC Thông báo", error.response.data.message, [
             {
               text: "Hủy",
               onPress: () => console.log("Cancel Pressed"),
@@ -528,10 +566,9 @@ const DanhmucChecklist = ({ navigation }) => {
             },
             { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
           ]);
-        })
-        .catch((err) => {
-          setLoadingSubmit(false);
-          Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
+        } else if (error.request) {
+          // Lỗi không nhận được phản hồi từ server
+          Alert.alert("PMC Thông báo", "Không nhận được phản hồi từ máy chủ", [
             {
               text: "Hủy",
               onPress: () => console.log("Cancel Pressed"),
@@ -539,7 +576,19 @@ const DanhmucChecklist = ({ navigation }) => {
             },
             { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
           ]);
-        });
+        } else {
+          // Lỗi khi cấu hình request
+          Alert.alert("PMC Thông báo", "Lỗi khi gửi yêu cầu", [
+            {
+              text: "Hủy",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel",
+            },
+            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+          ]);
+        }
+      }
+     
     }
   };
 
@@ -700,7 +749,7 @@ const DanhmucChecklist = ({ navigation }) => {
               {item?.Checklist}
             </Text>
           </DataTable.Cell>
-          <DataTable.Cell style={{ width: 120 }}>
+          {/* <DataTable.Cell style={{ width: 120 }}>
             <Text
               style={{ color: isExistIndex ? "white" : "black" }}
               numberOfLines={2}
@@ -723,7 +772,7 @@ const DanhmucChecklist = ({ navigation }) => {
             >
               {item?.ent_tang?.Tentang}
             </Text>
-          </DataTable.Cell>
+          </DataTable.Cell> */}
           <DataTable.Cell style={{ width: 120, justifyContent: "center" }}>
             <Text
               style={{ color: isExistIndex ? "white" : "black" }}
@@ -741,7 +790,7 @@ const DanhmucChecklist = ({ navigation }) => {
               {item?.ent_khuvuc?.ent_khoicv?.KhoiCV}
             </Text>
           </DataTable.Cell>
-          <DataTable.Cell style={{ width: 150 }}>
+          {/* <DataTable.Cell style={{ width: 150 }}>
             <Text
               style={{ color: isExistIndex ? "white" : "black" }}
               numberOfLines={2}
@@ -764,7 +813,7 @@ const DanhmucChecklist = ({ navigation }) => {
             >
               {item?.Sothutu}
             </Text>
-          </DataTable.Cell>
+          </DataTable.Cell> */}
         </DataTable.Row>
       </TouchableHighlight>
     );
@@ -1007,7 +1056,7 @@ const DanhmucChecklist = ({ navigation }) => {
                   ent_khuvuc={ent_khuvuc}
                   ent_khoicv={ent_khoicv}
                   ent_toanha={ent_toanha}
-                  ent_hangmuc={ent_hangmuc}
+                  hangMuc={hangMuc}
                   ent_calv={ent_calv}
                   handleChangeText={handleChangeText}
                   handleDataKhuvuc={handleDataKhuvuc}
@@ -1077,13 +1126,15 @@ const DanhmucChecklist = ({ navigation }) => {
             >
               <View style={styles.centeredView}>
                 <View style={styles.modalView}>
+                  <View  style={{padding: 8}}>
                   <Text allowFontScaling={false} style={styles.modalText}>
-                    Thông tin checlist chi tiết
+                    Thông tin checklist chi tiết
                   </Text>
                   <ModalChecklistInfo
                     dataModal={dataModal}
                     handleToggleModal={handleToggleModal}
                   />
+                  </View>
                 </View>
               </View>
             </Modal>

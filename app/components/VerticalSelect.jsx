@@ -30,5 +30,5 @@ const VerticalSelect = ({ value,label, selectedItem }) => {
 export default VerticalSelect;
 
 const styles = StyleSheet.create({
-  customSelect: { fontSize: 15, fontWeight: 700, color: "#637381" },
+  customSelect: { fontSize: 15, fontWeight: 700, color: "#637381", paddingHorizontal: 4 },
 });

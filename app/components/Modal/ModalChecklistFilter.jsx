@@ -79,7 +79,7 @@ const ModalChecklistFilter = ({
             return (
               <VerticalSelect
                 value={item.ID_Khuvuc}
-                label={`${item.Tenkhuvuc} - ${item?.ent_toanha.Toanha}`}
+                label={`${item.Tenkhuvuc} - ${item?.ent_toanha.Toanha} - ${item?.ent_khoicv?.KhoiCV}`}
                 key={index}
                 selectedItem={isFilterData.ID_Khuvuc}
               />
