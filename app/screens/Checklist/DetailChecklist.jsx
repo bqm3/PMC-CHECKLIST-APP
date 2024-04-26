@@ -62,8 +62,6 @@ const DetailChecklist = ({ route, navigation }) => {
     isLoading,
   } = useSelector((state) => state.entReducer);
 
-  console.log('ID_Hangmuc',ID_ChecklistC, ID_KhoiCV, ID_Calv, ID_Hangmuc)
-
   const { user, authToken } = useSelector((state) => state.authReducer);
 
   const [dataChecklist, setDataChecklist] = useState([]);
@@ -255,64 +253,149 @@ const DetailChecklist = ({ route, navigation }) => {
     let mergedArrCheck = [...defaultActionDataChecklist];
     let mergedArrImage = [...dataChecklistFaild];
 
-    let newDataChecklist;
+    // newDataChecklist là data dc chọn.
+    let newDataChecklist = data.filter((item) => item.valueCheck !== null);
 
-    newDataChecklist = data.filter(
-      (item) =>
-        item.valueCheck !== null 
-    );
-
-    let newDataChecklistImage = data.filter((item) => {
-      return (
-        item.valueCheck !== null &&
-        (item.Anh !== null || item.GhichuChitiet !== "")
-      );
-    });
+    // clear item checklist
     if (it.valueCheck !== null) {
       if (key === "Anh" || key === "GhichuChitiet") {
-        mergedArrImage.splice(
-          mergedArrImage.findIndex(
-            (item) => item.ID_Checklist === it.ID_Checklist
-          ),
-          1
+        console.log("log-1-1");
+
+        // Kiểm tra và cập nhật mergedArrCheck
+        const indexCheck = mergedArrCheck.findIndex(
+          (item) => item.ID_Checklist === it.ID_Checklist
         );
-      } else {
-        mergedArrCheck.splice(
-          mergedArrCheck.findIndex(
-            (item) => item.ID_Checklist === it.ID_Checklist
-          ),
-          1
+        if (indexCheck !== -1) {
+          // Xóa it khỏi mergedArrCheck nếu tồn tại
+          mergedArrCheck.splice(indexCheck, 1);
+        }
+
+        // Kiểm tra và cập nhật mergedArrImage
+        const indexImage = mergedArrImage.findIndex(
+          (item) => item.ID_Checklist === it.ID_Checklist
         );
+        if (indexImage !== -1) {
+          // Cập nhật it trong mergedArrImage nếu tồn tại
+          mergedArrImage[indexImage] = it;
+        } else {
+          // Thêm it vào mergedArrImage nếu chưa tồn tại
+          mergedArrImage.push(it);
+        }
+      }
+
+      if (key === "click") {
+        console.log("run-1");
+        const indexFaild = newDataChecklist.findIndex((item) => {
+          return (
+            item.ID_Checklist === it.ID_Checklist &&
+            item.Giatridinhdanh === item.valueCheck &&
+            it.Anh === null &&
+            it.GhichuChitiet === ""
+          );
+        });
+        console.log("indexFaild", indexFaild);
+        if (indexFaild === -1) {
+          if (
+            !mergedArrImage.some(
+              (existingItem) => existingItem.ID_Checklist === it.ID_Checklist
+            )
+          ) {
+            mergedArrImage.push(it);
+          }
+          const indexDefault = mergedArrCheck.findIndex(
+            (item) => item.ID_Checklist === it.ID_Checklist
+          );
+          if (indexDefault !== -1) {
+            mergedArrCheck.splice(indexDefault, 1);
+          }
+        } else {
+          if (
+            !mergedArrCheck.some(
+              (existingItem) => existingItem.ID_Checklist === it.ID_Checklist
+            )
+          ) {
+            mergedArrCheck.push(it);
+          }
+
+          const indexDefault = mergedArrImage.findIndex(
+            (item) => item.ID_Checklist === it.ID_Checklist
+          );
+          if (indexDefault !== -1) {
+            mergedArrImage.splice(indexDefault, 1);
+          }
+        }
+      }
+
+      if (key === "active") {
+        // Tìm mục trong newDataChecklist có ID_Checklist trùng với it.ID_Checklist và valueCheck khác Giatridinhdanh
+        const indexFaild = mergedArrImage.findIndex(
+          (item) => item.ID_Checklist === it.ID_Checklist
+        );
+        if (indexFaild !== -1) {
+          mergedArrImage.splice(indexFaild, 1);
+        }
+
+        const indexDefault = mergedArrCheck.findIndex(
+          (item) => item.ID_Checklist === it.ID_Checklist
+        );
+        if (indexDefault !== -1) {
+          mergedArrCheck.splice(indexDefault, 1);
+        }
       }
     } else {
-      // Duyệt qua mảng arrCheck2
       if (key === "Anh" || key === "GhichuChitiet") {
-        newDataChecklistImage.forEach((item) => {
-          const found = mergedArrImage.some(
-            (existingItem) => existingItem.ID_Checklist === item.ID_Checklist
-          );
-          if (!found) {
-            mergedArrImage.push(item);
+      }
+      if (key === "click" || key === "active") {
+        console.log("run-2");
+        const indexFaild = newDataChecklist.find(
+          (item) =>
+            item.ID_Checklist === it.ID_Checklist &&
+            item.valueCheck !== item.Giatridinhdanh
+        );
+
+        if (indexFaild) {
+          console.log("log-2-2-1");
+
+          // Thêm it vào mergedArrImage nếu chưa có
+          if (
+            !mergedArrImage.some(
+              (existingItem) => existingItem.ID_Checklist === it.ID_Checklist
+            )
+          ) {
+            mergedArrImage.push(it);
           }
-        });
-      } else {
-        newDataChecklist.forEach((item) => {
+
+          // Xóa it khỏi mergedArrCheck nếu tồn tại
+          const indexCheck = mergedArrCheck.findIndex((item) => {
+            return (
+              item.ID_Checklist === it.ID_Checklist &&
+              it.valueCheck === item.valueCheck &&
+              it.Anh === null &&
+              it.GhichuChitiet === ""
+            );
+          });
+          if (indexCheck !== -1) {
+            mergedArrCheck.splice(indexCheck, 1);
+          }
+        } else {
+          // Kiểm tra và thêm it vào mergedArrCheck nếu chưa có
           const found = mergedArrCheck.some(
             (existingItem) =>
-              existingItem.ID_Checklist === item.ID_Checklist &&
-              existingItem.Anh === null &&
-              existingItem.GhichuChitiet === ""
+              it.ID_Checklist === existingItem.ID_Checklist &&
+              item.Giatridinhdanh === existingItem.valueCheck &&
+              it.Anh === null &&
+              it.GhichuChitiet === ""
           );
           if (!found) {
-            mergedArrCheck.push(item);
+            mergedArrCheck.push(it);
           }
-        });
+        }
       }
     }
 
-    setDataChecklistFaild(newDataChecklistImage);
+    setDataChecklistFaild(mergedArrImage);
     setDefaultActionDataChecklist(mergedArrCheck);
-    setNewActionDataChecklist(newDataChecklist);
+    setNewActionDataChecklist([...mergedArrImage, ...mergedArrCheck]);
     setDataChecklistFilter(data);
   };
 
@@ -347,7 +430,7 @@ const DetailChecklist = ({ route, navigation }) => {
       return item;
     });
 
-    handleSetData("click", updatedDataChecklist, it);
+    handleSetData(key, updatedDataChecklist, it);
   };
 
   // call api filter data checklist
@@ -532,7 +615,7 @@ const DetailChecklist = ({ route, navigation }) => {
 
   // call api submit data checklsit
   const handleSubmit = async () => {
-    // Kiểm tra nếu defaultActionDataChecklist rỗng
+    setLoadingSubmit(true);
     if (
       defaultActionDataChecklist.length === 0 &&
       dataChecklistFaild.length === 0
@@ -544,10 +627,174 @@ const DetailChecklist = ({ route, navigation }) => {
       // Kết thúc hàm sớm nếu mảng rỗng
       return;
     }
+    // Kiểm tra dữ liệu và xử lý tùy thuộc vào trạng thái của `defaultActionDataChecklist` và `dataChecklistFaild`
+    if (
+      defaultActionDataChecklist.length === 0 &&
+      dataChecklistFaild.length > 0
+    ) {
+      // Xử lý API cho dataChecklistFaild
+      await handleDataChecklistFaild();
+    } else if (
+      defaultActionDataChecklist.length > 0 &&
+      dataChecklistFaild.length == 0
+    ) {
+      // Xử lý API cho defaultActionDataChecklist
+      await handleDefaultActionDataChecklist();
+    }
 
-    setLoadingSubmit(true);
+    if (
+      defaultActionDataChecklist.length > 0 &&
+      dataChecklistFaild.length > 0
+    ) {
+      await hadlChecklistAll();
+    }
+    // Cập nhật sau khi hoàn thành xử lý API
+  };
+
+  // api faild tb_checklistchitiet
+  const handleDataChecklistFaild = async () => {
     const formData = new FormData();
 
+    const requests = dataChecklistFaild.map(async (item) => {
+      // Xử lý dữ liệu cho mỗi phần tử
+      const itemInfo = {
+        ID_ChecklistC: ID_ChecklistC,
+        ID_Checklist: item.ID_Checklist,
+        Ketqua: item.valueCheck || "",
+        Gioht: item.gioht,
+        Ghichu: item.GhichuChitiet || "",
+        Anh: "",
+      };
+
+      // Kiểm tra tệp ảnh (nếu có) và thêm vào formData
+      if (item.Anh) {
+        const file = {
+          uri:
+            Platform.OS === "android"
+              ? item?.Anh?.uri
+              : item?.Anh?.uri.replace("file://", ""),
+          name:
+            item?.Anh?.fileName ||
+            `${Math.floor(Math.random() * 999999999)}.jpg`,
+          type: item?.Anh?.type || "image/jpeg",
+        };
+        formData.append(`Images`, file);
+        itemInfo.Anh = file.name;
+      }
+
+      // Thêm itemInfo vào formData
+      Object.entries(itemInfo).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
+
+      // Gửi yêu cầu API
+      return axios.post(BASE_URL + "/tb_checklistchitiet/create", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: "Bearer " + authToken,
+        },
+      });
+    });
+
+    try {
+      // Gộp cả hai mảng promise và đợi cho tất cả các promise hoàn thành
+      await Promise.all(requests);
+
+      // Hiển thị cảnh báo sau khi tất cả các yêu cầu hoàn thành
+      Alert.alert("PMC Thông báo", "Checklist thành công", [
+        {
+          text: "Hủy",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+        { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+      ]);
+
+      // Thiết lập lại dữ liệu và cờ loading
+      postHandleSubmit();
+      setLoadingSubmit(false);
+    } catch (error) {
+      console.log("err", error);
+      setLoadingSubmit(false);
+      if (error.response) {
+        // Lỗi từ phía server (có response từ server)
+        Alert.alert("PMC Thông báo", error.response.data.message, [
+          {
+            text: "Hủy",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel",
+          },
+          { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+        ]);
+      }
+    }
+  };
+
+// api faild tb_checklistchitietdone
+  const handleDefaultActionDataChecklist = async () => {
+    // Xử lý API cho defaultActionDataChecklist
+    // Bạn có thể thêm logic riêng của bạn tại đây
+    const descriptions = [
+      defaultActionDataChecklist
+        .map(
+          (item) => `${item.ID_Checklist}/${item.Giatridinhdanh}/${item.gioht}`
+        )
+        .join(","),
+    ];
+    const descriptionsJSON = JSON.stringify(descriptions);
+
+    const requestDone = axios.post(
+      BASE_URL + "/tb_checklistchitietdone/create",
+      {
+        Description: descriptionsJSON,
+        ID_ChecklistC: ID_ChecklistC,
+        checklistLength: defaultActionDataChecklist.length,
+      },
+      {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer " + authToken,
+        },
+      }
+    );
+    try {
+      // Gộp cả hai mảng promise và đợi cho tất cả các promise hoàn thành
+      await Promise.all(requestDone);
+
+      // Hiển thị cảnh báo sau khi tất cả các yêu cầu hoàn thành
+      Alert.alert("PMC Thông báo", "Checklist thành công", [
+        {
+          text: "Hủy",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+        { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+      ]);
+
+      // Thiết lập lại dữ liệu và cờ loading
+      postHandleSubmit();
+      setLoadingSubmit(false);
+    } catch (error) {
+      console.log("err", error);
+      setLoadingSubmit(false);
+      if (error.response) {
+        // Lỗi từ phía server (có response từ server)
+        Alert.alert("PMC Thông báo", error.response.data.message, [
+          {
+            text: "Hủy",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel",
+          },
+          { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+        ]);
+      }
+    }
+  };
+
+  // api all
+  const hadlChecklistAll = async () => {
+    const formData = new FormData();
+    console.log("dataChecklistFaild", dataChecklistFaild);
     // Tạo mảng các promise cho mỗi item trong dataChecklistFaild
     const requests = dataChecklistFaild.map(async (item) => {
       const itemInfo = {
@@ -588,19 +835,11 @@ const DetailChecklist = ({ route, navigation }) => {
       });
     });
 
-    const updatedDefaultActionDataChecklist = defaultActionDataChecklist.filter(
-      (item) => {
-        return (
-          !item.Anh !== null &&
-          !item.GhichuChitiet !== "" &&
-          item.valueCheck === item.Giatridinhdanh
-        );
-      }
-    );
-
     const descriptions = [
-      updatedDefaultActionDataChecklist
-        .map((item) => `${item.ID_Checklist}/${item.valueCheck}/${item.gioht}`)
+      defaultActionDataChecklist
+        .map(
+          (item) => `${item.ID_Checklist}/${item.Giatridinhdanh}/${item.gioht}`
+        )
         .join(","),
     ];
     const descriptionsJSON = JSON.stringify(descriptions);
@@ -610,7 +849,7 @@ const DetailChecklist = ({ route, navigation }) => {
       {
         Description: descriptionsJSON,
         ID_ChecklistC: ID_ChecklistC,
-        checklistLength: updatedDefaultActionDataChecklist.length,
+        checklistLength: defaultActionDataChecklist.length,
       },
       {
         headers: {
@@ -635,12 +874,10 @@ const DetailChecklist = ({ route, navigation }) => {
       ]);
 
       // Thiết lập lại dữ liệu và cờ loading
-      init_checklist();
-      setNewActionDataChecklist([]);
-      setDefaultActionDataChecklist([]);
-      setDataChecklistFaild([]);
+      postHandleSubmit();
       setLoadingSubmit(false);
     } catch (error) {
+      console.log("err", error);
       setLoadingSubmit(false);
       if (error.response) {
         // Lỗi từ phía server (có response từ server)
@@ -654,6 +891,14 @@ const DetailChecklist = ({ route, navigation }) => {
         ]);
       }
     }
+  };
+
+  const postHandleSubmit = () => {
+    // Thiết lập lại dữ liệu sau khi hoàn thành xử lý API
+    init_checklist();
+    setNewActionDataChecklist([]);
+    setDefaultActionDataChecklist([]);
+    setDataChecklistFaild([]);
   };
 
   // view item flatlist

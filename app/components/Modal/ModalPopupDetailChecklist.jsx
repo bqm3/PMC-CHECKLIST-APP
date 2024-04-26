@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   TextInput,
 } from "react-native";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import SelectDropdown from "react-native-select-dropdown";
 import { FontAwesome, Entypo } from "@expo/vector-icons";
 import VerticalSelect from "../VerticalSelect";
@@ -24,9 +24,9 @@ const ModalPopupDetailChecklist = ({
 }) => {
   const ref = useRef(null);
   const [step, setStep] = useState(1);
-  const [image, setImage] = useState(dataItem?.Anh);
-  const [ghichu, setGhichu] = useState(dataItem?.GhichuChitiet);
-  const [clearImage, setClearImage] = useState(false);
+  const [defaultChecklist, setDefaultChecklist] = useState(dataItem.valueCheck);
+  const [image, setImage] = useState();
+  const [ghichu, setGhichu] = useState();
 
   const pickImage = async () => {
     // Ask the user for the permission to access the camera
@@ -40,10 +40,16 @@ const ModalPopupDetailChecklist = ({
     const result = await ImagePicker.launchCameraAsync();
 
     if (!result.cancelled) {
+      dataItem.Anh = result?.assets[0];
       handleChange("Anh", result?.assets[0], dataItem);
       setImage(result?.assets[0]);
     }
   };
+
+  useEffect(()=> {
+    setImage(dataItem?.Anh)
+    setGhichu(dataItem?.GhichuChitiet)
+  }, [dataItem])
 
   return (
     <View style={{ width: SIZES.width - 60 }}>
@@ -63,9 +69,11 @@ const ModalPopupDetailChecklist = ({
             // rowStyle={{ height: 50, justifyContent: "center" }}
             defaultButtonText={"Trạng thái"}
             buttonTextStyle={styles.customText}
-            defaultValue={dataItem.valueCheck}
+            defaultValue={defaultChecklist}
             onSelect={(selectedItem, i) => {
+              dataItem.valueCheck = selectedItem;
               handleItemClick(selectedItem, dataItem, "click");
+              setDefaultChecklist(selectedItem);
             }}
             renderDropdownIcon={(isOpened) => {
               return (
@@ -99,7 +107,7 @@ const ModalPopupDetailChecklist = ({
                   value={item}
                   label={item}
                   key={item}
-                  selectedItem={dataItem?.valueCheck}
+                  selectedItem={defaultChecklist}
                 />
               );
             }}
@@ -133,7 +141,10 @@ const ModalPopupDetailChecklist = ({
               )}
               {image && (
                 <TouchableOpacity
-                  onPress={() => setImage()}
+                  onPress={() => {
+                    setImage()
+                    handleChange("Anh", null, dataItem);
+                  }}
                   style={{ flexDirection: "row", alignItems: "center", gap: 2 }}
                 >
                   <AntDesign name="close" size={24} color="black" />
@@ -141,6 +152,19 @@ const ModalPopupDetailChecklist = ({
                 </TouchableOpacity>
               )}
             </View>
+          </View>
+          <View style={{ marginTop: 10 }}>
+            <Button
+              onPress={() => {
+                handlePopupClear();
+                handleChange("Anh", image, dataItem);
+              }}
+              backgroundColor={COLORS.bg_button}
+              border={COLORS.bg_button}
+              color={"white"}
+              text={"Hoàn thành"}
+              width={"100%"}
+            />
           </View>
         </>
       )}
@@ -166,6 +190,21 @@ const ModalPopupDetailChecklist = ({
               },
             ]}
           />
+          <View style={{ marginTop: 10 }}>
+            <Button
+              onPress={() => {
+                handlePopupClear();
+                dataItem.GhichuChitiet = ghichu;
+                handleChange("GhichuChitiet", ghichu, dataItem);
+
+              }}
+              backgroundColor={COLORS.bg_button}
+              border={COLORS.bg_button}
+              color={"white"}
+              text={"Hoàn thành"}
+              width={"100%"}
+            />
+          </View>
         </View>
       )}
       {step === 1 && (
@@ -196,20 +235,7 @@ const ModalPopupDetailChecklist = ({
           </View>
         </>
       )}
-      <View style={{ marginTop: 10 }}>
-        <Button
-          onPress={() => {
-            handlePopupClear();
-            handleChange("GhichuChitiet", ghichu, dataItem);
-            handleChange("Anh", image, dataItem);
-          }}
-          backgroundColor={COLORS.bg_button}
-          border={COLORS.bg_button}
-          color={"white"}
-          text={"Hoàn thành"}
-          width={"100%"}
-        />
-      </View>
+
       <View style={{ marginTop: 10 }}>
         <Button
           onPress={() => {
