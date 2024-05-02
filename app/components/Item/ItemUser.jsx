@@ -17,7 +17,7 @@ const ItemUser = ({ index, item, handleEditEnt, handleAlertDelete }) => {
       }}
     >
       <View>
-        <Text  allowFontScaling={false} style={[styles.title, { fontSize: 18 }]}>
+        <Text  allowFontScaling={false} style={[styles.title, { fontSize: 20, fontWeight: '700' }]}>
           {item?.ent_duan?.Duan}
         </Text>
         
