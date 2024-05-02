@@ -91,7 +91,6 @@ const DanhmucCalamviec = ({ navigation }) => {
     }));
   };
 
-  console.log('dataInput',dataInput)
   const handlePushDataSave = async () => {
     if (dataInput.tenca === "" || dataInput.khoicv === null) {
       Alert.alert("PMC Thông báo", "Thiếu thông tin ca làm việc", [

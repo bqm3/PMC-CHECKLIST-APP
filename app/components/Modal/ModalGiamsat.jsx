@@ -14,10 +14,10 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 import { COLORS } from "../../constants/theme";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { FontAwesome } from "@expo/vector-icons";
 import VerticalSelect from "../VerticalSelect";
 import SelectDropdown from "react-native-select-dropdown";
 import ButtonSubmit from "../Button/ButtonSubmit";
+import { FontAwesome, AntDesign } from "@expo/vector-icons";
 
 const dataGioitinh = [
   {
@@ -49,7 +49,9 @@ const ModalGiamsat = ({
 }) => {
   const ref = useRef(null);
 
-  const defaultChucvu = ent_chucvu?.find((chucvu) => chucvu.ID_Chucvu === dataInput?.ID_Chucvu);
+  const defaultChucvu = ent_chucvu?.find(
+    (chucvu) => chucvu.ID_Chucvu === dataInput?.ID_Chucvu
+  );
   const defaultKhoi = ent_khoicv?.find(
     (khoi) => khoi.ID_Khoi === dataInput?.ID_KhoiCV
   );
@@ -59,8 +61,6 @@ const ModalGiamsat = ({
 
   const [hoten, sethoten] = useState(dataInput?.hoten);
   const [sodienthoai, setsodienthoai] = useState(dataInput?.sodienthoai);
-
-  console.log('isDatePickerVisible',isDatePickerVisible)
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -308,10 +308,7 @@ const ModalGiamsat = ({
                 />
               </View>
               <View style={{ width: "48%" }}>
-                <Text allowFontScaling={false} style={styles.text}>
-                  Ngày sinh
-                </Text>
-                <TouchableOpacity onPress={toggleDatePicker}>
+                {/* <TouchableOpacity onPress={toggleDatePicker}>
                   <TextInput
                     allowFontScaling={false}
                     value={dataInput.ngaysinh}
@@ -325,6 +322,46 @@ const ModalGiamsat = ({
                     ]}
                     pointerEvents="none"
                   />
+                  <DateTimePickerModal
+                    isVisible={isDatePickerVisible}
+                    mode="date"
+                    isDarkModeEnabled={true}
+                    onConfirm={(date) => handleConfirm("ngaysinh", date)}
+                    onCancel={toggleDatePicker}
+                  />
+                </TouchableOpacity> */}
+
+                <Text allowFontScaling={false} style={styles.text}>
+                  Ngày sinh
+                </Text>
+                <TouchableOpacity onPress={toggleDatePicker}>
+                  <View style={styles.action}>
+                    <TextInput
+                      allowFontScaling={false}
+                      value={dataInput.ngaysinh}
+                      placeholder="Nhập giờ bắt đầu ca làm việc"
+                      placeholderTextColor="gray"
+                      style={{
+                        paddingLeft: 12,
+                        color: "#05375a",
+                        width: "70%",
+                        fontSize: 16,
+                        height: 48,
+                      }}
+                      pointerEvents="none"
+                    />
+                    <TouchableOpacity
+                      onPress={toggleDatePicker}
+                      style={{
+                        justifyContent: "center",
+                        alignItems: "center",
+                        height: 48,
+                        width: 48,
+                      }}
+                    >
+                      <AntDesign name="calendar" size={24} color="black" />
+                    </TouchableOpacity>
+                  </View>
                   <DateTimePickerModal
                     isVisible={isDatePickerVisible}
                     mode="date"
@@ -375,6 +412,21 @@ const styles = StyleSheet.create({
     height: 48,
     paddingVertical: 4,
     backgroundColor: "white",
+  },
+  action: {
+    height: 48,
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 8,
+    backgroundColor: "white",
+    shadowColor: "#000000",
+    shadowOffset: {
+      width: 0,
+      height: 9,
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 9.22,
+    elevation: 12,
   },
   dropdown: {
     height: 48,

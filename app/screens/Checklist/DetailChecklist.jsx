@@ -653,87 +653,78 @@ const DetailChecklist = ({ route, navigation }) => {
 
   // api faild tb_checklistchitiet
   const handleDataChecklistFaild = async () => {
-    // Tạo mảng requests để chứa các promise của các yêu cầu API
-    const requests = [];
-
-    // Sử dụng FormData để chứa dữ liệu cho từng yêu cầu API
-    const formData = new FormData();
-
-    // Xử lý dữ liệu cho từng phần tử trong dataChecklistFaild
-    for (const item of dataChecklistFaild) {
-        const itemInfo = {
-            ID_ChecklistC: ID_ChecklistC,
-            ID_Checklist: item.ID_Checklist,
-            Ketqua: item.valueCheck || "",
-            Gioht: item.gioht,
-            Ghichu: item.GhichuChitiet || "",
-            Anh: "",
-        };
-
-        // Kiểm tra và thêm tệp ảnh (nếu có)
-        if (item.Anh) {
-            const file = {
-                uri: Platform.OS === "android" ? item?.Anh?.uri : item?.Anh?.uri.replace("file://", ""),
-                name: item?.Anh?.fileName || `${Math.floor(Math.random() * 999999999)}.jpg`,
-                type: item?.Anh?.type || "image/jpeg",
-            };
-            formData.append(`Images`, file);
-            itemInfo.Anh = file.name;
-        }
-
-        // Thêm itemInfo vào formData
-        Object.entries(itemInfo).forEach(([key, value]) => {
-            formData.append(key, value);
-        });
-
-        // Lưu promise của yêu cầu API vào mảng requests
-        requests.push(
-            axios.post(BASE_URL + "/tb_checklistchitiet/create", formData, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                    Authorization: "Bearer " + authToken,
-                },
-            })
-        );
-    }
-
     try {
-        // Chờ tất cả các yêu cầu API hoàn thành
-        await Promise.all(requests);
+      // Create a new FormData instance
+      const formData = new FormData();
 
-        // Hiển thị thông báo thành công
-        Alert.alert("PMC Thông báo", "Checklist thành công", [
-            {
-                text: "Hủy",
-                onPress: () => console.log("Cancel Pressed"),
-                style: "cancel",
-            },
-            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-        ]);
+      // Iterate over all items in dataChecklistFaild
+      dataChecklistFaild.forEach((item) => {
+        // Extract and append checklist details to formData
+        formData.append("ID_ChecklistC", ID_ChecklistC);
+        formData.append("ID_Checklist", item.ID_Checklist);
+        formData.append("Ketqua", item.valueCheck || "");
+        formData.append("Gioht", item.gioht);
+        formData.append("Ghichu", item.GhichuChitiet || "");
 
-        // Thiết lập lại dữ liệu sau khi hoàn thành
-        postHandleSubmit();
-        setLoadingSubmit(false);
-    } catch (error) {
-        console.log("err failed", error);
-        setLoadingSubmit(false);
-
-        if (error.response) {
-            // Xử lý lỗi từ server
-            Alert.alert("PMC Thông báo", error.response.data.message, [
-                {
-                    text: "Hủy",
-                    onPress: () => console.log("Cancel Pressed"),
-                    style: "cancel",
-                },
-                { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-            ]);
+        // If there is an image, append it to formData
+        if (item.Anh) {
+          const file = {
+            uri:
+              Platform.OS === "android"
+                ? item.Anh.uri
+                : item.Anh.uri.replace("file://", ""),
+            name:
+              item.Anh.fileName ||
+              `${Math.floor(Math.random() * 999999999)}.jpg`,
+            type: item.Anh.type || "image/jpeg",
+          };
+          formData.append("Images", file);
+          formData.append("Anh", file.name);
+        } else {
+          formData.append("Anh", "");
+          formData.append("Images", {});
         }
+      });
+
+      // Send the entire FormData in a single request
+      await axios.post(BASE_URL + `/tb_checklistchitiet/create`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: "Bearer " + authToken,
+        },
+      });
+
+      // Alert user of successful submission
+      Alert.alert("PMC Thông báo", "Checklist thành công", [
+        {
+          text: "Hủy",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+        { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+      ]);
+
+      // Handle successful form submission
+      postHandleSubmit();
+      setLoadingSubmit(false);
+    } catch (error) {
+      console.log("err faild", error);
+      setLoadingSubmit(false);
+      if (error.response) {
+        // Handle error response from the server
+        Alert.alert("PMC Thông báo", error.response.data.message, [
+          {
+            text: "Hủy",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel",
+          },
+          { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+        ]);
+      }
     }
-};
+  };
 
-
-// api faild tb_checklistchitietdone
+  // api faild tb_checklistchitietdone
   const handleDefaultActionDataChecklist = async () => {
     // Xử lý API cho defaultActionDataChecklist
     // Bạn có thể thêm logic riêng của bạn tại đây

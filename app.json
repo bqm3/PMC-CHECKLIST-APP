@@ -2,7 +2,7 @@
   "expo": {
     "name": "PMC-CHECKLIST-APP",
     "slug": "PMC-CHECKLIST-APP",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -22,7 +22,9 @@
         "foregroundImage": "./assets/background_company.png",
         "backgroundColor": "#ffffff"
       },
+      "versionCode": 1,
       "package": "com.anonymous.PMCCHECKLISTAPP"
+      
     },
     "web": {
       "favicon": "./assets/pmc_logo.png"
