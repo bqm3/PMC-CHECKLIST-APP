@@ -295,8 +295,8 @@ const LoginScreen = ({ navigation }) => {
                         onPress={handleToggle}
                       />
                       <TouchableOpacity onPress={handlePresentModalPress}>
-                        <Text allowFontScaling={false} style={styles.label}>
-                          Tôi đồng ý với Điều khoản và Điều kiện của PMC
+                        <Text allowFontScaling={false} style={[styles.label, {textDecorationLine: 'none'}]}>
+                          Tôi đồng ý các <Text style={styles.label}>điều khoản</Text> và <Text style={styles.label}>điều kiện</Text> của PMC
                         </Text>
                       </TouchableOpacity>
                     </View>

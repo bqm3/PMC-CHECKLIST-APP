@@ -40,7 +40,6 @@ import { BASE_URL } from "../../constants/config";
 import moment from "moment";
 import ModalChecklistC from "../../components/Modal/ModalChecklistC";
 import ModalChecklistCImage from "../../components/Modal/ModalChecklistCImage";
-import * as ImageManipulator from "expo-image-manipulator";
 
 const numberOfItemsPerPageList = [20, 30, 50];
 
@@ -49,13 +48,14 @@ const headerList = [
     til: "Ngày",
     width: 120,
   },
-  {
-    til: "Số lượng",
-    width: 100,
-  },
+  
   {
     til: "Tên ca",
     width: 150,
+  },
+  {
+    til: "Số lượng",
+    width: 100,
   },
 
   {
@@ -546,19 +546,12 @@ const ThucHienChecklist = ({ navigation }) => {
               {moment(item?.Ngay).format("DD-MM-YYYY")}
             </Text>
           </DataTable.Cell>
-          <DataTable.Cell style={{ width: 100, justifyContent: "center" }}>
-            <Text
-              style={{ color: isExistIndex ? "white" : "black", fontSize: 15 }}
-              numberOfLines={2}
-            >
-              {item?.TongC}/{item?.Tong}
-            </Text>
-          </DataTable.Cell>
+         
           <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
             <View
               style={{
                 color: isExistIndex ? "white" : "black",
-                fontSize: 15,
+                fontSize: 16,
                 flexDirection: "column",
                 justifyContent: "center",
                 alignItems: "center",
@@ -586,7 +579,14 @@ const ThucHienChecklist = ({ navigation }) => {
               </Text>
             </View>
           </DataTable.Cell>
-
+          <DataTable.Cell style={{ width: 100, justifyContent: "center" }}>
+            <Text
+              style={{ color: isExistIndex ? "white" : "black", fontSize: 15 }}
+              numberOfLines={2}
+            >
+              {item?.TongC}/{item?.Tong}
+            </Text>
+          </DataTable.Cell>
           <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
             <Text
               style={{ color: isExistIndex ? "white" : "black", fontSize: 15 }}
