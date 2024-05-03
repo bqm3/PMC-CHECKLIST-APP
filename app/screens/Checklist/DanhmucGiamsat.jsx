@@ -257,7 +257,7 @@ const DanhmucGiamsat = ({ navigation }) => {
           ]);
         })
         .catch((err) => {
-          console.log("err", err.response);
+          console.log("err", err.response.data.message);
           setLoadingSubmit(false);
           Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
             {

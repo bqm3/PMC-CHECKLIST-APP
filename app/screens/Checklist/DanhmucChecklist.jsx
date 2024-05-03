@@ -57,18 +57,6 @@ const headerList = [
     til: "Tên checklist",
     width: 150,
   },
-  // {
-  //   til: "Giá trị nhận",
-  //   width: 120,
-  // },
-  // {
-  //   til: "Tòa nhà",
-  //   width: 120,
-  // },
-  // {
-  //   til: "Tầng",
-  //   width: 120,
-  // },
   {
     til: "Khu vực",
     width: 120,
@@ -78,18 +66,7 @@ const headerList = [
     width: 120,
   },
 
-  // {
-  //   til: "Giá trị định danh",
-  //   width: 150,
-  // },
-  // {
-  //   til: "Mã checklist",
-  //   width: 100,
-  // },
-  // {
-  //   til: "Số thứ tự",
-  //   width: 100,
-  // },
+ 
 ];
 
 const DanhmucChecklist = ({ navigation }) => {

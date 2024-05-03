@@ -259,7 +259,6 @@ const DetailChecklist = ({ route, navigation }) => {
     // clear item checklist
     if (it.valueCheck !== null) {
       if (key === "Anh" || key === "GhichuChitiet") {
-        console.log("log-1-1");
 
         // Kiểm tra và cập nhật mergedArrCheck
         const indexCheck = mergedArrCheck.findIndex(
@@ -284,7 +283,6 @@ const DetailChecklist = ({ route, navigation }) => {
       }
 
       if (key === "click") {
-        console.log("run-1");
         const indexFaild = newDataChecklist.findIndex((item) => {
           return (
             item.ID_Checklist === it.ID_Checklist &&
@@ -346,7 +344,6 @@ const DetailChecklist = ({ route, navigation }) => {
       if (key === "Anh" || key === "GhichuChitiet") {
       }
       if (key === "click" || key === "active") {
-        console.log("run-2");
         const indexFaild = newDataChecklist.find(
           (item) =>
             item.ID_Checklist === it.ID_Checklist &&
@@ -354,7 +351,6 @@ const DetailChecklist = ({ route, navigation }) => {
         );
 
         if (indexFaild) {
-          console.log("log-2-2-1");
 
           // Thêm it vào mergedArrImage nếu chưa có
           if (
@@ -658,7 +654,7 @@ const DetailChecklist = ({ route, navigation }) => {
       const formData = new FormData();
 
       // Iterate over all items in dataChecklistFaild
-      dataChecklistFaild.forEach((item) => {
+      dataChecklistFaild.forEach((item, index) => {
         // Extract and append checklist details to formData
         formData.append("ID_ChecklistC", ID_ChecklistC);
         formData.append("ID_Checklist", item.ID_Checklist);
@@ -678,11 +674,11 @@ const DetailChecklist = ({ route, navigation }) => {
               `${Math.floor(Math.random() * 999999999)}.jpg`,
             type: item.Anh.type || "image/jpeg",
           };
-          formData.append("Images", file);
+          formData.append(`Images_${index}`, file);
           formData.append("Anh", file.name);
         } else {
           formData.append("Anh", "");
-          formData.append("Images", {});
+          formData.append(`Images_${index}`, {});
         }
       });
 
@@ -787,105 +783,100 @@ const DetailChecklist = ({ route, navigation }) => {
 
   // api all
   const hadlChecklistAll = async () => {
+
+    // Tạo một đối tượng FormData để chứa dữ liệu của dataChecklistFaild
     const formData = new FormData();
-    console.log("dataChecklistFaild", dataChecklistFaild);
-    // Tạo mảng các promise cho mỗi item trong dataChecklistFaild
-    const requests = dataChecklistFaild.map(async (item) => {
-      const itemInfo = {
-        ID_ChecklistC: ID_ChecklistC,
-        ID_Checklist: item.ID_Checklist,
-        Ketqua: item.valueCheck || "",
-        Gioht: item.gioht,
-        Ghichu: item.GhichuChitiet || "",
-        Anh: "",
-      };
 
-      if (item.Anh) {
-        const file = {
-          uri:
-            Platform.OS === "android"
-              ? item?.Anh?.uri
-              : item?.Anh?.uri.replace("file://", ""),
-          name:
-            item?.Anh?.fileName ||
-            Math.floor(Math.random() * Math.floor(999999999)) + ".jpg",
-          type: item?.Anh?.type || "image/jpeg",
-        };
+    // Lặp qua từng phần tử trong dataChecklistFaild để thêm vào FormData
+    dataChecklistFaild.forEach((item, index) => {
+        // Thêm các trường dữ liệu vào FormData
+        formData.append("ID_ChecklistC", ID_ChecklistC);
+        formData.append("ID_Checklist", item.ID_Checklist);
+        formData.append("Ketqua", item.valueCheck || "");
+        formData.append("Gioht", item.gioht);
+        formData.append("Ghichu", item.GhichuChitiet || "");
 
-        formData.append(`Images`, file);
-        itemInfo.Anh = file.name;
-      }
-
-      Object.entries(itemInfo).forEach(([key, value]) => {
-        formData.append(key, value);
-      });
-
-      // Trả về promise cho mỗi item
-      return axios.post(BASE_URL + "/tb_checklistchitiet/create", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: "Bearer " + authToken,
-        },
-      });
+        // Nếu có hình ảnh, thêm vào FormData
+        if (item.Anh) {
+            const file = {
+                uri: Platform.OS === "android" ? item.Anh.uri : item.Anh.uri.replace("file://", ""),
+                name: item.Anh.fileName || `${Math.floor(Math.random() * 999999999)}.jpg`,
+                type: item.Anh.type || "image/jpeg",
+            };
+            formData.append(`Images_${index}`, file);
+            formData.append("Anh", file.name);
+        } else {
+            formData.append("Anh", "");
+            formData.append(`Images_${index}`, {});
+        }
     });
 
+    // Gửi FormData trong một yêu cầu duy nhất
+    const requestFaild = axios.post(BASE_URL + `/tb_checklistchitiet/create`, formData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: "Bearer " + authToken,
+        },
+    });
+
+    // Chuẩn bị dữ liệu cho yêu cầu thứ hai
     const descriptions = [
-      defaultActionDataChecklist
-        .map(
-          (item) => `${item.ID_Checklist}/${item.Giatridinhdanh}/${item.gioht}`
-        )
-        .join(","),
+        defaultActionDataChecklist.map(
+            (item) => `${item.ID_Checklist}/${item.Giatridinhdanh}/${item.gioht}`
+        ).join(","),
     ];
     const descriptionsJSON = JSON.stringify(descriptions);
 
     const requestDone = axios.post(
-      BASE_URL + "/tb_checklistchitietdone/create",
-      {
-        Description: descriptionsJSON,
-        ID_ChecklistC: ID_ChecklistC,
-        checklistLength: defaultActionDataChecklist.length,
-      },
-      {
-        headers: {
-          Accept: "application/json",
-          Authorization: "Bearer " + authToken,
+        BASE_URL + "/tb_checklistchitietdone/create",
+        {
+            Description: descriptionsJSON,
+            ID_ChecklistC: ID_ChecklistC,
+            checklistLength: defaultActionDataChecklist.length,
         },
-      }
+        {
+            headers: {
+                Accept: "application/json",
+                Authorization: "Bearer " + authToken,
+            },
+        }
     );
 
     try {
-      // Gộp cả hai mảng promise và đợi cho tất cả các promise hoàn thành
-      await Promise.all([...requests, requestDone]);
+        // Gộp các promise lại và chờ cho tất cả các promise hoàn thành
+        await Promise.all([requestFaild, requestDone]);
 
-      // Hiển thị cảnh báo sau khi tất cả các yêu cầu hoàn thành
-      Alert.alert("PMC Thông báo", "Checklist thành công", [
-        {
-          text: "Hủy",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel",
-        },
-        { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-      ]);
-
-      // Thiết lập lại dữ liệu và cờ loading
-      postHandleSubmit();
-      setLoadingSubmit(false);
-    } catch (error) {
-      console.log("err all", error);
-      setLoadingSubmit(false);
-      if (error.response) {
-        // Lỗi từ phía server (có response từ server)
-        Alert.alert("PMC Thông báo", error.response.data.message, [
-          {
-            text: "Hủy",
-            onPress: () => console.log("Cancel Pressed"),
-            style: "cancel",
-          },
-          { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+        // Hiển thị thông báo thành công
+        Alert.alert("PMC Thông báo", "Checklist thành công", [
+            {
+                text: "Hủy",
+                onPress: () => console.log("Cancel Pressed"),
+                style: "cancel",
+            },
+            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
         ]);
-      }
+
+        // Thiết lập lại dữ liệu và trạng thái loading
+        postHandleSubmit();
+        setLoadingSubmit(false);
+    } catch (error) {
+        console.log("err all", error);
+        setLoadingSubmit(false);
+
+        if (error.response) {
+            // Xử lý lỗi từ server
+            Alert.alert("PMC Thông báo", error.response.data.message, [
+                {
+                    text: "Hủy",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel",
+                },
+                { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+            ]);
+        }
     }
-  };
+};
+
 
   const postHandleSubmit = () => {
     // Thiết lập lại dữ liệu sau khi hoàn thành xử lý API
