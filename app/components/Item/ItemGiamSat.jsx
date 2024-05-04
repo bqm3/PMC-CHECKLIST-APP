@@ -40,7 +40,7 @@ const ItemGiamSat = ({ item,handleEditEnt,handleAlertDelete ,handleToggleModal})
         }}
       >
         <TouchableOpacity
-        onPress={() => handleToggleModal(true, item, "0.5")}
+        onPress={() => handleToggleModal(true, item, "0.2")}
         >
           <Image
             source={require("../../../assets/icons/info_icon.png")}

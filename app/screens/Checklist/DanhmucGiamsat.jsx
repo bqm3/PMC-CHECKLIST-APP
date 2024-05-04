@@ -357,7 +357,8 @@ const DanhmucGiamsat = ({ navigation }) => {
 
   const handleToggleModal = (isCheck, data, opacity) => {
     setDataModal(data);
-    setModalVisible(isCheck), setOpacity(opacity);
+    setModalVisible(isCheck);
+     setOpacity(Number(opacity));
   };
 
   const handleCloseModal = () => {
