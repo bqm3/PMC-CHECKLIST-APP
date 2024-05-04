@@ -101,7 +101,6 @@ const ModalChecklistCImage = ({
   } else if (location) {
     text = JSON.stringify(location);
   }
-  console.log("text", text, address);
 
   const handleWebView = (image) => {
     setModalVisible(true);

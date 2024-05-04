@@ -48,7 +48,7 @@ const headerList = [
     til: "Ngày",
     width: 120,
   },
-  
+
   {
     til: "Tên ca",
     width: 150,
@@ -92,6 +92,7 @@ const ThucHienChecklist = ({ navigation }) => {
   const bottomSheetModalRef = useRef(null);
   const bottomSheetModalRef2 = useRef(null);
   const snapPoints = useMemo(() => ["90%"], []);
+  const snapPoints2 = useMemo(() => ["90%"], []);
   const [opacity, setOpacity] = useState(1);
   const [page, setPage] = React.useState(0);
 
@@ -211,9 +212,6 @@ const ThucHienChecklist = ({ navigation }) => {
             dataImages?.Anh1?.fileName ||
             Math.floor(Math.random() * Math.floor(99999999999999)) + ".jpeg",
           type: dataImages?.Anh1?.type || "image/jpeg",
-          fileSize: dataImages.Anh1.fileSize,
-          height: dataImages.Anh1.height,
-          wdith: dataImages.Anh1.wdith,
         };
 
         // Append image file to formData
@@ -231,9 +229,6 @@ const ThucHienChecklist = ({ navigation }) => {
             dataImages?.Anh2?.fileName ||
             Math.floor(Math.random() * Math.floor(99999999999999)) + ".jpeg",
           type: dataImages?.Anh2?.type || "image/jpeg",
-          fileSize: dataImages.Anh2.fileSize,
-          height: dataImages.Anh2.height,
-          wdith: dataImages.Anh2.wdith,
         };
 
         // Append image file to formData
@@ -251,9 +246,6 @@ const ThucHienChecklist = ({ navigation }) => {
             dataImages?.Anh3?.fileName ||
             Math.floor(Math.random() * Math.floor(99999999999999)) + ".jpeg",
           type: dataImages?.Anh3?.type || "image/jpeg",
-          fileSize: dataImages.Anh3.fileSize,
-          height: dataImages.Anh3.height,
-          wdith: dataImages.Anh3.wdith,
         };
 
         // Append image file to formData
@@ -271,9 +263,6 @@ const ThucHienChecklist = ({ navigation }) => {
             dataImages?.Anh4?.fileName ||
             Math.floor(Math.random() * Math.floor(999999999)) + ".jpeg",
           type: dataImages?.Anh4?.type || "image/jpeg",
-          fileSize: dataImages.Anh4.fileSize,
-          height: dataImages.Anh4.height,
-          wdith: dataImages.Anh4.wdith,
         };
 
         // Append image file to formData
@@ -282,22 +271,24 @@ const ThucHienChecklist = ({ navigation }) => {
         formData.append("Giochupanh4", dateHour);
       }
 
+      console.log("file", formData, newActionCheckList[0].ID_ChecklistC);
+
       await axios
         .put(
           BASE_URL +
-            `/tb_checklistc/update-images/${newActionCheckList[0].ID_ChecklistC}`,
+            `/tb_checklistc/update_images/${newActionCheckList[0].ID_ChecklistC}`,
           formData,
           {
             headers: {
+              Accept: "application/json",
               "Content-Type": "multipart/form-data",
-              Authorization: "Bearer " + authToken,
             },
           }
         )
         .then((res) => {
           setLoadingSubmit(false);
           int_checklistc();
-          handleCloseSheetImage();
+          // handleCloseSheetImage();
           // bottomSheetModalRef2?.current?.close();
           Alert.alert("PMC Thông báo", "Checklist thành công", [
             {
@@ -412,7 +403,7 @@ const ThucHienChecklist = ({ navigation }) => {
 
   const handleSheetChanges = useCallback((index) => {
     if (index === -1) {
-      bottomSheetModalRef?.current?.close();
+      // bottomSheetModalRef?.current?.close();
       setOpacity(1);
       handleAdd();
     } else {
@@ -432,6 +423,10 @@ const ThucHienChecklist = ({ navigation }) => {
   const handleCloseSheetImage = useCallback(() => {
     bottomSheetModalRef?.current?.close();
   }, []);
+
+  const handleToggleModal = () => {
+    bottomSheetModalRef2?.current?.present();
+  };
 
   const handlePresentModalPress = useCallback(() => {
     bottomSheetModalRef?.current?.present();
@@ -455,10 +450,6 @@ const ThucHienChecklist = ({ navigation }) => {
       Giochupanh4: null,
       Anh4: null,
     });
-  };
-
-  const handleToggleModal = () => {
-    bottomSheetModalRef2?.current?.present();
   };
 
   const handleChecklistDetail = (id1, id2, id3) => {
@@ -546,7 +537,7 @@ const ThucHienChecklist = ({ navigation }) => {
               {moment(item?.Ngay).format("DD-MM-YYYY")}
             </Text>
           </DataTable.Cell>
-         
+
           <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
             <View
               style={{
@@ -864,7 +855,7 @@ const ThucHienChecklist = ({ navigation }) => {
               <BottomSheetModal
                 ref={bottomSheetModalRef2}
                 index={0}
-                snapPoints={snapPoints}
+                snapPoints={snapPoints2}
                 onChange={handleSheetChanges2}
               >
                 <BottomSheetScrollView style={styles.contentContainer}>
