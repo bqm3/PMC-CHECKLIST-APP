@@ -672,7 +672,7 @@ const DetailChecklist = ({ route, navigation }) => {
             name:
               item.Anh.fileName ||
               `${Math.floor(Math.random() * 999999999)}.jpg`,
-            type: item.Anh.type || "image/jpeg",
+            type: "image/jpeg",
           };
           formData.append(`Images_${index}`, file);
           formData.append("Anh", file.name);
@@ -801,7 +801,7 @@ const DetailChecklist = ({ route, navigation }) => {
             const file = {
                 uri: Platform.OS === "android" ? item.Anh.uri : item.Anh.uri.replace("file://", ""),
                 name: item.Anh.fileName || `${Math.floor(Math.random() * 999999999)}.jpg`,
-                type: item.Anh.type || "image/jpeg",
+                type: "image/jpeg",
             };
             formData.append(`Images_${index}`, file);
             formData.append("Anh", file.name);
@@ -1078,7 +1078,7 @@ const DetailChecklist = ({ route, navigation }) => {
                       >
                         {isScan
                           ? "Không thấy checklist cho khu vực này"
-                          : "Không còn checklist cho ca làm việc này !"}
+                          : "Không còn checklist cho hạng mục này !"}
                       </Text>
                     </View>
                   )}

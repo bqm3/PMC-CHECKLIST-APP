@@ -1,10 +1,11 @@
-import { StyleSheet, Text, View, TextInput } from "react-native";
+import { StyleSheet, Text, View, TextInput, KeyboardAvoidingView } from "react-native";
 import React, { useRef, useState } from "react";
 import { COLORS } from "../../constants/theme";
 import { FontAwesome } from "@expo/vector-icons";
 import VerticalSelect from "../VerticalSelect";
 import SelectDropdown from "react-native-select-dropdown";
 import ButtonSubmit from "../Button/ButtonSubmit";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const ModalKhuvuc = ({
   ent_khoicv,
@@ -31,6 +32,12 @@ const ModalKhuvuc = ({
   const [sothutu, setSothutu] = useState(dataInput?.sothutu);
 
   return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      keyboardVerticalOffset={height + 47}
+      behavior={Platform.OS === "ios" ? "padding" : null}
+    >
     <View style={{ margin: 20 }}>
       <View style={{ justifyContent: "space-around", width: "100%" }}>
         <View style={{ width: "100%" }}>
@@ -266,6 +273,8 @@ const ModalKhuvuc = ({
         />
       </View>
     </View>
+    </KeyboardAvoidingView>
+    </GestureHandlerRootView>
   );
 };
 

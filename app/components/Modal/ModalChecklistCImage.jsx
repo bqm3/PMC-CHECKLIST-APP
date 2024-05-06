@@ -65,15 +65,9 @@ const ModalChecklistCImage = ({
 
     if (!result.cancelled) {
       const assetFile = result?.assets[0];
-      const modifiedImage = {
-        ...assetFile,
-        fileSize: assetFile.fileSize / 1000,
-        height: 500,
-        width: 400,
-      };
-      handleChangeImages(text, modifiedImage);
+      handleChangeImages(text, assetFile);
       handleChangeImages(hour, dateHour);
-      onPress(modifiedImage);
+      onPress(assetFile);
       setOpen(true);
     }
   };

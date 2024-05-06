@@ -40,6 +40,7 @@ import { BASE_URL } from "../../constants/config";
 import moment from "moment";
 import ModalChecklistC from "../../components/Modal/ModalChecklistC";
 import ModalChecklistCImage from "../../components/Modal/ModalChecklistCImage";
+// import mime from "mime";
 
 const numberOfItemsPerPageList = [20, 30, 50];
 
@@ -201,17 +202,18 @@ const ThucHienChecklist = ({ navigation }) => {
     try {
       setLoadingSubmit(true);
       let formData = new FormData();
+
       // Iterate over the keys of dataImages object
       if (dataImages.Anh1) {
         const file = {
           uri:
             Platform.OS === "android"
-              ? await dataImages?.Anh1?.uri
-              : (await dataImages?.Anh1?.uri).replace("file://", ""),
+              ? dataImages?.Anh1?.uri
+              : dataImages?.Anh1?.uri.replace("file://", ""),
           name:
             dataImages?.Anh1?.fileName ||
             Math.floor(Math.random() * Math.floor(99999999999999)) + ".jpeg",
-          type: dataImages?.Anh1?.type || "image/jpeg",
+          type: "image/jpeg",
         };
 
         // Append image file to formData
@@ -223,12 +225,12 @@ const ThucHienChecklist = ({ navigation }) => {
         const file = {
           uri:
             Platform.OS === "android"
-              ? await dataImages?.Anh2?.uri
-              : (await dataImages?.Anh2?.uri).replace("file://", ""),
+              ? dataImages?.Anh2?.uri
+              : dataImages?.Anh2?.uri.replace("file://", ""),
           name:
             dataImages?.Anh2?.fileName ||
             Math.floor(Math.random() * Math.floor(99999999999999)) + ".jpeg",
-          type: dataImages?.Anh2?.type || "image/jpeg",
+          type: "image/jpeg",
         };
 
         // Append image file to formData
@@ -240,12 +242,12 @@ const ThucHienChecklist = ({ navigation }) => {
         const file = {
           uri:
             Platform.OS === "android"
-              ? await dataImages?.Anh3?.uri
-              : (await dataImages?.Anh3?.uri).replace("file://", ""),
+              ? dataImages?.Anh3?.uri
+              : dataImages?.Anh3?.uri.replace("file://", ""),
           name:
             dataImages?.Anh3?.fileName ||
             Math.floor(Math.random() * Math.floor(99999999999999)) + ".jpeg",
-          type: dataImages?.Anh3?.type || "image/jpeg",
+          type: "image/jpeg",
         };
 
         // Append image file to formData
@@ -257,12 +259,12 @@ const ThucHienChecklist = ({ navigation }) => {
         const file = {
           uri:
             Platform.OS === "android"
-              ? await dataImages?.Anh4?.uri
-              : (await dataImages?.Anh4?.uri).replace("file://", ""),
+              ? dataImages?.Anh4?.uri
+              : dataImages?.Anh4?.uri.replace("file://", ""),
           name:
             dataImages?.Anh4?.fileName ||
             Math.floor(Math.random() * Math.floor(999999999)) + ".jpeg",
-          type: dataImages?.Anh4?.type || "image/jpeg",
+          type: "image/jpeg",
         };
 
         // Append image file to formData
@@ -274,14 +276,14 @@ const ThucHienChecklist = ({ navigation }) => {
       console.log("file", formData, newActionCheckList[0].ID_ChecklistC);
 
       await axios
-        .put(
+        .post(
           BASE_URL +
             `/tb_checklistc/update_images/${newActionCheckList[0].ID_ChecklistC}`,
           formData,
           {
             headers: {
-              Accept: "application/json",
               "Content-Type": "multipart/form-data",
+              Authorization: "Bearer " + authToken,
             },
           }
         )
@@ -299,21 +301,45 @@ const ThucHienChecklist = ({ navigation }) => {
             { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
           ]);
         })
-        .catch((err) => {
-          console.log("err", err);
+        .catch((error) => {
+          console.log("error", error.response);
           setLoadingSubmit(false);
           // Handle the error appropriately, e.g., displaying an error message
-          Alert.alert(
-            "PMC Thông báo",
-            "Đã có lỗi xảy ra. Vui lòng kiểm tra lại!!",
-            [
+          if (error.response) {
+            // Lỗi từ phía server (có response từ server)
+            Alert.alert("PMC Thông báo", error.response.data.message, [
               {
                 text: "Hủy",
+                onPress: () => console.log("Cancel Pressed"),
                 style: "cancel",
               },
-              { text: "Xác nhận" },
-            ]
-          );
+              { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+            ]);
+          } else if (error.request) {
+            // Lỗi không nhận được phản hồi từ server
+            Alert.alert(
+              "PMC Thông báo",
+              "Không nhận được phản hồi từ máy chủ",
+              [
+                {
+                  text: "Hủy",
+                  onPress: () => console.log("Cancel Pressed"),
+                  style: "cancel",
+                },
+                { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+              ]
+            );
+          } else {
+            // Lỗi khi cấu hình request
+            Alert.alert("PMC Thông báo", "Lỗi khi gửi yêu cầu", [
+              {
+                text: "Hủy",
+                onPress: () => console.log("Cancel Pressed"),
+                style: "cancel",
+              },
+              { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+            ]);
+          }
         });
     } catch (error) {
       console.error("Error:", error);
