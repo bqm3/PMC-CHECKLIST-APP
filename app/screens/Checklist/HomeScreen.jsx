@@ -33,15 +33,15 @@ const dataDanhMuc = [
     role: 1,
   },
   {
-    id: 4,
-    path: "Danh mục Check list",
-    icon: require("../../../assets/icons/o-04.png"),
+    id: 7,
+    path: "Danh mục Hạng mục",
+    icon: require("../../../assets/icons/o-03.png"),
     role: 1,
   },
   {
-    id: 5,
-    path: "Danh mục Giám sát",
-    icon: require("../../../assets/icons/o-05.png"),
+    id: 4,
+    path: "Danh mục Check list",
+    icon: require("../../../assets/icons/o-04.png"),
     role: 1,
   },
   {
@@ -51,11 +51,13 @@ const dataDanhMuc = [
     role: 1,
   },
   {
-    id: 7,
-    path: "Danh mục Hạng mục",
-    icon: require("../../../assets/icons/o-03.png"),
+    id: 5,
+    path: "Danh mục Giám sát",
+    icon: require("../../../assets/icons/o-05.png"),
     role: 1,
   },
+  
+  
 ];
 
 const dataDanhMucPSH = [

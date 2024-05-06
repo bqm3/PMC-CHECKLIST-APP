@@ -18,7 +18,9 @@ const ModalChecklistFilter = ({
   handleCheckbox,
   toggleSwitch,
   filters,
-  isEnabled
+  isEnabled,
+  hangMuc,
+  ent_calv,
 }) => {
   const defaultKhuvuc = ent_khuvuc.find(
     (khuvuc) => khuvuc.ID_Khuvuc === isFilterData?.ID_Khuvuc
@@ -28,8 +30,80 @@ const ModalChecklistFilter = ({
     (Tang) => Tang.ID_Tang === isFilterData?.ID_Tang
   );
 
+  const defaultHangmuc = hangMuc?.find(
+    (Hangmuc) => Hangmuc.ID_Hangmuc === isFilterData?.ID_Hangmuc
+  );
+
+  const defaultKhoi = ent_calv?.find(
+    (Khoi) => Khoi.ID_Calv === isFilterData?.ID_Calamviec
+  );
+
+  // cons
+
   return (
     <View>
+      {/* ca lam viec  */}
+      {/* <View style={styles.container}>
+        <ActionFilterCheckbox
+          handleCheckbox={handleCheckbox}
+          name={"ID_Calamviec"}
+          filters={filters.ID_Calamviec}
+        />
+        <SelectDropdown
+          disabled={!filters?.ID_Calamviec}
+          data={ent_calv ? ent_calv : []}
+          buttonStyle={styles.select}
+          dropdownStyle={{
+            borderRadius: 8,
+            maxHeight: 400,
+          }}
+          // rowStyle={{ height: 50, justifyContent: "center" }}
+          defaultValue={defaultKhoi}
+          defaultButtonText={"Khối công việc"}
+          buttonTextStyle={styles.customText}
+          onSelect={(selectedItem, index) => {
+            handleChangeFilter("ID_Calamviec", selectedItem.ID_Calamviec);
+          }}
+          renderDropdownIcon={(isOpened) => {
+            return (
+              <FontAwesome
+                name={isOpened ? "chevron-up" : "chevron-down"}
+                color={"#637381"}
+                size={14}
+                style={{ marginRight: 10 }}
+              />
+            );
+          }}
+          dropdownIconPosition={"right"}
+          buttonTextAfterSelection={(selectedItem, index) => {
+            return (
+              <View
+                style={{
+                  justifyContent: "center",
+                  alignContent: "center",
+                  height: 50,
+                }}
+              >
+                <Text allowFontScaling={false} style={styles.text}>
+                  {" "}
+                  {selectedItem?.Tenca}
+                </Text>
+              </View>
+            );
+          }}
+          renderCustomizedRowChild={(item, index) => {
+            return (
+              <VerticalSelect
+                value={item.ID_Calamviec}
+                label={`${item.Tenca}`}
+                key={index}
+                selectedItem={isFilterData.ID_Calamviec}
+              />
+            );
+          }}
+        />
+      </View> */}
+      {/* khu vuc  */}
       <View style={styles.container}>
         <ActionFilterCheckbox
           handleCheckbox={handleCheckbox}
@@ -71,7 +145,10 @@ const ModalChecklistFilter = ({
                   height: 50,
                 }}
               >
-                <Text  allowFontScaling={false} style={styles.text}> {selectedItem?.Tenkhuvuc}</Text>
+                <Text allowFontScaling={false} style={styles.text}>
+                  {" "}
+                  {selectedItem?.Tenkhuvuc}
+                </Text>
               </View>
             );
           }}
@@ -87,6 +164,7 @@ const ModalChecklistFilter = ({
           }}
         />
       </View>
+      {/* tang  */}
       <View style={styles.container}>
         <ActionFilterCheckbox
           handleCheckbox={handleCheckbox}
@@ -128,7 +206,9 @@ const ModalChecklistFilter = ({
                   height: 50,
                 }}
               >
-                <Text  allowFontScaling={false} style={styles.text}>{selectedItem?.Tentang}</Text>
+                <Text allowFontScaling={false} style={styles.text}>
+                  {selectedItem?.Tentang}
+                </Text>
               </View>
             );
           }}
@@ -144,6 +224,67 @@ const ModalChecklistFilter = ({
           }}
         />
       </View>
+      {/* hang muc  */}
+      <View style={styles.container}>
+        <ActionFilterCheckbox
+          handleCheckbox={handleCheckbox}
+          name={"ID_Hangmuc"}
+          filters={filters.ID_Hangmuc}
+        />
+        <SelectDropdown
+          disabled={!filters?.ID_Hangmuc}
+          data={hangMuc ? hangMuc : []}
+          buttonStyle={styles.select}
+          dropdownStyle={{
+            borderRadius: 8,
+            maxHeight: 400,
+          }}
+          // rowStyle={{ height: 50, justifyContent: "center" }}
+          defaultButtonText={"Hạng mục"}
+          defaultValue={defaultHangmuc}
+          buttonTextStyle={styles.customText}
+          onSelect={(selectedItem, index) => {
+            handleChangeFilter("ID_Hangmuc", selectedItem.ID_Hangmuc);
+          }}
+          renderDropdownIcon={(isOpened) => {
+            return (
+              <FontAwesome
+                name={isOpened ? "chevron-up" : "chevron-down"}
+                color={"#637381"}
+                size={14}
+                style={{ marginRight: 10 }}
+              />
+            );
+          }}
+          dropdownIconPosition={"right"}
+          buttonTextAfterSelection={(selectedItem, index) => {
+            return (
+              <View
+                style={{
+                  justifyContent: "center",
+                  alignContent: "center",
+                  height: 50,
+                }}
+              >
+                <Text allowFontScaling={false} style={styles.text}>
+                  {selectedItem?.Hangmuc}
+                </Text>
+              </View>
+            );
+          }}
+          renderCustomizedRowChild={(item, index) => {
+            return (
+              <VerticalSelect
+                value={item.ID_Hangmuc}
+                label={item.Hangmuc}
+                key={index}
+                selectedItem={isFilterData.ID_Hangmuc}
+              />
+            );
+          }}
+        />
+      </View>
+
       <View
         style={[
           styles.container,
@@ -154,11 +295,17 @@ const ModalChecklistFilter = ({
           trackColor={{ false: "#red", true: COLORS.bg_button }}
           thumbColor={isEnabled ? COLORS.color_bg : "#f4f3f4"}
           ios_backgroundColor="#3e3e3e"
-          onValueChange={()=>toggleSwitch(isEnabled)}
+          onValueChange={() => toggleSwitch(isEnabled)}
           value={isEnabled}
         />
-        <Text  allowFontScaling={false} style={[styles.text, { paddingHorizontal: 0 }]}>Tất cả</Text>
+        <Text
+          allowFontScaling={false}
+          style={[styles.text, { paddingHorizontal: 0 }]}
+        >
+          Tất cả
+        </Text>
       </View>
+
       <View style={{ height: 10 }}></View>
       <Button
         color={"white"}

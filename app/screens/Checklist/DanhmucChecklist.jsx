@@ -96,6 +96,8 @@ const DanhmucChecklist = ({ navigation }) => {
 
   const [isFilterData, setIsFilterData] = useState({
     ID_Khuvuc: null,
+    ID_Hangmuc: null,
+    ID_Calamvic: null,
     ID_Tang: null,
   });
 
@@ -103,8 +105,11 @@ const DanhmucChecklist = ({ navigation }) => {
     ID_KhoiCV: null,
     ID_Toanha: null,
   });
+
   const [filters, setFilters] = useState({
     ID_Tang: false,
+    ID_Hangmuc: false,
+    ID_Calamvic: false,
     ID_Khuvuc: false,
   });
 
@@ -189,7 +194,7 @@ const DanhmucChecklist = ({ navigation }) => {
   }, []);
 
   const asyncHangMuc = async () => {
-    await axios.get(BASE_URL+`/ent_hangmuc/filter/${dataInput?.ID_Khuvuc}`, {
+    await axios.get(BASE_URL+`/ent_hangmuc/filter/${dataInput?.ID_Khuvuc || isFilterData.ID_Khuvuc}`, {
       headers: {
         Accept: "application/json",
         Authorization: "Bearer " + authToken,
@@ -203,7 +208,7 @@ const DanhmucChecklist = ({ navigation }) => {
 
   useEffect(()=> {
     asyncHangMuc()
-  }, [dataInput.ID_Khuvuc])
+  }, [dataInput.ID_Khuvuc, isFilterData.ID_Khuvuc])
 
   useEffect(() => {
     init_calv(dataCheckKhuvuc.ID_KhoiCV);
@@ -222,9 +227,11 @@ const DanhmucChecklist = ({ navigation }) => {
       setIsFilterData({
         ID_Tang: null,
         ID_Khuvuc: null,
+        ID_Hangmuc: null,
       });
       setFilters({
         ID_Tang: false,
+        ID_Hangmuc: false,
         ID_Khuvuc: false,
       });
     }
@@ -1136,6 +1143,8 @@ const DanhmucChecklist = ({ navigation }) => {
                     isFilterData={isFilterData}
                     setIsFilterData={setIsFilterData}
                     handleFilterData={handleFilterData}
+                    hangMuc={hangMuc}
+                    ent_calv={ent_calv}
                     ent_khuvuc={ent_khuvuc}
                     ent_toanha={ent_toanha}
                     ent_khoicv={ent_khoicv}

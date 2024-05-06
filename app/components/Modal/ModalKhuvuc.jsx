@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TextInput, KeyboardAvoidingView } from "react-native";
+import { StyleSheet, Text, View, TextInput, KeyboardAvoidingView,Platform } from "react-native";
 import React, { useRef, useState } from "react";
 import { COLORS } from "../../constants/theme";
 import { FontAwesome } from "@expo/vector-icons";
@@ -6,6 +6,7 @@ import VerticalSelect from "../VerticalSelect";
 import SelectDropdown from "react-native-select-dropdown";
 import ButtonSubmit from "../Button/ButtonSubmit";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { useHeaderHeight } from "@react-navigation/elements";
 
 const ModalKhuvuc = ({
   ent_khoicv,
@@ -18,7 +19,7 @@ const ModalKhuvuc = ({
   loadingSubmit,
 }) => {
   const ref = useRef(null);
-
+  const height = useHeaderHeight();
   const defaultKhoiCV = ent_khoicv?.find(
     (khoicv) => khoicv.ID_Khoi === dataInput?.khoicv
   );
