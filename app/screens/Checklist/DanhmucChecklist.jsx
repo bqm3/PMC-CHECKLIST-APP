@@ -666,10 +666,12 @@ const DanhmucChecklist = ({ navigation }) => {
     setIsFilterData({
       ID_Tang: null,
       ID_Khuvuc: null,
+      ID_Hangmuc: null,
     });
     setFilters({
       ID_Tang: false,
       ID_Khuvuc: false,
+      ID_Hangmuc: false
     });
     setIsCheckUpdate({
       check: false,

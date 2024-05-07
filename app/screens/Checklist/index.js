@@ -8,6 +8,7 @@ import DetailChecklist from "./DetailChecklist"
 import DanhmucTracuu from "./DanhmucTracuu"
 import Profile from "../Profile"
 import DanhmucChecklist from "./DanhmucChecklist"
+import DanhmucThongKe from "./DanhmucThongKe"
 
 
 
@@ -20,5 +21,6 @@ module.exports = {
     DetailChecklist,
     DanhmucTracuu,
     Profile,
-    DanhmucChecklist
+    DanhmucChecklist,
+    DanhmucThongKe
 }

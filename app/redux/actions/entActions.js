@@ -145,7 +145,7 @@ export const ent_khuvuc_get = () => {
     try {
       const token = await AsyncStorage.getItem("tokenUser");
       if (token !== null) {
-        const response = await axios.get(BASE_URL + "/ent_khuvuc/filter", {
+        const response = await axios.post(BASE_URL + "/ent_khuvuc/filter",{}, {
           headers: {
             Accept: "application/json",
             Authorization: "Bearer " + token,
@@ -162,7 +162,7 @@ export const ent_khuvuc_get = () => {
         console.error("initialized error");
       }
     } catch (err) {
-      console.log("err 123", err);
+      console.log("err ent_khuvuc_get", err.response);
     }
   };
 };

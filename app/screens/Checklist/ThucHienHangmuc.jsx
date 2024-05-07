@@ -13,9 +13,11 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Image,
+  ScrollView,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { Provider, useDispatch, useSelector } from "react-redux";
+import { MaterialIcons } from "@expo/vector-icons";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { ent_hangmuc_get } from "../../redux/actions/entActions";
@@ -29,7 +31,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
   const { ID_ChecklistC, ID_KhoiCV, ID_Calv, ID_Khuvuc } = route.params;
   const dispath = useDispatch();
   const { ent_hangmuc } = useSelector((state) => state.entReducer);
-  const [hangMuc, setHangMuc] = useState(ent_hangmuc)
+  const [hangMuc, setHangMuc] = useState(ent_hangmuc);
 
   const { user, authToken } = useSelector((state) => state.authReducer);
 
@@ -38,6 +40,8 @@ const ThucHienHangmuc = ({ route, navigation }) => {
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [isScan, setIsScan] = useState(false);
   const [modalVisibleQr, setModalVisibleQr] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [tieuChuan, setTieuChuan] = useState();
   const [dataSelect, setDataSelect] = useState([]);
 
   const int_hangmuc = async () => {
@@ -49,21 +53,22 @@ const ThucHienHangmuc = ({ route, navigation }) => {
   }, []);
 
   const asyncHangMuc = async () => {
-    await axios.get(BASE_URL+`/ent_hangmuc/filter/${ID_Khuvuc}`, {
-      headers: {
-        Accept: "application/json",
-        Authorization: "Bearer " + authToken,
-      },
-    })
-    .then((res)=> {
-      setHangMuc(res.data.data)
-    })
-    .catch((err) => console.log('err',err))
-  }
+    await axios
+      .get(BASE_URL + `/ent_hangmuc/filter/${ID_Khuvuc}`, {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer " + authToken,
+        },
+      })
+      .then((res) => {
+        setHangMuc(res.data.data);
+      })
+      .catch((err) => console.log("err", err));
+  };
 
-  useEffect(()=> {
-    asyncHangMuc()
-  }, [ID_Khuvuc])
+  useEffect(() => {
+    asyncHangMuc();
+  }, [ID_Khuvuc]);
 
   const handlePushDataFilterQr = async (value) => {
     const data = {
@@ -76,7 +81,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
           Authorization: "Bearer " + authToken,
         },
       });
-      const resData = res.data.data
+      const resData = res.data.data;
       if (resData.length >= 1) {
         navigation.navigate("Chi tiết Checklist", {
           ID_ChecklistC: ID_ChecklistC,
@@ -153,6 +158,12 @@ const ThucHienHangmuc = ({ route, navigation }) => {
     }
   };
 
+  const handlePopupActive = (item, index) => {
+    setModalVisible(true);
+    setOpacity(0.2);
+    setTieuChuan(item.Tieuchuankt);
+  };
+
   const handleSubmit = () => {
     navigation.navigate("Chi tiết Checklist", {
       ID_ChecklistC: ID_ChecklistC,
@@ -181,19 +192,25 @@ const ThucHienHangmuc = ({ route, navigation }) => {
             flexDirection: "row",
             alignItems: "center",
             gap: 10,
-            width: "80%",
+            width: "100%",
+            justifyContent: "space-between",
           }}
         >
-          <Text
-            style={{
-              fontSize: 16,
-              color: dataSelect[0] === item ? "white" : "black",
-              fontWeight: "600",
-            }}
-            numberOfLines={5}
-          >
-            {item?.Hangmuc}
-          </Text>
+          <View style={{ width: "85%" }}>
+            <Text
+              style={{
+                fontSize: 18,
+                color: dataSelect[0] === item ? "white" : "black",
+                fontWeight: "600",
+              }}
+              numberOfLines={5}
+            >
+              {item?.Hangmuc}
+            </Text>
+          </View>
+          <TouchableOpacity onPress={() => handlePopupActive(item, index)}>
+            <MaterialIcons name="read-more" size={30} color="black" />
+          </TouchableOpacity>
         </View>
       </TouchableOpacity>
     );
@@ -249,8 +266,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
                         }}
                       >
                         <Text allowFontScaling={false} style={styles.text}>
-                          Số lượng: {decimalNumber(hangMuc?.length)} hạng
-                          mục
+                          Số lượng: {decimalNumber(hangMuc?.length)} hạng mục
                         </Text>
                       </View>
                     </TouchableOpacity>
@@ -375,6 +391,35 @@ const ThucHienHangmuc = ({ route, navigation }) => {
                     setOpacity={setOpacity}
                     handlePushDataFilterQr={handlePushDataFilterQr}
                     setIsScan={setIsScan}
+                  />
+                </View>
+              </View>
+            </Modal>
+
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={modalVisible}
+              onRequestClose={() => {
+                setModalVisible(!modalVisible);
+                setOpacity(1);
+              }}
+            >
+              <View style={[styles.centeredView]}>
+                <View
+                  style={[styles.modalView, { width: "85%", height: "65%", justifyContent: 'space-between' }]}
+                >
+                 <ScrollView>
+                  <Text>{tieuChuan} </Text>
+                  </ScrollView> 
+                  <Button
+                    text={"Đóng"}
+                    backgroundColor={COLORS.bg_button}
+                    color={"white"}
+                    onPress={() => {
+                      setModalVisible(false);
+                      setOpacity(1);
+                    }}
                   />
                 </View>
               </View>

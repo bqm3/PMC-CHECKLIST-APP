@@ -46,10 +46,10 @@ const ModalPopupDetailChecklist = ({
     }
   };
 
-  useEffect(()=> {
-    setImage(dataItem?.Anh)
-    setGhichu(dataItem?.GhichuChitiet)
-  }, [dataItem])
+  useEffect(() => {
+    setImage(dataItem?.Anh);
+    setGhichu(dataItem?.GhichuChitiet);
+  }, [dataItem]);
 
   return (
     <View style={{ width: SIZES.width - 60 }}>
@@ -142,7 +142,7 @@ const ModalPopupDetailChecklist = ({
               {image && (
                 <TouchableOpacity
                   onPress={() => {
-                    setImage()
+                    setImage();
                     handleChange("Anh", null, dataItem);
                   }}
                   style={{ flexDirection: "row", alignItems: "center", gap: 2 }}
@@ -196,7 +196,6 @@ const ModalPopupDetailChecklist = ({
                 handlePopupClear();
                 dataItem.GhichuChitiet = ghichu;
                 handleChange("GhichuChitiet", ghichu, dataItem);
-
               }}
               backgroundColor={COLORS.bg_button}
               border={COLORS.bg_button}
@@ -241,9 +240,9 @@ const ModalPopupDetailChecklist = ({
           onPress={() => {
             step === 1 ? handlePopupClear() : setStep(1);
           }}
-          backgroundColor={COLORS.bg_white}
+          backgroundColor={step === 1 ? COLORS.bg_button : COLORS.bg_white}
           border={COLORS.bg_button}
-          color={"black"}
+          color={step === 1 ? "white" : "black"}
           text={step === 1 ? "Đóng" : "Quay lại"}
           width={"100%"}
         />

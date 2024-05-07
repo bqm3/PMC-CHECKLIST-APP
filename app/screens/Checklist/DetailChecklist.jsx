@@ -30,7 +30,7 @@ import {
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { Entypo } from "@expo/vector-icons";
+import { Entypo, MaterialIcons } from "@expo/vector-icons";
 import {
   ent_checklist_get_detail,
   ent_khuvuc_get,
@@ -72,11 +72,13 @@ const DetailChecklist = ({ route, navigation }) => {
   );
   const [dataChecklistFaild, setDataChecklistFaild] = useState([]);
   const [dataItem, setDataItem] = useState(null);
+  const [tieuchuan, setTieuchuan] = useState(null);
   const bottomSheetModalRef = useRef(null);
   const snapPoints = useMemo(() => ["80%"], []);
   const [opacity, setOpacity] = useState(1);
   const [index, setIndex] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisible2, setModalVisible2] = useState(false);
   const [modalVisibleQr, setModalVisibleQr] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [isEnabled, setIsEnabled] = useState(true);
@@ -211,6 +213,13 @@ const DetailChecklist = ({ route, navigation }) => {
     setIndex(index);
   }, []);
 
+  const handlePopupActiveTieuChuan = useCallback((item, index) => {
+    setOpacity(0.2);
+    setTieuchuan(item.Tieuchuan);
+    setModalVisible2(true);
+    setIndex(index);
+  });
+
   // close modal bottom sheet
   const handlePopupClear = useCallback(() => {
     setOpacity(1);
@@ -259,7 +268,6 @@ const DetailChecklist = ({ route, navigation }) => {
     // clear item checklist
     if (it.valueCheck !== null) {
       if (key === "Anh" || key === "GhichuChitiet") {
-
         // Kiểm tra và cập nhật mergedArrCheck
         const indexCheck = mergedArrCheck.findIndex(
           (item) => item.ID_Checklist === it.ID_Checklist
@@ -351,7 +359,6 @@ const DetailChecklist = ({ route, navigation }) => {
         );
 
         if (indexFaild) {
-
           // Thêm it vào mergedArrImage nếu chưa có
           if (
             !mergedArrImage.some(
@@ -783,100 +790,108 @@ const DetailChecklist = ({ route, navigation }) => {
 
   // api all
   const hadlChecklistAll = async () => {
-
     // Tạo một đối tượng FormData để chứa dữ liệu của dataChecklistFaild
     const formData = new FormData();
 
     // Lặp qua từng phần tử trong dataChecklistFaild để thêm vào FormData
     dataChecklistFaild.forEach((item, index) => {
-        // Thêm các trường dữ liệu vào FormData
-        formData.append("ID_ChecklistC", ID_ChecklistC);
-        formData.append("ID_Checklist", item.ID_Checklist);
-        formData.append("Ketqua", item.valueCheck || "");
-        formData.append("Gioht", item.gioht);
-        formData.append("Ghichu", item.GhichuChitiet || "");
+      // Thêm các trường dữ liệu vào FormData
+      formData.append("ID_ChecklistC", ID_ChecklistC);
+      formData.append("ID_Checklist", item.ID_Checklist);
+      formData.append("Ketqua", item.valueCheck || "");
+      formData.append("Gioht", item.gioht);
+      formData.append("Ghichu", item.GhichuChitiet || "");
 
-        // Nếu có hình ảnh, thêm vào FormData
-        if (item.Anh) {
-            const file = {
-                uri: Platform.OS === "android" ? item.Anh.uri : item.Anh.uri.replace("file://", ""),
-                name: item.Anh.fileName || `${Math.floor(Math.random() * 999999999)}.jpg`,
-                type: "image/jpeg",
-            };
-            formData.append(`Images_${index}`, file);
-            formData.append("Anh", file.name);
-        } else {
-            formData.append("Anh", "");
-            formData.append(`Images_${index}`, {});
-        }
+      // Nếu có hình ảnh, thêm vào FormData
+      if (item.Anh) {
+        const file = {
+          uri:
+            Platform.OS === "android"
+              ? item.Anh.uri
+              : item.Anh.uri.replace("file://", ""),
+          name:
+            item.Anh.fileName || `${Math.floor(Math.random() * 999999999)}.jpg`,
+          type: "image/jpeg",
+        };
+        formData.append(`Images_${index}`, file);
+        formData.append("Anh", file.name);
+      } else {
+        formData.append("Anh", "");
+        formData.append(`Images_${index}`, {});
+      }
     });
 
     // Gửi FormData trong một yêu cầu duy nhất
-    const requestFaild = axios.post(BASE_URL + `/tb_checklistchitiet/create`, formData, {
+    const requestFaild = axios.post(
+      BASE_URL + `/tb_checklistchitiet/create`,
+      formData,
+      {
         headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: "Bearer " + authToken,
+          "Content-Type": "multipart/form-data",
+          Authorization: "Bearer " + authToken,
         },
-    });
+      }
+    );
 
     // Chuẩn bị dữ liệu cho yêu cầu thứ hai
     const descriptions = [
-        defaultActionDataChecklist.map(
-            (item) => `${item.ID_Checklist}/${item.Giatridinhdanh}/${item.gioht}`
-        ).join(","),
+      defaultActionDataChecklist
+        .map(
+          (item) => `${item.ID_Checklist}/${item.Giatridinhdanh}/${item.gioht}`
+        )
+        .join(","),
     ];
     const descriptionsJSON = JSON.stringify(descriptions);
 
     const requestDone = axios.post(
-        BASE_URL + "/tb_checklistchitietdone/create",
-        {
-            Description: descriptionsJSON,
-            ID_ChecklistC: ID_ChecklistC,
-            checklistLength: defaultActionDataChecklist.length,
+      BASE_URL + "/tb_checklistchitietdone/create",
+      {
+        Description: descriptionsJSON,
+        ID_ChecklistC: ID_ChecklistC,
+        checklistLength: defaultActionDataChecklist.length,
+      },
+      {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer " + authToken,
         },
-        {
-            headers: {
-                Accept: "application/json",
-                Authorization: "Bearer " + authToken,
-            },
-        }
+      }
     );
 
     try {
-        // Gộp các promise lại và chờ cho tất cả các promise hoàn thành
-        await Promise.all([requestFaild, requestDone]);
+      // Gộp các promise lại và chờ cho tất cả các promise hoàn thành
+      await Promise.all([requestFaild, requestDone]);
 
-        // Hiển thị thông báo thành công
-        Alert.alert("PMC Thông báo", "Checklist thành công", [
-            {
-                text: "Hủy",
-                onPress: () => console.log("Cancel Pressed"),
-                style: "cancel",
-            },
-            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-        ]);
+      // Hiển thị thông báo thành công
+      Alert.alert("PMC Thông báo", "Checklist thành công", [
+        {
+          text: "Hủy",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+        { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+      ]);
 
-        // Thiết lập lại dữ liệu và trạng thái loading
-        postHandleSubmit();
-        setLoadingSubmit(false);
+      // Thiết lập lại dữ liệu và trạng thái loading
+      postHandleSubmit();
+      setLoadingSubmit(false);
     } catch (error) {
-        console.log("err all", error);
-        setLoadingSubmit(false);
+      console.log("err all", error);
+      setLoadingSubmit(false);
 
-        if (error.response) {
-            // Xử lý lỗi từ server
-            Alert.alert("PMC Thông báo", error.response.data.message, [
-                {
-                    text: "Hủy",
-                    onPress: () => console.log("Cancel Pressed"),
-                    style: "cancel",
-                },
-                { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-            ]);
-        }
+      if (error.response) {
+        // Xử lý lỗi từ server
+        Alert.alert("PMC Thông báo", error.response.data.message, [
+          {
+            text: "Hủy",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel",
+          },
+          { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+        ]);
+      }
     }
-};
-
+  };
 
   const postHandleSubmit = () => {
     // Thiết lập lại dữ liệu sau khi hoàn thành xử lý API
@@ -894,33 +909,61 @@ const DetailChecklist = ({ route, navigation }) => {
           style={{
             flexDirection: "row",
             alignItems: "center",
-            gap: 10,
-            width: "80%",
+            gap: 4,
+            width: "100%",
+            justifyContent: "space-between",
           }}
         >
-          <ActiveChecklist
-            item={item}
-            index={index}
-            size={30}
-            handleToggle={() =>
-              handleItemClick(item?.Giatridinhdanh, item, "active")
-            }
-            // active={}
-          />
-          <Text
+          <View
             style={{
-              fontSize: 16,
-              color: "black",
-              fontWeight: "600",
+              width: "80%",
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 10,
             }}
-            numberOfLines={5}
           >
-            {item?.Sothutu}. {item?.Checklist}
-          </Text>
+            <ActiveChecklist
+              item={item}
+              index={index}
+              size={30}
+              handleToggle={() =>
+                handleItemClick(item?.Giatridinhdanh, item, "active")
+              }
+              // active={}
+            />
+            <View style={{ width: "90%" }}>
+              <Text
+                style={{
+                  fontSize: 16,
+                  color: "black",
+                  fontWeight: "600",
+                }}
+                numberOfLines={5}
+              >
+                {item?.Sothutu}. {item?.Checklist}
+              </Text>
+            </View>
+          </View>
+
+          <View
+            style={{
+              // width: "25%",
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 12,
+            }}
+          >
+            <TouchableOpacity
+              onPress={() => handlePopupActiveTieuChuan(item, index)}
+            >
+              <MaterialIcons name="read-more" size={30} color="black" />
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => handlePopupActive(item, index)}>
+              <Entypo name="dots-three-vertical" size={28} color="black" />
+            </TouchableOpacity>
+          </View>
         </View>
-        <TouchableOpacity onPress={() => handlePopupActive(item, index)}>
-          <Entypo name="dots-three-vertical" size={28} color="black" />
-        </TouchableOpacity>
       </View>
     );
   };
@@ -1077,7 +1120,7 @@ const DetailChecklist = ({ route, navigation }) => {
                         style={[styles.danhmuc, { padding: 10 }]}
                       >
                         {isScan
-                          ? "Không thấy checklist cho khu vực này"
+                          ? "Không thấy checklist cho hạng mục này"
                           : "Không còn checklist cho hạng mục này !"}
                       </Text>
                     </View>
@@ -1137,6 +1180,7 @@ const DetailChecklist = ({ route, navigation }) => {
               </BottomSheetScrollView>
             </BottomSheetModal>
 
+            {/* Modal show action  */}
             <Modal
               animationType="slide"
               transparent={true}
@@ -1157,6 +1201,43 @@ const DetailChecklist = ({ route, navigation }) => {
                     handleItemClick={handleItemClick}
                     index={index}
                     handleChange={handleChange}
+                  />
+                </View>
+              </View>
+            </Modal>
+
+            {/* Modal show tieu chuan  */}
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={modalVisible2}
+              onRequestClose={() => {
+                Alert.alert("Modal has been closed.");
+                setModalVisible2(!modalVisible2);
+              }}
+            >
+              <View style={[styles.centeredView]}>
+                <View
+                  style={[
+                    styles.modalView,
+                    {
+                      width: "85%",
+                      height: "65%",
+                      justifyContent: "space-between",
+                    },
+                  ]}
+                >
+                  <ScrollView>
+                    <Text>{tieuchuan} </Text>
+                  </ScrollView>
+                  <Button
+                    text={"Đóng"}
+                    backgroundColor={COLORS.bg_button}
+                    color={"white"}
+                    onPress={() => {
+                      setModalVisible2(false);
+                      setOpacity(1);
+                    }}
                   />
                 </View>
               </View>
@@ -1256,7 +1337,7 @@ const styles = StyleSheet.create({
   content: {
     backgroundColor: "white",
     borderRadius: 12,
-    padding: 16,
+    padding: 10,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,

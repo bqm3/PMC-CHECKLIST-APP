@@ -33,8 +33,6 @@ import {
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Feather } from "@expo/vector-icons";
 import { DataTable } from "react-native-paper";
-import * as FileSystem from "expo-file-system";
-// import * as MediaLibrary from 'expo-media-library';
 import { COLORS, SIZES } from "../../constants/theme";
 import {
   ent_tang_get,
@@ -46,6 +44,7 @@ import axios from "axios";
 import { BASE_URL } from "../../constants/config";
 import moment from "moment";
 import ModalTracuu from "../../components/Modal/ModalTracuu";
+import DanhmucThongKe from "./DanhmucThongKe";
 
 const numberOfItemsPerPageList = [20, 30, 50];
 
@@ -97,10 +96,13 @@ const DanhmucTracuu = () => {
   const { user, authToken } = useSelector((state) => state.authReducer);
 
   const [data, setData] = useState([]);
+  const [dataKhuvuc, setDataKhuvuc] = useState(ent_khuvuc);
   const [newActionCheckList, setNewActionCheckList] = useState([]);
 
   const bottomSheetModalRef = useRef(null);
-  const snapPoints = useMemo(() => ["80%"], []);
+  const bottomSheetModalRef2 = useRef(null);
+  const snapPoints = useMemo(() => ["90%"], []);
+  const snapPoints2 = useMemo(() => ["90%"], []);
   const [opacity, setOpacity] = useState(1);
   const [page, setPage] = React.useState(0);
   const [numberOfItemsPerPage, onItemsPerPageChange] = React.useState(
@@ -108,11 +110,7 @@ const DanhmucTracuu = () => {
   );
 
   const [isLoading, setIsLoading] = useState(false);
-  const [isShowChecklist, setIsShowChecklist] = useState(false);
-  const [isDatePickerVisible, setDatePickerVisibility] = useState({
-    fromDate: false,
-    toDate: false,
-  });
+  
 
   const [isEnabled, setIsEnabled] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
@@ -120,6 +118,11 @@ const DanhmucTracuu = () => {
   const date = new Date();
   const startOfMonth = moment().startOf("month").format("YYYY-MM-DD");
   const endOfMonth = moment(date).format("YYYY-MM-DD");
+  const [isShowChecklist, setIsShowChecklist] = useState(false);
+  const [isDatePickerVisible, setDatePickerVisibility] = useState({
+    fromDate: false,
+    toDate: false,
+  });
 
   const [filters, setFilters] = useState({
     fromDate: startOfMonth,
@@ -129,7 +132,6 @@ const DanhmucTracuu = () => {
     ID_Tang: null,
   });
 
-  const [downloadProgress, setDownloadProgress] = useState(null);
 
   const init_toanha = async () => {
     await dispath(ent_toanha_get());
@@ -146,6 +148,33 @@ const DanhmucTracuu = () => {
   const init_tang = async () => {
     await dispath(ent_tang_get());
   };
+
+  useEffect(() => {
+    setDataKhuvuc(ent_khuvuc);
+  }, [ent_khuvuc]);
+
+  const asyncKhuvuc = async () => {
+    console.log("run", authToken);
+    let data = {
+      ID_Toanha: filters.ID_Toanha,
+    };
+    await axios
+      .post(BASE_URL + `/ent_khuvuc/filter`, data, {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer " + authToken,
+        },
+      })
+
+      .then((res) => {
+        setDataKhuvuc(res.data.data);
+      })
+      .catch((error) => console.log("err", error.response.data.message));
+  };
+
+  useEffect(() => {
+    asyncKhuvuc();
+  }, [filters.ID_Toanha]);
 
   useEffect(() => {
     init_khuvuc();
@@ -218,12 +247,6 @@ const DanhmucTracuu = () => {
       });
   };
 
-  const callback = (downloadProgress) => {
-    const progress =
-      downloadProgress.totalBytesWritten /
-      downloadProgress.totalBytesExpectedToWrite;
-    setDownloadProgress(progress);
-  };
 
   const fetchDataExcel = async () => {
     setIsLoading(true);
@@ -381,8 +404,16 @@ const DanhmucTracuu = () => {
     bottomSheetModalRef?.current?.present();
   }, []);
 
+  const handlePresentModalPress2 = useCallback(() => {
+    bottomSheetModalRef?.current?.present();
+  }, []);
+
   const handlePresentModalClose = useCallback(() => {
     bottomSheetModalRef?.current?.close();
+  });
+
+  const handlePresentModalClose2 = useCallback(() => {
+    bottomSheetModalRef2?.current?.close();
   });
 
   const decimalNumber = (number) => {
@@ -419,170 +450,182 @@ const DanhmucTracuu = () => {
                 opacity: opacity,
               }}
             >
-              <View style={styles.container}>
-                <Text allowFontScaling={false} style={styles.danhmuc}>
-                  Tra cứu
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 18,
-                    color: "white",
-                    fontWeight: "600",
-                    paddingBottom: 20,
-                  }}
-                >
-                  Số lượng: {decimalNumber(data?.data?.length)}
-                </Text>
-                {isLoading === true ? (
-                  <View
+              <ScrollView>
+                {/* Tra cứu  */}
+                <View style={styles.container}>
+                  <Text allowFontScaling={false} style={styles.danhmuc}>
+                    Tra cứu
+                  </Text>
+                  <Text
                     style={{
-                      flex: 1,
-                      justifyContent: "center",
-                      alignItems: "center",
-                      marginBottom: 40,
+                      fontSize: 18,
+                      color: "white",
+                      fontWeight: "600",
+                      paddingBottom: 20,
                     }}
                   >
-                    <ActivityIndicator size="large" color={"white"} />
-                  </View>
-                ) : (
-                  <>
+                    Số lượng: {decimalNumber(data?.data?.length)}
+                  </Text>
+                  {isLoading === true ? (
                     <View
                       style={{
-                        flexDirection: "row",
-                        alignContent: "center",
-                        alignItems: "left",
+                        flex: 1,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        marginBottom: 40,
                       }}
                     >
-                      <TouchableOpacity
-                        onPress={handlePresentModalPress}
+                      <ActivityIndicator size="large" color={"white"} />
+                    </View>
+                  ) : (
+                    <>
+                      <View
                         style={{
                           flexDirection: "row",
-                          alignItems: "center",
-                          gap: 8,
+                          alignContent: "center",
+                          alignItems: "left",
                         }}
                       >
-                        <Image
-                          source={require("../../../assets/icons/filter_icon.png")}
-                          resizeMode="contain"
-                          style={{ height: 24, width: 24 }}
-                        />
-                        <Text allowFontScaling={false} style={styles.text}>
-                          Lọc dữ liệu
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
-
-                    {data.data && data?.data?.length > 0 ? (
-                      <>
-                        <ScrollView
-                          style={{ flex: 1, marginBottom: 20, marginTop: 20 }}
-                        >
-                          <DataTable
-                            style={{
-                              backgroundColor: "white",
-                              borderRadius: 8,
-                            }}
-                          >
-                            <ScrollView
-                              horizontal
-                              contentContainerStyle={{
-                                flexDirection: "column",
-                              }}
-                            >
-                              <DataTable.Header
-                                style={{
-                                  backgroundColor: "#eeeeee",
-                                  borderTopRightRadius: 8,
-                                  borderTopLeftRadius: 8,
-                                }}
-                              >
-                                {headerList &&
-                                  headerList.map((item, index) => {
-                                    return (
-                                      <DataTable.Title
-                                        key={index}
-                                        style={{
-                                          width: item?.width,
-                                          borderRightWidth:
-                                            index === headerList.length - 1
-                                              ? 0
-                                              : 2,
-                                          borderRightColor: "white",
-                                          justifyContent: "center",
-                                        }}
-                                        numberOfLines={2}
-                                      >
-                                        <Text
-                                          style={[
-                                            styles.text,
-                                            { color: "black" },
-                                          ]}
-                                        >
-                                          {item?.til}
-                                        </Text>
-                                      </DataTable.Title>
-                                    );
-                                  })}
-                              </DataTable.Header>
-
-                              {data?.data && data?.data?.length > 0 && (
-                                <FlatList
-                                  keyExtractor={(item, index) =>
-                                    `${item?.ID_ChecklistC}_${index}`
-                                  }
-                                  scrollEnabled={false}
-                                  data={data?.data}
-                                  renderItem={_renderItem}
-                                />
-                              )}
-                              <DataTable.Pagination
-                                style={{ justifyContent: "flex-start" }}
-                                page={page}
-                                numberOfPages={Math.ceil(data?.totalPages)}
-                                onPageChange={(page) => {
-                                  setPage(page);
-                                  // fetchData()
-                                }}
-                                label={`Từ ${page + 1} đến ${data?.totalPages}`}
-                                showFastPaginationControls
-                                numberOfItemsPerPageList={
-                                  numberOfItemsPerPageList
-                                }
-                                numberOfItemsPerPage={numberOfItemsPerPage}
-                                onItemsPerPageChange={onItemsPerPageChange}
-                                selectPageDropdownLabel={"Hàng trên mỗi trang"}
-                              />
-                            </ScrollView>
-                          </DataTable>
-                        </ScrollView>
-                      </>
-                    ) : (
-                      <>
-                        <View
+                        <TouchableOpacity
+                          onPress={handlePresentModalPress}
                           style={{
-                            flex: 1,
-                            justifyContent: "center",
+                            flexDirection: "row",
                             alignItems: "center",
-                            marginBottom: 120,
+                            gap: 8,
                           }}
                         >
                           <Image
-                            source={require("../../../assets/icons/delete_bg.png")}
+                            source={require("../../../assets/icons/filter_icon.png")}
                             resizeMode="contain"
-                            style={{ height: 120, width: 120 }}
+                            style={{ height: 24, width: 24 }}
                           />
-                          <Text
-                            style={[styles.danhmuc, { paddingVertical: 10 }]}
-                          >
-                            Không có dữ liệu cần tìm
+                          <Text allowFontScaling={false} style={styles.text}>
+                            Lọc dữ liệu
                           </Text>
-                        </View>
-                      </>
-                    )}
-                  </>
-                )}
-              </View>
+                        </TouchableOpacity>
+                      </View>
+
+                      {data.data && data?.data?.length > 0 ? (
+                        <>
+                          <ScrollView
+                            style={{ flex: 1, marginBottom: 20, marginTop: 20 }}
+                          >
+                            <DataTable
+                              style={{
+                                backgroundColor: "white",
+                                borderRadius: 8,
+                              }}
+                            >
+                              <ScrollView
+                                horizontal
+                                contentContainerStyle={{
+                                  flexDirection: "column",
+                                }}
+                              >
+                                <DataTable.Header
+                                  style={{
+                                    backgroundColor: "#eeeeee",
+                                    borderTopRightRadius: 8,
+                                    borderTopLeftRadius: 8,
+                                  }}
+                                >
+                                  {headerList &&
+                                    headerList.map((item, index) => {
+                                      return (
+                                        <DataTable.Title
+                                          key={index}
+                                          style={{
+                                            width: item?.width,
+                                            borderRightWidth:
+                                              index === headerList.length - 1
+                                                ? 0
+                                                : 2,
+                                            borderRightColor: "white",
+                                            justifyContent: "center",
+                                          }}
+                                          numberOfLines={2}
+                                        >
+                                          <Text
+                                            style={[
+                                              styles.text,
+                                              { color: "black" },
+                                            ]}
+                                          >
+                                            {item?.til}
+                                          </Text>
+                                        </DataTable.Title>
+                                      );
+                                    })}
+                                </DataTable.Header>
+
+                                {data?.data && data?.data?.length > 0 && (
+                                  <FlatList
+                                    keyExtractor={(item, index) =>
+                                      `${item?.ID_ChecklistC}_${index}`
+                                    }
+                                    scrollEnabled={false}
+                                    data={data?.data}
+                                    renderItem={_renderItem}
+                                  />
+                                )}
+                                <DataTable.Pagination
+                                  style={{ justifyContent: "flex-start" }}
+                                  page={page}
+                                  numberOfPages={Math.ceil(data?.totalPages)}
+                                  onPageChange={(page) => {
+                                    setPage(page);
+                                    // fetchData()
+                                  }}
+                                  label={`Từ ${page + 1} đến ${
+                                    data?.totalPages
+                                  }`}
+                                  showFastPaginationControls
+                                  numberOfItemsPerPageList={
+                                    numberOfItemsPerPageList
+                                  }
+                                  numberOfItemsPerPage={numberOfItemsPerPage}
+                                  onItemsPerPageChange={onItemsPerPageChange}
+                                  selectPageDropdownLabel={
+                                    "Hàng trên mỗi trang"
+                                  }
+                                />
+                              </ScrollView>
+                            </DataTable>
+                          </ScrollView>
+                        </>
+                      ) : (
+                        <>
+                          <View
+                            style={{
+                              flex: 1,
+                              justifyContent: "center",
+                              alignItems: "center",
+                              marginBottom: 120,
+                            }}
+                          >
+                            <Image
+                              source={require("../../../assets/icons/delete_bg.png")}
+                              resizeMode="contain"
+                              style={{ height: 120, width: 120 }}
+                            />
+                            <Text
+                              style={[styles.danhmuc, { paddingVertical: 10 }]}
+                            >
+                              Không có dữ liệu cần tìm
+                            </Text>
+                          </View>
+                        </>
+                      )}
+                    </>
+                  )}
+                </View>
+
+                {/* Thống kê  */}
+                <DanhmucThongKe  handlePresentModalPress2={handlePresentModalPress2}/>
+              </ScrollView>
             </View>
+
+            {/* Bottom sheet modal tra cuu  */}
             <BottomSheetModal
               ref={bottomSheetModalRef}
               index={0}
@@ -601,12 +644,38 @@ const DanhmucTracuu = () => {
                   setIsEnabled={setIsEnabled}
                   toggleSwitch={toggleSwitch}
                   isEnabled={isEnabled}
+                  dataKhuvuc={dataKhuvuc}
                   fetchData={fetchData}
                   handlePresentModalClose={handlePresentModalClose}
                 />
               </BottomSheetScrollView>
             </BottomSheetModal>
 
+            {/* Bottom sheet modal thong ke  */}
+            <BottomSheetModal
+              ref={bottomSheetModalRef2}
+              index={0}
+              snapPoints={snapPoints2}
+              onChange={handleSheetChanges}
+            >
+              <BottomSheetScrollView style={styles.contentContainer}>
+                <ModalTracuu
+                  handleChangeFilters={handleChangeFilters}
+                  filters={filters}
+                  toggleDatePicker={toggleDatePicker}
+                  isDatePickerVisible={isDatePickerVisible}
+                  ent_toanha={ent_toanha}
+                  ent_tang={ent_tang}
+                  ent_khuvuc={ent_khuvuc}
+                  setIsEnabled={setIsEnabled}
+                  toggleSwitch={toggleSwitch}
+                  isEnabled={isEnabled}
+                  dataKhuvuc={dataKhuvuc}
+                  fetchData={fetchData}
+                  handlePresentModalClose={handlePresentModalClose}
+                />
+              </BottomSheetScrollView>
+            </BottomSheetModal>
             <View
               style={{
                 width: 60,

@@ -34,9 +34,10 @@ const ModalTracuu = ({
   toggleSwitch,
   isEnabled,
   fetchData,
+  dataKhuvuc,
 }) => {
   const ref = useRef(null);
-  const defaultKhuvuc = ent_khuvuc.find(
+  const defaultKhuvuc = dataKhuvuc.find(
     (khuvuc) => khuvuc.ID_Khuvuc === filters?.ID_Khuvuc
   );
 
@@ -77,21 +78,20 @@ const ModalTracuu = ({
                       value={filters?.fromDate}
                       placeholder="Từ ngày"
                       placeholderTextColor="gray"
-                      style={
-                        {
-                          paddingLeft: 12,
-                          color: "#05375a",
-                          width: "70%",
-                          fontSize: 16,
-                          height: 50,
-                        }}
+                      style={{
+                        paddingLeft: 12,
+                        color: "#05375a",
+                        width: "70%",
+                        fontSize: 16,
+                        height: 50,
+                      }}
                       pointerEvents="none"
                     />
                     <TouchableOpacity
                       onPress={() => toggleDatePicker("fromDate", true)}
                       style={{
-                        justifyContent:'center',
-                        alignItems:'center',
+                        justifyContent: "center",
+                        alignItems: "center",
                         height: 50,
                         width: 50,
                       }}
@@ -128,21 +128,20 @@ const ModalTracuu = ({
                       value={filters?.toDate}
                       placeholder="Đến ngày"
                       placeholderTextColor="gray"
-                      style={
-                        {
-                          paddingLeft: 12,
-                          color: "#05375a",
-                          width: "70%",
-                          fontSize: 16,
-                          height: 50,
-                        }}
+                      style={{
+                        paddingLeft: 12,
+                        color: "#05375a",
+                        width: "70%",
+                        fontSize: 16,
+                        height: 50,
+                      }}
                       pointerEvents="none"
                     />
                     <TouchableOpacity
                       onPress={() => toggleDatePicker("toDate", true)}
                       style={{
-                        justifyContent:'center',
-                        alignItems:'center',
+                        justifyContent: "center",
+                        alignItems: "center",
                         height: 50,
                         width: 50,
                       }}
@@ -234,9 +233,9 @@ const ModalTracuu = ({
               <Text allowFontScaling={false} style={styles.text}>
                 Khu vực
               </Text>
-              {ent_khuvuc && ent_khuvuc?.length > 0 ? (
+              {dataKhuvuc && dataKhuvuc?.length > 0 ? (
                 <SelectDropdown
-                  data={ent_khuvuc ? ent_khuvuc : []}
+                  data={dataKhuvuc ? dataKhuvuc : []}
                   buttonStyle={styles.select}
                   dropdownStyle={{
                     borderRadius: 8,
@@ -272,7 +271,8 @@ const ModalTracuu = ({
                       >
                         <Text allowFontScaling={false} style={styles.text}>
                           {" "}
-                          {selectedItem?.Tenkhuvuc}
+                          {selectedItem?.Tenkhuvuc} -{" "}
+                          {selectedItem?.ent_khoicv?.KhoiCV}
                         </Text>
                       </View>
                     );
@@ -281,7 +281,7 @@ const ModalTracuu = ({
                     return (
                       <VerticalSelect
                         value={item.ID_Khuvuc}
-                        label={`${item.Tenkhuvuc} - ${item?.ent_toanha.Toanha}`}
+                        label={`${item.Tenkhuvuc} - ${item?.ent_khoicv?.KhoiCV}`}
                         key={index}
                         selectedItem={filters?.ID_Khuvuc}
                       />
