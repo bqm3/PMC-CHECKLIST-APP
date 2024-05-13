@@ -13,14 +13,6 @@
     "assetBundlePatterns": [
       "**/*"
     ],
-    "ios": {
-      "supportsTablet": true,
-      "splash": {
-        "image": "./assets/bg.png",
-        "resizeMode": "contain",
-        "backgroundColor": "#ffffff"
-      }
-    },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
@@ -78,12 +70,6 @@
       "eas": {
         "projectId": "88067883-8168-4e0c-8f05-124ae86a6067"
       }
-    },
-    "build": {
-      "preview": {
-        "distribution": "internal"
-      }
     }
-    
   }
 }
