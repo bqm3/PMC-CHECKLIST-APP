@@ -14,14 +14,7 @@
     "assetBundlePatterns": [
       "**/*"
     ],
-    "ios": {
-      "supportsTablet": true,
-      "splash": {
-        "image": "./assets/bg.png",
-        "resizeMode": "contain",
-        "backgroundColor": "#ffffff"
-      }
-    },
+   
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
@@ -30,6 +23,19 @@
       "versionCode": 2,
       "package": "com.anonymous.PMCCHECKLISTAPP"
       
+    },
+    "ios": {
+      "supportsTablet": true,
+      "splash": {
+        "image": "./assets/bg.png",
+        "resizeMode": "contain",
+        "backgroundColor": "#ffffff"
+      },
+      "buildNumber": "1",
+      "bundleIdentifier": "com.anonymous.PMCCHECKLISTAPP",
+      "runtimeVersion": {
+        "policy": "sdkVersion"
+      }
     },
     "web": {
       "favicon": "./assets/icon.png"
@@ -70,6 +76,7 @@
         "projectId": "88067883-8168-4e0c-8f05-124ae86a6067"
       }
     },
+    "displayName": "VietElite Students",
     "build": {
       "preview": {
         "distribution": "internal"

@@ -24,9 +24,21 @@
     "preview4": {
       "distribution": "internal"
     },
-    "production": {}
+    "production": {},
+    "simulator": {
+      "ios": {
+        "simulator": true
+      }
+    }
   },
   "submit": {
-    "production": {}
+    "production": {
+      "ios": {
+        "appleId": "ttt123us@yahoo.com",
+        "ascAppId": "6449212239",
+        "appleTeamId": "79SFQ338H9"
+      }
+      
+    }
   }
 }
