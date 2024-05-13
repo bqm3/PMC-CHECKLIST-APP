@@ -273,8 +273,6 @@ const ThucHienChecklist = ({ navigation }) => {
         formData.append("Giochupanh4", dateHour);
       }
 
-      console.log("file", formData, newActionCheckList[0].ID_ChecklistC);
-
       await axios
         .post(
           BASE_URL +

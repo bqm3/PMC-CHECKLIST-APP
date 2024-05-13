@@ -26,5 +26,8 @@ export default function App() {
         </LoginProvider>
       </PaperProvider>
     </Provider>
+    // <View>
+    //   <Text>123</Text>
+    // </View>
   );
 }

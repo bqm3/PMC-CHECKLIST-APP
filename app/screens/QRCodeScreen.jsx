@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Text, View, StyleSheet } from "react-native";
-import { CameraView, Camera } from "expo-camera/next";
+import { CameraView, Camera } from "expo-camera/legacy";
 import { COLORS } from "../constants/theme";
 import Button from "../components/Button/Button";
 

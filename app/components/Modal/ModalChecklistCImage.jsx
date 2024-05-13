@@ -74,8 +74,8 @@ const ModalChecklistCImage = ({
 
   const onPressLocation = async () => {
     let { status } = await Location.requestForegroundPermissionsAsync();
-    if (status !== 'granted') {
-      alert('Permission to access location was denied');
+    if (status !== "granted") {
+      alert("Permission to access location was denied");
       return;
     }
 
@@ -116,7 +116,6 @@ const ModalChecklistCImage = ({
                 justifyContent: "space-between",
               }}
             >
-              
               <View style={{ width: "48%" }}>
                 <Text allowFontScaling={false} style={styles.text}>
                   Ảnh 1
@@ -146,7 +145,7 @@ const ModalChecklistCImage = ({
                   >
                     <Entypo name="camera" size={24} color="black" />
                   </TouchableOpacity>
-                  
+
                   {image1 !== null && openImage1 === true && (
                     <Image
                       source={{ uri: image1.uri ? image1.uri : image1 }}
@@ -337,15 +336,16 @@ const ModalChecklistCImage = ({
                 Hình ảnh checklist
               </Text>
 
-              <WebView
+              <Image
                 style={{
-                  width: 300,
-                  height: 80,
+                  width: '90%',
+                  height: '90%',
+                  resizeMode: "cover",
                   justifyContent: "center",
                   alignContent: "center",
                 }}
                 source={{
-                  uri: `https://drive.google.com/file/d/${image}/view`,
+                  uri: `https://drive.google.com/thumbnail?id=${image}&sz=w1000`,
                 }}
               />
             </View>

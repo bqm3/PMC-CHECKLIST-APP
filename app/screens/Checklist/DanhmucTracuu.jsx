@@ -110,7 +110,6 @@ const DanhmucTracuu = () => {
   );
 
   const [isLoading, setIsLoading] = useState(false);
-  
 
   const [isEnabled, setIsEnabled] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
@@ -131,7 +130,6 @@ const DanhmucTracuu = () => {
     ID_Khuvuc: null,
     ID_Tang: null,
   });
-
 
   const init_toanha = async () => {
     await dispath(ent_toanha_get());
@@ -246,7 +244,6 @@ const DanhmucTracuu = () => {
         setIsLoading(false);
       });
   };
-
 
   const fetchDataExcel = async () => {
     setIsLoading(true);
@@ -621,7 +618,9 @@ const DanhmucTracuu = () => {
                 </View>
 
                 {/* Thống kê  */}
-                <DanhmucThongKe  handlePresentModalPress2={handlePresentModalPress2}/>
+                <DanhmucThongKe
+                  handlePresentModalPress2={handlePresentModalPress2}
+                />
               </ScrollView>
             </View>
 
@@ -745,7 +744,7 @@ const DanhmucTracuu = () => {
                             alignContent: "center",
                           }}
                           source={{
-                            uri: `https://drive.google.com/file/d/${newActionCheckList[0]?.Anh}/view`,
+                            uri: `https://drive.google.com/thumbnail?id=${newActionCheckList[0]?.Anh}`,
                           }}
                         />
                       )}
