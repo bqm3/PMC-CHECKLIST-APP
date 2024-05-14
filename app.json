@@ -5,14 +5,15 @@
     "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/bg.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
-
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+   
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
@@ -36,7 +37,6 @@
     "web": {
       "favicon": "./assets/icon.png"
     },
-    "expo": {
       "userInterfaceStyle": "automatic",
       "plugins": [
         [
@@ -65,14 +65,13 @@
             "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
           }
         ]
-      ]
-    },
+      ],
     "extra": {
       "eas": {
         "projectId": "88067883-8168-4e0c-8f05-124ae86a6067"
       }
     },
-    "displayName": "PMC Checklist",
+    "displayName": "VietElite Students",
     "build": {
       "preview": {
         "distribution": "internal"
