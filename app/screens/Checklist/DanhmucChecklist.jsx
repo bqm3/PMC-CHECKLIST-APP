@@ -735,37 +735,13 @@ const DanhmucChecklist = ({ navigation }) => {
               {item?.Checklist}
             </Text>
           </DataTable.Cell>
-          {/* <DataTable.Cell style={{ width: 120 }}>
-            <Text
-              style={{ color: isExistIndex ? "white" : "black" }}
-              numberOfLines={2}
-            >
-              {item?.Giatrinhan}
-            </Text>
-          </DataTable.Cell>
-          <DataTable.Cell style={{ width: 120, justifyContent: "center" }}>
-            <Text
-              style={{ color: isExistIndex ? "white" : "black" }}
-              numberOfLines={2}
-            >
-              {item?.ent_khuvuc?.ent_toanha?.Toanha}
-            </Text>
-          </DataTable.Cell>
-          <DataTable.Cell style={{ width: 120, justifyContent: "center" }}>
-            <Text
-              style={{ color: isExistIndex ? "white" : "black" }}
-              numberOfLines={2}
-            >
-              {item?.ent_tang?.Tentang}
-            </Text>
-          </DataTable.Cell> */}
           <DataTable.Cell style={{ width: 120, justifyContent: "center" }}>
             <Text
               style={{ color: isExistIndex ? "white" : "black" }}
               numberOfLines={2}
             >
               {" "}
-              {item?.ent_khuvuc?.Tenkhuvuc}
+              {item?.ent_hangmuc?.ent_khuvuc?.Tenkhuvuc}
             </Text>
           </DataTable.Cell>
           <DataTable.Cell style={{ width: 120 }}>
@@ -773,7 +749,7 @@ const DanhmucChecklist = ({ navigation }) => {
               style={{ color: isExistIndex ? "white" : "black" }}
               numberOfLines={2}
             >
-              {item?.ent_khuvuc?.ent_khoicv?.KhoiCV}
+              {item?.ent_hangmuc?.ent_khuvuc?.ent_khoicv?.KhoiCV}
             </Text>
           </DataTable.Cell>
           {/* <DataTable.Cell style={{ width: 150 }}>
@@ -811,6 +787,8 @@ const DanhmucChecklist = ({ navigation }) => {
   } else {
     arrayId = [];
   }
+
+  console.log('listChecklist?.data',listChecklist?.data)
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>

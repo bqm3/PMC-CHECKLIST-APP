@@ -8,12 +8,6 @@ export const UserProvider = ({ children }) => {
     setUser(data);
   };
 
-  // useEffect({
-  //   setUser
-  // },[userData])
-
-  // useEffect({setUser(data)},[userData])
-
 
   return (
     <UserContext.Provider value={{ userData, saveUser }}>

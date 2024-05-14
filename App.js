@@ -6,6 +6,7 @@ import { store } from "./app/redux/store";
 import { ThemeProvider } from "./app/context/ThemeContext";
 import { LoginProvider } from "./app/context/LoginContext";
 import { UserProvider } from "./app/context/UserContext";
+import { DataProvider } from "./app/context/DataContext";
 import CheckNavigation from "./app/navigation/CheckNavigation";
 import { PaperProvider } from "react-native-paper";
 require("moment/locale/vi");
@@ -17,10 +18,12 @@ export default function App() {
         <LoginProvider>
           <ThemeProvider>
             <UserProvider>
+              <DataProvider>
               <NavigationContainer>
                 <StatusBar /> 
                 <CheckNavigation />
               </NavigationContainer>
+              </DataProvider>
             </UserProvider>
           </ThemeProvider>
         </LoginProvider>

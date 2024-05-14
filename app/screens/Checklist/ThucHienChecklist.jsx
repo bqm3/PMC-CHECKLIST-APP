@@ -85,6 +85,7 @@ const ThucHienChecklist = ({ navigation }) => {
   const { tb_checklistc } = useSelector((state) => state.tbReducer);
   const { user, authToken } = useSelector((state) => state.authReducer);
 
+
   const date = new Date();
   const dateDay = moment(date).format("YYYY-MM-DD");
   const dateHour = moment(date).format("LTS");

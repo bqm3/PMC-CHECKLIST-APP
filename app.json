@@ -2,7 +2,7 @@
   "expo": {
     "name": "PMC-CHECKLIST-APP",
     "slug": "PMC-CHECKLIST-APP",
-    "version": "1.1.1",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -11,18 +11,14 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-   
+    "assetBundlePatterns": ["**/*"],
+
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#ffffff"
       },
-      "versionCode": 2,
       "package": "com.anonymous.PMCCHECKLISTAPP"
-      
     },
     "ios": {
       "supportsTablet": true,
@@ -76,7 +72,7 @@
         "projectId": "88067883-8168-4e0c-8f05-124ae86a6067"
       }
     },
-    "displayName": "VietElite Students",
+    "displayName": "PMC Checklist",
     "build": {
       "preview": {
         "distribution": "internal"

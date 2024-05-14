@@ -104,6 +104,9 @@ const DetailChecklist = ({ route, navigation }) => {
       ent_checklist_get_detail(ID_KhoiCV, ID_ChecklistC, ID_Calv, ID_Hangmuc)
     );
   };
+  console.log(
+     ID_ChecklistC, ID_Calv, ID_Hangmuc
+  )
 
   const init_ent_khuvuc = async () => {
     await dispath(ent_khuvuc_get());
