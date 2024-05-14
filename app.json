@@ -10,10 +10,8 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-   
+    "assetBundlePatterns": ["**/*"],
+
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
@@ -69,12 +67,6 @@
     "extra": {
       "eas": {
         "projectId": "88067883-8168-4e0c-8f05-124ae86a6067"
-      }
-    },
-    "displayName": "VietElite Students",
-    "build": {
-      "preview": {
-        "distribution": "internal"
       }
     }
   }
