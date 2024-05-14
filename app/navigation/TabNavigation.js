@@ -71,9 +71,6 @@ const HomeStack = ({ navigation }) => {
             />
           ),
           headerRight: () => (
-            // <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
-            //   <FontAwesome5 name="user-alt" size={28} color="white" />
-            // </TouchableOpacity>
             <Back navigation={navigation} title={"Profile"} />
           ),
         })}

@@ -14,7 +14,7 @@ import {
   Keyboard,
   Image,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -24,11 +24,15 @@ import Button from "../../components/Button/Button";
 import axios from "axios";
 import { BASE_URL } from "../../constants/config";
 import QRCodeScreen from "../QRCodeScreen";
+import DataContext from "../../context/DataContext";
 
 const ThucHienKhuvuc = ({ route, navigation }) => {
   const { ID_ChecklistC, ID_KhoiCV, ID_Calv } = route.params;
+  const { setDataChecklists, dataChecklists, dataHangmuc } =
+    useContext(DataContext);
+
   const dispath = useDispatch();
-  const {  ent_khuvuc } = useSelector((state) => state.entReducer);
+  const { ent_khuvuc, ent_hangmuc } = useSelector((state) => state.entReducer);
 
   const { user, authToken } = useSelector((state) => state.authReducer);
 
@@ -39,27 +43,42 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
   const [modalVisibleQr, setModalVisibleQr] = useState(false);
   const [dataSelect, setDataSelect] = useState([]);
 
-  
-  const int_khuvuc = async () => {
-    await dispath(ent_khuvuc_get());
-  };
 
   useEffect(() => {
-    int_khuvuc();
-  }, []);
+    let isMounted = true; // Add this flag to avoid setting state on an unmounted component
+
+    async function fetchData() {
+      try {
+        const response = await axios.put(
+          `${BASE_URL}/ent_checklist/filter-mul/${ID_ChecklistC}/${ID_Calv}`,
+          { ID_Hangmuc: dataHangmuc },
+          {
+            headers: {
+              Accept: "application/json",
+              Authorization: "Bearer " + authToken,
+            },
+          }
+        );
+
+        if (isMounted) {
+          const data = response.data.data;
+          setDataChecklists(data)
+        }
+      } catch (error) {
+        if (isMounted) {
+          console.error('Error fetching data', error);
+        }
+      }
+    }
+    fetchData();
+    return () => {
+      isMounted = false; // Cleanup function to set isMounted to false
+    };
+  }, [dataHangmuc]);
 
   const handlePushDataFilterQr = async (value) => {
-    const data = {
-      MaQrCode: value,
-    };
     try {
-      const res = await axios.post(BASE_URL + `/ent_khuvuc/filter_qr`, data, {
-        headers: {
-          Accept: "application/json",
-          Authorization: "Bearer " + authToken,
-        },
-      });
-      const resData = res.data.data
+      const resData = ent_khuvuc.filter((item)=> item.MaQrCode == value)
       if (resData.length >= 1) {
         navigation.navigate("Thực hiện hạng mục", {
           ID_ChecklistC: ID_ChecklistC,

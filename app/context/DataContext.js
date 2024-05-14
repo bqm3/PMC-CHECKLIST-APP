@@ -9,7 +9,7 @@ const DataContext = createContext();
 export const DataProvider = ({ children }) => {
   const dispath = useDispatch();
   const { user } = useSelector((state) => state.authReducer);
-  const { ent_hangmuc } = useSelector((state) => state.entReducer);
+  const { ent_hangmuc, ent_khuvuc } = useSelector((state) => state.entReducer);
   const [dataChecklists, setDataChecklists] = useState([])
 
   const [dataHangmuc, setDataHangmuc] = useState([]);

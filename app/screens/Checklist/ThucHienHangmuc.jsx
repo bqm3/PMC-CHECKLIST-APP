@@ -15,25 +15,23 @@ import {
   Image,
   ScrollView,
 } from "react-native";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import { MaterialIcons } from "@expo/vector-icons";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { ent_hangmuc_get } from "../../redux/actions/entActions";
 import { COLORS, SIZES } from "../../constants/theme";
 import Button from "../../components/Button/Button";
-import axios from "axios";
-import { BASE_URL } from "../../constants/config";
 import QRCodeScreen from "../QRCodeScreen";
+import DataContext from "../../context/DataContext";
 
 const ThucHienHangmuc = ({ route, navigation }) => {
   const { ID_ChecklistC, ID_KhoiCV, ID_Calv, ID_Khuvuc } = route.params;
   const dispath = useDispatch();
+  const { setDataChecklists, dataChecklists, dataHangmuc } =
+    useContext(DataContext);
   const { ent_hangmuc } = useSelector((state) => state.entReducer);
   const [hangMuc, setHangMuc] = useState(ent_hangmuc);
-
-  const { user, authToken } = useSelector((state) => state.authReducer);
 
   const [opacity, setOpacity] = useState(1);
   const [isLoadingDetail, setIsLoadingDetail] = useState(false);
@@ -44,44 +42,16 @@ const ThucHienHangmuc = ({ route, navigation }) => {
   const [tieuChuan, setTieuChuan] = useState();
   const [dataSelect, setDataSelect] = useState([]);
 
-  const int_hangmuc = async () => {
-    await dispath(ent_hangmuc_get());
-  };
-
   useEffect(() => {
-    int_hangmuc();
-  }, []);
-
-  const asyncHangMuc = async () => {
-    await axios
-      .get(BASE_URL + `/ent_hangmuc/filter/${ID_Khuvuc}`, {
-        headers: {
-          Accept: "application/json",
-          Authorization: "Bearer " + authToken,
-        },
-      })
-      .then((res) => {
-        setHangMuc(res.data.data);
-      })
-      .catch((err) => console.log("err", err));
-  };
-
-  useEffect(() => {
-    asyncHangMuc();
+    if (ent_hangmuc) {
+      const data = ent_hangmuc.filter((item) => item.ID_Khuvuc === ID_Khuvuc);
+      setHangMuc(data);
+    }
   }, [ID_Khuvuc]);
 
   const handlePushDataFilterQr = async (value) => {
-    const data = {
-      MaQrCode: value,
-    };
     try {
-      const res = await axios.post(BASE_URL + `/ent_hangmuc/filter_qr`, data, {
-        headers: {
-          Accept: "application/json",
-          Authorization: "Bearer " + authToken,
-        },
-      });
-      const resData = res.data.data;
+      const resData = hangMuc.filter((item)=> item.MaQrCode == value)
       if (resData.length >= 1) {
         navigation.navigate("Chi tiết Checklist", {
           ID_ChecklistC: ID_ChecklistC,
