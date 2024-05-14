@@ -309,7 +309,7 @@ const DanhmucTracuu = () => {
               style={{ color: isExistIndex ? "white" : "black" }}
               numberOfLines={2}
             >
-              {item?.ent_checklist?.ent_khuvuc?.ent_toanha?.Toanha}
+              {item?.ent_checklist?.ent_hangmuc?.ent_khuvuc?.ent_toanha?.Toanha}
             </Text>
           </DataTable.Cell>
           <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
@@ -325,7 +325,7 @@ const DanhmucTracuu = () => {
               style={{ color: isExistIndex ? "white" : "black" }}
               numberOfLines={2}
             >
-              {item?.ent_checklist?.ent_khuvuc?.Tenkhuvuc}
+              {item?.ent_checklist?.ent_hangmuc?.ent_khuvuc?.Tenkhuvuc}
             </Text>
           </DataTable.Cell>
           <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>

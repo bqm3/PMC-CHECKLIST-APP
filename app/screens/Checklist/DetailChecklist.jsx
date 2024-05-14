@@ -21,6 +21,7 @@ import React, {
   useEffect,
   useMemo,
   useCallback,
+  useContext
 } from "react";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import {
@@ -48,6 +49,8 @@ import moment from "moment";
 import axios, { isCancel } from "axios";
 import { BASE_URL } from "../../constants/config";
 import QRCodeScreen from "../QRCodeScreen";
+import DataContext from "../../context/DataContext"
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const DetailChecklist = ({ route, navigation }) => {
   const { ID_ChecklistC, ID_KhoiCV, ID_Calv, ID_Hangmuc } = route.params;
@@ -61,7 +64,8 @@ const DetailChecklist = ({ route, navigation }) => {
     isLoadingDetail,
     isLoading,
   } = useSelector((state) => state.entReducer);
-
+  const { setDataChecklists, dataChecklists, dataHangmuc } =
+  useContext(DataContext);
   const { user, authToken } = useSelector((state) => state.authReducer);
 
   const [dataChecklist, setDataChecklist] = useState([]);
@@ -125,7 +129,6 @@ const DetailChecklist = ({ route, navigation }) => {
   };
 
   useEffect(() => {
-    init_checklist();
     init_ent_khuvuc();
     init_ent_toanha();
     init_ent_tang();
@@ -134,7 +137,8 @@ const DetailChecklist = ({ route, navigation }) => {
 
   // load add field item initstate
   useEffect(() => {
-    const processedData = ent_checklist_detail?.map((item) => {
+    const data = dataChecklists.filter((item)=> item.ID_Hangmuc == ID_Hangmuc) 
+    const processedData = data?.map((item) => {
       return {
         ...item,
         Giatrinhan: item?.Giatrinhan?.split("/"),
@@ -261,7 +265,7 @@ const DetailChecklist = ({ route, navigation }) => {
   };
 
   // set data checklist and image || ghichu
-  const handleSetData = (key, data, it) => {
+  const handleSetData = async (key, data, it) => {
     let mergedArrCheck = [...defaultActionDataChecklist];
     let mergedArrImage = [...dataChecklistFaild];
 
@@ -302,7 +306,6 @@ const DetailChecklist = ({ route, navigation }) => {
             it.GhichuChitiet === ""
           );
         });
-        console.log("indexFaild", indexFaild);
         if (indexFaild === -1) {
           if (
             !mergedArrImage.some(
@@ -398,12 +401,32 @@ const DetailChecklist = ({ route, navigation }) => {
         }
       }
     }
-
     setDataChecklistFaild(mergedArrImage);
     setDefaultActionDataChecklist(mergedArrCheck);
     setNewActionDataChecklist([...mergedArrImage, ...mergedArrCheck]);
+    await AsyncStorage.setItem(`${ID_ChecklistC}-${ID_Calv}-${ID_Hangmuc}-all`, JSON.stringify([...mergedArrImage, ...mergedArrCheck]));
     setDataChecklistFilter(data);
   };
+
+  useEffect(()=> {
+    const funcStorage = async () => {
+      try {
+        const myArray = await AsyncStorage.getItem(`${ID_ChecklistC}-${ID_Calv}-${ID_Hangmuc}-all`);
+        if (myArray !== null) {
+          // We have data!!
+          const mergedArray = dataChecklist.map(item1 => {
+            const item2 = myArray.find(item2 => item2.ID_Checklist === item1.ID_Checklist);
+            return item2 ? item2 : item1;
+          });
+          setDataChecklistFilter(mergedArray)
+        }
+      } catch (error) {
+        // Error retrieving data
+      }
+    }
+    funcStorage()
+  },[])
+  console.log('newActionDataChecklist',dataChecklistFilter)
 
   // change filter checklist
   const handleChange = (key, value, it) => {
@@ -420,6 +443,7 @@ const DetailChecklist = ({ route, navigation }) => {
 
     handleSetData(key, updatedDataChecklist, it);
   };
+
 
   // click item checklist
   const handleItemClick = (value, it, key) => {
@@ -580,8 +604,8 @@ const DetailChecklist = ({ route, navigation }) => {
       setModalVisibleQr(false);
       handleCloseModal();
       setShowNameDuan(
-        `${dataList[0]?.ent_khuvuc?.Tenkhuvuc || ""} - ${
-          dataList[0]?.ent_khuvuc?.ent_toanha?.Toanha || ""
+        `${dataList[0]?.ent_hangmuc?.ent_khuvuc?.Tenkhuvuc || ""} - ${
+          dataList[0]?.ent_hangmuc?.ent_khuvuc?.ent_toanha?.Toanha || ""
         } `
       );
     } catch (error) {
@@ -733,7 +757,6 @@ const DetailChecklist = ({ route, navigation }) => {
   // api faild tb_checklistchitietdone
   const handleDefaultActionDataChecklist = async () => {
     // Xử lý API cho defaultActionDataChecklist
-    // Bạn có thể thêm logic riêng của bạn tại đây
     const descriptions = [
       defaultActionDataChecklist
         .map(
@@ -896,8 +919,8 @@ const DetailChecklist = ({ route, navigation }) => {
     }
   };
 
+// Thiết lập lại dữ liệu sau khi hoàn thành xử lý API
   const postHandleSubmit = () => {
-    // Thiết lập lại dữ liệu sau khi hoàn thành xử lý API
     init_checklist();
     setNewActionDataChecklist([]);
     setDefaultActionDataChecklist([]);
@@ -1138,7 +1161,7 @@ const DetailChecklist = ({ route, navigation }) => {
                     width: "100%",
                   }}
                 >
-                  <Button
+                  {/* <Button
                     text={"Scan QR Code"}
                     backgroundColor={"white"}
                     color={"black"}
@@ -1146,7 +1169,8 @@ const DetailChecklist = ({ route, navigation }) => {
                       setModalVisibleQr(true);
                       setOpacity(0.2);
                     }}
-                  />
+                  /> */}
+                  {/* <View></View> */}
                   <Button
                     text={"Hoàn Thành"}
                     isLoading={loadingSubmit}

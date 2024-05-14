@@ -470,13 +470,13 @@ const DanhmucChecklist = ({ navigation }) => {
     });
 
     setDataCheckKhuvuc({
-      ID_KhoiCV: data.ent_khuvuc?.ID_KhoiCV,
-      ID_Toanha: data.ent_khuvuc?.ID_Toanha,
+      ID_KhoiCV: data.ent_hangmuc?.ent_khuvuc?.ID_KhoiCV,
+      ID_Toanha: data.ent_hangmuc?.ent_khuvuc?.ID_Toanha,
     });
 
     handleDataKhuvuc({
-      ID_KhoiCV: data.ent_khuvuc?.ID_KhoiCV,
-      ID_Toanha: data.ent_khuvuc?.ID_Toanha,
+      ID_KhoiCV: data.ent_hangmuc?.ent_khuvuc?.ID_KhoiCV,
+      ID_Toanha: data.ent_hangmuc?.ent_khuvuc?.ID_Toanha,
     });
 
     setIsCheckUpdate({

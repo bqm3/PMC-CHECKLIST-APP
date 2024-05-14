@@ -15,9 +15,9 @@ const ModalChecklistInfo = ({ dataModal, handleToggleModal }) => {
                 <Text  allowFontScaling={false} style={styles.text}>Giá trị nhận: <Text  allowFontScaling={false} style={{ color: COLORS.bg_active }}>{dataModal?.Giatrinhan}</Text></Text>
                 <Text  allowFontScaling={false} style={styles.text}>Mã số: <Text  allowFontScaling={false} style={{ color: COLORS.bg_active }}>{dataModal?.Maso}</Text></Text>
                 <Text  allowFontScaling={false} style={styles.text}>Số thứ tự: <Text  allowFontScaling={false} style={{ color: COLORS.bg_active }}>{dataModal?.Sothutu}</Text></Text>
-                <Text  allowFontScaling={false} style={styles.text}>Tên khu vực: <Text  allowFontScaling={false} style={{ color: COLORS.bg_active }}>{dataModal?.ent_khuvuc.Tenkhuvuc}</Text></Text>
-                <Text  allowFontScaling={false} style={styles.text}>Khối công việc: <Text  allowFontScaling={false} style={{ color: COLORS.bg_active }}>{dataModal?.ent_khuvuc?.ent_khoicv?.KhoiCV}</Text></Text>
-                <Text  allowFontScaling={false} style={styles.text}>Tòa nhà: <Text  allowFontScaling={false} style={{ color: COLORS.bg_active }}>{dataModal?.ent_khuvuc?.ent_toanha?.Toanha}</Text></Text>
+                <Text  allowFontScaling={false} style={styles.text}>Tên khu vực: <Text  allowFontScaling={false} style={{ color: COLORS.bg_active }}>{dataModal?.ent_hangmuc?.ent_khuvuc.Tenkhuvuc}</Text></Text>
+                <Text  allowFontScaling={false} style={styles.text}>Khối công việc: <Text  allowFontScaling={false} style={{ color: COLORS.bg_active }}>{dataModal?.ent_hangmuc?.ent_khuvuc?.ent_khoicv?.KhoiCV}</Text></Text>
+                <Text  allowFontScaling={false} style={styles.text}>Tòa nhà: <Text  allowFontScaling={false} style={{ color: COLORS.bg_active }}>{dataModal?.ent_hangmuc?.ent_khuvuc?.ent_toanha?.Toanha}</Text></Text>
                 <Text  allowFontScaling={false} style={styles.text}>Tầng: <Text  allowFontScaling={false} style={{ color: COLORS.bg_active }}>{dataModal?.ent_tang?.Tentang}</Text></Text>
                 <Text  allowFontScaling={false} style={styles.text}>Hạng mục: <Text  allowFontScaling={false} style={{ color: COLORS.bg_active }}>{dataModal?.ent_hangmuc?.Hangmuc}</Text></Text>
             </View>
