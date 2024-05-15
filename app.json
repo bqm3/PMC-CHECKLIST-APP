@@ -33,7 +33,7 @@
       "buildNumber": "2",
       "bundleIdentifier": "com.anonymous.PMCCHECKLISTAPP",
       "runtimeVersion": {
-        "policy": "sdkVersion"
+        "policy": "appVersion"
       }
     },
     "web": {
