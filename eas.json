@@ -26,7 +26,9 @@
     "preview4": {
       "distribution": "internal"
     },
-    "production": {},
+    "production": {
+      "autoIncrement": true
+    },
     "simulator": {
       "ios": {
         "simulator": true
