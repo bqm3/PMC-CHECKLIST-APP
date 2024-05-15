@@ -21,6 +21,9 @@
       "package": "com.anonymous.PMCCHECKLISTAPP"
     },
     "ios": {
+      "config": {
+        "usesNonExemptEncryption": true
+      },
       "supportsTablet": true,
       "splash": {
         "image": "./assets/bg.png",
