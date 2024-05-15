@@ -2,7 +2,7 @@
   "expo": {
     "name": "PMC-CHECKLIST-APP",
     "slug": "PMC-CHECKLIST-APP",
-    "version": "1.2.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -21,16 +21,16 @@
       "package": "com.anonymous.PMCCHECKLISTAPP"
     },
     "ios": {
-      "config": {
-        "usesNonExemptEncryption": true
-      },
+      // "config": {
+      //   "usesNonExemptEncryption": true
+      // },
       "supportsTablet": true,
       "splash": {
         "image": "./assets/bg.png",
         "resizeMode": "contain",
         "backgroundColor": "#ffffff"
       },
-      "buildNumber": "2",
+      "buildNumber": "8",
       "bundleIdentifier": "com.anonymous.PMCCHECKLISTAPP",
       "runtimeVersion": {
         "policy": "sdkVersion"
