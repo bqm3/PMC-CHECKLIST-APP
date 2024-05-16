@@ -164,7 +164,10 @@ dependencies {
         }
     }
 
-    implementation("com.facebook.react:flipper-integration")
+    debugImplementation 'com.facebook.flipper:flipper:0.253.0'
+    debugImplementation 'com.facebook.soloader:soloader:0.10.5'
+
+    releaseImplementation 'com.facebook.flipper:flipper-noop:0.253.0'
 
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")
