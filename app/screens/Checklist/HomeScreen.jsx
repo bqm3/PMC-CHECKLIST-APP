@@ -1,5 +1,5 @@
 //import liraries
-import React, { Component } from "react";
+import React, { useContext, useEffect } from "react";
 import {
   View,
   Text,
@@ -7,11 +7,16 @@ import {
   FlatList,
   ImageBackground,
 } from "react-native";
-import { useSelector } from "react-redux";
+import { Provider, useDispatch, useSelector } from "react-redux";
 import ItemHome from "../../components/Item/ItemHome";
 import CopyRight from "../../components/CopyRight";
 import ItemHomePSH from "../../components/Item/ItemHomePSH";
-import adjust from '../../adjust'
+import adjust from "../../adjust";
+import DataContext from "../../context/DataContext";
+import {
+  ent_khuvuc_get,
+  ent_hangmuc_get,
+} from "../../redux/actions/entActions";
 
 const dataDanhMuc = [
   {
@@ -56,8 +61,6 @@ const dataDanhMuc = [
     icon: require("../../../assets/icons/o-05.png"),
     role: 1,
   },
-  
-  
 ];
 
 const dataDanhMucPSH = [
@@ -73,18 +76,45 @@ const dataDanhMucPSH = [
     id: 3,
     path: "Quản lý người dùng",
   },
-]
+];
 // create a component
 const HomeScreen = ({ navigation }) => {
-  const { user } = useSelector((state) => state.authReducer);
+  const { user, authToken } = useSelector((state) => state.authReducer);
+  const { ent_hangmuc } = useSelector((state) => state.entReducer);
+  const { setDataHangmuc } =
+    useContext(DataContext);
+    const dispath = useDispatch();
+
+  const int_khuvuc = async () => {
+    await dispath(ent_khuvuc_get());
+  };
+
+  const int_hangmuc = async () => {
+    await dispath(ent_hangmuc_get());
+  };
+
+  useEffect(() => {
+    int_khuvuc();
+  }, []);
+
+  useEffect(() => {
+    int_hangmuc();
+  }, []);
+
+  useEffect(() => {
+    if (ent_hangmuc) {
+      const hangmucIds = ent_hangmuc.map((item) => item.ID_Hangmuc);
+      setDataHangmuc(hangmucIds);
+    }
+  }, [ent_hangmuc, ]);
 
   const renderItem = ({ item, index }) => (
     <ItemHome roleUser={user?.Permission} item={item} index={index} />
   );
 
-  const renderItemPSH = ({item, index}) => (
-    <ItemHomePSH  item={item} index={index} />
-  )
+  const renderItemPSH = ({ item, index }) => (
+    <ItemHomePSH item={item} index={index} />
+  );
 
   return (
     <ImageBackground
@@ -95,29 +125,32 @@ const HomeScreen = ({ navigation }) => {
       {user?.ent_chucvu?.Chucvu == "PSH" ? (
         <>
           <View style={styles.container}>
-          <View
-            style={[
-              styles.content,
-              {
-                width: "100%",
-                alignContent: "center",
-              },
-            ]}
-          >
-            <FlatList
-              style={{
-                width: "100%",
-                paddingHorizontal: 20,
-                gap:20
-              }}
-              numColumns={2}
-              keyExtractor={({item, index})=> `${index}`}
-              data={dataDanhMucPSH}
-              renderItem={renderItemPSH}
-              // ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
-              contentContainerStyle={{ gap: 20 }}
-              columnWrapperStyle={{ justifyContent: 'space-between', gap:20 }}
-            />
+            <View
+              style={[
+                styles.content,
+                {
+                  width: "100%",
+                  alignContent: "center",
+                },
+              ]}
+            >
+              <FlatList
+                style={{
+                  width: "100%",
+                  paddingHorizontal: 20,
+                  gap: 20,
+                }}
+                numColumns={2}
+                keyExtractor={({ item, index }) => `${index}`}
+                data={dataDanhMucPSH}
+                renderItem={renderItemPSH}
+                // ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
+                contentContainerStyle={{ gap: 20 }}
+                columnWrapperStyle={{
+                  justifyContent: "space-between",
+                  gap: 20,
+                }}
+              />
             </View>
           </View>
         </>

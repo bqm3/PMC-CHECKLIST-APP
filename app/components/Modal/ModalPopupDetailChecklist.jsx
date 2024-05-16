@@ -24,7 +24,7 @@ const ModalPopupDetailChecklist = ({
 }) => {
   const ref = useRef(null);
   const [step, setStep] = useState(1);
-  const [defaultChecklist, setDefaultChecklist] = useState(dataItem.valueCheck);
+  const [defaultChecklist, setDefaultChecklist] = useState(dataItem?.valueCheck);
   const [image, setImage] = useState();
   const [ghichu, setGhichu] = useState();
 
@@ -72,7 +72,7 @@ const ModalPopupDetailChecklist = ({
             defaultValue={defaultChecklist}
             onSelect={(selectedItem, i) => {
               dataItem.valueCheck = selectedItem;
-              handleItemClick(selectedItem, dataItem, "click");
+              handleItemClick(selectedItem, dataItem, "option");
               setDefaultChecklist(selectedItem);
             }}
             renderDropdownIcon={(isOpened) => {

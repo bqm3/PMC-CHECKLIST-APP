@@ -21,7 +21,7 @@ import React, {
   useEffect,
   useMemo,
   useCallback,
-  useContext
+  useContext,
 } from "react";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import {
@@ -33,7 +33,7 @@ import {
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Entypo, MaterialIcons } from "@expo/vector-icons";
 import {
-  ent_checklist_get_detail,
+  ent_checklist_mul_hm,
   ent_khuvuc_get,
   ent_tang_get,
   ent_toanha_get,
@@ -49,7 +49,8 @@ import moment from "moment";
 import axios, { isCancel } from "axios";
 import { BASE_URL } from "../../constants/config";
 import QRCodeScreen from "../QRCodeScreen";
-import DataContext from "../../context/DataContext"
+import DataContext from "../../context/DataContext";
+import ChecklistContext from "../../context/ChecklistContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const DetailChecklist = ({ route, navigation }) => {
@@ -62,10 +63,12 @@ const DetailChecklist = ({ route, navigation }) => {
     ent_toanha,
     ent_hangmuc,
     isLoadingDetail,
-    isLoading,
   } = useSelector((state) => state.entReducer);
   const { setDataChecklists, dataChecklists, dataHangmuc } =
-  useContext(DataContext);
+    useContext(DataContext);
+  const { dataChecklistFilterContext, setDataChecklistFilterContext } =
+    useContext(ChecklistContext);
+
   const { user, authToken } = useSelector((state) => state.authReducer);
 
   const [dataChecklist, setDataChecklist] = useState([]);
@@ -82,187 +85,52 @@ const DetailChecklist = ({ route, navigation }) => {
   const [opacity, setOpacity] = useState(1);
   const [index, setIndex] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
-  const [modalVisible2, setModalVisible2] = useState(false);
+  const [modalVisibleTieuChuan, setModalVisibleTieuChuan] = useState(false);
   const [modalVisibleQr, setModalVisibleQr] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
-  const [isEnabled, setIsEnabled] = useState(true);
   const [isScan, setIsScan] = useState(false);
   const [showNameDuan, setShowNameDuan] = useState("");
 
-  const [filterData, setFilterData] = useState({
-    ID_Khuvuc: null,
-    ID_Tang: null,
-    ID_Toanha: null,
-    ID_Hangmuc: null,
-  });
-
-  const [isFilter, setIsFilter] = useState({
-    ID_Tang: false,
-    ID_Khuvuc: false,
-    ID_Toanha: false,
-    ID_Hangmuc: false,
-  });
-
   const init_checklist = async () => {
-    await dispath(
-      ent_checklist_get_detail(ID_KhoiCV, ID_ChecklistC, ID_Calv, ID_Hangmuc)
-    );
+    await dispath(ent_checklist_mul_hm(dataHangmuc, ID_Calv, ID_ChecklistC));
   };
-  console.log(
-     ID_ChecklistC, ID_Calv, ID_Hangmuc
-  )
-
-  const init_ent_khuvuc = async () => {
-    await dispath(ent_khuvuc_get());
-  };
-
-  const init_ent_toanha = async () => {
-    await dispath(ent_toanha_get());
-  };
-
-  const init_ent_tang = async () => {
-    await dispath(ent_tang_get());
-  };
-
-  const init_ent_hangmuc = async () => {
-    await dispath(ent_hangmuc_get());
-  };
-
-  useEffect(() => {
-    init_ent_khuvuc();
-    init_ent_toanha();
-    init_ent_tang();
-    init_ent_hangmuc();
-  }, []);
 
   // load add field item initstate
   useEffect(() => {
-    const data = dataChecklists.filter((item)=> item.ID_Hangmuc == ID_Hangmuc) 
-    const processedData = data?.map((item) => {
-      return {
-        ...item,
-        Giatrinhan: item?.Giatrinhan?.split("/"),
-        valueCheck: null,
-        GhichuChitiet: "",
-        ID_ChecklistC: ID_ChecklistC,
-        Anh: null,
-        gioht: moment().format("LTS"),
-      };
-    });
-    setDataChecklistFilter(processedData);
-    setDataChecklist(processedData);
-  }, [ent_checklist_detail, loadingSubmit]);
-
-  // change filter all data
-  const toggleSwitch = (isEnabled) => {
-    setIsEnabled(!isEnabled);
-    if (isEnabled === false) {
-      setFilterData({
-        ID_Tang: null,
-        ID_Khuvuc: null,
-        ID_Toanha: null,
-      });
-
-      setIsFilter({
-        ID_Tang: false,
-        ID_Khuvuc: false,
-        ID_Toanha: false,
-      });
-
-      showAllChecklist();
+    if (ent_checklist_detail) {
+      setDataChecklists(ent_checklist_detail);
+      setDataChecklistFilterContext(ent_checklist_detail);
     }
-  };
+  }, [ent_checklist_detail]);
 
-  // action click
-  const handleCheckbox = (key, value) => {
-    setIsFilter((data) => ({
-      ...data,
-      [key]: value,
-    }));
-    setIsEnabled(false);
-  };
+  useEffect(() => {
+    const data = dataChecklists?.filter(
+      (item) => item.ID_Hangmuc == ID_Hangmuc
+    );
 
-  // action click
-  const handleChangeFilter = (key, value) => {
-    setFilterData((data) => ({
-      ...data,
-      [key]: value,
-    }));
-  };
+    const dataChecklist = dataChecklistFilterContext?.filter(
+      (item) => item.ID_Hangmuc == ID_Hangmuc
+    );
+    const dataChecklistAction = dataChecklist.filter(
+      (item) => item.valueCheck !== null
+    );
+    const dataChecklistDefault = dataChecklistAction.filter(
+      (item) => item.valueCheck === item.Giatridinhdanh
+    );
 
-  // close modal bottomsheet
-  const handleCloseModal = () => {
-    bottomSheetModalRef?.current?.close();
-    setOpacity(1);
-  };
+    const dataChecklistActionWithoutDefault = dataChecklistAction.filter(
+      (item) =>
+        !dataChecklistDefault.some(
+          (defaultItem) => defaultItem.ID_Checklist === item.ID_Checklist
+        )
+    );
 
-  // open modal bottomsheet
-  const handlePresentModalPress = useCallback((item) => {
-    bottomSheetModalRef?.current?.present();
-    setDataItem(item);
-  }, []);
-
-  // change modal bottom sheet
-  const handleSheetChanges = useCallback((index) => {
-    if (index === -1) {
-      setOpacity(1);
-      setDataItem(null);
-    } else {
-      setOpacity(0.2);
-    }
-  }, []);
-
-  // click dots and show modal bottom sheet
-  const handlePopupActive = useCallback((item, index) => {
-    setOpacity(0.2);
-    setDataItem(item);
-    setModalVisible(true);
-    setIndex(index);
-  }, []);
-
-  const handlePopupActiveTieuChuan = useCallback((item, index) => {
-    setOpacity(0.2);
-    setTieuchuan(item.Tieuchuan);
-    setModalVisible2(true);
-    setIndex(index);
-  });
-
-  // close modal bottom sheet
-  const handlePopupClear = useCallback(() => {
-    setOpacity(1);
-    setDataItem(null);
-    setModalVisible(false);
-    setIndex(null);
-  }, []);
-
-  // show all checklist
-  const showAllChecklist = () => {
-    let filteredData = dataChecklist.map((item) => {
-      const matchingItem = defaultActionDataChecklist.find(
-        (newItem) => newItem.ID_Checklist === item.ID_Checklist
-      );
-      if (matchingItem) {
-        return {
-          ...item,
-          valueCheck: matchingItem.valueCheck,
-          GhichuChitiet: matchingItem.GhichuChitiet,
-          Anh: matchingItem.Anh,
-          gioht: matchingItem.gioht,
-          ID_ChecklistC: ID_ChecklistC,
-        };
-      }
-      return item;
-    });
-
-    setDataChecklistFilter(filteredData);
-  };
-
-  // toggle scan and show all checklist
-  const toggleScan = () => {
-    setIsScan(!isScan);
-    showAllChecklist();
-    setShowNameDuan("");
-  };
+    setDataChecklist(data);
+    setDataChecklistFilter(dataChecklist);
+    setNewActionDataChecklist(dataChecklistAction);
+    setDefaultActionDataChecklist(dataChecklistDefault);
+    setDataChecklistFaild(dataChecklistActionWithoutDefault);
+  }, [dataChecklists, dataChecklistFilterContext]);
 
   // set data checklist and image || ghichu
   const handleSetData = async (key, data, it) => {
@@ -271,7 +139,6 @@ const DetailChecklist = ({ route, navigation }) => {
 
     // newDataChecklist là data dc chọn.
     let newDataChecklist = data.filter((item) => item.valueCheck !== null);
-
     // clear item checklist
     if (it.valueCheck !== null) {
       if (key === "Anh" || key === "GhichuChitiet") {
@@ -297,7 +164,7 @@ const DetailChecklist = ({ route, navigation }) => {
         }
       }
 
-      if (key === "click") {
+      if (key === "option") {
         const indexFaild = newDataChecklist.findIndex((item) => {
           return (
             item.ID_Checklist === it.ID_Checklist &&
@@ -357,7 +224,7 @@ const DetailChecklist = ({ route, navigation }) => {
     } else {
       if (key === "Anh" || key === "GhichuChitiet") {
       }
-      if (key === "click" || key === "active") {
+      if (key === "option" || key === "active") {
         const indexFaild = newDataChecklist.find(
           (item) =>
             item.ID_Checklist === it.ID_Checklist &&
@@ -404,31 +271,16 @@ const DetailChecklist = ({ route, navigation }) => {
     setDataChecklistFaild(mergedArrImage);
     setDefaultActionDataChecklist(mergedArrCheck);
     setNewActionDataChecklist([...mergedArrImage, ...mergedArrCheck]);
-    await AsyncStorage.setItem(`${ID_ChecklistC}-${ID_Calv}-${ID_Hangmuc}-all`, JSON.stringify([...mergedArrImage, ...mergedArrCheck]));
     setDataChecklistFilter(data);
+    const data2Map = new Map(data.map((item) => [item.ID_Checklist, item]));
+
+    // Lọc và thay thế các item trong data1
+    const updatedData1 = dataChecklistFilterContext.map((item) =>
+      data2Map.has(item.ID_Checklist) ? data2Map.get(item.ID_Checklist) : item
+    );
+    setDataChecklistFilterContext(updatedData1);
   };
 
-  useEffect(()=> {
-    const funcStorage = async () => {
-      try {
-        const myArray = await AsyncStorage.getItem(`${ID_ChecklistC}-${ID_Calv}-${ID_Hangmuc}-all`);
-        if (myArray !== null) {
-          // We have data!!
-          const mergedArray = dataChecklist.map(item1 => {
-            const item2 = myArray.find(item2 => item2.ID_Checklist === item1.ID_Checklist);
-            return item2 ? item2 : item1;
-          });
-          setDataChecklistFilter(mergedArray)
-        }
-      } catch (error) {
-        // Error retrieving data
-      }
-    }
-    funcStorage()
-  },[])
-  console.log('newActionDataChecklist',dataChecklistFilter)
-
-  // change filter checklist
   const handleChange = (key, value, it) => {
     const updatedDataChecklist = dataChecklistFilter?.map((item, i) => {
       if (item === it) {
@@ -444,109 +296,29 @@ const DetailChecklist = ({ route, navigation }) => {
     handleSetData(key, updatedDataChecklist, it);
   };
 
-
   // click item checklist
   const handleItemClick = (value, it, key) => {
+    // console.log('value',value)
     const updatedDataChecklist = dataChecklistFilter?.map((item, i) => {
-      if (item.ID_Checklist === it.ID_Checklist && key === "click") {
-        return { ...item, valueCheck: value, gioht: moment().format("LTS") };
-      } else if (item.ID_Checklist === it.ID_Checklist && key === "active") {
+      if (item.ID_Checklist === it.ID_Checklist && key === "option") {
         return {
           ...item,
-          valueCheck: item.valueCheck === null ? value : null,
+          valueCheck: value ? value : null,
+          gioht: moment().format("LTS"),
+        };
+      } else if (item.ID_Checklist === it.ID_Checklist && key === "active") {
+        // console.log('run' )
+        return {
+          ...item,
+          valueCheck: value ? value : null,
           gioht: moment().format("LTS"),
         };
       }
       return item;
     });
+    console.log("updatedDataChecklist", updatedDataChecklist);
 
     handleSetData(key, updatedDataChecklist, it);
-  };
-
-  // call api filter data checklist
-  const handlePushDataFilter = async () => {
-    try {
-      const res = await axios.post(
-        BASE_URL +
-          `/ent_checklist/filter/${ID_KhoiCV}/${ID_ChecklistC}/${ID_Calv}/${ID_Hangmuc}`,
-        filterData,
-        {
-          headers: {
-            Accept: "application/json",
-            Authorization: "Bearer " + authToken,
-          },
-        }
-      );
-      const dataList = res.data.data;
-      let filteredData = dataList.map((item) => {
-        const matchingItem = defaultActionDataChecklist.find((newItem) => {
-          return newItem.ID_Checklist === item.ID_Checklist;
-        });
-        if (matchingItem) {
-          return {
-            ...item,
-            valueCheck: matchingItem.valueCheck,
-            GhichuChitiet: matchingItem.GhichuChitiet,
-            Anh: matchingItem.Anh,
-            gioht: matchingItem.gioht,
-            ID_ChecklistC: ID_ChecklistC,
-          };
-        } else {
-          return {
-            ...item,
-            valueCheck: null,
-            GhichuChitiet: "",
-            Anh: null,
-            gioht: moment().format("LTS"),
-            ID_ChecklistC: ID_ChecklistC,
-          };
-        }
-      });
-
-      const newDataChecklist = filteredData.filter(
-        (item) => item.valueCheck !== null
-      );
-
-      // Thêm các phần tử mới từ newDataChecklist vào newActionDataChecklist
-      setNewActionDataChecklist((prevState) =>
-        prevState?.concat(newDataChecklist)
-      );
-
-      setDataChecklistFilter(filteredData);
-      handleCloseModal();
-    } catch (error) {
-      if (error.response) {
-        // Lỗi từ phía server (có response từ server)
-        Alert.alert("PMC Thông báo", error.response.data.message, [
-          {
-            text: "Hủy",
-            onPress: () => console.log("Cancel Pressed"),
-            style: "cancel",
-          },
-          { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-        ]);
-      } else if (error.request) {
-        // Lỗi không nhận được phản hồi từ server
-        Alert.alert("PMC Thông báo", "Không nhận được phản hồi từ máy chủ", [
-          {
-            text: "Hủy",
-            onPress: () => console.log("Cancel Pressed"),
-            style: "cancel",
-          },
-          { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-        ]);
-      } else {
-        // Lỗi khi cấu hình request
-        Alert.alert("PMC Thông báo", "Lỗi khi gửi yêu cầu", [
-          {
-            text: "Hủy",
-            onPress: () => console.log("Cancel Pressed"),
-            style: "cancel",
-          },
-          { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-        ]);
-      }
-    }
   };
 
   const handlePushDataFilterQr = async (value) => {
@@ -723,7 +495,8 @@ const DetailChecklist = ({ route, navigation }) => {
           Authorization: "Bearer " + authToken,
         },
       });
-
+      postHandleSubmit();
+      setLoadingSubmit(false);
       // Alert user of successful submission
       Alert.alert("PMC Thông báo", "Checklist thành công", [
         {
@@ -735,8 +508,7 @@ const DetailChecklist = ({ route, navigation }) => {
       ]);
 
       // Handle successful form submission
-      postHandleSubmit();
-      setLoadingSubmit(false);
+     
     } catch (error) {
       console.log("err faild", error);
       setLoadingSubmit(false);
@@ -783,7 +555,8 @@ const DetailChecklist = ({ route, navigation }) => {
     try {
       // Gộp cả hai mảng promise và đợi cho tất cả các promise hoàn thành
       await Promise.all(requestDone);
-
+      postHandleSubmit();
+      setLoadingSubmit(false);
       // Hiển thị cảnh báo sau khi tất cả các yêu cầu hoàn thành
       Alert.alert("PMC Thông báo", "Checklist thành công", [
         {
@@ -795,8 +568,7 @@ const DetailChecklist = ({ route, navigation }) => {
       ]);
 
       // Thiết lập lại dữ liệu và cờ loading
-      postHandleSubmit();
-      setLoadingSubmit(false);
+      
     } catch (error) {
       console.log("err done", error);
       setLoadingSubmit(false);
@@ -887,7 +659,8 @@ const DetailChecklist = ({ route, navigation }) => {
     try {
       // Gộp các promise lại và chờ cho tất cả các promise hoàn thành
       await Promise.all([requestFaild, requestDone]);
-
+      postHandleSubmit();
+      setLoadingSubmit(false);
       // Hiển thị thông báo thành công
       Alert.alert("PMC Thông báo", "Checklist thành công", [
         {
@@ -899,8 +672,7 @@ const DetailChecklist = ({ route, navigation }) => {
       ]);
 
       // Thiết lập lại dữ liệu và trạng thái loading
-      postHandleSubmit();
-      setLoadingSubmit(false);
+     
     } catch (error) {
       console.log("err all", error);
       setLoadingSubmit(false);
@@ -917,14 +689,6 @@ const DetailChecklist = ({ route, navigation }) => {
         ]);
       }
     }
-  };
-
-// Thiết lập lại dữ liệu sau khi hoàn thành xử lý API
-  const postHandleSubmit = () => {
-    init_checklist();
-    setNewActionDataChecklist([]);
-    setDefaultActionDataChecklist([]);
-    setDataChecklistFaild([]);
   };
 
   // view item flatlist
@@ -994,6 +758,43 @@ const DetailChecklist = ({ route, navigation }) => {
     );
   };
 
+  // Thiết lập lại dữ liệu sau khi hoàn thành xử lý API
+  const postHandleSubmit = () => {
+    init_checklist();
+    setNewActionDataChecklist([]);
+    setDefaultActionDataChecklist([]);
+    setDataChecklistFaild([]);
+  };
+
+  // close modal bottomsheet
+  const handleCloseModal = () => {
+    bottomSheetModalRef?.current?.close();
+    setOpacity(1);
+  };
+
+  // click dots and show modal bottom sheet
+  const handlePopupActive = useCallback((item, index) => {
+    setOpacity(0.2);
+    setDataItem(item);
+    setModalVisible(true);
+    setIndex(index);
+  }, []);
+
+  const handlePopupActiveTieuChuan = useCallback((item, index) => {
+    setOpacity(0.2);
+    setTieuchuan(item.Tieuchuan);
+    setModalVisibleTieuChuan(true);
+    setIndex(index);
+  });
+
+  // close modal bottom sheet
+  const handlePopupClear = useCallback(() => {
+    setOpacity(1);
+    setDataItem(null);
+    setModalVisible(false);
+    setIndex(null);
+  }, []);
+
   // format number
   const decimalNumber = (number) => {
     if (number < 10 && number >= 1) return `0${number}`;
@@ -1055,21 +856,21 @@ const DetailChecklist = ({ route, navigation }) => {
                       </View>
                     </TouchableOpacity>
 
-                    {isScan && (
+                    {/* {isScan && (
                       <ButtonChecklist
                         text={"Tất cả"}
                         width={"auto"}
                         color={COLORS.bg_button}
                         onPress={toggleScan}
                       />
-                    )}
+                    )} */}
 
-                    <ButtonChecklist
+                    {/* <ButtonChecklist
                       text={"Tìm kiếm"}
                       width={"auto"}
                       color={COLORS.bg_button}
                       onPress={handlePresentModalPress}
-                    />
+                    /> */}
                   </View>
                 </View>
                 {showNameDuan !== "" && (
@@ -1183,7 +984,7 @@ const DetailChecklist = ({ route, navigation }) => {
               </View>
             </ImageBackground>
 
-            <BottomSheetModal
+            {/* <BottomSheetModal
               ref={bottomSheetModalRef}
               index={0}
               snapPoints={snapPoints}
@@ -1205,7 +1006,7 @@ const DetailChecklist = ({ route, navigation }) => {
                   handlePushDataFilter={handlePushDataFilter}
                 />
               </BottomSheetScrollView>
-            </BottomSheetModal>
+            </BottomSheetModal> */}
 
             {/* Modal show action  */}
             <Modal
@@ -1237,10 +1038,10 @@ const DetailChecklist = ({ route, navigation }) => {
             <Modal
               animationType="slide"
               transparent={true}
-              visible={modalVisible2}
+              visible={modalVisibleTieuChuan}
               onRequestClose={() => {
                 Alert.alert("Modal has been closed.");
-                setModalVisible2(!modalVisible2);
+                setModalVisibleTieuChuan(!modalVisibleTieuChuan);
               }}
             >
               <View style={[styles.centeredView]}>
@@ -1262,7 +1063,7 @@ const DetailChecklist = ({ route, navigation }) => {
                     backgroundColor={COLORS.bg_button}
                     color={"white"}
                     onPress={() => {
-                      setModalVisible2(false);
+                      setModalVisibleTieuChuan(false);
                       setOpacity(1);
                     }}
                   />

@@ -7,6 +7,7 @@ import { ThemeProvider } from "./app/context/ThemeContext";
 import { LoginProvider } from "./app/context/LoginContext";
 import { UserProvider } from "./app/context/UserContext";
 import { DataProvider } from "./app/context/DataContext";
+import { ChecklistProvider } from "./app/context/ChecklistContext";
 import CheckNavigation from "./app/navigation/CheckNavigation";
 import { PaperProvider } from "react-native-paper";
 require("moment/locale/vi");
@@ -19,18 +20,17 @@ export default function App() {
           <ThemeProvider>
             <UserProvider>
               <DataProvider>
-              <NavigationContainer>
-                <StatusBar /> 
-                <CheckNavigation />
-              </NavigationContainer>
+                <ChecklistProvider>
+                  <NavigationContainer>
+                    <StatusBar />
+                    <CheckNavigation />
+                  </NavigationContainer>
+                </ChecklistProvider>
               </DataProvider>
             </UserProvider>
           </ThemeProvider>
         </LoginProvider>
       </PaperProvider>
     </Provider>
-    // <View>
-    //   <Text>123</Text>
-    // </View>
   );
 }

@@ -18,21 +18,28 @@ import React, { useState, useEffect, useContext } from "react";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { ent_khuvuc_get } from "../../redux/actions/entActions";
+import {
+  ent_khuvuc_get,
+  ent_checklist_mul_hm,
+} from "../../redux/actions/entActions";
 import { COLORS, SIZES } from "../../constants/theme";
 import Button from "../../components/Button/Button";
 import axios from "axios";
+import moment from "moment";
 import { BASE_URL } from "../../constants/config";
 import QRCodeScreen from "../QRCodeScreen";
 import DataContext from "../../context/DataContext";
+import ChecklistContext from "../../context/ChecklistContext";
 
 const ThucHienKhuvuc = ({ route, navigation }) => {
   const { ID_ChecklistC, ID_KhoiCV, ID_Calv } = route.params;
-  const { setDataChecklists, dataChecklists, dataHangmuc } =
-    useContext(DataContext);
+  const { setDataChecklists, dataHangmuc } = useContext(DataContext);
+  const { setDataChecklistFilterContext } = useContext(ChecklistContext);
 
   const dispath = useDispatch();
-  const { ent_khuvuc, ent_hangmuc } = useSelector((state) => state.entReducer);
+  const { ent_khuvuc, ent_checklist_detail } = useSelector(
+    (state) => state.entReducer
+  );
 
   const { user, authToken } = useSelector((state) => state.authReducer);
 
@@ -43,42 +50,27 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
   const [modalVisibleQr, setModalVisibleQr] = useState(false);
   const [dataSelect, setDataSelect] = useState([]);
 
+  const init_checklist = async () => {
+    await dispath(
+      ent_checklist_mul_hm(dataHangmuc, ID_Calv, ID_ChecklistC)
+    );
+  };
 
   useEffect(() => {
-    let isMounted = true; // Add this flag to avoid setting state on an unmounted component
-
-    async function fetchData() {
-      try {
-        const response = await axios.put(
-          `${BASE_URL}/ent_checklist/filter-mul/${ID_ChecklistC}/${ID_Calv}`,
-          { ID_Hangmuc: dataHangmuc },
-          {
-            headers: {
-              Accept: "application/json",
-              Authorization: "Bearer " + authToken,
-            },
-          }
-        );
-
-        if (isMounted) {
-          const data = response.data.data;
-          setDataChecklists(data)
-        }
-      } catch (error) {
-        if (isMounted) {
-          console.error('Error fetching data', error);
-        }
-      }
-    }
-    fetchData();
-    return () => {
-      isMounted = false; // Cleanup function to set isMounted to false
-    };
+    init_checklist()
   }, [dataHangmuc]);
+
+  useEffect(() => {
+    if(ent_checklist_detail){
+      setDataChecklists(ent_checklist_detail);
+      setDataChecklistFilterContext(ent_checklist_detail);
+    }
+   
+  }, [ent_checklist_detail]);
 
   const handlePushDataFilterQr = async (value) => {
     try {
-      const resData = ent_khuvuc.filter((item)=> item.MaQrCode == value)
+      const resData = ent_khuvuc.filter((item) => item.MaQrCode == value);
       if (resData.length >= 1) {
         navigation.navigate("Thực hiện hạng mục", {
           ID_ChecklistC: ID_ChecklistC,
