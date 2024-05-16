@@ -30,8 +30,8 @@
         "resizeMode": "contain",
         "backgroundColor": "#ffffff"
       },
-      "buildNumber": "7",
-      "bundleIdentifier": "com.anonymous.PMCCHECKLISTAPP",
+      // "buildNumber": "7",
+      "bundleIdentifier": "com.anonymous.PMCCHECKLISTAPP"
       // "runtimeVersion": {
       //   "policy": "sdkVersion"
       // }
