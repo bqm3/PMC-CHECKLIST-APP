@@ -30,7 +30,7 @@
         "resizeMode": "contain",
         "backgroundColor": "#ffffff"
       },
-      "buildNumber": "1",
+      "buildNumber": "7",
       "bundleIdentifier": "com.anonymous.PMCCHECKLISTAPP",
       "runtimeVersion": {
         "policy": "sdkVersion"
