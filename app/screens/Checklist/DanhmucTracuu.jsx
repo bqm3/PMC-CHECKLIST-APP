@@ -152,7 +152,6 @@ const DanhmucTracuu = () => {
   }, [ent_khuvuc]);
 
   const asyncKhuvuc = async () => {
-    console.log("run", authToken);
     let data = {
       ID_Toanha: filters.ID_Toanha,
     };
@@ -736,12 +735,11 @@ const DanhmucTracuu = () => {
                   <ScrollView>
                     {newActionCheckList[0]?.Anh !== null &&
                       newActionCheckList[0]?.Anh !== "" && (
-                        <WebView
+                        <Image
                           style={{
-                            width: SIZES.width * 0.75,
+                            width: SIZES.width * 0.8,
                             height: SIZES.height * 0.5,
-                            justifyContent: "center",
-                            alignContent: "center",
+                            objectFit:'cover',
                           }}
                           source={{
                             uri: `https://drive.google.com/thumbnail?id=${newActionCheckList[0]?.Anh}`,

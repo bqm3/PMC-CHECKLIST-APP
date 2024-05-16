@@ -115,7 +115,7 @@ const DetailChecklist = ({ route, navigation }) => {
       (item) => item.valueCheck !== null
     );
     const dataChecklistDefault = dataChecklistAction.filter(
-      (item) => item.valueCheck === item.Giatridinhdanh
+      (item) => item.valueCheck === item.Giatridinhdanh && item.Anh !== null && item.GhichuChitiet !== ""
     );
 
     const dataChecklistActionWithoutDefault = dataChecklistAction.filter(
@@ -316,7 +316,6 @@ const DetailChecklist = ({ route, navigation }) => {
       }
       return item;
     });
-    console.log("updatedDataChecklist", updatedDataChecklist);
 
     handleSetData(key, updatedDataChecklist, it);
   };
