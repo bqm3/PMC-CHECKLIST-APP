@@ -115,7 +115,7 @@ const DetailChecklist = ({ route, navigation }) => {
       (item) => item.valueCheck !== null
     );
     const dataChecklistDefault = dataChecklistAction.filter(
-      (item) => item.valueCheck === item.Giatridinhdanh && item.Anh !== null && item.GhichuChitiet !== ""
+      (item) => item.valueCheck === item.Giatridinhdanh
     );
 
     const dataChecklistActionWithoutDefault = dataChecklistAction.filter(
@@ -452,6 +452,7 @@ const DetailChecklist = ({ route, navigation }) => {
     // Cập nhật sau khi hoàn thành xử lý API
   };
 
+  console.log('dataChecklistFaild',dataChecklistFaild.length)
   // api faild tb_checklistchitiet
   const handleDataChecklistFaild = async () => {
     try {
@@ -512,8 +513,28 @@ const DetailChecklist = ({ route, navigation }) => {
       console.log("err faild", error);
       setLoadingSubmit(false);
       if (error.response) {
-        // Handle error response from the server
+        // Lỗi từ phía server (có response từ server)
         Alert.alert("PMC Thông báo", error.response.data.message, [
+          {
+            text: "Hủy",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel",
+          },
+          { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+        ]);
+      } else if (error.request) {
+        // Lỗi không nhận được phản hồi từ server
+        Alert.alert("PMC Thông báo", "Không nhận được phản hồi từ máy chủ", [
+          {
+            text: "Hủy",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel",
+          },
+          { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+        ]);
+      } else {
+        // Lỗi khi cấu hình request
+        Alert.alert("PMC Thông báo", "Lỗi khi gửi yêu cầu", [
           {
             text: "Hủy",
             onPress: () => console.log("Cancel Pressed"),

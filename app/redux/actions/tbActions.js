@@ -25,8 +25,8 @@ export const tb_checklistc_get = (pag) => {
           } else {
             console.error("initialized error");
           }
-        } catch (err) {
-          console.log("errd", err);
+        } catch (error) {
+          console.log("errd", error.response.data.message);
         }
       };
 };

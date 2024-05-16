@@ -39,6 +39,9 @@
         "appleId": "ttt123us@yahoo.com",
         "ascAppId": "6449212239",
         "appleTeamId": "79SFQ338H9"
+      },
+      "android": {
+        "serviceAccountKeyPath": "../pmc-cskh-firebase-adminsdk-y7378-5122f6edc7.json"
       }
       
     }
