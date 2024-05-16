@@ -32,9 +32,9 @@
       },
       "buildNumber": "7",
       "bundleIdentifier": "com.anonymous.PMCCHECKLISTAPP",
-      "runtimeVersion": {
-        "policy": "sdkVersion"
-      }
+      // "runtimeVersion": {
+      //   "policy": "sdkVersion"
+      // }
     },
     "web": {
       "favicon": "./assets/icon.png"
