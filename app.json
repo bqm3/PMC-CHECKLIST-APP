@@ -11,7 +11,6 @@
       "backgroundColor": "#ffffff"
     },
     "assetBundlePatterns": ["**/*"],
-
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
@@ -21,53 +20,49 @@
       "package": "com.anonymous.PMCCHECKLISTAPP"
     },
     "ios": {
-      // "config": {
-      //   "usesNonExemptEncryption": true
-      // },
       "supportsTablet": true,
       "splash": {
         "image": "./assets/bg.png",
         "resizeMode": "contain",
         "backgroundColor": "#ffffff"
       },
-      // "buildNumber": "7",
-      "bundleIdentifier": "com.anonymous.PMCCHECKLISTAPP"
-      // "runtimeVersion": {
-      //   "policy": "sdkVersion"
-      // }
+      "bundleIdentifier": "com.anonymous.PMCCHECKLISTAPP",
+      "runtimeVersion": {
+        "policy": "sdkVersion"
+      }
     },
     "web": {
       "favicon": "./assets/icon.png"
     },
-      "userInterfaceStyle": "automatic",
-      "plugins": [
-        [
-          "expo-camera",
-          {
-            "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
-            "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone",
-            "recordAudioAndroid": true
-          }
-        ],
-        [
-          "expo-image-picker",
-          {
-            "photosPermission": "The app accesses your photos to let you share them with your friends."
-          }
-        ],
-        [
-          "expo-barcode-scanner",
-          {
-            "cameraPermission": "Allow $(PRODUCT_NAME) to access camera."
-          }
-        ],
-        [
-          "expo-location",
-          {
-            "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
-          }
-        ]
+    "userInterfaceStyle": "automatic",
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
+          "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone",
+          "recordAudioAndroid": true
+        }
       ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you share them with your friends."
+        }
+      ],
+      [
+        "expo-barcode-scanner",
+        {
+          "cameraPermission": "Allow $(PRODUCT_NAME) to access camera."
+        }
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+        }
+      ]
+    ],
     "extra": {
       "eas": {
         "projectId": "88067883-8168-4e0c-8f05-124ae86a6067"
