@@ -16,7 +16,7 @@
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#ffffff"
       },
-      "versionCode": 1,
+      "versionCode": 3,
       "package": "com.anonymous.PMCCHECKLISTAPP"
     },
     "ios": {
