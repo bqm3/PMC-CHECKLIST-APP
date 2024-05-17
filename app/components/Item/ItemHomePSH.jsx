@@ -32,6 +32,7 @@ export default function ItemHomePSH({ item }) {
         }}
       >
         <Text
+        allowFontScaling={false}
           style={{
             color: "white",
             fontSize: 18,

@@ -42,6 +42,7 @@ export default function ItemHome({ item, index, roleUser }) {
           style={{ width: 32, height: 32 }}
         />
         <Text
+        allowFontScaling={false}
           style={{
             color: roleUser !== 1 && item?.role === 1 ? 'white' : 'black',
             fontSize: 16,

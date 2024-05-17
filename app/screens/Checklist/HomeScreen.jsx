@@ -81,9 +81,8 @@ const dataDanhMucPSH = [
 const HomeScreen = ({ navigation }) => {
   const { user, authToken } = useSelector((state) => state.authReducer);
   const { ent_hangmuc } = useSelector((state) => state.entReducer);
-  const { setDataHangmuc } =
-    useContext(DataContext);
-    const dispath = useDispatch();
+  const { setDataHangmuc } = useContext(DataContext);
+  const dispath = useDispatch();
 
   const int_khuvuc = async () => {
     await dispath(ent_khuvuc_get());
@@ -106,7 +105,7 @@ const HomeScreen = ({ navigation }) => {
       const hangmucIds = ent_hangmuc.map((item) => item.ID_Hangmuc);
       setDataHangmuc(hangmucIds);
     }
-  }, [ent_hangmuc, ]);
+  }, [ent_hangmuc]);
 
   const renderItem = ({ item, index }) => (
     <ItemHome roleUser={user?.Permission} item={item} index={index} />
@@ -163,11 +162,13 @@ const HomeScreen = ({ navigation }) => {
                 fontSize: adjust(16),
               }}
               numberOfLines={1}
-              adjustsFontSizeToFit
+              allowFontScaling={false}
+              // adjustsFontSizeToFit
             >
               Digital Transformation Good day and Happy
             </Text>
             <Text
+              allowFontScaling={false}
               style={{
                 fontSize: adjust(20),
                 color: "white",
@@ -210,18 +211,20 @@ const HomeScreen = ({ navigation }) => {
             }}
           >
             <Text
+              allowFontScaling={false}
               style={{
                 color: "white",
-                fontSize: adjust(15),
+                // fontSize: adjust(15),
               }}
             >
               Người Giám sát chỉ thực hiện công việc Check list, Tra cứu và Đổi
               mật khẩu.
             </Text>
             <Text
+              allowFontScaling={false}
               style={{
                 color: "white",
-                fontSize: adjust(15),
+                // fontSize: adjust(15),
               }}
             >
               Giám đốc Tòa nhà toàn quyền sử dụng.
