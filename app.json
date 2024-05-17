@@ -10,14 +10,26 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#ffffff"
       },
-      "versionCode": 3,
-      "package": "com.anonymous.PMCCHECKLISTAPP"
+      "googleServicesFile": "./google-services.json",
+      "versionCode": 1,
+      "package": "com.anonymous.PMCCHECKLISTAPP",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ],
+      "runtimeVersion": {
+        "policy": "appVersion"
+      }
     },
     "ios": {
       "supportsTablet": true,
@@ -67,6 +79,9 @@
       "eas": {
         "projectId": "88067883-8168-4e0c-8f05-124ae86a6067"
       }
+    },
+    "updates": {
+      "url": "https://u.expo.dev/88067883-8168-4e0c-8f05-124ae86a6067"
     }
   }
 }
