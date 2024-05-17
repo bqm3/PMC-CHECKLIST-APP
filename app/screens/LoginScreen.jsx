@@ -243,8 +243,8 @@ const LoginScreen = ({ navigation }) => {
                         {!show ? (
                           <Image
                             style={{
-                              width: 20,
-                              height: 20,
+                              width: 24,
+                              height: 24,
                               resizeMode: "contain",
                             }}
                             source={require("../../assets/eye.png")}
@@ -252,8 +252,8 @@ const LoginScreen = ({ navigation }) => {
                         ) : (
                           <Image
                             style={{
-                              width: 20,
-                              height: 20,
+                              width: 30,
+                              height: 30,
                               resizeMode: "contain",
                             }}
                             source={require("../../assets/hidden.png")}
@@ -339,7 +339,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   checkboxContainer: {
-    marginTop: 20,
+    marginTop: 30,
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "row",
