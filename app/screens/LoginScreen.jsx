@@ -47,7 +47,7 @@ const LoginScreen = ({ navigation }) => {
     (state) => state.authReducer
   );
   const bottomSheetModalRef = useRef(null);
-  const snapPoints = useMemo(() => ["80%"], []);
+  const snapPoints = useMemo(() => ["85%"], []);
   const [opacity, setOpacity] = useState(1);
 
   const [show, setShow] = useState(false);
