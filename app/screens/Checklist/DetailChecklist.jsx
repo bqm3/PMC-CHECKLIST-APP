@@ -51,15 +51,14 @@ import { BASE_URL } from "../../constants/config";
 import QRCodeScreen from "../QRCodeScreen";
 import DataContext from "../../context/DataContext";
 import ChecklistContext from "../../context/ChecklistContext";
-import * as Network from 'expo-network';
+import * as Network from "expo-network";
 
 const DetailChecklist = ({ route, navigation }) => {
   const { ID_ChecklistC, ID_KhoiCV, ID_Calv, ID_Hangmuc } = route.params;
   const dispath = useDispatch();
-  const {
-    ent_checklist_detail,
-    isLoadingDetail,
-  } = useSelector((state) => state.entReducer);
+  const { ent_checklist_detail, isLoadingDetail } = useSelector(
+    (state) => state.entReducer
+  );
   const { setDataChecklists, dataChecklists, dataHangmuc } =
     useContext(DataContext);
   const { dataChecklistFilterContext, setDataChecklistFilterContext } =
@@ -416,7 +415,7 @@ const DetailChecklist = ({ route, navigation }) => {
     try {
       const networkState = await Network.getNetworkStateAsync();
       setIsConnected(networkState.isConnected);
-      
+
       if (networkState.isConnected) {
         // Thực hiện yêu cầu API ở đây
         setLoadingSubmit(true);
@@ -445,7 +444,7 @@ const DetailChecklist = ({ route, navigation }) => {
           // Xử lý API cho defaultActionDataChecklist
           await handleDefaultActionDataChecklist();
         }
-    
+
         if (
           defaultActionDataChecklist.length > 0 &&
           dataChecklistFaild.length > 0
@@ -453,12 +452,15 @@ const DetailChecklist = ({ route, navigation }) => {
           await hadlChecklistAll();
         }
       } else {
-        Alert.alert('Không có kết nối mạng', 'Vui lòng kiểm tra kết nối mạng của bạn.');
+        Alert.alert(
+          "Không có kết nối mạng",
+          "Vui lòng kiểm tra kết nối mạng của bạn."
+        );
       }
     } catch (error) {
-      console.error('Lỗi khi kiểm tra kết nối mạng:', error);
+      console.error("Lỗi khi kiểm tra kết nối mạng:", error);
     }
-    
+
     // Cập nhật sau khi hoàn thành xử lý API
   };
 
@@ -517,7 +519,6 @@ const DetailChecklist = ({ route, navigation }) => {
       ]);
 
       // Handle successful form submission
-     
     } catch (error) {
       console.log("err faild", error);
       setLoadingSubmit(false);
@@ -597,7 +598,6 @@ const DetailChecklist = ({ route, navigation }) => {
       ]);
 
       // Thiết lập lại dữ liệu và cờ loading
-      
     } catch (error) {
       console.log("err done", error);
       setLoadingSubmit(false);
@@ -701,7 +701,6 @@ const DetailChecklist = ({ route, navigation }) => {
       ]);
 
       // Thiết lập lại dữ liệu và trạng thái loading
-     
     } catch (error) {
       console.log("err all", error);
       setLoadingSubmit(false);
