@@ -51,17 +51,13 @@ import { BASE_URL } from "../../constants/config";
 import QRCodeScreen from "../QRCodeScreen";
 import DataContext from "../../context/DataContext";
 import ChecklistContext from "../../context/ChecklistContext";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Network from 'expo-network';
 
 const DetailChecklist = ({ route, navigation }) => {
   const { ID_ChecklistC, ID_KhoiCV, ID_Calv, ID_Hangmuc } = route.params;
   const dispath = useDispatch();
   const {
     ent_checklist_detail,
-    ent_tang,
-    ent_khuvuc,
-    ent_toanha,
-    ent_hangmuc,
     isLoadingDetail,
   } = useSelector((state) => state.entReducer);
   const { setDataChecklists, dataChecklists, dataHangmuc } =
@@ -90,6 +86,7 @@ const DetailChecklist = ({ route, navigation }) => {
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [isScan, setIsScan] = useState(false);
   const [showNameDuan, setShowNameDuan] = useState("");
+  const [isConnected, setIsConnected] = useState(false);
 
   const init_checklist = async () => {
     await dispath(ent_checklist_mul_hm(dataHangmuc, ID_Calv, ID_ChecklistC));
@@ -416,43 +413,55 @@ const DetailChecklist = ({ route, navigation }) => {
 
   // call api submit data checklsit
   const handleSubmit = async () => {
-    setLoadingSubmit(true);
-    if (
-      defaultActionDataChecklist.length === 0 &&
-      dataChecklistFaild.length === 0
-    ) {
-      // Hiển thị thông báo cho người dùng
-      Alert.alert("PMC Thông báo", "Không có checklist để kiểm tra!", [
-        { text: "OK", onPress: () => console.log("OK Pressed") },
-      ]);
-      // Kết thúc hàm sớm nếu mảng rỗng
-      return;
+    try {
+      const networkState = await Network.getNetworkStateAsync();
+      setIsConnected(networkState.isConnected);
+      
+      if (networkState.isConnected) {
+        // Thực hiện yêu cầu API ở đây
+        setLoadingSubmit(true);
+        if (
+          defaultActionDataChecklist.length === 0 &&
+          dataChecklistFaild.length === 0
+        ) {
+          // Hiển thị thông báo cho người dùng
+          Alert.alert("PMC Thông báo", "Không có checklist để kiểm tra!", [
+            { text: "OK", onPress: () => console.log("OK Pressed") },
+          ]);
+          // Kết thúc hàm sớm nếu mảng rỗng
+          return;
+        }
+        // Kiểm tra dữ liệu và xử lý tùy thuộc vào trạng thái của `defaultActionDataChecklist` và `dataChecklistFaild`
+        if (
+          defaultActionDataChecklist.length === 0 &&
+          dataChecklistFaild.length > 0
+        ) {
+          // Xử lý API cho dataChecklistFaild
+          await handleDataChecklistFaild();
+        } else if (
+          defaultActionDataChecklist.length > 0 &&
+          dataChecklistFaild.length == 0
+        ) {
+          // Xử lý API cho defaultActionDataChecklist
+          await handleDefaultActionDataChecklist();
+        }
+    
+        if (
+          defaultActionDataChecklist.length > 0 &&
+          dataChecklistFaild.length > 0
+        ) {
+          await hadlChecklistAll();
+        }
+      } else {
+        Alert.alert('Không có kết nối mạng', 'Vui lòng kiểm tra kết nối mạng của bạn.');
+      }
+    } catch (error) {
+      console.error('Lỗi khi kiểm tra kết nối mạng:', error);
     }
-    // Kiểm tra dữ liệu và xử lý tùy thuộc vào trạng thái của `defaultActionDataChecklist` và `dataChecklistFaild`
-    if (
-      defaultActionDataChecklist.length === 0 &&
-      dataChecklistFaild.length > 0
-    ) {
-      // Xử lý API cho dataChecklistFaild
-      await handleDataChecklistFaild();
-    } else if (
-      defaultActionDataChecklist.length > 0 &&
-      dataChecklistFaild.length == 0
-    ) {
-      // Xử lý API cho defaultActionDataChecklist
-      await handleDefaultActionDataChecklist();
-    }
-
-    if (
-      defaultActionDataChecklist.length > 0 &&
-      dataChecklistFaild.length > 0
-    ) {
-      await hadlChecklistAll();
-    }
+    
     // Cập nhật sau khi hoàn thành xử lý API
   };
 
-  console.log('dataChecklistFaild',dataChecklistFaild.length)
   // api faild tb_checklistchitiet
   const handleDataChecklistFaild = async () => {
     try {
