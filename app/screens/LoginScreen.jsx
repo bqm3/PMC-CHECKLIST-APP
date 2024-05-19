@@ -35,7 +35,7 @@ import {
   BottomSheetModalProvider,
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
-import DataLicense from "../components/DataLicense";
+import DataLicense from "../components/PrivacyPolicy";
 import Checkbox from "../components/Active/Checkbox";
 
 const LoginScreen = ({ navigation }) => {
