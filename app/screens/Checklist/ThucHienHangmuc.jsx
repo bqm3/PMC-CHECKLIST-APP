@@ -50,8 +50,10 @@ const ThucHienHangmuc = ({ route, navigation }) => {
   }, [ID_Khuvuc]);
 
   const handlePushDataFilterQr = async (value) => {
+    const cleanedValue = value.replace(/^http:\/\//, '');
+  
     try {
-      const resData = hangMuc.filter((item)=> item.MaQrCode == value)
+      const resData = hangMuc.filter((item) => item.MaQrCode == cleanedValue);
       if (resData.length >= 1) {
         navigation.navigate("Chi tiết Checklist", {
           ID_ChecklistC: ID_ChecklistC,
