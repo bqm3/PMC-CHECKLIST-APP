@@ -51,14 +51,19 @@ import { BASE_URL } from "../../constants/config";
 import QRCodeScreen from "../QRCodeScreen";
 import DataContext from "../../context/DataContext";
 import ChecklistContext from "../../context/ChecklistContext";
-import * as Network from "expo-network";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const DetailChecklist = ({ route, navigation }) => {
   const { ID_ChecklistC, ID_KhoiCV, ID_Calv, ID_Hangmuc } = route.params;
   const dispath = useDispatch();
-  const { ent_checklist_detail, isLoadingDetail } = useSelector(
-    (state) => state.entReducer
-  );
+  const {
+    ent_checklist_detail,
+    ent_tang,
+    ent_khuvuc,
+    ent_toanha,
+    ent_hangmuc,
+    isLoadingDetail,
+  } = useSelector((state) => state.entReducer);
   const { setDataChecklists, dataChecklists, dataHangmuc } =
     useContext(DataContext);
   const { dataChecklistFilterContext, setDataChecklistFilterContext } =
@@ -85,7 +90,6 @@ const DetailChecklist = ({ route, navigation }) => {
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [isScan, setIsScan] = useState(false);
   const [showNameDuan, setShowNameDuan] = useState("");
-  const [isConnected, setIsConnected] = useState(false);
 
   const init_checklist = async () => {
     await dispath(ent_checklist_mul_hm(dataHangmuc, ID_Calv, ID_ChecklistC));
@@ -312,6 +316,7 @@ const DetailChecklist = ({ route, navigation }) => {
       }
       return item;
     });
+    console.log("updatedDataChecklist", updatedDataChecklist);
 
     handleSetData(key, updatedDataChecklist, it);
   };
@@ -412,55 +417,39 @@ const DetailChecklist = ({ route, navigation }) => {
 
   // call api submit data checklsit
   const handleSubmit = async () => {
-    try {
-      const networkState = await Network.getNetworkStateAsync();
-      setIsConnected(networkState.isConnected);
-
-      if (networkState.isConnected) {
-        // Thực hiện yêu cầu API ở đây
-        setLoadingSubmit(true);
-        if (
-          defaultActionDataChecklist.length === 0 &&
-          dataChecklistFaild.length === 0
-        ) {
-          // Hiển thị thông báo cho người dùng
-          Alert.alert("PMC Thông báo", "Không có checklist để kiểm tra!", [
-            { text: "OK", onPress: () => console.log("OK Pressed") },
-          ]);
-          // Kết thúc hàm sớm nếu mảng rỗng
-          return;
-        }
-        // Kiểm tra dữ liệu và xử lý tùy thuộc vào trạng thái của `defaultActionDataChecklist` và `dataChecklistFaild`
-        if (
-          defaultActionDataChecklist.length === 0 &&
-          dataChecklistFaild.length > 0
-        ) {
-          // Xử lý API cho dataChecklistFaild
-          await handleDataChecklistFaild();
-        } else if (
-          defaultActionDataChecklist.length > 0 &&
-          dataChecklistFaild.length == 0
-        ) {
-          // Xử lý API cho defaultActionDataChecklist
-          await handleDefaultActionDataChecklist();
-        }
-
-        if (
-          defaultActionDataChecklist.length > 0 &&
-          dataChecklistFaild.length > 0
-        ) {
-          await hadlChecklistAll();
-        }
-      } else {
-        Alert.alert(
-          "Không có kết nối mạng",
-          "Vui lòng kiểm tra kết nối mạng của bạn."
-        );
-      }
-    } catch (error) {
-      console.error("Lỗi khi kiểm tra kết nối mạng:", error);
+    setLoadingSubmit(true);
+    if (
+      defaultActionDataChecklist.length === 0 &&
+      dataChecklistFaild.length === 0
+    ) {
+      // Hiển thị thông báo cho người dùng
+      Alert.alert("PMC Thông báo", "Không có checklist để kiểm tra!", [
+        { text: "OK", onPress: () => console.log("OK Pressed") },
+      ]);
+      // Kết thúc hàm sớm nếu mảng rỗng
+      return;
+    }
+    // Kiểm tra dữ liệu và xử lý tùy thuộc vào trạng thái của `defaultActionDataChecklist` và `dataChecklistFaild`
+    if (
+      defaultActionDataChecklist.length === 0 &&
+      dataChecklistFaild.length > 0
+    ) {
+      // Xử lý API cho dataChecklistFaild
+      await handleDataChecklistFaild();
+    } else if (
+      defaultActionDataChecklist.length > 0 &&
+      dataChecklistFaild.length == 0
+    ) {
+      // Xử lý API cho defaultActionDataChecklist
+      await handleDefaultActionDataChecklist();
     }
 
+    if (
+      defaultActionDataChecklist.length > 0 &&
+      dataChecklistFaild.length > 0
+    ) {
+      await hadlChecklistAll();
+    }
     // Cập nhật sau khi hoàn thành xử lý API
   };
 
@@ -519,32 +508,13 @@ const DetailChecklist = ({ route, navigation }) => {
       ]);
 
       // Handle successful form submission
+     
     } catch (error) {
       console.log("err faild", error);
       setLoadingSubmit(false);
       if (error.response) {
-        // Lỗi từ phía server (có response từ server)
+        // Handle error response from the server
         Alert.alert("PMC Thông báo", error.response.data.message, [
-          {
-            text: "Hủy",
-            onPress: () => console.log("Cancel Pressed"),
-            style: "cancel",
-          },
-          { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-        ]);
-      } else if (error.request) {
-        // Lỗi không nhận được phản hồi từ server
-        Alert.alert("PMC Thông báo", "Không nhận được phản hồi từ máy chủ", [
-          {
-            text: "Hủy",
-            onPress: () => console.log("Cancel Pressed"),
-            style: "cancel",
-          },
-          { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-        ]);
-      } else {
-        // Lỗi khi cấu hình request
-        Alert.alert("PMC Thông báo", "Lỗi khi gửi yêu cầu", [
           {
             text: "Hủy",
             onPress: () => console.log("Cancel Pressed"),
@@ -598,6 +568,7 @@ const DetailChecklist = ({ route, navigation }) => {
       ]);
 
       // Thiết lập lại dữ liệu và cờ loading
+      
     } catch (error) {
       console.log("err done", error);
       setLoadingSubmit(false);
@@ -701,6 +672,7 @@ const DetailChecklist = ({ route, navigation }) => {
       ]);
 
       // Thiết lập lại dữ liệu và trạng thái loading
+     
     } catch (error) {
       console.log("err all", error);
       setLoadingSubmit(false);

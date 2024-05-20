@@ -177,6 +177,15 @@ const ThucHienHangmuc = ({ route, navigation }) => {
             >
               {item?.Hangmuc}
             </Text>
+            <Text
+              style={{
+                fontSize: 16,
+                color: dataSelect[0] === item ? "white" : "black",
+                fontWeight: "500",
+              }}
+            >
+              {item?.MaQrCode}
+            </Text>
           </View>
           <TouchableOpacity onPress={() => handlePopupActive(item, index)}>
             <MaterialIcons name="read-more" size={30} color="black" />
