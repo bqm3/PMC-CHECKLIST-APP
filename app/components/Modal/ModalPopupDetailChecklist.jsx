@@ -60,7 +60,7 @@ const ModalPopupDetailChecklist = ({
           </Text>
           <SelectDropdown
             ref={ref}
-            data={dataItem.Giatrinhan ? dataItem.Giatrinhan : []}
+            data={dataItem?.Giatrinhan ? dataItem?.Giatrinhan : []}
             buttonStyle={styles.select}
             dropdownStyle={{
               borderRadius: 8,
