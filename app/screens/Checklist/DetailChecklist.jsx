@@ -91,19 +91,13 @@ const DetailChecklist = ({ route, navigation }) => {
   const [isScan, setIsScan] = useState(false);
   const [showNameDuan, setShowNameDuan] = useState("");
 
-  const init_checklist = async () => {
-    await dispath(ent_checklist_mul_hm(dataHangmuc, ID_Calv, ID_ChecklistC));
-  };
+  // const init_checklist = async () => {
+  //   await dispath(ent_checklist_mul_hm(dataHangmuc, ID_Calv, ID_ChecklistC));
+  // };
 
-  // load add field item initstate
-  useEffect(() => {
-    if (ent_checklist_detail) {
-      setDataChecklists(ent_checklist_detail);
-      setDataChecklistFilterContext(ent_checklist_detail);
-    }
-  }, [ent_checklist_detail]);
 
   useEffect(() => {
+    console.log("run");
     const data = dataChecklists?.filter(
       (item) => item.ID_Hangmuc == ID_Hangmuc
     );
@@ -111,11 +105,15 @@ const DetailChecklist = ({ route, navigation }) => {
     const dataChecklist = dataChecklistFilterContext?.filter(
       (item) => item.ID_Hangmuc == ID_Hangmuc
     );
+    // console.log('dataChecklist',dataChecklist)
     const dataChecklistAction = dataChecklist.filter(
       (item) => item.valueCheck !== null
     );
     const dataChecklistDefault = dataChecklistAction.filter(
-      (item) => item.valueCheck === item.Giatridinhdanh
+      (item) =>
+        item.valueCheck === item.Giatridinhdanh &&
+        item.GhichuChitiet === "" &&
+        item.Anh === null
     );
 
     const dataChecklistActionWithoutDefault = dataChecklistAction.filter(
@@ -124,13 +122,15 @@ const DetailChecklist = ({ route, navigation }) => {
           (defaultItem) => defaultItem.ID_Checklist === item.ID_Checklist
         )
     );
+    // console.log('dataChecklistAction', dataChecklistAction)
+    console.log('dataChecklistActionWithoutDefault',dataChecklistActionWithoutDefault)
 
     setDataChecklist(data);
     setDataChecklistFilter(dataChecklist);
     setNewActionDataChecklist(dataChecklistAction);
     setDefaultActionDataChecklist(dataChecklistDefault);
     setDataChecklistFaild(dataChecklistActionWithoutDefault);
-  }, [dataChecklists, dataChecklistFilterContext]);
+  }, [dataChecklists, dataChecklistFilterContext, ID_Hangmuc]);
 
   // set data checklist and image || ghichu
   const handleSetData = async (key, data, it) => {
@@ -142,6 +142,7 @@ const DetailChecklist = ({ route, navigation }) => {
     // clear item checklist
     if (it.valueCheck !== null) {
       if (key === "Anh" || key === "GhichuChitiet") {
+        console.log("anh - ghi chu chi tiet");
         // Kiểm tra và cập nhật mergedArrCheck
         const indexCheck = mergedArrCheck.findIndex(
           (item) => item.ID_Checklist === it.ID_Checklist
@@ -155,10 +156,12 @@ const DetailChecklist = ({ route, navigation }) => {
         const indexImage = mergedArrImage.findIndex(
           (item) => item.ID_Checklist === it.ID_Checklist
         );
+        console.log("indexImage", indexImage);
         if (indexImage !== -1) {
           // Cập nhật it trong mergedArrImage nếu tồn tại
           mergedArrImage[indexImage] = it;
         } else {
+          console.log("vao day", it);
           // Thêm it vào mergedArrImage nếu chưa tồn tại
           mergedArrImage.push(it);
         }
@@ -223,6 +226,16 @@ const DetailChecklist = ({ route, navigation }) => {
       }
     } else {
       if (key === "Anh" || key === "GhichuChitiet") {
+        console.log("handling null valueCheck for Anh or GhichuChitiet");
+    // Update mergedArrImage directly when valueCheck is null and key is Anh or GhichuChitiet
+    const indexImage = mergedArrImage.findIndex(
+      (item) => item.ID_Checklist === it.ID_Checklist
+    );
+    if (indexImage !== -1) {
+      mergedArrImage[indexImage] = it;
+    } else {
+      mergedArrImage.push(it);
+    }
       }
       if (key === "option" || key === "active") {
         const indexFaild = newDataChecklist.find(
@@ -268,6 +281,7 @@ const DetailChecklist = ({ route, navigation }) => {
         }
       }
     }
+    console.log("mergedArrImage", mergedArrImage);
     setDataChecklistFaild(mergedArrImage);
     setDefaultActionDataChecklist(mergedArrCheck);
     setNewActionDataChecklist([...mergedArrImage, ...mergedArrCheck]);
@@ -316,7 +330,6 @@ const DetailChecklist = ({ route, navigation }) => {
       }
       return item;
     });
-    console.log("updatedDataChecklist", updatedDataChecklist);
 
     handleSetData(key, updatedDataChecklist, it);
   };
@@ -509,7 +522,6 @@ const DetailChecklist = ({ route, navigation }) => {
       ]);
 
       // Handle successful form submission
-     
     } catch (error) {
       console.log("err faild", error);
       setLoadingSubmit(false);
@@ -569,7 +581,6 @@ const DetailChecklist = ({ route, navigation }) => {
       ]);
 
       // Thiết lập lại dữ liệu và cờ loading
-      
     } catch (error) {
       console.log("err done", error);
       setLoadingSubmit(false);
@@ -673,7 +684,6 @@ const DetailChecklist = ({ route, navigation }) => {
       ]);
 
       // Thiết lập lại dữ liệu và trạng thái loading
-     
     } catch (error) {
       console.log("err all", error);
       setLoadingSubmit(false);
@@ -761,7 +771,20 @@ const DetailChecklist = ({ route, navigation }) => {
 
   // Thiết lập lại dữ liệu sau khi hoàn thành xử lý API
   const postHandleSubmit = () => {
-    init_checklist();
+    const idsToRemove = new Set([
+      ...defaultActionDataChecklist.map((item) => item.ID_Checklist),
+      ...dataChecklistFaild.map((item) => item.ID_Checklist),
+    ]);
+
+    // Filter out items in dataChecklistFilterContext that are present in idsToRemove
+    const dataChecklistFilterContextReset = dataChecklistFilterContext.filter(
+      (item) => !idsToRemove.has(item.ID_Checklist)
+    );
+
+    // Update state with the filtered context
+    setDataChecklistFilterContext(dataChecklistFilterContextReset);
+
+    // Optionally, reset newActionDataChecklist, defaultActionDataChecklist, and dataChecklistFaild if needed
     setNewActionDataChecklist([]);
     setDefaultActionDataChecklist([]);
     setDataChecklistFaild([]);

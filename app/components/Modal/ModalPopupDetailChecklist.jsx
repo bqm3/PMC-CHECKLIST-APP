@@ -156,8 +156,9 @@ const ModalPopupDetailChecklist = ({
           <View style={{ marginTop: 10 }}>
             <Button
               onPress={() => {
-                handlePopupClear();
+                
                 handleChange("Anh", image, dataItem);
+                handlePopupClear();
               }}
               backgroundColor={COLORS.bg_button}
               border={COLORS.bg_button}
@@ -193,9 +194,11 @@ const ModalPopupDetailChecklist = ({
           <View style={{ marginTop: 10 }}>
             <Button
               onPress={() => {
-                handlePopupClear();
+                
                 dataItem.GhichuChitiet = ghichu;
+                console.log('ghichu',ghichu)
                 handleChange("GhichuChitiet", ghichu, dataItem);
+                handlePopupClear();
               }}
               backgroundColor={COLORS.bg_button}
               border={COLORS.bg_button}
