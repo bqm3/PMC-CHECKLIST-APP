@@ -69,10 +69,10 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
   }, [ent_checklist_detail]);
 
   const handlePushDataFilterQr = async (value) => {
-    const cleanedValue = value.replace(/^http:\/\//, '');
+    const cleanedValue = value.replace(/^http:\/\//, '').trim().toLowerCase();
   
     try {
-      const resData = ent_khuvuc.filter((item) => item.MaQrCode == cleanedValue);
+      const resData = ent_khuvuc.filter((item) => item.MaQrCode.trim().toLowerCase() === cleanedValue);
       if (resData.length >= 1) {
         navigation.navigate("Thực hiện hạng mục", {
           ID_ChecklistC: ID_ChecklistC,

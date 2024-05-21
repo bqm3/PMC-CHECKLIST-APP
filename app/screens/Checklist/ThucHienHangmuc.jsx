@@ -48,12 +48,16 @@ const ThucHienHangmuc = ({ route, navigation }) => {
       setHangMuc(data);
     }
   }, [ID_Khuvuc]);
+  console.log('hangMuc',hangMuc)
 
   const handlePushDataFilterQr = async (value) => {
-    const cleanedValue = value.replace(/^http:\/\//, '');
+    const cleanedValue = value.replace(/^http:\/\//, '').trim().toLowerCase();
+
+    console.log('cleanedValue',cleanedValue)
   
     try {
-      const resData = hangMuc.filter((item) => item.MaQrCode == cleanedValue);
+      const resData = hangMuc.filter((item) => item.MaQrCode.trim().toLowerCase() === cleanedValue);
+    console.log('resData', resData);
       if (resData.length >= 1) {
         navigation.navigate("Chi tiết Checklist", {
           ID_ChecklistC: ID_ChecklistC,

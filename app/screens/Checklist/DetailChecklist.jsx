@@ -426,6 +426,7 @@ const DetailChecklist = ({ route, navigation }) => {
       Alert.alert("PMC Thông báo", "Không có checklist để kiểm tra!", [
         { text: "OK", onPress: () => console.log("OK Pressed") },
       ]);
+      setLoadingSubmit(false);
       // Kết thúc hàm sớm nếu mảng rỗng
       return;
     }
