@@ -32,18 +32,9 @@ import {
 } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Entypo, MaterialIcons } from "@expo/vector-icons";
-import {
-  ent_checklist_mul_hm,
-  ent_khuvuc_get,
-  ent_tang_get,
-  ent_toanha_get,
-  ent_hangmuc_get,
-} from "../../redux/actions/entActions";
-import ButtonChecklist from "../../components/Button/ButtonCheckList";
 import { COLORS, SIZES } from "../../constants/theme";
 import ActiveChecklist from "../../components/Active/ActiveCheckList";
 import Button from "../../components/Button/Button";
-import ModalChitietChecklist from "../../components/Modal/ModalChitietChecklist";
 import ModalPopupDetailChecklist from "../../components/Modal/ModalPopupDetailChecklist";
 import moment from "moment";
 import axios, { isCancel } from "axios";
@@ -51,7 +42,7 @@ import { BASE_URL } from "../../constants/config";
 import QRCodeScreen from "../QRCodeScreen";
 import DataContext from "../../context/DataContext";
 import ChecklistContext from "../../context/ChecklistContext";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as Network from "expo-network";
 
 const DetailChecklist = ({ route, navigation }) => {
   const { ID_ChecklistC, ID_KhoiCV, ID_Calv, ID_Hangmuc } = route.params;
@@ -68,6 +59,7 @@ const DetailChecklist = ({ route, navigation }) => {
     useContext(DataContext);
   const { dataChecklistFilterContext, setDataChecklistFilterContext } =
     useContext(ChecklistContext);
+  const [isConnected, setIsConnected] = useState(false);
 
   const { user, authToken } = useSelector((state) => state.authReducer);
 
@@ -95,9 +87,7 @@ const DetailChecklist = ({ route, navigation }) => {
   //   await dispath(ent_checklist_mul_hm(dataHangmuc, ID_Calv, ID_ChecklistC));
   // };
 
-
   useEffect(() => {
-    console.log("run");
     const data = dataChecklists?.filter(
       (item) => item.ID_Hangmuc == ID_Hangmuc
     );
@@ -122,9 +112,7 @@ const DetailChecklist = ({ route, navigation }) => {
           (defaultItem) => defaultItem.ID_Checklist === item.ID_Checklist
         )
     );
-    // console.log('dataChecklistAction', dataChecklistAction)
-    console.log('dataChecklistActionWithoutDefault',dataChecklistActionWithoutDefault)
-
+   
     setDataChecklist(data);
     setDataChecklistFilter(dataChecklist);
     setNewActionDataChecklist(dataChecklistAction);
@@ -227,15 +215,15 @@ const DetailChecklist = ({ route, navigation }) => {
     } else {
       if (key === "Anh" || key === "GhichuChitiet") {
         console.log("handling null valueCheck for Anh or GhichuChitiet");
-    // Update mergedArrImage directly when valueCheck is null and key is Anh or GhichuChitiet
-    const indexImage = mergedArrImage.findIndex(
-      (item) => item.ID_Checklist === it.ID_Checklist
-    );
-    if (indexImage !== -1) {
-      mergedArrImage[indexImage] = it;
-    } else {
-      mergedArrImage.push(it);
-    }
+        // Update mergedArrImage directly when valueCheck is null and key is Anh or GhichuChitiet
+        const indexImage = mergedArrImage.findIndex(
+          (item) => item.ID_Checklist === it.ID_Checklist
+        );
+        if (indexImage !== -1) {
+          mergedArrImage[indexImage] = it;
+        } else {
+          mergedArrImage.push(it);
+        }
       }
       if (key === "option" || key === "active") {
         const indexFaild = newDataChecklist.find(
@@ -430,49 +418,64 @@ const DetailChecklist = ({ route, navigation }) => {
 
   // call api submit data checklsit
   const handleSubmit = async () => {
-    setLoadingSubmit(true);
-    if (
-      defaultActionDataChecklist.length === 0 &&
-      dataChecklistFaild.length === 0
-    ) {
-      // Hiển thị thông báo cho người dùng
-      Alert.alert("PMC Thông báo", "Không có checklist để kiểm tra!", [
-        { text: "OK", onPress: () => console.log("OK Pressed") },
-      ]);
-      setLoadingSubmit(false);
-      // Kết thúc hàm sớm nếu mảng rỗng
-      return;
-    }
-    // Kiểm tra dữ liệu và xử lý tùy thuộc vào trạng thái của `defaultActionDataChecklist` và `dataChecklistFaild`
-    if (
-      defaultActionDataChecklist.length === 0 &&
-      dataChecklistFaild.length > 0
-    ) {
-      // Xử lý API cho dataChecklistFaild
-      await handleDataChecklistFaild();
-    } else if (
-      defaultActionDataChecklist.length > 0 &&
-      dataChecklistFaild.length == 0
-    ) {
-      // Xử lý API cho defaultActionDataChecklist
-      await handleDefaultActionDataChecklist();
-    }
+    try {
+      const networkState = await Network.getNetworkStateAsync();
+      setIsConnected(networkState.isConnected);
 
-    if (
-      defaultActionDataChecklist.length > 0 &&
-      dataChecklistFaild.length > 0
-    ) {
-      await hadlChecklistAll();
+      if (networkState.isConnected) {
+        setLoadingSubmit(true);
+        if (
+          defaultActionDataChecklist.length === 0 &&
+          dataChecklistFaild.length === 0
+        ) {
+          // Hiển thị thông báo cho người dùng
+          Alert.alert("PMC Thông báo", "Không có checklist để kiểm tra!", [
+            { text: "OK", onPress: () => console.log("OK Pressed") },
+          ]);
+          setLoadingSubmit(false);
+          // Kết thúc hàm sớm nếu mảng rỗng
+          return;
+        }
+        // Kiểm tra dữ liệu và xử lý tùy thuộc vào trạng thái của `defaultActionDataChecklist` và `dataChecklistFaild`
+        if (
+          defaultActionDataChecklist.length === 0 &&
+          dataChecklistFaild.length > 0
+        ) {
+          // Xử lý API cho dataChecklistFaild
+          await handleDataChecklistFaild();
+        } else if (
+          defaultActionDataChecklist.length > 0 &&
+          dataChecklistFaild.length == 0
+        ) {
+          // Xử lý API cho defaultActionDataChecklist
+          await handleDefaultActionDataChecklist();
+        }
+
+        if (
+          defaultActionDataChecklist.length > 0 &&
+          dataChecklistFaild.length > 0
+        ) {
+          await hadlChecklistAll();
+        }
+      } else {
+        Alert.alert(
+          "Không có kết nối mạng",
+          "Vui lòng kiểm tra kết nối mạng của bạn."
+        );
+      }
+    } catch (error) {
+      // Cập nhật sau khi hoàn thành xử lý API} catch (error) {
+      console.error("Lỗi khi kiểm tra kết nối mạng:", error);
     }
-    // Cập nhật sau khi hoàn thành xử lý API
   };
 
   // api faild tb_checklistchitiet
   const handleDataChecklistFaild = async () => {
     try {
+      setLoadingSubmit(true);
       // Create a new FormData instance
       const formData = new FormData();
-
+  
       // Iterate over all items in dataChecklistFaild
       dataChecklistFaild.forEach((item, index) => {
         // Extract and append checklist details to formData
@@ -481,7 +484,7 @@ const DetailChecklist = ({ route, navigation }) => {
         formData.append("Ketqua", item.valueCheck || "");
         formData.append("Gioht", item.gioht);
         formData.append("Ghichu", item.GhichuChitiet || "");
-
+  
         // If there is an image, append it to formData
         if (item.Anh) {
           const file = {
@@ -489,9 +492,7 @@ const DetailChecklist = ({ route, navigation }) => {
               Platform.OS === "android"
                 ? item.Anh.uri
                 : item.Anh.uri.replace("file://", ""),
-            name:
-              item.Anh.fileName ||
-              `${Math.floor(Math.random() * 999999999)}.jpg`,
+            name: item.Anh.fileName || `${Math.floor(Math.random() * 999999999)}.jpg`,
             type: "image/jpeg",
           };
           formData.append(`Images_${index}`, file);
@@ -501,14 +502,15 @@ const DetailChecklist = ({ route, navigation }) => {
           formData.append(`Images_${index}`, {});
         }
       });
-
+  
       // Send the entire FormData in a single request
       await axios.post(BASE_URL + `/tb_checklistchitiet/create`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: "Bearer " + authToken,
+          Authorization: `Bearer ${authToken}`,
         },
-      });
+      }).then((res)=> console.log('res'))
+      .catch((err)=> console.log('err',err))
       postHandleSubmit();
       setLoadingSubmit(false);
       // Alert user of successful submission
@@ -520,10 +522,8 @@ const DetailChecklist = ({ route, navigation }) => {
         },
         { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
       ]);
-
-      // Handle successful form submission
+  
     } catch (error) {
-      console.log("err faild", error);
       setLoadingSubmit(false);
       if (error.response) {
         // Handle error response from the server
@@ -538,7 +538,7 @@ const DetailChecklist = ({ route, navigation }) => {
       }
     }
   };
-
+  
   // api faild tb_checklistchitietdone
   const handleDefaultActionDataChecklist = async () => {
     // Xử lý API cho defaultActionDataChecklist
