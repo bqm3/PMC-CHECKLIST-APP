@@ -43,16 +43,34 @@ const ThucHienHangmuc = ({ route, navigation }) => {
   const [dataSelect, setDataSelect] = useState([]);
 
   useEffect(() => {
-    if (ent_hangmuc) {
-      const data = ent_hangmuc.filter((item) => item.ID_Khuvuc === ID_Khuvuc);
-      setHangMuc(data);
+    if (ent_hangmuc && dataChecklists) {
+      // Lọc các mục có ID_Khuvuc trùng khớp
+      const filteredByKhuvuc = ent_hangmuc.filter(
+        (item) => item.ID_Khuvuc === ID_Khuvuc
+      );
+
+      // Lấy danh sách ID_Hangmuc từ dataChecklists
+      const checklistIDs = dataChecklists.map((item) => item.ID_Hangmuc);
+
+      // Lọc filteredByKhuvuc để chỉ giữ lại các mục có ID_Hangmuc tồn tại trong checklistIDs
+      const finalFilteredData = filteredByKhuvuc.filter((item) =>
+        checklistIDs.includes(item.ID_Hangmuc)
+      );
+
+      // Cập nhật trạng thái hangMuc với danh sách đã lọc
+      setHangMuc(finalFilteredData);
     }
-  }, [ID_Khuvuc]);
+  }, [ID_Khuvuc, ent_hangmuc, dataChecklists]);
 
   const handlePushDataFilterQr = async (value) => {
-    const cleanedValue = value.replace(/^http:\/\//, '').trim().toLowerCase();
+    const cleanedValue = value
+      .replace(/^http:\/\//, "")
+      .trim()
+      .toLowerCase();
     try {
-      const resData = hangMuc.filter((item) => item.MaQrCode.trim().toLowerCase() === cleanedValue);
+      const resData = hangMuc.filter(
+        (item) => item.MaQrCode.trim().toLowerCase() === cleanedValue
+      );
       if (resData.length >= 1) {
         navigation.navigate("Chi tiết Checklist", {
           ID_ChecklistC: ID_ChecklistC,
@@ -141,6 +159,8 @@ const ThucHienHangmuc = ({ route, navigation }) => {
       ID_KhoiCV: ID_KhoiCV,
       ID_Calv: ID_Calv,
       ID_Hangmuc: dataSelect[0].ID_Hangmuc,
+      hangMuc: hangMuc,
+      setHangMuc: setHangMuc,
     });
   };
 
@@ -387,11 +407,18 @@ const ThucHienHangmuc = ({ route, navigation }) => {
             >
               <View style={[styles.centeredView]}>
                 <View
-                  style={[styles.modalView, { width: "85%", height: "65%", justifyContent: 'space-between' }]}
+                  style={[
+                    styles.modalView,
+                    {
+                      width: "85%",
+                      height: "65%",
+                      justifyContent: "space-between",
+                    },
+                  ]}
                 >
-                 <ScrollView>
-                  <Text>{tieuChuan} </Text>
-                  </ScrollView> 
+                  <ScrollView>
+                    <Text>{tieuChuan} </Text>
+                  </ScrollView>
                   <Button
                     text={"Đóng"}
                     backgroundColor={COLORS.bg_button}

@@ -45,16 +45,10 @@ import ChecklistContext from "../../context/ChecklistContext";
 import * as Network from "expo-network";
 
 const DetailChecklist = ({ route, navigation }) => {
-  const { ID_ChecklistC, ID_KhoiCV, ID_Calv, ID_Hangmuc } = route.params;
+  const { ID_ChecklistC, ID_KhoiCV, ID_Calv, ID_Hangmuc, hangMuc, setHangMuc } =
+    route.params;
   const dispath = useDispatch();
-  const {
-    ent_checklist_detail,
-    ent_tang,
-    ent_khuvuc,
-    ent_toanha,
-    ent_hangmuc,
-    isLoadingDetail,
-  } = useSelector((state) => state.entReducer);
+  const { isLoadingDetail } = useSelector((state) => state.entReducer);
   const { setDataChecklists, dataChecklists, dataHangmuc } =
     useContext(DataContext);
   const { dataChecklistFilterContext, setDataChecklistFilterContext } =
@@ -73,7 +67,6 @@ const DetailChecklist = ({ route, navigation }) => {
   const [dataItem, setDataItem] = useState(null);
   const [tieuchuan, setTieuchuan] = useState(null);
   const bottomSheetModalRef = useRef(null);
-  const snapPoints = useMemo(() => ["80%"], []);
   const [opacity, setOpacity] = useState(1);
   const [index, setIndex] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
@@ -83,10 +76,6 @@ const DetailChecklist = ({ route, navigation }) => {
   const [isScan, setIsScan] = useState(false);
   const [showNameDuan, setShowNameDuan] = useState("");
 
-  // const init_checklist = async () => {
-  //   await dispath(ent_checklist_mul_hm(dataHangmuc, ID_Calv, ID_ChecklistC));
-  // };
-
   useEffect(() => {
     const data = dataChecklists?.filter(
       (item) => item.ID_Hangmuc == ID_Hangmuc
@@ -95,7 +84,7 @@ const DetailChecklist = ({ route, navigation }) => {
     const dataChecklist = dataChecklistFilterContext?.filter(
       (item) => item.ID_Hangmuc == ID_Hangmuc
     );
-    // console.log('dataChecklist',dataChecklist)
+
     const dataChecklistAction = dataChecklist.filter(
       (item) => item.valueCheck !== null
     );
@@ -112,7 +101,7 @@ const DetailChecklist = ({ route, navigation }) => {
           (defaultItem) => defaultItem.ID_Checklist === item.ID_Checklist
         )
     );
-   
+
     setDataChecklist(data);
     setDataChecklistFilter(dataChecklist);
     setNewActionDataChecklist(dataChecklistAction);
@@ -475,7 +464,7 @@ const DetailChecklist = ({ route, navigation }) => {
       setLoadingSubmit(true);
       // Create a new FormData instance
       const formData = new FormData();
-  
+
       // Iterate over all items in dataChecklistFaild
       dataChecklistFaild.forEach((item, index) => {
         // Extract and append checklist details to formData
@@ -484,7 +473,7 @@ const DetailChecklist = ({ route, navigation }) => {
         formData.append("Ketqua", item.valueCheck || "");
         formData.append("Gioht", item.gioht);
         formData.append("Ghichu", item.GhichuChitiet || "");
-  
+
         // If there is an image, append it to formData
         if (item.Anh) {
           const file = {
@@ -492,7 +481,9 @@ const DetailChecklist = ({ route, navigation }) => {
               Platform.OS === "android"
                 ? item.Anh.uri
                 : item.Anh.uri.replace("file://", ""),
-            name: item.Anh.fileName || `${Math.floor(Math.random() * 999999999)}.jpg`,
+            name:
+              item.Anh.fileName ||
+              `${Math.floor(Math.random() * 999999999)}.jpg`,
             type: "image/jpeg",
           };
           formData.append(`Images_${index}`, file);
@@ -502,15 +493,17 @@ const DetailChecklist = ({ route, navigation }) => {
           formData.append(`Images_${index}`, {});
         }
       });
-  
+
       // Send the entire FormData in a single request
-      await axios.post(BASE_URL + `/tb_checklistchitiet/create`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${authToken}`,
-        },
-      }).then((res)=> console.log('res'))
-      .catch((err)=> console.log('err',err))
+      await axios
+        .post(BASE_URL + `/tb_checklistchitiet/create`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${authToken}`,
+          },
+        })
+        .then((res) => console.log("res"))
+        .catch((err) => console.log("err", err));
       postHandleSubmit();
       setLoadingSubmit(false);
       // Alert user of successful submission
@@ -522,7 +515,6 @@ const DetailChecklist = ({ route, navigation }) => {
         },
         { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
       ]);
-  
     } catch (error) {
       setLoadingSubmit(false);
       if (error.response) {
@@ -538,7 +530,7 @@ const DetailChecklist = ({ route, navigation }) => {
       }
     }
   };
-  
+
   // api faild tb_checklistchitietdone
   const handleDefaultActionDataChecklist = async () => {
     // Xử lý API cho defaultActionDataChecklist
@@ -582,7 +574,6 @@ const DetailChecklist = ({ route, navigation }) => {
 
       // Thiết lập lại dữ liệu và cờ loading
     } catch (error) {
-      console.log("err done", error);
       setLoadingSubmit(false);
       if (error.response) {
         // Lỗi từ phía server (có response từ server)
@@ -780,6 +771,13 @@ const DetailChecklist = ({ route, navigation }) => {
     const dataChecklistFilterContextReset = dataChecklistFilterContext.filter(
       (item) => !idsToRemove.has(item.ID_Checklist)
     );
+
+    if (dataChecklistFilter?.length === newActionDataChecklist?.length) {
+      const filteredData = hangMuc.filter(
+        (item) => item.ID_Hangmuc !== ID_Hangmuc
+      );
+      setHangMuc(filteredData);
+    }
 
     // Update state with the filtered context
     setDataChecklistFilterContext(dataChecklistFilterContextReset);
