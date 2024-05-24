@@ -13,10 +13,7 @@ import CopyRight from "../../components/CopyRight";
 import ItemHomePSH from "../../components/Item/ItemHomePSH";
 import adjust from "../../adjust";
 import DataContext from "../../context/DataContext";
-import {
-  ent_khuvuc_get,
-  ent_hangmuc_get,
-} from "../../redux/actions/entActions";
+
 
 const dataDanhMuc = [
   {
@@ -80,32 +77,6 @@ const dataDanhMucPSH = [
 // create a component
 const HomeScreen = ({ navigation }) => {
   const { user, authToken } = useSelector((state) => state.authReducer);
-  const { ent_hangmuc } = useSelector((state) => state.entReducer);
-  const { setDataHangmuc } = useContext(DataContext);
-  const dispath = useDispatch();
-
-  const int_khuvuc = async () => {
-    await dispath(ent_khuvuc_get());
-  };
-
-  const int_hangmuc = async () => {
-    await dispath(ent_hangmuc_get());
-  };
-
-  useEffect(() => {
-    int_khuvuc();
-  }, []);
-
-  useEffect(() => {
-    int_hangmuc();
-  }, []);
-
-  useEffect(() => {
-    if (ent_hangmuc) {
-      const hangmucIds = ent_hangmuc.map((item) => item.ID_Hangmuc);
-      setDataHangmuc(hangmucIds);
-    }
-  }, [ent_hangmuc]);
 
   const renderItem = ({ item, index }) => (
     <ItemHome roleUser={user?.Permission} item={item} index={index} />

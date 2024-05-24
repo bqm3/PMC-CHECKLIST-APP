@@ -20,6 +20,7 @@ import React, {
   useEffect,
   useMemo,
   useCallback,
+  useContext
 } from "react";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import {
@@ -33,13 +34,14 @@ import { AntDesign, Ionicons, Feather } from "@expo/vector-icons";
 import { DataTable } from "react-native-paper";
 import ButtonChecklist from "../../components/Button/ButtonCheckList";
 import { COLORS, SIZES } from "../../constants/theme";
-import { ent_calv_get, ent_giamsat_get } from "../../redux/actions/entActions";
+import { ent_calv_get, ent_giamsat_get, ent_hangmuc_get, ent_khuvuc_get } from "../../redux/actions/entActions";
 import { tb_checklistc_get } from "../../redux/actions/tbActions";
 import axios from "axios";
 import { BASE_URL } from "../../constants/config";
 import moment from "moment";
 import ModalChecklistC from "../../components/Modal/ModalChecklistC";
 import ModalChecklistCImage from "../../components/Modal/ModalChecklistCImage";
+import DataContext from "../../context/DataContext";
 // import mime from "mime";
 
 const numberOfItemsPerPageList = [20, 30, 50];
@@ -81,9 +83,10 @@ const headerList = [
 const ThucHienChecklist = ({ navigation }) => {
   const ref = useRef(null);
   const dispath = useDispatch();
-  const { ent_giamsat, ent_calv } = useSelector((state) => state.entReducer);
+  const { ent_giamsat, ent_calv , ent_hangmuc} = useSelector((state) => state.entReducer);
   const { tb_checklistc } = useSelector((state) => state.tbReducer);
   const { user, authToken } = useSelector((state) => state.authReducer);
+  const { setDataHangmuc } = useContext(DataContext);
 
 
   const date = new Date();
@@ -153,6 +156,27 @@ const ThucHienChecklist = ({ navigation }) => {
   useEffect(() => {
     setData(tb_checklistc?.data);
   }, [tb_checklistc]);
+
+  
+  const int_khuvuc = async () => {
+    await dispath(ent_khuvuc_get());
+  };
+
+  const int_hangmuc = async () => {
+    await dispath(ent_hangmuc_get());
+  };
+
+  useEffect(() => {
+    int_khuvuc();
+    int_hangmuc();
+  }, []);
+
+  useEffect(() => {
+    if (ent_hangmuc) {
+      const hangmucIds = ent_hangmuc.map((item) => item.ID_Hangmuc);
+      setDataHangmuc(hangmucIds);
+    }
+  }, [ent_hangmuc]);
 
   const init_ca = async () => {
     await dispath(ent_calv_get());
@@ -358,16 +382,17 @@ const ThucHienChecklist = ({ navigation }) => {
     } else {
       let data = {
         ID_Calv: dataInput.Calv.ID_Calv,
+        ID_User: user.ID_User,
         ID_Giamsat: dataInput.ID_Giamsat,
-        ID_Duan: dataInput.ID_Duan,
-        ID_KhoiCV: dataInput.Calv.ent_khoicv.ID_Khoi,
+        ID_Duan: user.ID_Duan,
+        ID_KhoiCV: user.ID_KhoiCV,
         Ngay: dataInput.dateDay,
         Giobd: dataInput.dateHour,
       };
       setLoadingSubmit(true);
       try {
         await axios
-          .post(BASE_URL + "/tb_checklistc/create-first", data, {
+          .post(BASE_URL + "/tb_checklistc/create", data, {
             headers: {
               Accept: "application/json",
               Authorization: "Bearer " + authToken,
@@ -378,14 +403,12 @@ const ThucHienChecklist = ({ navigation }) => {
             int_checklistc();
             handleCloseSheetImage();
             setLoadingSubmit(false);
-            Alert.alert("PMC Thông báo", response.data.message, [
-              {
-                text: "Hủy",
-                onPress: () => console.log("Cancel Pressed"),
-                style: "cancel",
-              },
-              { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-            ]);
+            handleChecklistDetail(
+              response.data.data.ID_ChecklistC,
+              response.data.data.ID_KhoiCV,
+              response.data.data.ID_Calv,
+              null,
+            )
           });
       } catch (error) {
         setLoadingSubmit(false);
@@ -477,11 +500,12 @@ const ThucHienChecklist = ({ navigation }) => {
     });
   };
 
-  const handleChecklistDetail = (id1, id2, id3) => {
+  const handleChecklistDetail = (id1, id2, id3, id4) => {
     navigation.navigate("Thực hiện khu vực", {
       ID_ChecklistC: id1,
       ID_KhoiCV: id2,
       ID_Calv: id3,
+      ID_Toanha: id4
     });
   };
 
@@ -931,7 +955,8 @@ const ThucHienChecklist = ({ navigation }) => {
                           handleChecklistDetail(
                             newActionCheckList[0]?.ID_ChecklistC,
                             newActionCheckList[0]?.ID_KhoiCV,
-                            newActionCheckList[0]?.ID_Calv
+                            newActionCheckList[0]?.ID_Calv,
+                            newActionCheckList[0]?.ID_Toanha,
                           )
                         }
                       >

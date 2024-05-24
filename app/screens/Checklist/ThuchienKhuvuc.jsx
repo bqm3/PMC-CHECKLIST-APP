@@ -20,6 +20,7 @@ import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import {
   ent_khuvuc_get,
+  ent_toanha_get,
   ent_checklist_mul_hm,
 } from "../../redux/actions/entActions";
 import { COLORS, SIZES } from "../../constants/theme";
@@ -32,12 +33,12 @@ import DataContext from "../../context/DataContext";
 import ChecklistContext from "../../context/ChecklistContext";
 
 const ThucHienKhuvuc = ({ route, navigation }) => {
-  const { ID_ChecklistC, ID_KhoiCV, ID_Calv } = route.params;
+  const { ID_ChecklistC, ID_KhoiCV, ID_Calv, ID_Toanha } = route.params;
   const { setDataChecklists, dataHangmuc } = useContext(DataContext);
   const { setDataChecklistFilterContext } = useContext(ChecklistContext);
 
   const dispath = useDispatch();
-  const { ent_khuvuc, ent_checklist_detail } = useSelector(
+  const { ent_khuvuc, ent_checklist_detail, ent_toanha } = useSelector(
     (state) => state.entReducer
   );
 
@@ -49,30 +50,69 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
   const [isScan, setIsScan] = useState(false);
   const [modalVisibleQr, setModalVisibleQr] = useState(false);
   const [dataSelect, setDataSelect] = useState([]);
+  const [data, setData] = useState([]);
+
+  const [stepKhuvuc, setStepKhuvuc] = useState(0);
+  const [checkKhuvuc, setCheckKhuvuc] = useState([]);
+  const toanhaIds = checkKhuvuc.map((item) => item.ID_Toanha);
 
   const init_checklist = async () => {
-    await dispath(
-      ent_checklist_mul_hm(dataHangmuc, ID_Calv, ID_ChecklistC)
-    );
+    await dispath(ent_checklist_mul_hm(dataHangmuc, ID_Calv, ID_ChecklistC));
+  };
+
+  const init_toanha = async () => {
+    await dispath(ent_toanha_get());
   };
 
   useEffect(() => {
-    init_checklist()
+    if (ID_Toanha !== undefined && ID_Toanha !== null) {
+      setStepKhuvuc(1);
+      const toanhaIdsArray = ID_Toanha.split(", ").map((id) =>
+        parseInt(id, 10)
+      );
+
+      const matchingEntKhuvuc = ent_khuvuc.filter((item) =>
+        toanhaIdsArray.includes(item.ID_Toanha)
+      );
+      setData(matchingEntKhuvuc);
+    } else {
+      setStepKhuvuc(0);
+      init_toanha();
+    }
+  }, [ID_Toanha]);
+
+  useEffect(() => {
+    if (stepKhuvuc === 1 && toanhaIds.length > 0) {
+      const toanhaIdsArray = toanhaIds?.map((id) => parseInt(id, 10));
+
+      const matchingEntKhuvuc = ent_khuvuc.filter((item) =>
+        toanhaIdsArray.includes(item.ID_Toanha)
+      );
+      setData(matchingEntKhuvuc);
+    }
+  }, [stepKhuvuc]);
+
+  useEffect(() => {
+    init_checklist();
   }, [dataHangmuc]);
 
   useEffect(() => {
-    if(ent_checklist_detail){
+    if (ent_checklist_detail) {
       setDataChecklists(ent_checklist_detail);
       setDataChecklistFilterContext(ent_checklist_detail);
     }
-   
   }, [ent_checklist_detail]);
 
   const handlePushDataFilterQr = async (value) => {
-    const cleanedValue = value.replace(/^http:\/\//, '').trim().toLowerCase();
-  
+    const cleanedValue = value
+      .replace(/^http:\/\//, "")
+      .trim()
+      .toLowerCase();
+
     try {
-      const resData = ent_khuvuc.filter((item) => item.MaQrCode.trim().toLowerCase() === cleanedValue);
+      const resData = ent_khuvuc.filter(
+        (item) => item.MaQrCode.trim().toLowerCase() === cleanedValue
+      );
       if (resData.length >= 1) {
         navigation.navigate("Thực hiện hạng mục", {
           ID_ChecklistC: ID_ChecklistC,
@@ -149,6 +189,21 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
     }
   };
 
+  const toggleSelectToanha = async (item) => {
+    setCheckKhuvuc((prevDataSelect) => {
+      // Kiểm tra xem item đã tồn tại trong mảng chưa
+      const isExist = prevDataSelect.includes(item);
+
+      // Nếu item đã tồn tại, xóa item đó đi
+      if (isExist) {
+        return prevDataSelect.filter((existingItem) => existingItem !== item);
+      } else {
+        // Nếu item chưa tồn tại, thêm vào mảng
+        return [...prevDataSelect, item];
+      }
+    });
+  };
+
   const handleSubmit = () => {
     navigation.navigate("Thực hiện hạng mục", {
       ID_ChecklistC: ID_ChecklistC,
@@ -156,6 +211,50 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
       ID_Calv: ID_Calv,
       ID_Khuvuc: dataSelect[0].ID_Khuvuc,
     });
+  };
+
+  const handleSubmitKhuvuc = async () => {
+    const data = {
+      ID_ChecklistC: ID_ChecklistC,
+      toanhaIds: toanhaIds.join(", "),
+      ID_Calv: ID_Calv,
+      ID_User: user.ID_User,
+    };
+
+    await axios
+      .post(BASE_URL + "/tb_checklistc/toanha", data, {
+        headers: {
+          Accept: "application/json",
+          Authorization: "Bearer " + authToken,
+        },
+      })
+      .then((res) => {
+        setLoadingSubmit(false);
+        setStepKhuvuc(1);
+        // Hiển thị cảnh báo sau khi tất cả các yêu cầu hoàn thành
+        Alert.alert("PMC Thông báo", "Chọn khu vực thành công", [
+          {
+            text: "Hủy",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel",
+          },
+          { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+        ]);
+      })
+      .catch((error) => {
+        setStepKhuvuc(0);
+        if (error.response) {
+          // Lỗi từ phía server (có response từ server)
+          Alert.alert("PMC Thông báo", error.response.data.message, [
+            {
+              text: "Hủy",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel",
+            },
+            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+          ]);
+        }
+      });
   };
 
   // view item flatlist
@@ -195,6 +294,42 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
     );
   };
 
+  const renderItemToanha = (item, index) => {
+    const isCheck = checkKhuvuc.includes(item);
+    return (
+      <TouchableOpacity
+        onPress={() => toggleSelectToanha(item)}
+        style={[
+          styles.content,
+          {
+            backgroundColor: isCheck ? COLORS.bg_button : "white",
+          },
+        ]}
+        key={index}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 10,
+            width: "80%",
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 16,
+              color: isCheck ? "white" : "black",
+              fontWeight: "600",
+            }}
+            numberOfLines={5}
+          >
+            {item?.Toanha}
+          </Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
   // format number
   const decimalNumber = (number) => {
     if (number < 10 && number >= 1) return `0${number}`;
@@ -215,46 +350,45 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
               resizeMode="cover"
               style={{ flex: 1 }}
             >
-              <View
-                style={{
-                  flex: 1,
-                  opacity: opacity,
-                }}
-              >
-                <View style={{ margin: 12 }}>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignContent: "center",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <TouchableOpacity
-                      // onPress={() => handleFilterData(true, 0.5)}
+              {stepKhuvuc == 1 ? (
+                <View
+                  style={{
+                    flex: 1,
+                    opacity: opacity,
+                  }}
+                >
+                  <View style={{ margin: 12 }}>
+                    <View
                       style={{
                         flexDirection: "row",
+                        alignContent: "center",
                         alignItems: "center",
-                        gap: 8,
+                        justifyContent: "space-between",
                       }}
                     >
-                      <View
+                      <TouchableOpacity
+                        // onPress={() => handleFilterData(true, 0.5)}
                         style={{
-                          flexDirection: "cloumn",
+                          flexDirection: "row",
+                          alignItems: "center",
                           gap: 8,
                         }}
                       >
-                        <Text allowFontScaling={false} style={styles.text}>
-                          Số lượng: {decimalNumber(ent_khuvuc?.length)} khu vực
-                        </Text>
-                      </View>
-                    </TouchableOpacity>
+                        <View
+                          style={{
+                            flexDirection: "cloumn",
+                            gap: 8,
+                          }}
+                        >
+                          <Text allowFontScaling={false} style={styles.text}>
+                            Số lượng: {decimalNumber(data?.length)} khu vực
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                    </View>
                   </View>
-                </View>
 
-                {isLoadingDetail === false &&
-                  ent_khuvuc &&
-                  ent_khuvuc?.length > 0 && (
+                  {isLoadingDetail === false && data && data?.length > 0 && (
                     <>
                       <FlatList
                         style={{
@@ -262,7 +396,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
                           flex: 1,
                           marginBottom: 100,
                         }}
-                        data={ent_khuvuc}
+                        data={data}
                         renderItem={({ item, index, separators }) =>
                           renderItem(item, index)
                         }
@@ -276,78 +410,158 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
                     </>
                   )}
 
-                {isLoadingDetail === true && ent_khuvuc?.length == 0 && (
-                  <View
-                    style={{
-                      flex: 1,
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <ActivityIndicator
+                  {isLoadingDetail === true && ent_khuvuc?.length == 0 && (
+                    <View
                       style={{
-                        marginRight: 4,
+                        flex: 1,
+                        justifyContent: "center",
+                        alignItems: "center",
                       }}
-                      size="large"
-                      color={COLORS.bg_white}
-                    ></ActivityIndicator>
-                  </View>
-                )}
+                    >
+                      <ActivityIndicator
+                        style={{
+                          marginRight: 4,
+                        }}
+                        size="large"
+                        color={COLORS.bg_white}
+                      ></ActivityIndicator>
+                    </View>
+                  )}
 
-                {isLoadingDetail === false && ent_khuvuc?.length == 0 && (
+                  {isLoadingDetail === false && ent_khuvuc?.length == 0 && (
+                    <View
+                      style={{
+                        flex: 1,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        marginBottom: 80,
+                      }}
+                    >
+                      <Image
+                        source={require("../../../assets/icons/delete_bg.png")}
+                        resizeMode="contain"
+                        style={{ height: 120, width: 120 }}
+                      />
+                      <Text
+                        allowFontScaling={false}
+                        style={[styles.danhmuc, { padding: 10 }]}
+                      >
+                        {isScan
+                          ? "Không thấy khu vực này"
+                          : "Không có khu vực trong ca làm việc này !"}
+                      </Text>
+                    </View>
+                  )}
                   <View
                     style={{
-                      flex: 1,
-                      justifyContent: "center",
+                      position: "absolute",
+                      bottom: 40,
+                      flexDirection: "row",
+                      justifyContent: "space-around",
                       alignItems: "center",
-                      marginBottom: 80,
+                      width: "100%",
                     }}
                   >
-                    <Image
-                      source={require("../../../assets/icons/delete_bg.png")}
-                      resizeMode="contain"
-                      style={{ height: 120, width: 120 }}
+                    <Button
+                      text={"Scan QR Code"}
+                      backgroundColor={"white"}
+                      color={"black"}
+                      onPress={() => {
+                        setModalVisibleQr(true);
+                        setOpacity(0.2);
+                      }}
                     />
-                    <Text
-                      allowFontScaling={false}
-                      style={[styles.danhmuc, { padding: 10 }]}
-                    >
-                      {isScan
-                        ? "Không thấy khu vực này"
-                        : "Không có khu vực trong ca làm việc này !"}
-                    </Text>
+                    {dataSelect[0] && (
+                      <Button
+                        text={"Khu vực"}
+                        isLoading={loadingSubmit}
+                        backgroundColor={COLORS.bg_button}
+                        color={"white"}
+                        onPress={() => handleSubmit()}
+                      />
+                    )}
                   </View>
-                )}
+                </View>
+              ) : (
                 <View
                   style={{
-                    position: "absolute",
-                    bottom: 40,
-                    flexDirection: "row",
-                    justifyContent: "space-around",
-                    alignItems: "center",
-                    width: "100%",
+                    flex: 1,
+                    opacity: opacity,
                   }}
                 >
-                  <Button
-                    text={"Scan QR Code"}
-                    backgroundColor={"white"}
-                    color={"black"}
-                    onPress={() => {
-                      setModalVisibleQr(true);
-                      setOpacity(0.2);
+                  <View style={{ margin: 12 }}>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignContent: "center",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <TouchableOpacity
+                        // onPress={() => handleFilterData(true, 0.5)}
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          gap: 8,
+                        }}
+                      >
+                        <View
+                          style={{
+                            flexDirection: "cloumn",
+                            gap: 8,
+                          }}
+                        >
+                          <Text allowFontScaling={false} style={styles.text}>
+                            Số lượng: {decimalNumber(ent_toanha?.length)} tòa
+                            nhà
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+
+                  {ent_toanha && ent_toanha?.length > 0 && (
+                    <>
+                      <FlatList
+                        style={{
+                          margin: 12,
+                          flex: 1,
+                          marginBottom: 100,
+                        }}
+                        data={ent_toanha}
+                        renderItem={({ item, index, separators }) =>
+                          renderItemToanha(item, index)
+                        }
+                        ItemSeparatorComponent={() => (
+                          <View style={{ height: 16 }} />
+                        )}
+                        keyExtractor={(item, index) =>
+                          `${item?.ID_Checklist}_${index}`
+                        }
+                      />
+                    </>
+                  )}
+
+                  <View
+                    style={{
+                      position: "absolute",
+                      bottom: 40,
+                      flexDirection: "row",
+                      justifyContent: "space-around",
+                      alignItems: "center",
+                      width: "100%",
                     }}
-                  />
-                  {dataSelect[0] && (
+                  >
                     <Button
-                      text={"Khu vực"}
-                      isLoading={loadingSubmit}
+                      text={"Chọn khu vực"}
                       backgroundColor={COLORS.bg_button}
                       color={"white"}
-                      onPress={() => handleSubmit()}
+                      onPress={() => handleSubmitKhuvuc()}
                     />
-                  )}
+                  </View>
                 </View>
-              </View>
+              )}
             </ImageBackground>
 
             <Modal
