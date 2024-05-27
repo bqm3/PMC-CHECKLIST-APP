@@ -30,6 +30,7 @@ import {
   BottomSheetModalProvider,
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Entypo, MaterialIcons } from "@expo/vector-icons";
 import { COLORS, SIZES } from "../../constants/theme";
@@ -45,11 +46,11 @@ import ChecklistContext from "../../context/ChecklistContext";
 import * as Network from "expo-network";
 
 const DetailChecklist = ({ route, navigation }) => {
-  const { ID_ChecklistC, ID_KhoiCV, ID_Calv, ID_Hangmuc, hangMuc, setHangMuc } =
+  const { ID_ChecklistC, ID_KhoiCV, ID_Calv, ID_Hangmuc, hangMuc } =
     route.params;
   const dispath = useDispatch();
   const { isLoadingDetail } = useSelector((state) => state.entReducer);
-  const { setDataChecklists, dataChecklists, dataHangmuc } =
+  const { setDataChecklists, dataChecklists, dataHangmuc, setHangMuc  } =
     useContext(DataContext);
   const { dataChecklistFilterContext, setDataChecklistFilterContext } =
     useContext(ChecklistContext);
@@ -258,7 +259,6 @@ const DetailChecklist = ({ route, navigation }) => {
         }
       }
     }
-    console.log("mergedArrImage", mergedArrImage);
     setDataChecklistFaild(mergedArrImage);
     setDefaultActionDataChecklist(mergedArrCheck);
     setNewActionDataChecklist([...mergedArrImage, ...mergedArrCheck]);
@@ -502,19 +502,26 @@ const DetailChecklist = ({ route, navigation }) => {
             Authorization: `Bearer ${authToken}`,
           },
         })
-        .then((res) => console.log("res"))
-        .catch((err) => console.log("err", err));
-      postHandleSubmit();
-      setLoadingSubmit(false);
-      // Alert user of successful submission
-      Alert.alert("PMC Thông báo", "Checklist thành công", [
-        {
-          text: "Hủy",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel",
-        },
-        { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-      ]);
+        .then((res) => {
+          postHandleSubmit()
+          setLoadingSubmit(false);
+          Alert.alert("PMC Thông báo", "Checklist thành công", [
+            {
+              text: "Hủy",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel",
+            },
+            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+          ]);
+        })
+        .catch((err) => {
+          setLoadingSubmit(false);
+          Alert.alert("PMC Thông báo", "Checklist thất bại. Vui lòng kiểm tra lại hình ảnh hoặc ghi chú!!!", [
+           
+            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+          ]);
+        });
+      
     } catch (error) {
       setLoadingSubmit(false);
       if (error.response) {
@@ -541,12 +548,14 @@ const DetailChecklist = ({ route, navigation }) => {
         )
         .join(","),
     ];
+    const ID_Checklists = defaultActionDataChecklist.map((item) => item.ID_Checklist);
     const descriptionsJSON = JSON.stringify(descriptions);
 
     const requestDone = axios.post(
       BASE_URL + "/tb_checklistchitietdone/create",
       {
         Description: descriptionsJSON,
+        ID_Checklists: ID_Checklists,
         ID_ChecklistC: ID_ChecklistC,
         checklistLength: defaultActionDataChecklist.length,
       },
@@ -693,10 +702,11 @@ const DetailChecklist = ({ route, navigation }) => {
     }
   };
 
+
   // view item flatlist
   const renderItem = (item, index) => {
     return (
-      <View style={[styles.content]} key={item?.ID_Checklist}>
+      <View style={[styles.content, {backgroundColor: `${item?.Tinhtrang}` === '1' && '#ea9999' }]} key={item?.ID_Checklist}>
         <View
           style={{
             flexDirection: "row",

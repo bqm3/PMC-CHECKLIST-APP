@@ -28,10 +28,9 @@ import DataContext from "../../context/DataContext";
 const ThucHienHangmuc = ({ route, navigation }) => {
   const { ID_ChecklistC, ID_KhoiCV, ID_Calv, ID_Khuvuc } = route.params;
   const dispath = useDispatch();
-  const { setDataChecklists, dataChecklists, dataHangmuc } =
+  const { setDataChecklists, dataChecklists, setHangMuc, hangMuc } =
     useContext(DataContext);
   const { ent_hangmuc } = useSelector((state) => state.entReducer);
-  const [hangMuc, setHangMuc] = useState(ent_hangmuc);
 
   const [opacity, setOpacity] = useState(1);
   const [isLoadingDetail, setIsLoadingDetail] = useState(false);
@@ -160,8 +159,10 @@ const ThucHienHangmuc = ({ route, navigation }) => {
       ID_Calv: ID_Calv,
       ID_Hangmuc: dataSelect[0].ID_Hangmuc,
       hangMuc: hangMuc,
-      setHangMuc: setHangMuc,
     });
+  
+    // Set the non-serializable values immediately after navigation
+    
   };
 
   // view item flatlist

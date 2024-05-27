@@ -42,9 +42,8 @@ const ModalKhuvuc = ({
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <KeyboardAvoidingView
-        style={{ flex: 1 }}
-        keyboardVerticalOffset={height + 47}
         behavior={Platform.OS === "ios" ? "padding" : null}
+        style={{ flex: 1 }}
       >
         <View style={{ margin: 20 }}>
           <View style={{ justifyContent: "space-around", width: "100%" }}>

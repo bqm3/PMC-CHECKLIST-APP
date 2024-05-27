@@ -7,12 +7,16 @@ import { ent_khuvuc_get, ent_hangmuc_get } from "../redux/actions/entActions";
 const DataContext = createContext();
 
 export const DataProvider = ({ children }) => {
+
+  const { ent_hangmuc } = useSelector((state) => state.entReducer);
+  
   const [dataChecklists, setDataChecklists] = useState([]);
   const [dataHangmuc, setDataHangmuc] = useState([]);
+  const [hangMuc, setHangMuc] = useState(ent_hangmuc);
 
   return (
     <DataContext.Provider
-      value={{ setDataChecklists, dataChecklists, dataHangmuc, setDataHangmuc }}
+      value={{ setDataChecklists, dataChecklists, dataHangmuc, setDataHangmuc,setHangMuc, hangMuc }}
     >
       {children}
     </DataContext.Provider>
