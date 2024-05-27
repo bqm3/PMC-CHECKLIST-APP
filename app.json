@@ -13,6 +13,7 @@
     "assetBundlePatterns": [
       "**/*"
     ],
+    "userInterfaceStyle": "automatic",
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/icon.png",
@@ -29,10 +30,12 @@
       ],
       "runtimeVersion": {
         "policy": "appVersion"
-      }
+      },
+      "userInterfaceStyle": "automatic"
     },
     "ios": {
       "supportsTablet": false,
+      "userInterfaceStyle": "automatic",
       "splash": {
         "image": "./assets/bg.png",
         "resizeMode": "contain",
@@ -50,9 +53,10 @@
       }
     },
     "web": {
-      "favicon": "./assets/icon.png"
+      "favicon": "./assets/icon.png",
+      "userInterfaceStyle": "automatic"
     },
-    "userInterfaceStyle": "automatic",
+
     "plugins": [
       [
         "expo-camera",

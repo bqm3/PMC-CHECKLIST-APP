@@ -41,8 +41,8 @@ export default function ItemHome({ item, index, roleUser }) {
           resizeMode="contain"
           style={{ width: 32, height: 32 }}
         />
-        <Text
-        allowFontScaling={false}
+        <Text allowFontScaling={false}
+        
           style={{
             color: roleUser !== 1 && item?.role === 1 ? 'white' : 'black',
             fontSize: 16,

@@ -84,7 +84,7 @@ const ModalChecklistFilter = ({
                   height: 50,
                 }}
               >
-                <Text allowFontScaling={false} style={styles.text}>
+                <Text allowFontScaling={false}  style={styles.text}>
                   {" "}
                   {selectedItem?.Tenca}
                 </Text>
@@ -145,7 +145,7 @@ const ModalChecklistFilter = ({
                   height: 50,
                 }}
               >
-                <Text allowFontScaling={false} style={styles.text}>
+                <Text allowFontScaling={false}  style={styles.text}>
                   {" "}
                   {selectedItem?.Tenkhuvuc}
                 </Text>
@@ -206,7 +206,7 @@ const ModalChecklistFilter = ({
                   height: 50,
                 }}
               >
-                <Text allowFontScaling={false} style={styles.text}>
+                <Text allowFontScaling={false}  style={styles.text}>
                   {selectedItem?.Tentang}
                 </Text>
               </View>
@@ -266,7 +266,7 @@ const ModalChecklistFilter = ({
                   height: 50,
                 }}
               >
-                <Text allowFontScaling={false} style={styles.text}>
+                <Text allowFontScaling={false}  style={styles.text}>
                   {selectedItem?.Hangmuc}
                 </Text>
               </View>
@@ -298,8 +298,8 @@ const ModalChecklistFilter = ({
           onValueChange={() => toggleSwitch(isEnabled)}
           value={isEnabled}
         />
-        <Text
-          allowFontScaling={false}
+        <Text allowFontScaling={false}
+          
           style={[styles.text, { paddingHorizontal: 0 }]}
         >
           Tất cả

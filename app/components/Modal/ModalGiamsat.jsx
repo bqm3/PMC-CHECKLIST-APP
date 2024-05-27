@@ -151,7 +151,6 @@ const ModalGiamsat = ({
                 </Text>
                 {ent_chucvu && ent_chucvu?.length > 0 ? (
                   <SelectDropdown
-                    ref={ref}
                     data={ent_chucvu ? ent_chucvu : []}
                     buttonStyle={styles.select}
                     dropdownStyle={{
@@ -312,29 +311,6 @@ const ModalGiamsat = ({
                 />
               </View>
               <View style={{ width: "48%" }}>
-                {/* <TouchableOpacity onPress={toggleDatePicker}>
-                  <TextInput
-                    allowFontScaling={false}
-                    value={dataInput.ngaysinh}
-                    placeholder="yyyy-mm-dd"
-                    placeholderTextColor="gray"
-                    style={[
-                      styles.textInput,
-                      {
-                        paddingHorizontal: 10,
-                      },
-                    ]}
-                    pointerEvents="none"
-                  />
-                  <DateTimePickerModal
-                    isVisible={isDatePickerVisible}
-                    mode="date"
-                    isDarkModeEnabled={true}
-                    onConfirm={(date) => handleConfirm("ngaysinh", date)}
-                    onCancel={toggleDatePicker}
-                  />
-                </TouchableOpacity> */}
-
                 <Text allowFontScaling={false} style={styles.text}>
                   Ngày sinh
                 </Text>

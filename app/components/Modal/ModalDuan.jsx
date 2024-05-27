@@ -31,8 +31,8 @@ const ModalDuan = ({
   return (
     <View style={{ margin: 20 }}>
       <View style={{ justifyContent: "space-around", width: "100%" }}>
-        <Text  allowFontScaling={false} style={styles.text}>Tên dự án</Text>
-        <TextInput allowFontScaling={false} 
+        <Text allowFontScaling={false}   style={styles.text}>Tên dự án</Text>
+        <TextInput allowFontScaling={false}  
           value={duan}
           placeholder="Nhập tên dự án thực hiện checklist"
           placeholderTextColor="gray"

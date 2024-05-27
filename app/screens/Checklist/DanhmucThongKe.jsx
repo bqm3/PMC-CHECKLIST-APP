@@ -13,6 +13,7 @@ import {
   ActivityIndicator,
   Modal,
   TouchableHighlight,
+  TouchableWithoutFeedback
 } from "react-native";
 import React, {
   useRef,
@@ -216,7 +217,7 @@ const DanhmucThongKe = ({ handlePresentModalPress2 }) => {
           }}
         >
           <DataTable.Cell style={{ width: 120, justifyContent: "center" }}>
-            <Text
+            <Text allowFontScaling={false}
               style={{ color: isExistIndex ? "white" : "black", fontSize: 15 }}
               numberOfLines={2}
             >
@@ -235,7 +236,7 @@ const DanhmucThongKe = ({ handlePresentModalPress2 }) => {
               }}
               numberOfLines={4}
             >
-              <Text
+              <Text allowFontScaling={false}
                 style={{
                   color: isExistIndex ? "white" : "black",
                   fontSize: 16,
@@ -245,7 +246,7 @@ const DanhmucThongKe = ({ handlePresentModalPress2 }) => {
               >
                 {item?.ent_khoicv?.KhoiCV}
               </Text>
-              <Text
+              <Text allowFontScaling={false}
                 style={{
                   color: isExistIndex ? "white" : "black",
                   fontSize: 15,
@@ -257,7 +258,7 @@ const DanhmucThongKe = ({ handlePresentModalPress2 }) => {
             </View>
           </DataTable.Cell>
           <DataTable.Cell style={{ width: 100, justifyContent: "center" }}>
-            <Text
+            <Text allowFontScaling={false}
               style={{ color: isExistIndex ? "white" : "black", fontSize: 15 }}
               numberOfLines={2}
             >
@@ -265,7 +266,7 @@ const DanhmucThongKe = ({ handlePresentModalPress2 }) => {
             </Text>
           </DataTable.Cell>
           <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
-            <Text
+            <Text allowFontScaling={false}
               style={{ color: isExistIndex ? "white" : "black", fontSize: 15 }}
               numberOfLines={2}
             >
@@ -283,7 +284,7 @@ const DanhmucThongKe = ({ handlePresentModalPress2 }) => {
               }}
               numberOfLines={4}
             >
-              <Text
+              <Text allowFontScaling={false}
                 style={{
                   color: isExistIndex ? "white" : "black",
                   fontSize: 15,
@@ -292,8 +293,8 @@ const DanhmucThongKe = ({ handlePresentModalPress2 }) => {
               >
                 {item?.Giobd}
               </Text>
-              <Text>-</Text>
-              <Text
+              <Text allowFontScaling={false}>-</Text>
+              <Text allowFontScaling={false}
                 style={{
                   color: isExistIndex ? "white" : "black",
                   fontSize: 15,
@@ -306,7 +307,7 @@ const DanhmucThongKe = ({ handlePresentModalPress2 }) => {
           </DataTable.Cell>
 
           <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
-            <Text
+            <Text allowFontScaling={false}
               style={{ color: isExistIndex ? "white" : "black", fontSize: 15 }}
               numberOfLines={2}
             >
@@ -316,7 +317,7 @@ const DanhmucThongKe = ({ handlePresentModalPress2 }) => {
           </DataTable.Cell>
 
           <DataTable.Cell style={{ width: 200, justifyContent: "center" }}>
-            <Text
+            <Text allowFontScaling={false}
               style={{ color: isExistIndex ? "white" : "black", fontSize: 15 }}
               numberOfLines={3}
             >
@@ -344,10 +345,10 @@ const DanhmucThongKe = ({ handlePresentModalPress2 }) => {
         }}
       >
         <View style={styles.container}>
-          <Text allowFontScaling={false} style={styles.danhmuc}>
+          <Text allowFontScaling={false}  style={styles.danhmuc}>
             Thống kê
           </Text>
-          <Text
+          <Text allowFontScaling={false}
             style={{
               fontSize: 18,
               color: "white",
@@ -377,7 +378,7 @@ const DanhmucThongKe = ({ handlePresentModalPress2 }) => {
                 resizeMode="contain"
                 style={{ height: 24, width: 24 }}
               />
-              <Text allowFontScaling={false} style={styles.text}>
+              <Text allowFontScaling={false}  style={styles.text}>
                 Lọc dữ liệu
               </Text>
             </TouchableOpacity>
@@ -451,7 +452,7 @@ const DanhmucThongKe = ({ handlePresentModalPress2 }) => {
                                 }}
                                 numberOfLines={2}
                               >
-                                <Text style={[styles.text, { color: "black" }]}>
+                                <Text allowFontScaling={false} style={[styles.text, { color: "black" }]}>
                                   {item?.til}
                                 </Text>
                               </DataTable.Title>
@@ -464,7 +465,7 @@ const DanhmucThongKe = ({ handlePresentModalPress2 }) => {
                           keyExtractor={(item, index) =>
                             `${item?.ID_ChecklistC}_${index}`
                           }
-                          scrollEnabled={false}
+                          scrollEnabled={true}
                           data={data}
                           renderItem={_renderItem}
                         />
@@ -502,7 +503,7 @@ const DanhmucThongKe = ({ handlePresentModalPress2 }) => {
                     resizeMode="contain"
                     style={{ height: 120, width: 120 }}
                   />
-                  <Text style={[styles.danhmuc, { paddingVertical: 10 }]}>
+                  <Text allowFontScaling={false} style={[styles.danhmuc, { paddingVertical: 10 }]}>
                     Bạn chưa thêm dữ liệu nào
                   </Text>
                 </View>

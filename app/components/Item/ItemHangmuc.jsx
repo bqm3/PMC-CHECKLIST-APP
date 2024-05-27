@@ -17,10 +17,12 @@ const ItemHangmuc = ({ index, item, handleEditEnt, handleAlertDelete }) => {
       }}
     >
       <View style={{width: '80%'}}>
-        <Text allowFontScaling={false} style={[styles.title, { fontSize: 18 }]}>
+        <Text allowFontScaling={false}  style={[styles.title, { fontSize: 18 }]}>
           {item?.Hangmuc}
         </Text>
-        
+        <Text allowFontScaling={false}  style={[styles.title, { fontSize: 14 }]}>
+          {item?.ent_khuvuc?.Tenkhuvuc}
+        </Text>
         <View
           style={{
             flexDirection: "row",

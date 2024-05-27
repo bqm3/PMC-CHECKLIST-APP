@@ -579,7 +579,7 @@ const ThucHienChecklist = ({ navigation }) => {
           }}
         >
           <DataTable.Cell style={{ width: 120, justifyContent: "center" }}>
-            <Text
+            <Text allowFontScaling={false}
               style={{ color: isExistIndex ? "white" : "black", fontSize: 15 }}
               numberOfLines={2}
             >
@@ -598,7 +598,7 @@ const ThucHienChecklist = ({ navigation }) => {
               }}
               numberOfLines={4}
             >
-              <Text
+              <Text allowFontScaling={false}
                 style={{
                   color: isExistIndex ? "white" : "black",
                   fontSize: 16,
@@ -608,7 +608,7 @@ const ThucHienChecklist = ({ navigation }) => {
               >
                 {item?.ent_khoicv?.KhoiCV}
               </Text>
-              <Text
+              <Text allowFontScaling={false}
                 style={{
                   color: isExistIndex ? "white" : "black",
                   fontSize: 15,
@@ -620,7 +620,7 @@ const ThucHienChecklist = ({ navigation }) => {
             </View>
           </DataTable.Cell>
           <DataTable.Cell style={{ width: 100, justifyContent: "center" }}>
-            <Text
+            <Text allowFontScaling={false}
               style={{ color: isExistIndex ? "white" : "black", fontSize: 15 }}
               numberOfLines={2}
             >
@@ -628,7 +628,7 @@ const ThucHienChecklist = ({ navigation }) => {
             </Text>
           </DataTable.Cell>
           <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
-            <Text
+            <Text allowFontScaling={false}
               style={{ color: isExistIndex ? "white" : "black", fontSize: 15 }}
               numberOfLines={2}
             >
@@ -646,7 +646,7 @@ const ThucHienChecklist = ({ navigation }) => {
               }}
               numberOfLines={4}
             >
-              <Text
+              <Text allowFontScaling={false}
                 style={{
                   color: isExistIndex ? "white" : "black",
                   fontSize: 15,
@@ -655,8 +655,8 @@ const ThucHienChecklist = ({ navigation }) => {
               >
                 {item?.Giobd}
               </Text>
-              <Text>-</Text>
-              <Text
+              <Text allowFontScaling={false}>-</Text>
+              <Text allowFontScaling={false}
                 style={{
                   color: isExistIndex ? "white" : "black",
                   fontSize: 15,
@@ -669,7 +669,7 @@ const ThucHienChecklist = ({ navigation }) => {
           </DataTable.Cell>
 
           <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
-            <Text
+            <Text allowFontScaling={false}
               style={{ color: isExistIndex ? "white" : "black", fontSize: 15 }}
               numberOfLines={2}
             >
@@ -679,7 +679,7 @@ const ThucHienChecklist = ({ navigation }) => {
           </DataTable.Cell>
 
           <DataTable.Cell style={{ width: 200, justifyContent: "center" }}>
-            <Text
+            <Text allowFontScaling={false}
               style={{ color: isExistIndex ? "white" : "black", fontSize: 15 }}
               numberOfLines={3}
             >
@@ -792,7 +792,7 @@ const ThucHienChecklist = ({ navigation }) => {
                                         }}
                                         numberOfLines={2}
                                       >
-                                        <Text
+                                        <Text allowFontScaling={false}
                                           style={[
                                             styles.text,
                                             { color: "black" },
@@ -810,7 +810,7 @@ const ThucHienChecklist = ({ navigation }) => {
                                   keyExtractor={(item, index) =>
                                     `${item?.ID_ChecklistC}_${index}`
                                   }
-                                  scrollEnabled={false}
+                                  scrollEnabled={true}
                                   data={data}
                                   renderItem={_renderItem}
                                 />
@@ -852,7 +852,7 @@ const ThucHienChecklist = ({ navigation }) => {
                             resizeMode="contain"
                             style={{ height: 120, width: 120 }}
                           />
-                          <Text
+                          <Text allowFontScaling={false}
                             style={[styles.danhmuc, { paddingVertical: 10 }]}
                           >
                             Bạn chưa thêm dữ liệu nào
@@ -879,7 +879,7 @@ const ThucHienChecklist = ({ navigation }) => {
                 onChange={handleSheetChanges}
               >
                 <BottomSheetScrollView style={styles.contentContainer}>
-                  <Text
+                  <Text allowFontScaling={false}
                     style={{
                       color: "black",
                       fontWeight: "600",

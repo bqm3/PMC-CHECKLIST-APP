@@ -17,14 +17,14 @@ const ItemUser = ({ index, item, handleEditEnt, handleAlertDelete }) => {
       }}
     >
       <View>
-        <Text  allowFontScaling={false} style={[styles.title, { fontSize: 20, fontWeight: '700' }]}>
+        <Text allowFontScaling={false}   style={[styles.title, { fontSize: 20, fontWeight: '700' }]}>
           {item?.ent_duan?.Duan}
         </Text>
         
-        <Text  allowFontScaling={false} style={styles.title}>{item?.ent_chucvu?.Chucvu} 
+        <Text allowFontScaling={false}   style={styles.title}>{item?.ent_chucvu?.Chucvu} 
         {item?.ent_khoicv?.KhoiCV ? ` - ` : ``}
         {item?.ent_khoicv?.KhoiCV} </Text>
-        <Text  allowFontScaling={false} style={styles.title}>Tên đăng nhập: {item?.UserName}</Text>
+        <Text allowFontScaling={false}   style={styles.title}>Tên đăng nhập: {item?.UserName}</Text>
       </View>
       <View
         style={{

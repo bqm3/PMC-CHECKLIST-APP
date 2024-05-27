@@ -31,8 +31,8 @@ export default function ItemHomePSH({ item }) {
           padding: 12,
         }}
       >
-        <Text
-        allowFontScaling={false}
+        <Text allowFontScaling={false}
+        
           style={{
             color: "white",
             fontSize: 18,

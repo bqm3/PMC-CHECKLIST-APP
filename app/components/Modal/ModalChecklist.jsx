@@ -93,11 +93,11 @@ const ModalChecklist = ({
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-    <KeyboardAvoidingView
-      keyboardVerticalOffset={height}
-      behavior={Platform.OS === "ios" ? "padding" : null}
-      style={{ flex: 1 }}
-    >
+      <KeyboardAvoidingView
+        keyboardVerticalOffset={height}
+        behavior={Platform.OS === "ios" ? "padding" : null}
+        style={{ flex: 1 }}
+      >
         <View style={{ margin: 20 }}>
           <View style={{ justifyContent: "space-around", width: "100%" }}>
             {/* Tòa nhà và khối công việc  */}
@@ -109,7 +109,7 @@ const ModalChecklist = ({
               }}
             ></View>
             <View style={{ width: "100%" }}>
-              <Text allowFontScaling={false} style={styles.text}>
+              <Text allowFontScaling={false}  style={styles.text}>
                 Tòa nhà
               </Text>
               {ent_toanha && ent_toanha?.length > 0 ? (
@@ -151,7 +151,7 @@ const ModalChecklist = ({
                           height: 50,
                         }}
                       >
-                        <Text allowFontScaling={false} style={[styles.text]}>
+                        <Text allowFontScaling={false}  style={[styles.text]}>
                           {selectedItem?.Toanha}
                         </Text>
                       </View>
@@ -169,13 +169,13 @@ const ModalChecklist = ({
                   }}
                 />
               ) : (
-                <Text allowFontScaling={false} style={styles.errorText}>
+                <Text allowFontScaling={false}  style={styles.errorText}>
                   Không có dữ khối công việc.
                 </Text>
               )}
             </View>
             <View style={{ width: "100%" }}>
-              <Text allowFontScaling={false} style={styles.text}>
+              <Text allowFontScaling={false}  style={styles.text}>
                 Khối công việc
               </Text>
               {ent_khoicv && ent_khoicv?.length > 0 ? (
@@ -217,7 +217,7 @@ const ModalChecklist = ({
                           height: 50,
                         }}
                       >
-                        <Text allowFontScaling={false} style={styles.text}>
+                        <Text allowFontScaling={false}  style={styles.text}>
                           {selectedItem?.KhoiCV}
                         </Text>
                       </View>
@@ -235,14 +235,14 @@ const ModalChecklist = ({
                   }}
                 />
               ) : (
-                <Text allowFontScaling={false} style={styles.errorText}>
+                <Text allowFontScaling={false}  style={styles.errorText}>
                   Không có dữ khối công việc.
                 </Text>
               )}
             </View>
 
             <View style={{ width: "100%" }}>
-              <Text allowFontScaling={false} style={styles.text}>
+              <Text allowFontScaling={false}  style={styles.text}>
                 Tầng
               </Text>
               {ent_tang && ent_tang?.length > 0 ? (
@@ -274,8 +274,8 @@ const ModalChecklist = ({
                   dropdownIconPosition={"right"}
                   buttonTextAfterSelection={(selectedItem, index) => {
                     return (
-                      <Text
-                        allowFontScaling={false}
+                      <Text allowFontScaling={false}
+                        
                         style={styles.text}
                         numberOfLines={3}
                       >
@@ -295,7 +295,7 @@ const ModalChecklist = ({
                   }}
                 />
               ) : (
-                <Text allowFontScaling={false} style={styles.errorText}>
+                <Text allowFontScaling={false}  style={styles.errorText}>
                   Không có dữ liệu tầng.
                 </Text>
               )}
@@ -312,7 +312,7 @@ const ModalChecklist = ({
               <View style={{ width: "48%" }}>
                 {activeKhuVuc && (
                   <>
-                    <Text allowFontScaling={false} style={styles.text}>
+                    <Text allowFontScaling={false}  style={styles.text}>
                       Khu vực
                     </Text>
                     {dataKhuVuc && dataKhuVuc?.length > 0 ? (
@@ -344,8 +344,8 @@ const ModalChecklist = ({
                         dropdownIconPosition={"right"}
                         buttonTextAfterSelection={(selectedItem, index) => {
                           return (
-                            <Text
-                              allowFontScaling={false}
+                            <Text allowFontScaling={false}
+                              
                               style={[styles.text]}
                               numberOfLines={3}
                             >
@@ -365,7 +365,7 @@ const ModalChecklist = ({
                         }}
                       />
                     ) : (
-                      <Text allowFontScaling={false} style={styles.errorText}>
+                      <Text allowFontScaling={false}  style={styles.errorText}>
                         Không có dữ liệu khu vực.
                       </Text>
                     )}
@@ -374,7 +374,7 @@ const ModalChecklist = ({
               </View>
               {
                 <View style={{ width: "48%" }}>
-                  <Text allowFontScaling={false} style={styles.text}>
+                  <Text allowFontScaling={false}  style={styles.text}>
                     Hạng mục
                   </Text>
                   {hangMuc && hangMuc?.length > 0 ? (
@@ -406,8 +406,8 @@ const ModalChecklist = ({
                       dropdownIconPosition={"right"}
                       buttonTextAfterSelection={(selectedItem, index) => {
                         return (
-                          <Text
-                            allowFontScaling={false}
+                          <Text allowFontScaling={false}
+                            
                             style={styles.text}
                             numberOfLines={3}
                           >
@@ -427,7 +427,7 @@ const ModalChecklist = ({
                       }}
                     />
                   ) : (
-                    <Text allowFontScaling={false} style={styles.errorText}>
+                    <Text allowFontScaling={false}  style={styles.errorText}>
                       Không có dữ liệu hạng mục.
                     </Text>
                   )}
@@ -437,7 +437,7 @@ const ModalChecklist = ({
 
             {/* Ca làm việc  */}
             <View style={{ width: "100%" }}>
-              <Text allowFontScaling={false} style={styles.text}>
+              <Text allowFontScaling={false}  style={styles.text}>
                 Ca làm việc
               </Text>
               {ent_calv && ent_calv?.length > 0 ? (
@@ -475,7 +475,7 @@ const ModalChecklist = ({
                           height: 50,
                         }}
                       >
-                        <Text allowFontScaling={false} style={styles.text}>
+                        <Text allowFontScaling={false}  style={styles.text}>
                           Ca làm việc
                         </Text>
                       </View>
@@ -495,7 +495,7 @@ const ModalChecklist = ({
                   }}
                 />
               ) : (
-                <Text allowFontScaling={false} style={styles.errorText}>
+                <Text allowFontScaling={false}  style={styles.errorText}>
                   Không có dữ liệu ca làm việc.
                 </Text>
               )}
@@ -510,11 +510,11 @@ const ModalChecklist = ({
               }}
             >
               <View style={{ width: "48%" }}>
-                <Text allowFontScaling={false} style={styles.text}>
+                <Text allowFontScaling={false}  style={styles.text}>
                   Số thứ tự
                 </Text>
-                <TextInput
-                  allowFontScaling={false}
+                <TextInput allowFontScaling={false}
+                  
                   value={`${sothutu}`}
                   placeholder="Số thứ tự"
                   placeholderTextColor="gray"
@@ -532,11 +532,11 @@ const ModalChecklist = ({
                 />
               </View>
               <View style={{ width: "48%" }}>
-                <Text allowFontScaling={false} style={styles.text}>
+                <Text allowFontScaling={false}  style={styles.text}>
                   Mã số
                 </Text>
-                <TextInput
-                  allowFontScaling={false}
+                <TextInput allowFontScaling={false}
+                  
                   value={maso}
                   placeholder="Mã số"
                   placeholderTextColor="gray"
@@ -556,12 +556,12 @@ const ModalChecklist = ({
             </View>
 
             {/* Mã Qr code  */}
-            <Text allowFontScaling={false} style={styles.text}>
+            <Text allowFontScaling={false}  style={styles.text}>
               Mã Qr code
             </Text>
 
-            <TextInput
-              allowFontScaling={false}
+            <TextInput allowFontScaling={false}
+              
               value={maQrCode}
               placeholder="Nhập Qr code"
               placeholderTextColor="gray"
@@ -578,11 +578,11 @@ const ModalChecklist = ({
             />
 
             {/* Tên checklist  */}
-            <Text allowFontScaling={false} style={styles.text}>
+            <Text allowFontScaling={false}  style={styles.text}>
               Tên Checklist
             </Text>
-            <TextInput
-              allowFontScaling={false}
+            <TextInput allowFontScaling={false}
+              
               value={tenChecklist}
               placeholder="Nhập tên Checklist"
               placeholderTextColor="gray"
@@ -599,11 +599,11 @@ const ModalChecklist = ({
             />
 
             {/* Tiêu chuẩn  */}
-            <Text allowFontScaling={false} style={styles.text}>
+            <Text allowFontScaling={false}  style={styles.text}>
               Tiêu chuẩn
             </Text>
-            <TextInput
-              allowFontScaling={false}
+            <TextInput allowFontScaling={false}
+              
               value={tieuchuan}
               placeholder="Nhập tiêu chuẩn"
               placeholderTextColor="gray"
@@ -622,11 +622,11 @@ const ModalChecklist = ({
                 handleChangeText("Tieuchuan", text);
               }}
             />
-            <Text allowFontScaling={false} style={styles.text}>
+            <Text allowFontScaling={false}  style={styles.text}>
               Giá trị định danh
             </Text>
-            <TextInput
-              allowFontScaling={false}
+            <TextInput allowFontScaling={false}
+              
               value={giatridinhdanh}
               placeholder="Nhập giá trị định danh"
               placeholderTextColor="gray"
@@ -641,15 +641,15 @@ const ModalChecklist = ({
                 handleChangeText("Giatridinhdanh", val), setGiatridinhdanh(val);
               }}
             />
-            <Text allowFontScaling={false} style={styles.textNote}>
+            <Text allowFontScaling={false}  style={styles.textNote}>
               Nếu không có thì không phải nhập
             </Text>
 
-            <Text allowFontScaling={false} style={styles.text}>
+            <Text allowFontScaling={false}  style={styles.text}>
               Giá trị nhận
             </Text>
-            <TextInput
-              allowFontScaling={false}
+            <TextInput allowFontScaling={false}
+              
               value={giatrinhan}
               placeholder="Nhập giá trị nhận"
               placeholderTextColor="gray"
@@ -665,8 +665,8 @@ const ModalChecklist = ({
                 setGiatrinhan(val);
               }}
             />
-            <Text
-              allowFontScaling={false}
+            <Text allowFontScaling={false}
+              
               style={[styles.textNote, { color: "red" }]}
             >
               Tại ô Giá trị nhận nhập theo định dạng - Giá trị 1/Giá trị 2...
@@ -674,11 +674,11 @@ const ModalChecklist = ({
             </Text>
 
             {/* Ghi chú  */}
-            <Text allowFontScaling={false} style={styles.text}>
+            <Text allowFontScaling={false}  style={styles.text}>
               Ghi chú
             </Text>
-            <TextInput
-              allowFontScaling={false}
+            <TextInput allowFontScaling={false}
+              
               value={ghichu}
               placeholder="Nhập ghi chú"
               placeholderTextColor="gray"

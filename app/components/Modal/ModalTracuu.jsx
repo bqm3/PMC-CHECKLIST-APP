@@ -65,7 +65,7 @@ const ModalTracuu = ({
               }}
             >
               <View style={{ width: "48%" }}>
-                <Text allowFontScaling={false} style={styles.text}>
+                <Text allowFontScaling={false}  style={styles.text}>
                   Từ ngày
                 </Text>
 
@@ -73,8 +73,8 @@ const ModalTracuu = ({
                   onPress={() => toggleDatePicker("fromDate", true)}
                 >
                   <View style={styles.action}>
-                    <TextInput
-                      allowFontScaling={false}
+                    <TextInput allowFontScaling={false}
+                      
                       value={filters?.fromDate}
                       placeholder="Từ ngày"
                       placeholderTextColor="gray"
@@ -116,15 +116,15 @@ const ModalTracuu = ({
                 </TouchableOpacity>
               </View>
               <View style={{ width: "48%" }}>
-                <Text allowFontScaling={false} style={styles.text}>
+                <Text allowFontScaling={false}  style={styles.text}>
                   Đến ngày
                 </Text>
                 <TouchableOpacity
                   onPress={() => toggleDatePicker("toDate", true)}
                 >
                   <View style={styles.action}>
-                    <TextInput
-                      allowFontScaling={false}
+                    <TextInput allowFontScaling={false}
+                      
                       value={filters?.toDate}
                       placeholder="Đến ngày"
                       placeholderTextColor="gray"
@@ -167,7 +167,7 @@ const ModalTracuu = ({
               </View>
             </View>
             <View>
-              <Text allowFontScaling={false} style={styles.text}>
+              <Text allowFontScaling={false}  style={styles.text}>
                 Tòa nhà
               </Text>
               {ent_toanha && ent_toanha?.length > 0 ? (
@@ -206,7 +206,7 @@ const ModalTracuu = ({
                           height: 50,
                         }}
                       >
-                        <Text allowFontScaling={false} style={styles.text}>
+                        <Text allowFontScaling={false}  style={styles.text}>
                           {selectedItem?.Toanha}
                         </Text>
                       </View>
@@ -224,13 +224,13 @@ const ModalTracuu = ({
                   }}
                 />
               ) : (
-                <Text allowFontScaling={false} style={styles.errorText}>
+                <Text allowFontScaling={false}  style={styles.errorText}>
                   Không có dữ liệu tòa nhà.
                 </Text>
               )}
             </View>
             <View>
-              <Text allowFontScaling={false} style={styles.text}>
+              <Text allowFontScaling={false}  style={styles.text}>
                 Khu vực
               </Text>
               {dataKhuvuc && dataKhuvuc?.length > 0 ? (
@@ -269,7 +269,7 @@ const ModalTracuu = ({
                           height: 50,
                         }}
                       >
-                        <Text allowFontScaling={false} style={styles.text}>
+                        <Text allowFontScaling={false}  style={styles.text}>
                           {" "}
                           {selectedItem?.Tenkhuvuc} -{" "}
                           {selectedItem?.ent_khoicv?.KhoiCV}
@@ -289,14 +289,14 @@ const ModalTracuu = ({
                   }}
                 />
               ) : (
-                <Text allowFontScaling={false} style={styles.errorText}>
+                <Text allowFontScaling={false}  style={styles.errorText}>
                   Không có dữ liệu khu vực.
                 </Text>
               )}
             </View>
 
             <View>
-              <Text allowFontScaling={false} style={styles.text}>
+              <Text allowFontScaling={false}  style={styles.text}>
                 Tầng
               </Text>
               {ent_tang && ent_tang?.length > 0 ? (
@@ -335,7 +335,7 @@ const ModalTracuu = ({
                           height: 50,
                         }}
                       >
-                        <Text allowFontScaling={false} style={styles.text}>
+                        <Text allowFontScaling={false}  style={styles.text}>
                           {selectedItem?.Tentang}
                         </Text>
                       </View>
@@ -353,7 +353,7 @@ const ModalTracuu = ({
                   }}
                 />
               ) : (
-                <Text allowFontScaling={false} style={styles.errorText}>
+                <Text allowFontScaling={false}  style={styles.errorText}>
                   Không có dữ liệu tầng.
                 </Text>
               )}
@@ -372,8 +372,8 @@ const ModalTracuu = ({
                 onValueChange={() => toggleSwitch(isEnabled)}
                 value={isEnabled}
               />
-              <Text
-                allowFontScaling={false}
+              <Text allowFontScaling={false}
+                
                 style={[styles.text, { paddingHorizontal: 12 }]}
               >
                 Tất cả

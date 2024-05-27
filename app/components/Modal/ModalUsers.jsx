@@ -65,7 +65,7 @@ const ModalUsers = ({
               }}
             >
               <View style={{ width: "48%" }}>
-                <Text allowFontScaling={false} style={styles.text}>
+                <Text allowFontScaling={false}  style={styles.text}>
                   Dự án
                 </Text>
                 {ent_duan && ent_duan?.length > 0 ? (
@@ -103,7 +103,7 @@ const ModalUsers = ({
                           height: 50,
                         }}
                       >
-                        <Text allowFontScaling={false} style={styles.text}>
+                        <Text allowFontScaling={false}  style={styles.text}>
                           {selectedItem?.Duan}
                         </Text>
                       </View>
@@ -121,13 +121,13 @@ const ModalUsers = ({
                   }}
                 />
                  ) : (
-                  <Text allowFontScaling={false} style={styles.errorText}>
+                  <Text allowFontScaling={false}  style={styles.errorText}>
                     Không có dữ liệu dự án.
                   </Text>
                 )}
               </View>
               <View style={{ width: "48%" }}>
-                <Text allowFontScaling={false} style={styles.text}>
+                <Text allowFontScaling={false}  style={styles.text}>
                   Chức vụ
                 </Text>
                 {ent_chucvu && ent_chucvu?.length > 0 ? (
@@ -165,7 +165,7 @@ const ModalUsers = ({
                             height: 50,
                           }}
                         >
-                          <Text allowFontScaling={false} style={styles.text}>
+                          <Text allowFontScaling={false}  style={styles.text}>
                             {selectedItem?.Chucvu}
                           </Text>
                         </View>
@@ -183,14 +183,14 @@ const ModalUsers = ({
                     }}
                   />
                 ) : (
-                  <Text allowFontScaling={false} style={styles.errorText}>
+                  <Text allowFontScaling={false}  style={styles.errorText}>
                     Không có dữ liệu chức vụ.
                   </Text>
                 )}
               </View>
             </View>
             <View>
-              <Text allowFontScaling={false} style={styles.text}>
+              <Text allowFontScaling={false}  style={styles.text}>
                 Khối công việc
               </Text>
               {ent_khoicv && ent_khoicv?.length > 0 ? (
@@ -227,7 +227,7 @@ const ModalUsers = ({
                         height: 50,
                       }}
                     >
-                      <Text allowFontScaling={false} style={styles.text}>
+                      <Text allowFontScaling={false}  style={styles.text}>
                         {selectedItem?.KhoiCV}
                       </Text>
                     </View>
@@ -245,17 +245,17 @@ const ModalUsers = ({
                 }}
               />
               ) : (
-                  <Text allowFontScaling={false} style={styles.errorText}>
+                  <Text allowFontScaling={false}  style={styles.errorText}>
                     Không có dữ liệu công việc.
                   </Text>
                 )}
             </View>
 
-            <Text allowFontScaling={false} style={styles.text}>
+            <Text allowFontScaling={false}  style={styles.text}>
               Người dùng
             </Text>
-            <TextInput
-              allowFontScaling={false}
+            <TextInput allowFontScaling={false}
+              
               value={UserName}
               placeholder="Người dùng"
               placeholderTextColor="gray"
@@ -268,11 +268,11 @@ const ModalUsers = ({
               onChangeText={(val) => {handleChangeText("UserName", val), setUserName(val)}}
             />
 
-            <Text allowFontScaling={false} style={styles.text}>
+            <Text allowFontScaling={false}  style={styles.text}>
               Email
             </Text>
-            <TextInput
-              allowFontScaling={false}
+            <TextInput allowFontScaling={false}
+              
               value={Emails}
               placeholder="Email"
               placeholderTextColor="gray"
@@ -285,11 +285,11 @@ const ModalUsers = ({
               onChangeText={(val) => {handleChangeText("Emails", val),setEmails(val)}}
             />
 
-            <Text allowFontScaling={false} style={styles.text}>
+            <Text allowFontScaling={false}  style={styles.text}>
               Mật khẩu
             </Text>
-            <TextInput
-              allowFontScaling={false}
+            <TextInput allowFontScaling={false}
+              
               value={Password}
               //   maxLength={}
               secureTextEntry={true}
@@ -304,11 +304,11 @@ const ModalUsers = ({
               onChangeText={(val) => {handleChangeText("Password", val),setPassword(val)}}
             />
 
-            <Text allowFontScaling={false} style={styles.text}>
+            <Text allowFontScaling={false}  style={styles.text}>
               Nhập lại mật khẩu
             </Text>
-            <TextInput
-              allowFontScaling={false}
+            <TextInput allowFontScaling={false}
+              
               value={rePassword}
               //   maxLength={}
               secureTextEntry={true}

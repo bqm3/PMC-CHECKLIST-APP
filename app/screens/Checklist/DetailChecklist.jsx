@@ -734,7 +734,7 @@ const DetailChecklist = ({ route, navigation }) => {
               // active={}
             />
             <View style={{ width: "90%" }}>
-              <Text
+              <Text allowFontScaling={false}
                 style={{
                   fontSize: 16,
                   color: "black",
@@ -877,11 +877,11 @@ const DetailChecklist = ({ route, navigation }) => {
                           gap: 8,
                         }}
                       >
-                        <Text allowFontScaling={false} style={styles.text}>
+                        <Text allowFontScaling={false}  style={styles.text}>
                           Số lượng: {decimalNumber(dataChecklistFilter?.length)}{" "}
                           Checklist
                         </Text>
-                        <Text allowFontScaling={false} style={styles.text}>
+                        <Text allowFontScaling={false}  style={styles.text}>
                           Đang checklist:{" "}
                           {decimalNumber(newActionDataChecklist?.length)}
                         </Text>
@@ -906,8 +906,8 @@ const DetailChecklist = ({ route, navigation }) => {
                   </View>
                 </View>
                 {showNameDuan !== "" && (
-                  <Text
-                    allowFontScaling={false}
+                  <Text allowFontScaling={false}
+                    
                     style={[
                       styles.text,
                       { paddingHorizontal: 12, fontSize: 18 },
@@ -974,8 +974,8 @@ const DetailChecklist = ({ route, navigation }) => {
                         resizeMode="contain"
                         style={{ height: 120, width: 120 }}
                       />
-                      <Text
-                        allowFontScaling={false}
+                      <Text allowFontScaling={false}
+                        
                         style={[styles.danhmuc, { padding: 10 }]}
                       >
                         {isScan
@@ -1052,7 +1052,7 @@ const DetailChecklist = ({ route, navigation }) => {
             >
               <View style={styles.centeredView}>
                 <View style={styles.modalView}>
-                  <Text allowFontScaling={false} style={styles.modalText}>
+                  <Text allowFontScaling={false}  style={styles.modalText}>
                     Thông tin checklist chi tiết
                   </Text>
                   <ModalPopupDetailChecklist
@@ -1088,7 +1088,7 @@ const DetailChecklist = ({ route, navigation }) => {
                   ]}
                 >
                   <ScrollView>
-                    <Text>{tieuchuan} </Text>
+                    <Text allowFontScaling={false}>{tieuchuan} </Text>
                   </ScrollView>
                   <Button
                     text={"Đóng"}

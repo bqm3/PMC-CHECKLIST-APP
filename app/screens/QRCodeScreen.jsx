@@ -31,10 +31,10 @@ export default function QRCodeScreen({
   };
 
   if (hasPermission === null) {
-    return <Text>Requesting for camera permission</Text>;
+    return <Text allowFontScaling={false}>Requesting for camera permission</Text>;
   }
   if (hasPermission === false) {
-    return <Text>No access to camera</Text>;
+    return <Text allowFontScaling={false}>No access to camera</Text>;
   }
 
   return (

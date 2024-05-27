@@ -11,6 +11,7 @@ import {
   Modal,
   Pressable,
   ActivityIndicator,
+  TouchableWithoutFeedback,
 } from "react-native";
 import React, {
   useRef,
@@ -54,7 +55,7 @@ const DanhmucGiamsat = ({ navigation }) => {
   const { user, authToken } = useSelector((state) => state.authReducer);
 
   const bottomSheetModalRef = useRef(null);
-  const snapPoints = useMemo(() => ["90%"], []);
+  const snapPoints = useMemo(() => ["80%"], []);
   const [opacity, setOpacity] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
@@ -358,7 +359,7 @@ const DanhmucGiamsat = ({ navigation }) => {
   const handleToggleModal = (isCheck, data, opacity) => {
     setDataModal(data);
     setModalVisible(isCheck);
-     setOpacity(Number(opacity));
+    setOpacity(Number(opacity));
   };
 
   const handleCloseModal = () => {
@@ -393,9 +394,13 @@ const DanhmucGiamsat = ({ navigation }) => {
                 }}
               >
                 <View style={styles.container}>
-                  <Text allowFontScaling={false} style={styles.danhmuc}>
-                    Danh mục giám sát
-                  </Text>
+                  <TouchableWithoutFeedback onPress={() => handleCloseModal()}>
+                    <View style={{ width: "100%" }}>
+                      <Text allowFontScaling={false} style={styles.danhmuc}>
+                        Danh mục giám sát
+                      </Text>
+                    </View>
+                  </TouchableWithoutFeedback>
                   {isLoading === true ? (
                     <View
                       style={{
@@ -411,26 +416,32 @@ const DanhmucGiamsat = ({ navigation }) => {
                     <>
                       {ent_giamsat && ent_giamsat.length > 0 ? (
                         <>
-                          <View
-                            style={{
-                              flexDirection: "row",
-                              alignContent: "center",
-                              alignItems: "center",
-                              justifyContent: "space-between",
-                            }}
+                          <TouchableWithoutFeedback
+                            onPress={() => handleCloseModal()}
                           >
-                            <Text allowFontScaling={false} style={styles.text}>
-                              Số lượng: {decimalNumber(ent_giamsat?.length)}
-                            </Text>
-                            <ButtonChecklist
-                              text={"Thêm mới"}
-                              width={"auto"}
-                              color={COLORS.bg_button}
-                              // icon={<Ionicons name="add" size={20} color="white" />}
-                              onPress={handlePresentModalPress}
-                            />
-                          </View>
-
+                            <View
+                              style={{
+                                flexDirection: "row",
+                                alignContent: "center",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                              }}
+                            >
+                              <Text
+                                allowFontScaling={false}
+                                style={styles.text}
+                              >
+                                Số lượng: {decimalNumber(ent_giamsat?.length)}
+                              </Text>
+                              <ButtonChecklist
+                                text={"Thêm mới"}
+                                width={"auto"}
+                                color={COLORS.bg_button}
+                                // icon={<Ionicons name="add" size={20} color="white" />}
+                                onPress={handlePresentModalPress}
+                              />
+                            </View>
+                          </TouchableWithoutFeedback>
                           <FlatList
                             horizontal={false}
                             contentContainerStyle={{ flexGrow: 1 }}

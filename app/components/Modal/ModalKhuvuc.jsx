@@ -49,7 +49,7 @@ const ModalKhuvuc = ({
         <View style={{ margin: 20 }}>
           <View style={{ justifyContent: "space-around", width: "100%" }}>
             <View style={{ width: "100%" }}>
-              <Text allowFontScaling={false} style={styles.text}>
+              <Text allowFontScaling={false}  style={styles.text}>
                 Khối công việc
               </Text>
               {ent_khoicv && ent_khoicv?.length > 0 ? (
@@ -87,7 +87,7 @@ const ModalKhuvuc = ({
                           height: 50,
                         }}
                       >
-                        <Text allowFontScaling={false} style={styles.text}>
+                        <Text allowFontScaling={false}  style={styles.text}>
                           {selectedItem?.KhoiCV}
                         </Text>
                       </View>
@@ -105,14 +105,14 @@ const ModalKhuvuc = ({
                   }}
                 />
               ) : (
-                <Text allowFontScaling={false} style={styles.errorText}>
+                <Text allowFontScaling={false}  style={styles.errorText}>
                   Không có dữ liệu khối công việc.
                 </Text>
               )}
             </View>
 
             <View style={{ width: "100%" }}>
-              <Text allowFontScaling={false} style={styles.text}>
+              <Text allowFontScaling={false}  style={styles.text}>
                 Tòa nhà
               </Text>
               {ent_toanha && ent_toanha?.length > 0 ? (
@@ -150,7 +150,7 @@ const ModalKhuvuc = ({
                           height: 50,
                         }}
                       >
-                        <Text allowFontScaling={false} style={styles.text}>
+                        <Text allowFontScaling={false}  style={styles.text}>
                           {selectedItem?.Toanha}
                         </Text>
                       </View>
@@ -168,16 +168,16 @@ const ModalKhuvuc = ({
                   }}
                 />
               ) : (
-                <Text allowFontScaling={false} style={styles.errorText}>
+                <Text allowFontScaling={false}  style={styles.errorText}>
                   Không có dữ liệu khối công việc.
                 </Text>
               )}
             </View>
-            <Text allowFontScaling={false} style={styles.text}>
+            <Text allowFontScaling={false}  style={styles.text}>
               Tên khu vực
             </Text>
-            <TextInput
-              allowFontScaling={false}
+            <TextInput allowFontScaling={false}
+              
               value={tenkhuvuc}
               placeholder="Nhập tên khu vực thực hiện checklist"
               placeholderTextColor="gray"
@@ -192,11 +192,11 @@ const ModalKhuvuc = ({
                 handleChangeText("tenkhuvuc", val), setTenkhuvuc(val);
               }}
             />
-            <Text allowFontScaling={false} style={styles.text}>
+            <Text allowFontScaling={false}  style={styles.text}>
               Mã Qr code
             </Text>
-            <TextInput
-              allowFontScaling={false}
+            <TextInput allowFontScaling={false}
+              
               value={qrcode}
               placeholder="Nhập mã Qr code"
               placeholderTextColor="gray"
@@ -220,11 +220,11 @@ const ModalKhuvuc = ({
               }}
             >
               <View style={{ width: "48%" }}>
-                <Text allowFontScaling={false} style={styles.text}>
+                <Text allowFontScaling={false}  style={styles.text}>
                   Mã khu vực
                 </Text>
-                <TextInput
-                  allowFontScaling={false}
+                <TextInput allowFontScaling={false}
+                  
                   value={makhuvuc}
                   placeholder="Nhập mã khu vực thực hiện checklist"
                   placeholderTextColor="gray"
@@ -242,11 +242,11 @@ const ModalKhuvuc = ({
                 />
               </View>
               <View style={{ width: "48%" }}>
-                <Text allowFontScaling={false} style={styles.text}>
+                <Text allowFontScaling={false}  style={styles.text}>
                   Số thứ tự
                 </Text>
-                <TextInput
-                  allowFontScaling={false}
+                <TextInput allowFontScaling={false}
+                  
                   value={`${sothutu}`}
                   placeholder="Nhập số thứ tự khu vực thực hiện checklist"
                   placeholderTextColor="gray"

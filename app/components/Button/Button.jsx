@@ -27,7 +27,7 @@ const Button = ({onPress, text, backgroundColor, color, border, width, isLoading
           color={COLORS.bg_white}
         />
       )}
-      <Text  allowFontScaling={false} 
+      <Text allowFontScaling={false}   
         style={{
           color: color,
           fontSize: 15,

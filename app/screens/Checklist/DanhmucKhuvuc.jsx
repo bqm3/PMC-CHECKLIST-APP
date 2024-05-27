@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
+  TouchableWithoutFeedback,
 } from "react-native";
 import React, {
   useRef,
@@ -342,7 +343,7 @@ const DanhmucCalamviec = ({ navigation }) => {
 
   const handleSheetChanges = useCallback((index) => {
     if (index === -1) {
-      handleCloseModal()
+      handleCloseModal();
     } else {
       setOpacity(0.2);
     }
@@ -373,136 +374,151 @@ const DanhmucCalamviec = ({ navigation }) => {
   return (
     <>
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : null}
-          style={{ flex: 1 }}
-        >
-          <BottomSheetModalProvider>
-            <ImageBackground
-              source={require("../../../assets/bg.png")}
-              resizeMode="cover"
-              style={{ flex: 1 }}
-            >
-              <View
-                style={{
-                  flex: 1,
-                  justifyContent: "center",
-                  width: "100%",
-                  opacity: opacity,
-                }}
+        {/* <TouchableWithoutFeedback onPress={() => handleCloseModal()}> */}
+          <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : null}
+            style={{ flex: 1 }}
+          >
+            <BottomSheetModalProvider>
+              <ImageBackground
+                source={require("../../../assets/bg.png")}
+                resizeMode="cover"
+                style={{ flex: 1 }}
               >
-                <View style={styles.container}>
-                  <Text  allowFontScaling={false} style={styles.danhmuc}>Danh mục khu vực</Text>
-                  {isLoading === true ? (
-                    <View
-                      style={{
-                        flex: 1,
-                        justifyContent: "center",
-                        alignItems: "center",
-                        marginBottom: 40,
-                      }}
-                    >
-                      <ActivityIndicator size="large" color={"white"} />
-                    </View>
-                  ) : (
-                    <>
-                      {ent_khuvuc && ent_khuvuc.length > 0 ? (
-                        <>
-                          <View
-                            style={{
-                              flexDirection: "row",
-                              alignContent: "center",
-                              alignItems: "center",
-                              justifyContent: "space-between",
-                            }}
-                          >
-                            <Text  allowFontScaling={false} style={styles.text}>
-                              Số lượng: {decimalNumber(ent_khuvuc?.length)}
-                            </Text>
-                            <ButtonChecklist
-                              text={"Thêm mới"}
-                              width={"auto"}
-                              color={COLORS.bg_button}
-                              onPress={handlePresentModalPress}
-                            />
-                          </View>
-
-                          <FlatList
-                            horizontal={false}
-                            contentContainerStyle={{ flexGrow: 1 }}
-                            style={{ marginVertical: 10 }}
-                            data={ent_khuvuc}
-                            renderItem={({ item, index }) => (
-                              <ItemKhuVuc
-                                key={index}
-                                item={item}
-                                handleEditEnt={handleEditEnt}
-                                handleAlertDelete={handleAlertDelete}
-                              />
-                            )}
-                            keyExtractor={(item, index) => index.toString()}
-                            scrollEventThrottle={16}
-                            ListFooterComponent={
-                              <View style={{ height: 120 }} />
-                            }
-                            scrollEnabled={true}
-                          />
-                        </>
-                      ) : (
-                        <>
-                          <View
-                            style={{
-                              flex: 1,
-                              justifyContent: "center",
-                              alignItems: "center",
-                              marginBottom: 100,
-                            }}
-                          >
-                            <Image
-                              source={require("../../../assets/icons/delete_bg.png")}
-                              resizeMode="contain"
-                              style={{ height: 120, width: 120 }}
-                            />
-                            <Text
-                              style={[styles.danhmuc, { paddingVertical: 10 }]}
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: "center",
+                    width: "100%",
+                    opacity: opacity,
+                  }}
+                >
+                  <View style={styles.container}>
+                  <TouchableWithoutFeedback onPress={() => handleCloseModal()}>
+                   <View style={{width: '100%'}}>
+                   <Text allowFontScaling={false} style={styles.danhmuc}>
+                      Danh mục khu vực
+                    </Text>
+                   </View>
+                  </TouchableWithoutFeedback>
+                    {isLoading === true ? (
+                      <View
+                        style={{
+                          flex: 1,
+                          justifyContent: "center",
+                          alignItems: "center",
+                          marginBottom: 40,
+                        }}
+                      >
+                        <ActivityIndicator size="large" color={"white"} />
+                      </View>
+                    ) : (
+                      <>
+                        {ent_khuvuc && ent_khuvuc.length > 0 ? (
+                          <>
+                          <TouchableWithoutFeedback onPress={() => handleCloseModal()}>
+                            <View
+                              style={{
+                                flexDirection: "row",
+                                alignContent: "center",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                              }}
                             >
-                              Bạn chưa thêm dữ liệu nào
-                            </Text>
-                            <ButtonChecklist
-                              text={"Thêm mới"}
-                              width={"auto"}
-                              color={COLORS.bg_button}
-                              onPress={handlePresentModalPress}
+                              <Text allowFontScaling={false}
+                                
+                                style={styles.text}
+                              >
+                                Số lượng: {decimalNumber(ent_khuvuc?.length)}
+                              </Text>
+                              <ButtonChecklist
+                                text={"Thêm mới"}
+                                width={"auto"}
+                                color={COLORS.bg_button}
+                                onPress={handlePresentModalPress}
+                              />
+                            </View>
+                            </TouchableWithoutFeedback>
+                            <FlatList
+                              horizontal={false}
+                              contentContainerStyle={{ flexGrow: 1 }}
+                              style={{ marginVertical: 10 }}
+                              data={ent_khuvuc}
+                              renderItem={({ item, index }) => (
+                                <ItemKhuVuc
+                                  key={index}
+                                  item={item}
+                                  handleEditEnt={handleEditEnt}
+                                  handleAlertDelete={handleAlertDelete}
+                                />
+                              )}
+                              keyExtractor={(item, index) => index.toString()}
+                              scrollEventThrottle={16}
+                              ListFooterComponent={
+                                <View style={{ height: 120 }} />
+                              }
+                              scrollEnabled={true}
                             />
-                          </View>
-                        </>
-                      )}
-                    </>
-                  )}
+                          </>
+                        ) : (
+                          <>
+                            <View
+                              style={{
+                                flex: 1,
+                                justifyContent: "center",
+                                alignItems: "center",
+                                marginBottom: 100,
+                              }}
+                            >
+                              <Image
+                                source={require("../../../assets/icons/delete_bg.png")}
+                                resizeMode="contain"
+                                style={{ height: 120, width: 120 }}
+                              />
+                              <Text allowFontScaling={false}
+                                style={[
+                                  styles.danhmuc,
+                                  { paddingVertical: 10 },
+                                ]}
+                              >
+                                Bạn chưa thêm dữ liệu nào
+                              </Text>
+                              <ButtonChecklist
+                                text={"Thêm mới"}
+                                width={"auto"}
+                                color={COLORS.bg_button}
+                                onPress={handlePresentModalPress}
+                              />
+                            </View>
+                          </>
+                        )}
+                      </>
+                    )}
+                  </View>
                 </View>
-              </View>
-              <BottomSheetModal
-                ref={bottomSheetModalRef}
-                index={0}
-                snapPoints={snapPoints}
-                onChange={handleSheetChanges}
-              >
-                <BottomSheetScrollView style={styles.contentContainer}>
-                  <ModalKhuvuc
-                    ent_khoicv={ent_khoicv}
-                    ent_toanha={ent_toanha}
-                    handleChangeText={handleChangeText}
-                    dataInput={dataInput}
-                    handlePushDataSave={handlePushDataSave}
-                    isCheckUpdate={isCheckUpdate}
-                    handlePushDataEdit={handlePushDataEdit}
-                    loadingSubmit={loadingSubmit}
-                  />
-                </BottomSheetScrollView>
-              </BottomSheetModal>
-            </ImageBackground>
-          </BottomSheetModalProvider>
-        </KeyboardAvoidingView>
+                <BottomSheetModal
+                  ref={bottomSheetModalRef}
+                  index={0}
+                  snapPoints={snapPoints}
+                  onChange={handleSheetChanges}
+                >
+                  <BottomSheetScrollView style={styles.contentContainer}>
+                    <ModalKhuvuc
+                      ent_khoicv={ent_khoicv}
+                      ent_toanha={ent_toanha}
+                      handleChangeText={handleChangeText}
+                      dataInput={dataInput}
+                      handlePushDataSave={handlePushDataSave}
+                      isCheckUpdate={isCheckUpdate}
+                      handlePushDataEdit={handlePushDataEdit}
+                      loadingSubmit={loadingSubmit}
+                    />
+                  </BottomSheetScrollView>
+                </BottomSheetModal>
+              </ImageBackground>
+            </BottomSheetModalProvider>
+          </KeyboardAvoidingView>
+        {/* </TouchableWithoutFeedback> */}
       </GestureHandlerRootView>
     </>
   );

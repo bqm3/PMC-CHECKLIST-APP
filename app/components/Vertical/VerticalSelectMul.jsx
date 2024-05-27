@@ -22,7 +22,7 @@ const VerticalSelectMul = ({ value,item, index, label, selectedItem, handleSelec
       ]}
     >
       <Checkbox onPress={()=>handleSelect(item, index)} isCheck={isChecked} color={"black"}/>
-      <Text
+      <Text allowFontScaling={false}
         style={[
           styles.customSelect,
           ({ fontWeight: "600" },

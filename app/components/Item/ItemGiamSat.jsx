@@ -17,10 +17,10 @@ const ItemGiamSat = ({ item,handleEditEnt,handleAlertDelete ,handleToggleModal})
       }}
     >
       <View style={{ width: "70%" }}>
-        <Text  allowFontScaling={false} style={[styles.title, { fontSize: 18 }]}>{item.Hoten} - {item?.ent_khoicv?.KhoiCV}</Text>
+        <Text allowFontScaling={false}   style={[styles.title, { fontSize: 18 }]}>{item.Hoten} - {item?.ent_khoicv?.KhoiCV}</Text>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 4, paddingVertical:2 }}>
-          <Text  allowFontScaling={false} style={styles.title}>{item?.ent_duan?.Duan} - {item?.ent_chucvu?.Chucvu}</Text>
-          <Text  allowFontScaling={false} style={styles.title}></Text>
+          <Text allowFontScaling={false}   style={styles.title}>{item?.ent_duan?.Duan} - {item?.ent_chucvu?.Chucvu}</Text>
+          <Text allowFontScaling={false}   style={styles.title}></Text>
         </View>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
           <Image
@@ -28,7 +28,7 @@ const ItemGiamSat = ({ item,handleEditEnt,handleAlertDelete ,handleToggleModal})
             resizeMode="contain"
             style={{ height: 16, width: 16 }}
           />
-          <Text  allowFontScaling={false} style={styles.title}>{item?.Sodienthoai}</Text>
+          <Text allowFontScaling={false}   style={styles.title}>{item?.Sodienthoai}</Text>
         </View>
        
       </View>

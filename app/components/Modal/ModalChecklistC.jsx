@@ -51,8 +51,8 @@ const ModalChecklistC = ({
               }}
             >
               <View style={{ width: "48%" }}>
-                <Text  allowFontScaling={false} style={styles.text}>Ngày</Text>
-                <TextInput allowFontScaling={false} 
+                <Text allowFontScaling={false}   style={styles.text}>Ngày</Text>
+                <TextInput allowFontScaling={false}  
                   value={dataInput.dateDay}
                   editable={false}
                   placeholderTextColor="gray"
@@ -66,8 +66,8 @@ const ModalChecklistC = ({
                 />
               </View>
               <View style={{ width: "48%" }}>
-                <Text  allowFontScaling={false} style={styles.text}>Giờ</Text>
-                <TextInput allowFontScaling={false} 
+                <Text allowFontScaling={false}   style={styles.text}>Giờ</Text>
+                <TextInput allowFontScaling={false}  
                   value={dataInput.dateHour}
                   editable={false}
                   placeholderTextColor="gray"
@@ -82,7 +82,7 @@ const ModalChecklistC = ({
               </View>
             </View>
             <View>
-              <Text  allowFontScaling={false} style={styles.text}>Ca làm việc</Text>
+              <Text allowFontScaling={false}   style={styles.text}>Ca làm việc</Text>
               {ent_calv && ent_calv?.length > 0 ? (
               <SelectDropdown
                 ref={ref}
@@ -119,7 +119,7 @@ const ModalChecklistC = ({
                         height: 50,
                       }}
                     >
-                      <Text  allowFontScaling={false} style={styles.text}>{selectedItem?.Tenca} - {selectedItem?.ent_khoicv?.KhoiCV}</Text>
+                      <Text allowFontScaling={false}   style={styles.text}>{selectedItem?.Tenca} - {selectedItem?.ent_khoicv?.KhoiCV}</Text>
                     </View>
                   );
                 }}
@@ -135,13 +135,13 @@ const ModalChecklistC = ({
                 }}
               />
                ) : (
-                  <Text allowFontScaling={false} style={styles.errorText}>
+                  <Text allowFontScaling={false}  style={styles.errorText}>
                     Không có dữ liệu ca làm việc.
                   </Text>
                 )}
             </View>
             <View>
-              <Text  allowFontScaling={false} style={styles.text}>Nhân viên</Text>
+              <Text allowFontScaling={false}   style={styles.text}>Nhân viên</Text>
               {ent_giamsat && ent_giamsat?.length > 0 ? (
               <SelectDropdown
                 ref={ref}
@@ -178,7 +178,7 @@ const ModalChecklistC = ({
                         height: 50,
                       }}
                     >
-                      <Text  allowFontScaling={false} style={styles.text}>{selectedItem?.Hoten}</Text>
+                      <Text allowFontScaling={false}   style={styles.text}>{selectedItem?.Hoten}</Text>
                     </View>
                   );
                 }}
@@ -194,7 +194,7 @@ const ModalChecklistC = ({
                 }}
               />
                ) : (
-                  <Text allowFontScaling={false} style={styles.errorText}>
+                  <Text allowFontScaling={false}  style={styles.errorText}>
                     Không có dữ liệu nhân viên.
                   </Text>
                 )}

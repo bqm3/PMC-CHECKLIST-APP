@@ -279,7 +279,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
             width: "80%",
           }}
         >
-          <Text
+          <Text allowFontScaling={false}
             style={{
               fontSize: 16,
               color: dataSelect[0] === item ? "white" : "black",
@@ -315,7 +315,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
             width: "80%",
           }}
         >
-          <Text
+          <Text allowFontScaling={false}
             style={{
               fontSize: 16,
               color: isCheck ? "white" : "black",
@@ -380,7 +380,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
                             gap: 8,
                           }}
                         >
-                          <Text allowFontScaling={false} style={styles.text}>
+                          <Text allowFontScaling={false}  style={styles.text}>
                             Số lượng: {decimalNumber(data?.length)} khu vực
                           </Text>
                         </View>
@@ -442,8 +442,8 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
                         resizeMode="contain"
                         style={{ height: 120, width: 120 }}
                       />
-                      <Text
-                        allowFontScaling={false}
+                      <Text allowFontScaling={false}
+                        
                         style={[styles.danhmuc, { padding: 10 }]}
                       >
                         {isScan
@@ -512,7 +512,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
                             gap: 8,
                           }}
                         >
-                          <Text allowFontScaling={false} style={styles.text}>
+                          <Text allowFontScaling={false}  style={styles.text}>
                             Số lượng: {decimalNumber(ent_toanha?.length)} tòa
                             nhà
                           </Text>

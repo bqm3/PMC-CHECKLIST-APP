@@ -10,6 +10,7 @@ import {
   Platform,
   Keyboard,
   ActivityIndicator,
+  TouchableWithoutFeedback,
 } from "react-native";
 import React, {
   useRef,
@@ -43,7 +44,7 @@ const DanhmucCalamviec = ({ navigation }) => {
   const { user, authToken } = useSelector((state) => state.authReducer);
 
   const bottomSheetModalRef = useRef(null);
-  const snapPoints = useMemo(() => ["90%"], []);
+  const snapPoints = useMemo(() => ["80%"], []);
   const [opacity, setOpacity] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
@@ -110,7 +111,7 @@ const DanhmucCalamviec = ({ navigation }) => {
         ID_Duan: user.ID_Duan,
       };
       setLoadingSubmit(true);
-    
+
       try {
         await axios
           .post(BASE_URL + `/ent_calv/create`, data, {
@@ -352,7 +353,7 @@ const DanhmucCalamviec = ({ navigation }) => {
   const handleSheetChanges = useCallback((index) => {
     if (index === -1) {
       setOpacity(1);
-      handleAdd()
+      handleAdd();
     } else {
       setOpacity(0.2);
     }
@@ -390,7 +391,13 @@ const DanhmucCalamviec = ({ navigation }) => {
                 }}
               >
                 <View style={styles.container}>
-                  <Text  allowFontScaling={false} style={styles.danhmuc}>Danh mục ca làm việc</Text>
+                  <TouchableWithoutFeedback onPress={() => handleCloseModal()}>
+                    <View style={{ width: "100%" }}>
+                      <Text allowFontScaling={false} style={styles.danhmuc}>
+                        Danh mục ca làm việc
+                      </Text>
+                    </View>
+                  </TouchableWithoutFeedback>
                   {isLoading === true ? (
                     <View
                       style={{
@@ -406,25 +413,32 @@ const DanhmucCalamviec = ({ navigation }) => {
                     <>
                       {ent_calv && ent_calv.length > 0 ? (
                         <>
-                          <View
-                            style={{
-                              flexDirection: "row",
-                              alignContent: "center",
-                              alignItems: "center",
-                              justifyContent: "space-between",
-                            }}
+                          <TouchableWithoutFeedback
+                            onPress={() => handleCloseModal()}
                           >
-                            <Text  allowFontScaling={false} style={styles.text}>
-                              Số lượng: {decimalNumber(ent_calv?.length)}
-                            </Text>
-                            <ButtonChecklist
-                              text={"Thêm mới"}
-                              width={"auto"}
-                              color={COLORS.bg_button}
-                              // icon={<Ionicons name="add" size={20} color="white" />}
-                              onPress={handlePresentModalPress}
-                            />
-                          </View>
+                            <View
+                              style={{
+                                flexDirection: "row",
+                                alignContent: "center",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                              }}
+                            >
+                              <Text
+                                allowFontScaling={false}
+                                style={styles.text}
+                              >
+                                Số lượng: {decimalNumber(ent_calv?.length)}
+                              </Text>
+                              <ButtonChecklist
+                                text={"Thêm mới"}
+                                width={"auto"}
+                                color={COLORS.bg_button}
+                                // icon={<Ionicons name="add" size={20} color="white" />}
+                                onPress={handlePresentModalPress}
+                              />
+                            </View>
+                          </TouchableWithoutFeedback>
 
                           <FlatList
                             horizontal={false}
@@ -463,6 +477,7 @@ const DanhmucCalamviec = ({ navigation }) => {
                               style={{ height: 120, width: 120 }}
                             />
                             <Text
+                              allowFontScaling={false}
                               style={[styles.danhmuc, { paddingVertical: 10 }]}
                             >
                               Bạn chưa thêm dữ liệu nào

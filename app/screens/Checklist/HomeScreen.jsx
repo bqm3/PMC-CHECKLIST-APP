@@ -127,19 +127,19 @@ const HomeScreen = ({ navigation }) => {
       ) : (
         <View style={styles.container}>
           <View style={styles.content}>
-            <Text
+            <Text allowFontScaling={false}
               style={{
                 color: "white",
                 fontSize: adjust(16),
               }}
               numberOfLines={1}
-              allowFontScaling={false}
+              
               // adjustsFontSizeToFit
             >
               Digital Transformation Good day and Happy
             </Text>
-            <Text
-              allowFontScaling={false}
+            <Text allowFontScaling={false}
+              
               style={{
                 fontSize: adjust(20),
                 color: "white",
@@ -181,8 +181,8 @@ const HomeScreen = ({ navigation }) => {
               marginHorizontal: 20,
             }}
           >
-            <Text
-              allowFontScaling={false}
+            <Text allowFontScaling={false}
+              
               style={{
                 color: "white",
                 // fontSize: adjust(15),
@@ -191,8 +191,8 @@ const HomeScreen = ({ navigation }) => {
               Người Giám sát chỉ thực hiện công việc Check list, Tra cứu và Đổi
               mật khẩu.
             </Text>
-            <Text
-              allowFontScaling={false}
+            <Text allowFontScaling={false}
+              
               style={{
                 color: "white",
                 // fontSize: adjust(15),

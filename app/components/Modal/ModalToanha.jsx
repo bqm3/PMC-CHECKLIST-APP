@@ -36,11 +36,11 @@ const ModalToanha = ({
   return (
     <View style={{ margin: 20 }}>
       <View style={{ justifyContent: "space-around", width: "100%" }}>
-        <Text allowFontScaling={false} style={styles.text}>
+        <Text allowFontScaling={false}  style={styles.text}>
           Tên tòa nhà
         </Text>
-        <TextInput
-          allowFontScaling={false}
+        <TextInput allowFontScaling={false}
+          
           value={toanha}
           placeholder="Nhập tên tòa nhà"
           placeholderTextColor="gray"
@@ -57,11 +57,11 @@ const ModalToanha = ({
             setToanha(val);
           }}
         />
-        <Text allowFontScaling={false} style={styles.text}>
+        <Text allowFontScaling={false}  style={styles.text}>
           Số tầng
         </Text>
-        <TextInput
-          allowFontScaling={false}
+        <TextInput allowFontScaling={false}
+          
           value={dataInput.Sotang.toString()}
           placeholder="Nhập số tầng"
           placeholderTextColor="gray"
@@ -76,7 +76,7 @@ const ModalToanha = ({
         />
 
         <View>
-          <Text allowFontScaling={false} style={styles.text}>
+          <Text allowFontScaling={false}  style={styles.text}>
             Dự án
           </Text>
           {ent_duan && ent_duan?.length > 0 ? (
@@ -114,7 +114,7 @@ const ModalToanha = ({
                       height: 50,
                     }}
                   >
-                    <Text allowFontScaling={false} style={styles.text}>
+                    <Text allowFontScaling={false}  style={styles.text}>
                       {selectedItem?.Duan}
                     </Text>
                   </View>
@@ -132,7 +132,7 @@ const ModalToanha = ({
               }}
             />
           ) : (
-            <Text allowFontScaling={false} style={styles.errorText}>
+            <Text allowFontScaling={false}  style={styles.errorText}>
               Không có dữ liệu tầng.
             </Text>
           )}

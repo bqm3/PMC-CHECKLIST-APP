@@ -11,7 +11,7 @@ const VerticalSelect = ({ value,label, selectedItem }) => {
         { alignItems:'center', justifyContent:'center',height: 50 },
       ]}
     >
-      <Text
+      <Text allowFontScaling={false}
         style={
           [styles.customSelect,({ fontWeight: "600" },
           isChecked

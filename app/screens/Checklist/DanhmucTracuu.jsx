@@ -14,6 +14,7 @@ import {
   Modal,
   TouchableHighlight,
   Linking,
+  TouchableWithoutFeedback
 } from "react-native";
 import React, {
   useRef,
@@ -288,7 +289,7 @@ const DanhmucTracuu = () => {
           }}
         >
           <DataTable.Cell style={{ width: 120, justifyContent: "center" }}>
-            <Text
+            <Text allowFontScaling={false}
               style={{ color: isExistIndex ? "white" : "black" }}
               numberOfLines={2}
             >
@@ -296,7 +297,7 @@ const DanhmucTracuu = () => {
             </Text>
           </DataTable.Cell>
           <DataTable.Cell style={{ width: 200, justifyContent: "center" }}>
-            <Text
+            <Text allowFontScaling={false}
               style={{ color: isExistIndex ? "white" : "black" }}
               numberOfLines={3}
             >
@@ -304,7 +305,7 @@ const DanhmucTracuu = () => {
             </Text>
           </DataTable.Cell>
           <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
-            <Text
+            <Text allowFontScaling={false}
               style={{ color: isExistIndex ? "white" : "black" }}
               numberOfLines={2}
             >
@@ -312,7 +313,7 @@ const DanhmucTracuu = () => {
             </Text>
           </DataTable.Cell>
           <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
-            <Text
+            <Text allowFontScaling={false}
               style={{ color: isExistIndex ? "white" : "black" }}
               numberOfLines={2}
             >
@@ -320,7 +321,7 @@ const DanhmucTracuu = () => {
             </Text>
           </DataTable.Cell>
           <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
-            <Text
+            <Text allowFontScaling={false}
               style={{ color: isExistIndex ? "white" : "black" }}
               numberOfLines={2}
             >
@@ -328,7 +329,7 @@ const DanhmucTracuu = () => {
             </Text>
           </DataTable.Cell>
           <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
-            <Text
+            <Text allowFontScaling={false}
               style={{ color: isExistIndex ? "white" : "black" }}
               numberOfLines={2}
             >
@@ -337,7 +338,7 @@ const DanhmucTracuu = () => {
             </Text>
           </DataTable.Cell>
           <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
-            <Text
+            <Text allowFontScaling={false}
               style={{ color: isExistIndex ? "white" : "black" }}
               numberOfLines={2}
             >
@@ -345,7 +346,7 @@ const DanhmucTracuu = () => {
             </Text>
           </DataTable.Cell>
           <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
-            <Text
+            <Text allowFontScaling={false}
               style={{ color: isExistIndex ? "white" : "black" }}
               numberOfLines={2}
             >
@@ -354,7 +355,7 @@ const DanhmucTracuu = () => {
           </DataTable.Cell>
 
           <DataTable.Cell style={{ width: 100, justifyContent: "center" }}>
-            <Text
+            <Text allowFontScaling={false}
               style={{ color: isExistIndex ? "white" : "black" }}
               numberOfLines={2}
             >
@@ -363,7 +364,7 @@ const DanhmucTracuu = () => {
           </DataTable.Cell>
 
           {/* <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
-            <Text
+            <Text allowFontScaling={false}
               style={{ color: isExistIndex ? "white" : "black" }}
               numberOfLines={5}
             >
@@ -405,10 +406,12 @@ const DanhmucTracuu = () => {
   }, []);
 
   const handlePresentModalClose = useCallback(() => {
+    setOpacity(1);
     bottomSheetModalRef?.current?.close();
   });
 
   const handlePresentModalClose2 = useCallback(() => {
+    setOpacity(1);
     bottomSheetModalRef2?.current?.close();
   });
 
@@ -449,10 +452,12 @@ const DanhmucTracuu = () => {
               <ScrollView>
                 {/* Tra cứu  */}
                 <View style={styles.container}>
-                  <Text allowFontScaling={false} style={styles.danhmuc}>
+                <TouchableWithoutFeedback onPress={() => handlePresentModalClose()}>
+                    <View style={{ width: "100%" }}>
+                  <Text allowFontScaling={false}  style={styles.danhmuc}>
                     Tra cứu
                   </Text>
-                  <Text
+                  <Text allowFontScaling={false}
                     style={{
                       fontSize: 18,
                       color: "white",
@@ -462,6 +467,8 @@ const DanhmucTracuu = () => {
                   >
                     Số lượng: {decimalNumber(data?.data?.length)}
                   </Text>
+                  </View>
+                  </TouchableWithoutFeedback>
                   {isLoading === true ? (
                     <View
                       style={{
@@ -495,7 +502,7 @@ const DanhmucTracuu = () => {
                             resizeMode="contain"
                             style={{ height: 24, width: 24 }}
                           />
-                          <Text allowFontScaling={false} style={styles.text}>
+                          <Text allowFontScaling={false}  style={styles.text}>
                             Lọc dữ liệu
                           </Text>
                         </TouchableOpacity>
@@ -541,7 +548,7 @@ const DanhmucTracuu = () => {
                                           }}
                                           numberOfLines={2}
                                         >
-                                          <Text
+                                          <Text allowFontScaling={false}
                                             style={[
                                               styles.text,
                                               { color: "black" },
@@ -559,7 +566,7 @@ const DanhmucTracuu = () => {
                                     keyExtractor={(item, index) =>
                                       `${item?.ID_ChecklistC}_${index}`
                                     }
-                                    scrollEnabled={false}
+                                    scrollEnabled={true}
                                     data={data?.data}
                                     renderItem={_renderItem}
                                   />
@@ -604,7 +611,7 @@ const DanhmucTracuu = () => {
                               resizeMode="contain"
                               style={{ height: 120, width: 120 }}
                             />
-                            <Text
+                            <Text allowFontScaling={false}
                               style={[styles.danhmuc, { paddingVertical: 10 }]}
                             >
                               Không có dữ liệu cần tìm
@@ -728,7 +735,7 @@ const DanhmucTracuu = () => {
             >
               <View style={styles.centeredView}>
                 <View style={styles.modalView}>
-                  <Text allowFontScaling={false} style={styles.modalText}>
+                  <Text allowFontScaling={false}  style={styles.modalText}>
                     Thông tin Checklist
                   </Text>
 
@@ -754,42 +761,42 @@ const DanhmucTracuu = () => {
                         gap: 4,
                       }}
                     >
-                      <Text allowFontScaling={false} style={styles.textModal}>
+                      <Text allowFontScaling={false}  style={styles.textModal}>
                         Tầng:{" "}
                         {
                           newActionCheckList[0]?.ent_checklist?.ent_tang
                             ?.Tentang
                         }
                       </Text>
-                      <Text allowFontScaling={false} style={styles.textModal}>
+                      <Text allowFontScaling={false}  style={styles.textModal}>
                         Khu vực:{" "}
                         {
                           newActionCheckList[0]?.ent_checklist?.ent_khuvuc
                             ?.Tenkhuvuc
                         }
                       </Text>
-                      <Text allowFontScaling={false} style={styles.textModal}>
+                      <Text allowFontScaling={false}  style={styles.textModal}>
                         Tòa nhà:{" "}
                         {
                           newActionCheckList[0]?.ent_checklist?.ent_khuvuc
                             ?.ent_toanha?.Toanha
                         }
                       </Text>
-                      <Text allowFontScaling={false} style={styles.textModal}>
+                      <Text allowFontScaling={false}  style={styles.textModal}>
                         Khối công việc:{" "}
                         {
                           newActionCheckList[0]?.tb_checklistc?.ent_khoicv
                             ?.KhoiCV
                         }
                       </Text>
-                      <Text allowFontScaling={false} style={styles.textModal}>
+                      <Text allowFontScaling={false}  style={styles.textModal}>
                         Người checklist:{" "}
                         {
                           newActionCheckList[0]?.tb_checklistc?.ent_giamsat
                             ?.Hoten
                         }
                       </Text>
-                      <Text allowFontScaling={false} style={styles.textModal}>
+                      <Text allowFontScaling={false}  style={styles.textModal}>
                         Ca làm việc:{" "}
                         {newActionCheckList[0]?.tb_checklistc?.ent_calv?.Tenca}{" "}
                         (
@@ -804,10 +811,10 @@ const DanhmucTracuu = () => {
                         }
                         )
                       </Text>
-                      <Text allowFontScaling={false} style={styles.textModal}>
+                      <Text allowFontScaling={false}  style={styles.textModal}>
                         Kết quả: {newActionCheckList[0]?.Ketqua}
                       </Text>
-                      <Text allowFontScaling={false} style={styles.textModal}>
+                      <Text allowFontScaling={false}  style={styles.textModal}>
                         Ghi chú: {newActionCheckList[0]?.Ghichu}
                       </Text>
                     </View>
@@ -817,7 +824,7 @@ const DanhmucTracuu = () => {
                   onPress={() => handleModalShow(false, 1)}
                   style={styles.buttonImage}
                 >
-                  <Text allowFontScaling={false} style={styles.textImage}>
+                  <Text allowFontScaling={false}  style={styles.textImage}>
                     Close
                   </Text>
                 </TouchableOpacity>

@@ -189,7 +189,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
           }}
         >
           <View style={{ width: "85%" }}>
-            <Text
+            <Text allowFontScaling={false}
               style={{
                 fontSize: 18,
                 color: dataSelect[0] === item ? "white" : "black",
@@ -199,7 +199,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
             >
               {item?.Hangmuc}
             </Text>
-            <Text
+            <Text allowFontScaling={false}
               style={{
                 fontSize: 16,
                 color: dataSelect[0] === item ? "white" : "black",
@@ -266,7 +266,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
                           gap: 8,
                         }}
                       >
-                        <Text allowFontScaling={false} style={styles.text}>
+                        <Text allowFontScaling={false}  style={styles.text}>
                           Số lượng: {decimalNumber(hangMuc?.length)} hạng mục
                         </Text>
                       </View>
@@ -330,8 +330,8 @@ const ThucHienHangmuc = ({ route, navigation }) => {
                       resizeMode="contain"
                       style={{ height: 120, width: 120 }}
                     />
-                    <Text
-                      allowFontScaling={false}
+                    <Text allowFontScaling={false}
+                      
                       style={[styles.danhmuc, { padding: 10 }]}
                     >
                       {isScan
@@ -418,7 +418,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
                   ]}
                 >
                   <ScrollView>
-                    <Text>{tieuChuan} </Text>
+                    <Text allowFontScaling={false}>{tieuChuan} </Text>
                   </ScrollView>
                   <Button
                     text={"Đóng"}

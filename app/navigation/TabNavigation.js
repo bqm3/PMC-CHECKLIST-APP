@@ -56,8 +56,8 @@ const HomeStack = ({ navigation }) => {
           },
           headerBackTitleVisible: false,
           headerTitle: () => (
-            <Text
-              allowFontScaling={false}
+            <Text allowFontScaling={false}
+              
               style={{ fontSize: 20, fontWeight: "700", color: "white" }}
             >
               CHECKLIST - PMC
@@ -83,8 +83,8 @@ const HomeStack = ({ navigation }) => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text
-              allowFontScaling={false}
+            <Text allowFontScaling={false}
+              
               style={{ fontSize: 20, fontWeight: "700", color: "white" }}
             >
               Thông tin cá nhân
@@ -112,8 +112,8 @@ const HomeStack = ({ navigation }) => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text
-              allowFontScaling={false}
+            <Text allowFontScaling={false}
+              
               style={{ fontSize: 20, fontWeight: "700", color: "white" }}
             >
               Thực hiện Checklist
@@ -142,8 +142,8 @@ const HomeStack = ({ navigation }) => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text
-              allowFontScaling={false}
+            <Text allowFontScaling={false}
+              
               style={{ fontSize: 20, fontWeight: "700", color: "white" }}
             >
               Hạng mục theo khu vực
@@ -172,8 +172,8 @@ const HomeStack = ({ navigation }) => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text
-              allowFontScaling={false}
+            <Text allowFontScaling={false}
+              
               style={{ fontSize: 20, fontWeight: "700", color: "white" }}
             >
               Khu vực
@@ -202,8 +202,8 @@ const HomeStack = ({ navigation }) => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text
-              allowFontScaling={false}
+            <Text allowFontScaling={false}
+              
               style={{ fontSize: 20, fontWeight: "700", color: "white" }}
             >
               Hạng mục
@@ -231,8 +231,8 @@ const HomeStack = ({ navigation }) => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text
-              allowFontScaling={false}
+            <Text allowFontScaling={false}
+              
               style={{ fontSize: 20, fontWeight: "700", color: "white" }}
             >
               Danh mục Khu vực
@@ -260,8 +260,8 @@ const HomeStack = ({ navigation }) => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text
-              allowFontScaling={false}
+            <Text allowFontScaling={false}
+              
               style={{ fontSize: 20, fontWeight: "700", color: "white" }}
             >
               Danh mục Check list
@@ -289,8 +289,8 @@ const HomeStack = ({ navigation }) => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text
-              allowFontScaling={false}
+            <Text allowFontScaling={false}
+              
               style={{ fontSize: 20, fontWeight: "700", color: "white" }}
             >
               Danh mục Giám sát
@@ -319,8 +319,8 @@ const HomeStack = ({ navigation }) => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text
-              allowFontScaling={false}
+            <Text allowFontScaling={false}
+              
               style={{ fontSize: 20, fontWeight: "700", color: "white" }}
             >
               Danh mục Ca làm việc
@@ -349,8 +349,8 @@ const HomeStack = ({ navigation }) => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text
-              allowFontScaling={false}
+            <Text allowFontScaling={false}
+              
               style={{ fontSize: 20, fontWeight: "700", color: "white" }}
             >
               Danh mục tòa nhà
@@ -379,8 +379,8 @@ const HomeStack = ({ navigation }) => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text
-              allowFontScaling={false}
+            <Text allowFontScaling={false}
+              
               style={{ fontSize: 20, fontWeight: "700", color: "white" }}
             >
               Quản lý người dùng
@@ -408,8 +408,8 @@ const HomeStack = ({ navigation }) => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text
-              allowFontScaling={false}
+            <Text allowFontScaling={false}
+              
               style={{ fontSize: 20, fontWeight: "700", color: "white" }}
             >
               Danh mục dự án
@@ -438,8 +438,8 @@ const HomeStack = ({ navigation }) => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text
-              allowFontScaling={false}
+            <Text allowFontScaling={false}
+              
               style={{ fontSize: 20, fontWeight: "700", color: "white" }}
             >
               Thống kê và tra cứu
@@ -467,8 +467,8 @@ const HomeStack = ({ navigation }) => {
         options={({ route, navigation }) => ({
           headerShown: true,
           headerTitle: () => (
-            <Text
-              allowFontScaling={false}
+            <Text allowFontScaling={false}
+              
               style={{ fontSize: 20, fontWeight: "700", color: "white" }}
             >
               Chi tiết Checklist

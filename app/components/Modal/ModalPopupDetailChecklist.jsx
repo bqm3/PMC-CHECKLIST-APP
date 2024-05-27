@@ -55,7 +55,7 @@ const ModalPopupDetailChecklist = ({
     <View style={{ width: SIZES.width - 60 }}>
       {step === 1 && (
         <View>
-          <Text allowFontScaling={false} style={styles.text}>
+          <Text allowFontScaling={false}  style={styles.text}>
             Trạng thái
           </Text>
           <SelectDropdown
@@ -95,7 +95,7 @@ const ModalPopupDetailChecklist = ({
                     height: 50,
                   }}
                 >
-                  <Text allowFontScaling={false} style={[styles.text]}>
+                  <Text allowFontScaling={false}  style={[styles.text]}>
                     {selectedItem}
                   </Text>
                 </View>
@@ -148,7 +148,7 @@ const ModalPopupDetailChecklist = ({
                   style={{ flexDirection: "row", alignItems: "center", gap: 2 }}
                 >
                   <AntDesign name="close" size={24} color="black" />
-                  <Text style={{ fontSize: 16, fontWeight: "600" }}>Clear</Text>
+                  <Text allowFontScaling={false} style={{ fontSize: 16, fontWeight: "600" }}>Clear</Text>
                 </TouchableOpacity>
               )}
             </View>
@@ -171,11 +171,11 @@ const ModalPopupDetailChecklist = ({
       )}
       {step === 3 && (
         <View>
-          <Text allowFontScaling={false} style={styles.text}>
+          <Text allowFontScaling={false}  style={styles.text}>
             Ghi chú
           </Text>
-          <TextInput
-            allowFontScaling={false}
+          <TextInput allowFontScaling={false}
+            
             value={ghichu}
             placeholder="Thêm ghi chú"
             placeholderTextColor="gray"

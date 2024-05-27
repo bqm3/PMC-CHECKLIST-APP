@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useHeaderHeight } from "@react-navigation/elements";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { COLORS } from "../../constants/theme";
 import KeyboardAvoidingComponent from "../KeyboardAvoidingComponent";
@@ -34,9 +34,9 @@ const ModalCalamviec = ({
   const defaultKhoi = ent_khoicv?.find(
     (Khoi) => Khoi.ID_Khoi === dataInput?.khoicv
   );
-
-  const ref = useRef(null);
   const height = useHeaderHeight();
+  const [tenCa, setTenCa] = useState(dataInput?.tenca);
+  
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <KeyboardAvoidingView
@@ -106,7 +106,7 @@ const ModalCalamviec = ({
             </Text>
             <TextInput
               allowFontScaling={false}
-              value={dataInput.tenca}
+              value={tenCa}
               placeholder="Nhập tên ca thực hiện checklist"
               placeholderTextColor="gray"
               style={[
@@ -116,7 +116,10 @@ const ModalCalamviec = ({
                 },
               ]}
               autoCapitalize="sentences"
-              onChangeText={(val) => handleChangeText("tenca", val)}
+              onChangeText={(val) => {
+                handleChangeText("tenca", val);
+                setTenCa(val);
+              }}
             />
 
             <Text allowFontScaling={false} style={styles.text}>

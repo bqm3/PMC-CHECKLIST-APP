@@ -199,10 +199,10 @@ const LoginScreen = ({ navigation }) => {
                     }}
                   >
                     <View style={{ height: 20 }}></View>
-                    {/* <Text style={styles.paragraph}>{text}</Text> */}
+                    {/* <Text allowFontScaling={false} style={styles.paragraph}>{text}</Text> */}
                     <View style={styles.action}>
-                      <TextInput
-                        allowFontScaling={false}
+                      <TextInput allowFontScaling={false}
+                        
                         placeholder="Nhập tài khoản"
                         placeholderTextColor="gray"
                         style={[styles.textInput]}
@@ -218,8 +218,8 @@ const LoginScreen = ({ navigation }) => {
                     </View>
 
                     <View style={styles.action}>
-                      <TextInput
-                        allowFontScaling={false}
+                      <TextInput allowFontScaling={false}
+                        
                         placeholder="Nhập mật khẩu"
                         placeholderTextColor="gray"
                         style={[styles.textInput]}
@@ -263,8 +263,8 @@ const LoginScreen = ({ navigation }) => {
                     </View>
                     {/* </HideKeyboard> */}
                     <View style={styles.action}>
-                      <TextInput
-                        allowFontScaling={false}
+                      <TextInput allowFontScaling={false}
+                        
                         placeholder="Email cá nhân"
                         value={data.Emails}
                         editable={false}
@@ -276,8 +276,8 @@ const LoginScreen = ({ navigation }) => {
                     </View>
 
                     <View style={styles.action}>
-                      <TextInput
-                        allowFontScaling={false}
+                      <TextInput allowFontScaling={false}
+                        
                         placeholder="Dự án tham dự"
                         value={data.Duan}
                         editable={false}
@@ -295,13 +295,13 @@ const LoginScreen = ({ navigation }) => {
                         onPress={handleToggle}
                       />
                       <TouchableOpacity onPress={handlePresentModalPress}>
-                        <Text
-                          allowFontScaling={false}
+                        <Text allowFontScaling={false}
+                          
                           style={[styles.label, { textDecorationLine: "none" }]}
                         >
                           Tôi đồng ý các{" "}
-                          <Text style={styles.label}>điều khoản</Text> và{" "}
-                          <Text style={styles.label}>điều kiện</Text> của PMC
+                          <Text allowFontScaling={false} style={styles.label}>điều khoản</Text> và{" "}
+                          <Text allowFontScaling={false} style={styles.label}>điều kiện</Text> của PMC
                         </Text>
                       </TouchableOpacity>
                     </View>

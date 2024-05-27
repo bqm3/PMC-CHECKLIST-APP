@@ -13,6 +13,7 @@ import {
   ActivityIndicator,
   Modal,
   TouchableHighlight,
+  TouchableWithoutFeedback,
 } from "react-native";
 import React, {
   useRef,
@@ -65,8 +66,6 @@ const headerList = [
     til: "Bộ phận",
     width: 120,
   },
-
- 
 ];
 
 const DanhmucChecklist = ({ navigation }) => {
@@ -138,13 +137,12 @@ const DanhmucChecklist = ({ navigation }) => {
     Giatrinhan: "",
     Sothutu: "",
   });
-  const [hangMuc, setHangMuc] = useState(ent_hangmuc)
+  const [hangMuc, setHangMuc] = useState(ent_hangmuc);
 
   const [isEnabled, setIsEnabled] = useState(true);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
 
   const [status, setStatus] = useState(false);
-  
 
   const init_checklist = async () => {
     await dispath(
@@ -194,21 +192,28 @@ const DanhmucChecklist = ({ navigation }) => {
   }, []);
 
   const asyncHangMuc = async () => {
-    await axios.get(BASE_URL+`/ent_hangmuc/filter/${dataInput?.ID_Khuvuc || isFilterData.ID_Khuvuc}`, {
-      headers: {
-        Accept: "application/json",
-        Authorization: "Bearer " + authToken,
-      },
-    })
-    .then((res)=> {
-      setHangMuc(res.data.data)
-    })
-    .catch((err) => console.log('err',err))
-  }
+    await axios
+      .get(
+        BASE_URL +
+          `/ent_hangmuc/filter/${
+            dataInput?.ID_Khuvuc || isFilterData.ID_Khuvuc
+          }`,
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: "Bearer " + authToken,
+          },
+        }
+      )
+      .then((res) => {
+        setHangMuc(res.data.data);
+      })
+      .catch((err) => console.log("err", err));
+  };
 
-  useEffect(()=> {
-    asyncHangMuc()
-  }, [dataInput.ID_Khuvuc, isFilterData.ID_Khuvuc])
+  useEffect(() => {
+    asyncHangMuc();
+  }, [dataInput.ID_Khuvuc, isFilterData.ID_Khuvuc]);
 
   useEffect(() => {
     init_calv(dataCheckKhuvuc.ID_KhoiCV);
@@ -536,10 +541,10 @@ const DanhmucChecklist = ({ navigation }) => {
               },
               { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
             ]);
-          })
+          });
       } catch (error) {
         setLoadingSubmit(false);
-       
+
         if (error.response) {
           // Lỗi từ phía server (có response từ server)
           Alert.alert("PMC Thông báo", error.response.data.message, [
@@ -572,7 +577,6 @@ const DanhmucChecklist = ({ navigation }) => {
           ]);
         }
       }
-     
     }
   };
 
@@ -671,7 +675,7 @@ const DanhmucChecklist = ({ navigation }) => {
     setFilters({
       ID_Tang: false,
       ID_Khuvuc: false,
-      ID_Hangmuc: false
+      ID_Hangmuc: false,
     });
     setIsCheckUpdate({
       check: false,
@@ -729,6 +733,7 @@ const DanhmucChecklist = ({ navigation }) => {
 
           <DataTable.Cell style={{ width: 150 }}>
             <Text
+              allowFontScaling={false}
               style={{ color: isExistIndex ? "white" : "black" }}
               numberOfLines={3}
             >
@@ -737,6 +742,7 @@ const DanhmucChecklist = ({ navigation }) => {
           </DataTable.Cell>
           <DataTable.Cell style={{ width: 120, justifyContent: "center" }}>
             <Text
+              allowFontScaling={false}
               style={{ color: isExistIndex ? "white" : "black" }}
               numberOfLines={2}
             >
@@ -746,6 +752,7 @@ const DanhmucChecklist = ({ navigation }) => {
           </DataTable.Cell>
           <DataTable.Cell style={{ width: 120 }}>
             <Text
+              allowFontScaling={false}
               style={{ color: isExistIndex ? "white" : "black" }}
               numberOfLines={2}
             >
@@ -753,7 +760,7 @@ const DanhmucChecklist = ({ navigation }) => {
             </Text>
           </DataTable.Cell>
           {/* <DataTable.Cell style={{ width: 150 }}>
-            <Text
+            <Text allowFontScaling={false} 
               style={{ color: isExistIndex ? "white" : "black" }}
               numberOfLines={2}
             >
@@ -761,7 +768,7 @@ const DanhmucChecklist = ({ navigation }) => {
             </Text>
           </DataTable.Cell>
           <DataTable.Cell style={{ width: 100, justifyContent: "center" }}>
-            <Text
+            <Text allowFontScaling={false} 
               style={{ color: isExistIndex ? "white" : "black" }}
               numberOfLines={2}
             >
@@ -769,7 +776,7 @@ const DanhmucChecklist = ({ navigation }) => {
             </Text>
           </DataTable.Cell>
           <DataTable.Cell style={{ width: 100, justifyContent: "center" }}>
-            <Text
+            <Text allowFontScaling={false} 
               style={{ color: isExistIndex ? "white" : "black" }}
               numberOfLines={2}
             >
@@ -788,10 +795,9 @@ const DanhmucChecklist = ({ navigation }) => {
     arrayId = [];
   }
 
-  console.log('listChecklist?.data',listChecklist?.data)
-
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
+      {/* <TouchableWithoutFeedback onPress={() => handleCloseModal()}> */}
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={{ flex: 1 }}
@@ -810,19 +816,25 @@ const DanhmucChecklist = ({ navigation }) => {
               }}
             >
               <View style={styles.container}>
-                <Text allowFontScaling={false} style={styles.danhmuc}>
-                  Danh mục Checklist
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 18,
-                    color: "white",
-                    fontWeight: "600",
-                    paddingBottom: 20,
-                  }}
-                >
-                  Số lượng: {decimalNumber(listChecklist?.data?.length)}
-                </Text>
+                <TouchableWithoutFeedback onPress={() => handleCloseModal()}>
+                  <View style={{ width: "100%" }}>
+                    <Text allowFontScaling={false} style={styles.danhmuc}>
+                      Danh mục Checklist
+                    </Text>
+                    <Text
+                      allowFontScaling={false}
+                      style={{
+                        fontSize: 18,
+                        color: "white",
+                        fontWeight: "600",
+                        paddingBottom: 20,
+                      }}
+                    >
+                      Số lượng: {decimalNumber(listChecklist?.data?.length)}
+                    </Text>
+                  </View>
+                </TouchableWithoutFeedback>
+
                 {isLoading === true ? (
                   <View
                     style={{
@@ -923,6 +935,7 @@ const DanhmucChecklist = ({ navigation }) => {
                                       numberOfLines={2}
                                     >
                                       <Text
+                                        allowFontScaling={false}
                                         style={[
                                           styles.text,
                                           { color: "black" },
@@ -941,7 +954,7 @@ const DanhmucChecklist = ({ navigation }) => {
                                   keyExtractor={(item, index) =>
                                     `${item?.ID_Khuvuc}_${index}`
                                   }
-                                  scrollEnabled={false}
+                                  scrollEnabled={true}
                                   data={listChecklist?.data}
                                   renderItem={_renderItem}
                                 />
@@ -986,6 +999,7 @@ const DanhmucChecklist = ({ navigation }) => {
                             style={{ height: 120, width: 120 }}
                           />
                           <Text
+                            allowFontScaling={false}
                             style={[styles.danhmuc, { paddingVertical: 10 }]}
                           >
                             Bạn chưa thêm dữ liệu nào
@@ -1090,14 +1104,14 @@ const DanhmucChecklist = ({ navigation }) => {
             >
               <View style={styles.centeredView}>
                 <View style={styles.modalView}>
-                  <View  style={{padding: 8}}>
-                  <Text allowFontScaling={false} style={styles.modalText}>
-                    Thông tin checklist chi tiết
-                  </Text>
-                  <ModalChecklistInfo
-                    dataModal={dataModal}
-                    handleToggleModal={handleToggleModal}
-                  />
+                  <View style={{ padding: 8 }}>
+                    <Text allowFontScaling={false} style={styles.modalText}>
+                      Thông tin checklist chi tiết
+                    </Text>
+                    <ModalChecklistInfo
+                      dataModal={dataModal}
+                      handleToggleModal={handleToggleModal}
+                    />
                   </View>
                 </View>
               </View>
@@ -1142,6 +1156,7 @@ const DanhmucChecklist = ({ navigation }) => {
           </ImageBackground>
         </BottomSheetModalProvider>
       </KeyboardAvoidingView>
+      {/* </TouchableWithoutFeedback> */}
     </GestureHandlerRootView>
   );
 };

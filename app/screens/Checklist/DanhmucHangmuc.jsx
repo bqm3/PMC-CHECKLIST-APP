@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
+  TouchableWithoutFeedback,
 } from "react-native";
 import React, {
   useRef,
@@ -25,21 +26,15 @@ import {
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import moment from "moment";
 import ButtonChecklist from "../../components/Button/ButtonCheckList";
 import { COLORS, SIZES } from "../../constants/theme";
-import { AntDesign, Ionicons } from "@expo/vector-icons";
 
 import {
-  ent_toanha_get,
-  ent_khoicv_get,
   ent_khuvuc_get,
   ent_hangmuc_get,
 } from "../../redux/actions/entActions";
 import axios from "axios";
 import { BASE_URL } from "../../constants/config";
-import ItemKhuVuc from "../../components/Item/ItemKhuVuc";
-import ModalKhuvuc from "../../components/Modal/ModalKhuvuc";
 import ItemHangmuc from "../../components/Item/ItemHangmuc";
 import ModalHangmuc from "../../components/Modal/ModalHangmuc";
 
@@ -49,7 +44,7 @@ const DanhmucHangmuc = ({ navigation }) => {
   const { user, authToken } = useSelector((state) => state.authReducer);
 
   const bottomSheetModalRef = useRef(null);
-  const snapPoints = useMemo(() => ["90%"], []);
+  const snapPoints = useMemo(() => ["80%"], []);
   const [opacity, setOpacity] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
@@ -128,7 +123,7 @@ const DanhmucHangmuc = ({ navigation }) => {
         init_hangmuc();
         handleAdd();
         handleCloseModal();
-        handlePresentModalClose()
+        handlePresentModalClose();
         setLoadingSubmit(false);
         Alert.alert("PMC Thông báo", response.data.message, [
           {
@@ -140,7 +135,7 @@ const DanhmucHangmuc = ({ navigation }) => {
         ]);
       } catch (error) {
         setLoadingSubmit(false);
-       
+
         if (error.response) {
           // Lỗi từ phía server (có response từ server)
           Alert.alert("PMC Thông báo", error.response.data.message, [
@@ -220,7 +215,7 @@ const DanhmucHangmuc = ({ navigation }) => {
             init_hangmuc();
             handleAdd();
             handleCloseModal();
-            handlePresentModalClose()
+            handlePresentModalClose();
             setLoadingSubmit(false);
             Alert.alert("PMC Thông báo", response.data.message, [
               {
@@ -349,6 +344,7 @@ const DanhmucHangmuc = ({ navigation }) => {
       Hangmuc: "",
       Tieuchuankt: "",
     });
+    bottomSheetModalRef.current?.close();
   };
 
   const decimalNumber = (number) => {
@@ -378,9 +374,13 @@ const DanhmucHangmuc = ({ navigation }) => {
                 }}
               >
                 <View style={styles.container}>
-                  <Text allowFontScaling={false} style={styles.danhmuc}>
-                    Danh mục hạng mục
-                  </Text>
+                  <TouchableWithoutFeedback onPress={() => handleCloseModal()}>
+                    <View style={{ width: "100%" }}>
+                      <Text allowFontScaling={false} style={styles.danhmuc}>
+                        Danh mục hạng mục
+                      </Text>
+                    </View>
+                  </TouchableWithoutFeedback>
                   {isLoading === true ? (
                     <View
                       style={{
@@ -396,25 +396,31 @@ const DanhmucHangmuc = ({ navigation }) => {
                     <>
                       {ent_hangmuc && ent_hangmuc.length > 0 ? (
                         <>
-                          <View
-                            style={{
-                              flexDirection: "row",
-                              alignContent: "center",
-                              alignItems: "center",
-                              justifyContent: "space-between",
-                            }}
+                          <TouchableWithoutFeedback
+                            onPress={() => handleCloseModal()}
                           >
-                            <Text allowFontScaling={false} style={styles.text}>
-                              Số lượng: {decimalNumber(ent_hangmuc?.length)}
-                            </Text>
-                            <ButtonChecklist
-                              text={"Thêm mới"}
-                              width={"auto"}
-                              color={COLORS.bg_button}
-                              onPress={handlePresentModalPress}
-                            />
-                          </View>
-
+                            <View
+                              style={{
+                                flexDirection: "row",
+                                alignContent: "center",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                              }}
+                            >
+                              <Text
+                                allowFontScaling={false}
+                                style={styles.text}
+                              >
+                                Số lượng: {decimalNumber(ent_hangmuc?.length)}
+                              </Text>
+                              <ButtonChecklist
+                                text={"Thêm mới"}
+                                width={"auto"}
+                                color={COLORS.bg_button}
+                                onPress={handlePresentModalPress}
+                              />
+                            </View>
+                          </TouchableWithoutFeedback>
                           <FlatList
                             horizontal={false}
                             contentContainerStyle={{ flexGrow: 1 }}
@@ -452,6 +458,7 @@ const DanhmucHangmuc = ({ navigation }) => {
                               style={{ height: 120, width: 120 }}
                             />
                             <Text
+                              allowFontScaling={false}
                               style={[styles.danhmuc, { paddingVertical: 10 }]}
                             >
                               Bạn chưa thêm dữ liệu nào
