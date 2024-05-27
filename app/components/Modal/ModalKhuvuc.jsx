@@ -26,7 +26,7 @@ const ModalKhuvuc = ({
   loadingSubmit,
 }) => {
   const ref = useRef(null);
-  const height = useHeaderHeight();
+  const headerHeight = useHeaderHeight();
   const defaultKhoiCV = ent_khoicv?.find(
     (khoicv) => khoicv.ID_Khoi === dataInput?.khoicv
   );
@@ -42,6 +42,7 @@ const ModalKhuvuc = ({
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <KeyboardAvoidingView
+        keyboardVerticalOffset={headerHeight}
         behavior={Platform.OS === "ios" ? "padding" : null}
         style={{ flex: 1 }}
       >

@@ -9,6 +9,7 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
+import { useHeaderHeight } from "@react-navigation/elements";
 import React, { useRef, useState } from "react";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
@@ -49,6 +50,8 @@ const ModalGiamsat = ({
 }) => {
   const ref = useRef(null);
 
+  const height = useHeaderHeight();
+
   const defaultChucvu = ent_chucvu?.find(
     (chucvu) => chucvu.ID_Chucvu === dataInput?.ID_Chucvu
   );
@@ -65,6 +68,7 @@ const ModalGiamsat = ({
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <KeyboardAvoidingView
+        keyboardVerticalOffset={height}
         behavior={Platform.OS === "ios" ? "padding" : null}
         style={{ flex: 1 }}
       >

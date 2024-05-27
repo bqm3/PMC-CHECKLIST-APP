@@ -35,10 +35,11 @@ const ModalHangmuc = ({
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : null}
-        style={{ flex: 1 }}
-      >
+    <KeyboardAvoidingView
+      keyboardVerticalOffset={height}
+      behavior={Platform.OS === "ios" ? "padding" : null}
+      style={{ flex: 1 }}
+    >
         <View style={{ margin: 20 }}>
           <View style={{ justifyContent: "space-around", width: "100%" }}>
             {/* select  khu vuc */}
