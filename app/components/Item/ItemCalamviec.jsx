@@ -16,11 +16,13 @@ const ItemCalamviec = ({ item, handleEditEnt, handleAlertDelete }) => {
         borderRadius: 16,
       }}
     >
-      <View>
-        <Text allowFontScaling={false}   style={[styles.title, { fontSize: 18 }]}>
+      <View style={{ width: "80%"}}>
+        <Text allowFontScaling={false} style={[styles.title, { fontSize: 18 }]}>
           {item?.ent_khoicv?.KhoiCV}
         </Text>
-        <Text allowFontScaling={false}   style={styles.title}>Ca làm việc: {item?.Tenca}</Text>
+        <Text allowFontScaling={false} numberOfLines={4} style={[styles.title]}>
+          Ca làm việc: {item?.Tenca}
+        </Text>
 
         <View
           style={{
@@ -30,7 +32,10 @@ const ItemCalamviec = ({ item, handleEditEnt, handleAlertDelete }) => {
           }}
         >
           <Feather name="clock" size={16} color="gray" />
-          <Text allowFontScaling={false}   style={{ paddingVertical: 2, color: "gray", paddingLeft: 4 }}>
+          <Text
+            allowFontScaling={false}
+            style={{ paddingVertical: 2, color: "gray", paddingLeft: 4 }}
+          >
             Từ {item?.Giobatdau} đến {item?.Gioketthuc}
           </Text>
         </View>

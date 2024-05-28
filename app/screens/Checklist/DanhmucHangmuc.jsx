@@ -482,7 +482,7 @@ const DanhmucHangmuc = ({ navigation }) => {
                 snapPoints={snapPoints}
                 onChange={handleSheetChanges}
               >
-                <BottomSheetScrollView style={styles.contentContainer}>
+                <View style={styles.contentContainer}>
                   <ModalHangmuc
                     ent_khuvuc={ent_khuvuc}
                     ent_hangmuc={ent_hangmuc}
@@ -493,7 +493,7 @@ const DanhmucHangmuc = ({ navigation }) => {
                     handlePushDataEdit={handlePushDataEdit}
                     loadingSubmit={loadingSubmit}
                   />
-                </BottomSheetScrollView>
+                </View>
               </BottomSheetModal>
             </ImageBackground>
           </BottomSheetModalProvider>
@@ -507,6 +507,10 @@ const styles = StyleSheet.create({
   container: {
     margin: 20,
     flex: 1,
+  },
+  contentContainer: {
+    flex: 1,
+    alignItems: "center",
   },
   danhmuc: {
     fontSize: 25,

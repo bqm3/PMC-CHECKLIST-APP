@@ -6,7 +6,10 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
+  Keyboard,
+  TouchableWithoutFeedback,
 } from "react-native";
+import BottomSheet, { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useHeaderHeight } from "@react-navigation/elements";
 import React, { useRef, useState } from "react";
@@ -36,7 +39,7 @@ const ModalCalamviec = ({
   );
   const height = useHeaderHeight();
   const [tenCa, setTenCa] = useState(dataInput?.tenca);
-  
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <KeyboardAvoidingView
@@ -44,178 +47,180 @@ const ModalCalamviec = ({
         behavior={Platform.OS === "ios" ? "padding" : null}
         style={{ flex: 1 }}
       >
-        <View style={{ margin: 20 }}>
-          <View style={{ justifyContent: "space-around", width: "100%" }}>
-            <Text allowFontScaling={false} style={styles.text}>
-              Khối công việc
-            </Text>
+        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+          <View style={{ margin: 20 }}>
+            <View style={{ justifyContent: "space-around", width: "100%" }}>
+              <Text allowFontScaling={false} style={styles.text}>
+                Khối công việc
+              </Text>
 
-            <SelectDropdown
-              data={ent_khoicv ? ent_khoicv : []}
-              buttonStyle={styles.select}
-              dropdownStyle={{
-                borderRadius: 8,
-                maxHeight: 400,
-              }}
-              // rowStyle={{ height: 50, justifyContent: "center" }}
-              defaultButtonText={"Khối công việc"}
-              buttonTextStyle={styles.customText}
-              defaultValue={defaultKhoi}
-              onSelect={(selectedItem, index) => {
-                handleChangeText("khoicv", selectedItem.ID_Khoi);
-              }}
-              renderDropdownIcon={(isOpened) => {
-                return (
-                  <FontAwesome
-                    name={isOpened ? "chevron-up" : "chevron-down"}
-                    color={"#637381"}
-                    size={14}
-                    style={{ marginRight: 10 }}
-                  />
-                );
-              }}
-              dropdownIconPosition={"right"}
-              buttonTextAfterSelection={(selectedItem, index) => {
-                return (
-                  <View
+              <SelectDropdown
+                data={ent_khoicv ? ent_khoicv : []}
+                buttonStyle={styles.select}
+                dropdownStyle={{
+                  borderRadius: 8,
+                  maxHeight: 400,
+                }}
+                // rowStyle={{ height: 50, justifyContent: "center" }}
+                defaultButtonText={"Khối công việc"}
+                buttonTextStyle={styles.customText}
+                defaultValue={defaultKhoi}
+                onSelect={(selectedItem, index) => {
+                  handleChangeText("khoicv", selectedItem.ID_Khoi);
+                }}
+                renderDropdownIcon={(isOpened) => {
+                  return (
+                    <FontAwesome
+                      name={isOpened ? "chevron-up" : "chevron-down"}
+                      color={"#637381"}
+                      size={14}
+                      style={{ marginRight: 10 }}
+                    />
+                  );
+                }}
+                dropdownIconPosition={"right"}
+                buttonTextAfterSelection={(selectedItem, index) => {
+                  return (
+                    <View
+                      style={{
+                        justifyContent: "center",
+                        alignContent: "center",
+                        height: 50,
+                      }}
+                    >
+                      <Text allowFontScaling={false} style={styles.text}>
+                        {selectedItem?.KhoiCV}
+                      </Text>
+                    </View>
+                  );
+                }}
+                renderCustomizedRowChild={(item, index) => {
+                  return (
+                    <VerticalSelect
+                      value={item.ID_Khoi}
+                      label={item.KhoiCV}
+                      key={index}
+                      selectedItem={dataInput.khoicv}
+                    />
+                  );
+                }}
+              />
+              <Text allowFontScaling={false} style={styles.text}>
+                Tên ca
+              </Text>
+              <BottomSheetTextInput
+                allowFontScaling={false}
+                value={tenCa}
+                placeholder="Nhập tên ca thực hiện checklist"
+                placeholderTextColor="gray"
+                style={[
+                  styles.textInput,
+                  {
+                    paddingHorizontal: 10,
+                  },
+                ]}
+                autoCapitalize="sentences"
+                onChangeText={(val) => {
+                  handleChangeText("tenca", val);
+                  setTenCa(val);
+                }}
+              />
+
+              <Text allowFontScaling={false} style={styles.text}>
+                Giờ bắt đầu
+              </Text>
+              <TouchableOpacity onPress={() => showDatePicker("giobd")}>
+                <View style={styles.action}>
+                  <TextInput
+                    allowFontScaling={false}
+                    value={dataInput.giobd}
+                    placeholder="Nhập giờ bắt đầu ca làm việc"
+                    placeholderTextColor="gray"
                     style={{
-                      justifyContent: "center",
-                      alignContent: "center",
+                      paddingLeft: 12,
+                      color: "#05375a",
+                      width: "80%",
+                      fontSize: 16,
                       height: 50,
                     }}
-                  >
-                    <Text allowFontScaling={false} style={styles.text}>
-                      {selectedItem?.KhoiCV}
-                    </Text>
-                  </View>
-                );
-              }}
-              renderCustomizedRowChild={(item, index) => {
-                return (
-                  <VerticalSelect
-                    value={item.ID_Khoi}
-                    label={item.KhoiCV}
-                    key={index}
-                    selectedItem={dataInput.khoicv}
+                    pointerEvents="none"
                   />
-                );
-              }}
-            />
-            <Text allowFontScaling={false} style={styles.text}>
-              Tên ca
-            </Text>
-            <TextInput
-              allowFontScaling={false}
-              value={tenCa}
-              placeholder="Nhập tên ca thực hiện checklist"
-              placeholderTextColor="gray"
-              style={[
-                styles.textInput,
-                {
-                  paddingHorizontal: 10,
-                },
-              ]}
-              autoCapitalize="sentences"
-              onChangeText={(val) => {
-                handleChangeText("tenca", val);
-                setTenCa(val);
-              }}
-            />
-
-            <Text allowFontScaling={false} style={styles.text}>
-              Giờ bắt đầu
-            </Text>
-            <TouchableOpacity onPress={() => showDatePicker("giobd")}>
-              <View style={styles.action}>
-                <TextInput
-                  allowFontScaling={false}
-                  value={dataInput.giobd}
-                  placeholder="Nhập giờ bắt đầu ca làm việc"
-                  placeholderTextColor="gray"
-                  style={{
-                    paddingLeft: 12,
-                    color: "#05375a",
-                    width: "80%",
-                    fontSize: 16,
-                    height: 50,
-                  }}
-                  pointerEvents="none"
+                  <TouchableOpacity
+                    onPress={() => showDatePicker("giobd")}
+                    style={{
+                      justifyContent: "center",
+                      alignItems: "center",
+                      height: 50,
+                      width: 50,
+                    }}
+                  >
+                    <AntDesign name="calendar" size={24} color="black" />
+                  </TouchableOpacity>
+                </View>
+                <DateTimePickerModal
+                  isVisible={isDatePickerVisible.giobd}
+                  mode="time"
+                  isDarkModeEnabled={true}
+                  onConfirm={(date) => handleConfirm("giobd", date)}
+                  onCancel={hideDatePicker}
                 />
-                <TouchableOpacity
-                  onPress={() => showDatePicker("giobd")}
-                  style={{
-                    justifyContent: "center",
-                    alignItems: "center",
-                    height: 50,
-                    width: 50,
-                  }}
-                >
-                  <AntDesign name="calendar" size={24} color="black" />
-                </TouchableOpacity>
-              </View>
-              <DateTimePickerModal
-                isVisible={isDatePickerVisible.giobd}
-                mode="time"
-                isDarkModeEnabled={true}
-                onConfirm={(date) => handleConfirm("giobd", date)}
-                onCancel={hideDatePicker}
-              />
-            </TouchableOpacity>
-            <Text allowFontScaling={false} style={styles.text}>
-              Giờ kết thúc
-            </Text>
-            <TouchableOpacity onPress={() => showDatePicker("giokt")}>
-              <View style={styles.action}>
-                <TextInput
-                  allowFontScaling={false}
-                  value={dataInput.giokt}
-                  placeholder="Nhập giờ kết thúc ca làm việc"
-                  placeholderTextColor="gray"
-                  style={{
-                    paddingLeft: 12,
-                    color: "#05375a",
-                    width: "80%",
-                    fontSize: 16,
-                    height: 50,
-                  }}
-                  pointerEvents="none"
+              </TouchableOpacity>
+              <Text allowFontScaling={false} style={styles.text}>
+                Giờ kết thúc
+              </Text>
+              <TouchableOpacity onPress={() => showDatePicker("giokt")}>
+                <View style={styles.action}>
+                  <TextInput
+                    allowFontScaling={false}
+                    value={dataInput.giokt}
+                    placeholder="Nhập giờ kết thúc ca làm việc"
+                    placeholderTextColor="gray"
+                    style={{
+                      paddingLeft: 12,
+                      color: "#05375a",
+                      width: "80%",
+                      fontSize: 16,
+                      height: 50,
+                    }}
+                    pointerEvents="none"
+                  />
+                  <TouchableOpacity
+                    onPress={() => showDatePicker("giokt")}
+                    style={{
+                      justifyContent: "center",
+                      alignItems: "center",
+                      height: 50,
+                      width: 50,
+                    }}
+                  >
+                    <AntDesign name="calendar" size={24} color="black" />
+                  </TouchableOpacity>
+                </View>
+                <DateTimePickerModal
+                  isVisible={isDatePickerVisible.giokt}
+                  mode="time"
+                  isDarkModeEnabled={true}
+                  onConfirm={(date) => handleConfirm("giokt", date)}
+                  onCancel={hideDatePicker}
                 />
-                <TouchableOpacity
-                  onPress={() => showDatePicker("giokt")}
-                  style={{
-                    justifyContent: "center",
-                    alignItems: "center",
-                    height: 50,
-                    width: 50,
-                  }}
-                >
-                  <AntDesign name="calendar" size={24} color="black" />
-                </TouchableOpacity>
-              </View>
-              <DateTimePickerModal
-                isVisible={isDatePickerVisible.giokt}
-                mode="time"
-                isDarkModeEnabled={true}
-                onConfirm={(date) => handleConfirm("giokt", date)}
-                onCancel={hideDatePicker}
+              </TouchableOpacity>
+            </View>
+            <View style={{ marginTop: 20 }}>
+              <ButtonSubmit
+                text={isCheckUpdate.check ? "Cập nhật" : "Lưu"}
+                width={"auto"}
+                color={"white"}
+                backgroundColor={COLORS.bg_button}
+                isLoading={loadingSubmit}
+                onPress={
+                  isCheckUpdate.check
+                    ? () => handlePushDataEdit(isCheckUpdate.id_calv)
+                    : () => handlePushDataSave()
+                }
               />
-            </TouchableOpacity>
+            </View>
           </View>
-          <View style={{ marginTop: 20 }}>
-            <ButtonSubmit
-              text={isCheckUpdate.check ? "Cập nhật" : "Lưu"}
-              width={"auto"}
-              color={"white"}
-              backgroundColor={COLORS.bg_button}
-              isLoading={loadingSubmit}
-              onPress={
-                isCheckUpdate.check
-                  ? () => handlePushDataEdit(isCheckUpdate.id_calv)
-                  : () => handlePushDataSave()
-              }
-            />
-          </View>
-        </View>
+        </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
     </GestureHandlerRootView>
   );

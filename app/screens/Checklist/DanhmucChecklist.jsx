@@ -1025,7 +1025,7 @@ const DanhmucChecklist = ({ navigation }) => {
               onChange={handleSheetChanges}
               // android_keyboardInputMode="adjustPan"
             >
-              <BottomSheetScrollView
+              <BottomSheetView 
                 style={styles.contentContainer}
                 keyboardShouldPersistTaps="always"
               >
@@ -1050,7 +1050,7 @@ const DanhmucChecklist = ({ navigation }) => {
                   setCalvFilter={setCalvFilter}
                   calvFilter={calvFilter}
                 />
-              </BottomSheetScrollView>
+              </BottomSheetView>
             </BottomSheetModal>
 
             {isCheckbox === true && newActionCheckList?.length > 0 && (
@@ -1167,6 +1167,10 @@ const styles = StyleSheet.create({
   container: {
     margin: 12,
     flex: 1,
+  },
+  contentContainer: {
+    flex: 1,
+    alignItems: 'center',
   },
   danhmuc: {
     fontSize: 25,

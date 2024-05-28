@@ -365,7 +365,8 @@ const DanhmucCalamviec = ({ navigation }) => {
   };
 
   const decimalNumber = (number) => {
-    if (number < 10) return `0${number}`;
+    if (0 < number < 10) return `0${number}`;
+    if (number == 0) return `0`;
     return number;
   };
 
@@ -501,7 +502,7 @@ const DanhmucCalamviec = ({ navigation }) => {
                 snapPoints={snapPoints}
                 onChange={handleSheetChanges}
               >
-                <BottomSheetScrollView style={styles.contentContainer}>
+                <View style={styles.contentContainer}>
                   <ModalCalamviec
                     ent_khoicv={ent_khoicv}
                     handleChangeText={handleChangeText}
@@ -516,7 +517,7 @@ const DanhmucCalamviec = ({ navigation }) => {
                     handlePushDataEdit={handlePushDataEdit}
                     loadingSubmit={loadingSubmit}
                   />
-                </BottomSheetScrollView>
+                </View>
               </BottomSheetModal>
             </ImageBackground>
           </BottomSheetModalProvider>
@@ -530,6 +531,10 @@ const styles = StyleSheet.create({
   container: {
     margin: 20,
     flex: 1,
+  },
+  contentContainer: {
+    flex: 1,
+    alignItems: "center",
   },
   danhmuc: {
     fontSize: 25,

@@ -374,7 +374,6 @@ const DanhmucCalamviec = ({ navigation }) => {
   return (
     <>
       <GestureHandlerRootView style={{ flex: 1 }}>
-        {/* <TouchableWithoutFeedback onPress={() => handleCloseModal()}> */}
           <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : null}
             style={{ flex: 1 }}
@@ -502,7 +501,7 @@ const DanhmucCalamviec = ({ navigation }) => {
                   snapPoints={snapPoints}
                   onChange={handleSheetChanges}
                 >
-                  <BottomSheetScrollView style={styles.contentContainer}>
+                  <View style={styles.contentContainer}>
                     <ModalKhuvuc
                       ent_khoicv={ent_khoicv}
                       ent_toanha={ent_toanha}
@@ -513,12 +512,11 @@ const DanhmucCalamviec = ({ navigation }) => {
                       handlePushDataEdit={handlePushDataEdit}
                       loadingSubmit={loadingSubmit}
                     />
-                  </BottomSheetScrollView>
+                  </View>
                 </BottomSheetModal>
               </ImageBackground>
             </BottomSheetModalProvider>
           </KeyboardAvoidingView>
-        {/* </TouchableWithoutFeedback> */}
       </GestureHandlerRootView>
     </>
   );
@@ -571,6 +569,10 @@ const styles = StyleSheet.create({
     color: COLORS.text_main,
   },
   row: { flexDirection: "row", backgroundColor: "#FFF1C1" },
+  contentContainer: {
+    flex: 1,
+    alignItems: "center",
+  },
 });
 
 export default DanhmucCalamviec;
