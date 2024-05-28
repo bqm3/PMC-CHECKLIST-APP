@@ -706,7 +706,7 @@ const DetailChecklist = ({ route, navigation }) => {
   // view item flatlist
   const renderItem = (item, index) => {
     return (
-      <View style={[styles.content, {backgroundColor: `${item?.Tinhtrang}` === '1' && '#ea9999' }]} key={item?.ID_Checklist}>
+      <View style={[styles.content, {backgroundColor: `${item?.Tinhtrang}` === '1' ? '#ea9999' : 'white' }]} key={item?.ID_Checklist}>
         <View
           style={{
             flexDirection: "row",
