@@ -442,10 +442,9 @@ const DanhmucTracuu = () => {
             resizeMode="cover"
             style={{ flex: 1 }}
           >
-            <View
+            <ScrollView
               style={{
                 flex: 1,
-                justifyContent: "center",
                 opacity: opacity,
               }}
             >
@@ -628,7 +627,7 @@ const DanhmucTracuu = () => {
                   handlePresentModalPress2={handlePresentModalPress2}
                 />
               </ScrollView>
-            </View>
+            </ScrollView>
 
             {/* Bottom sheet modal tra cuu  */}
             <BottomSheetModal

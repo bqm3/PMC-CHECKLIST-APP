@@ -51,8 +51,6 @@ const ModalGiamsat = ({
   handleConfirm,
   loadingSubmit,
 }) => {
-  const ref = useRef(null);
-
   const height = useHeaderHeight();
 
   const defaultChucvu = ent_chucvu?.find(
@@ -65,8 +63,19 @@ const ModalGiamsat = ({
     (duan) => duan.value === dataInput?.gioitinh
   );
 
-  const [hoten, sethoten] = useState(dataInput?.hoten);
-  const [sodienthoai, setsodienthoai] = useState(dataInput?.sodienthoai);
+  const [hoten, setHoten] = useState(dataInput?.hoten);
+  const [sodienthoai, setSodienthoai] = useState(dataInput?.sodienthoai);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const validateText = (input) => {
+    const regex = /^[A-Za-zÀ-ỹà-ỹ\s]+$/; // Chỉ cho phép các chữ cái và khoảng trắng
+    if (regex.test(input)) {
+      setErrorMessage("");
+    } else {
+      setErrorMessage("Chỉ được nhập chữ cái và khoảng trắng");
+    }
+    setHoten(input);
+  };
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -230,10 +239,13 @@ const ModalGiamsat = ({
                   },
                 ]}
                 onChangeText={(val) => {
-                  handleChangeText("hoten", val), sethoten(val);
+                  handleChangeText("hoten", val), setHoten(val);
+                  validateText(val);
                 }}
               />
-
+              {errorMessage ? (
+                <Text style={styles.error}>{errorMessage}</Text>
+              ) : null}
               <Text allowFontScaling={false} style={styles.text}>
                 Số điện thoại
               </Text>
@@ -250,7 +262,7 @@ const ModalGiamsat = ({
                   },
                 ]}
                 onChangeText={(val) => {
-                  handleChangeText("sodienthoai", val), setsodienthoai(val);
+                  handleChangeText("sodienthoai", val), setSodienthoai(val);
                 }}
               />
               <View
@@ -456,5 +468,9 @@ const styles = StyleSheet.create({
   customText: {
     fontWeight: "600",
     fontSize: 15,
+  },
+  error: {
+    color: "red",
+    marginTop: 5,
   },
 });

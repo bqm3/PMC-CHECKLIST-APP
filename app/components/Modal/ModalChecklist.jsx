@@ -523,6 +523,7 @@ const ModalChecklist = ({
                   </Text>
                   <BottomSheetTextInput
                     allowFontScaling={false}
+                    keyboardType="numeric"
                     value={`${sothutu}`}
                     placeholder="Số thứ tự"
                     placeholderTextColor="gray"

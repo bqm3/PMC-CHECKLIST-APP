@@ -25,6 +25,7 @@ import ButtonSubmit from "../components/Button/ButtonSubmit";
 import { logoutAction } from "../redux/actions/authActions";
 import { COLORS } from "../constants/theme";
 import LoginContext from "../context/LoginContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 const Profile = () => {
@@ -116,9 +117,11 @@ const Profile = () => {
     }
   }
 
-  const logout = ()=> {
+  const logout = async()=> {
     dispatch(logoutAction());
     saveStep(1)
+    await AsyncStorage.removeItem("UserName");
+    await AsyncStorage.removeItem("Password");
    }
 
   return (

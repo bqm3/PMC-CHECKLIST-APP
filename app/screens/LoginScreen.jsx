@@ -37,6 +37,7 @@ import {
 } from "@gorhom/bottom-sheet";
 import DataLicense from "../components/PrivacyPolicy";
 import Checkbox from "../components/Active/Checkbox";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const LoginScreen = ({ navigation }) => {
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
@@ -63,19 +64,12 @@ const LoginScreen = ({ navigation }) => {
   const [errorMsg, setErrorMsg] = useState(null);
 
   const handleSubmit = async () => {
-    if (isChecked === false) {
-      Alert.alert(
-        "PMC Thông báo",
-        "Bạn phải xác nhận điều khoản và điều kiện của PMC",
-
-        [{ text: "Xác nhận", onPress: () => console.log("OK Pressed") }]
-      );
-    } else if (data.UserName === "" || data.Password === "") {
+    if (data?.UserName === "" || data?.Password === "") {
       Alert.alert("PMC Thông báo", "Thiếu thông tin đăng nhập", [
         { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
       ]);
     } else {
-      dispatch(login(data.UserName, data.Password));
+      dispatch(login(data?.UserName, data?.Password));
     }
   };
 
@@ -94,19 +88,42 @@ const LoginScreen = ({ navigation }) => {
   };
 
   useEffect(() => {
+    const loadData = async () => {
+      const savedUsername = await AsyncStorage.getItem('UserName');
+      const savedPassword = await AsyncStorage.getItem('Password');
+      if (savedUsername && savedPassword) {
+        setData({
+          ...data,
+          UserName: savedUsername,
+          Password: savedPassword,
+        });
+        setIsChecked(true);
+      }
+    };
+    loadData();
+  }, []);
+
+  useEffect(() => {
     if (user) {
       saveStep(2);
       setData({
-        UserName: data.UserName,
-        Password: data.Password,
+        UserName: data?.UserName,
+        Password: data?.Password,
         Emails: user?.Emails,
         Duan: user?.ent_duan?.Duan,
       });
     }
   }, [user]);
 
-  const handleToggle = () => {
+  const handleToggle = async () => {
     setIsChecked(!isChecked);
+    if (!isChecked) {
+      await AsyncStorage.setItem("UserName", data?.UserName);
+      await AsyncStorage.setItem("Password", data?.Password);
+    } else {
+      await AsyncStorage.removeItem("UserName");
+      await AsyncStorage.removeItem("Password");
+    }
   };
 
   const handleChangeText = (key, value) => {
@@ -201,8 +218,8 @@ const LoginScreen = ({ navigation }) => {
                     <View style={{ height: 20 }}></View>
                     {/* <Text allowFontScaling={false} style={styles.paragraph}>{text}</Text> */}
                     <View style={styles.action}>
-                      <TextInput allowFontScaling={false}
-                        
+                      <TextInput
+                        allowFontScaling={false}
                         placeholder="Nhập tài khoản"
                         placeholderTextColor="gray"
                         style={[styles.textInput]}
@@ -210,7 +227,7 @@ const LoginScreen = ({ navigation }) => {
                         onChangeText={(val) =>
                           handleChangeText("UserName", val)
                         }
-                        defaultValue={data.UserName}
+                        defaultValue={data?.UserName}
                         autoCorrect={false}
                         secureTextEntry={false}
                         underLineColorAndroid="transparent"
@@ -218,13 +235,13 @@ const LoginScreen = ({ navigation }) => {
                     </View>
 
                     <View style={styles.action}>
-                      <TextInput allowFontScaling={false}
-                        
+                      <TextInput
+                        allowFontScaling={false}
                         placeholder="Nhập mật khẩu"
                         placeholderTextColor="gray"
                         style={[styles.textInput]}
                         autoCapitalize="sentences"
-                        value={data.Password}
+                        value={data?.Password}
                         onChangeText={(val) =>
                           handleChangeText("Password", val)
                         }
@@ -263,10 +280,10 @@ const LoginScreen = ({ navigation }) => {
                     </View>
                     {/* </HideKeyboard> */}
                     <View style={styles.action}>
-                      <TextInput allowFontScaling={false}
-                        
+                      <TextInput
+                        allowFontScaling={false}
                         placeholder="Email cá nhân"
-                        value={data.Emails}
+                        value={data?.Emails}
                         editable={false}
                         selectTextOnFocus={false}
                         placeholderTextColor="gray"
@@ -276,10 +293,10 @@ const LoginScreen = ({ navigation }) => {
                     </View>
 
                     <View style={styles.action}>
-                      <TextInput allowFontScaling={false}
-                        
+                      <TextInput
+                        allowFontScaling={false}
                         placeholder="Dự án tham dự"
-                        value={data.Duan}
+                        value={data?.Duan}
                         editable={false}
                         selectTextOnFocus={false}
                         placeholderTextColor="gray"
@@ -295,13 +312,11 @@ const LoginScreen = ({ navigation }) => {
                         onPress={handleToggle}
                       />
                       <TouchableOpacity onPress={handlePresentModalPress}>
-                        <Text allowFontScaling={false}
-                          
+                        <Text
+                          allowFontScaling={false}
                           style={[styles.label, { textDecorationLine: "none" }]}
                         >
-                          Tôi đồng ý các{" "}
-                          <Text allowFontScaling={false} style={styles.label}>điều khoản</Text> và{" "}
-                          <Text allowFontScaling={false} style={styles.label}>điều kiện</Text> của PMC
+                          Lưu tài khoản và mật khẩu
                         </Text>
                       </TouchableOpacity>
                     </View>
@@ -314,6 +329,29 @@ const LoginScreen = ({ navigation }) => {
                       onPress={step === 2 ? handleStep : handleSubmit}
                     />
                   </View>
+                </View>
+                <View
+                  style={[
+                    styles.checkboxContainer,
+                    { marginTop: 30, justifyContent: "center" },
+                  ]}
+                >
+                  <TouchableOpacity onPress={handlePresentModalPress}>
+                    <Text
+                      allowFontScaling={false}
+                      style={[styles.label, { textDecorationLine: "none" }]}
+                    >
+                      Các{" "}
+                      <Text allowFontScaling={false} style={styles.label}>
+                        điều khoản
+                      </Text>{" "}
+                      và{" "}
+                      <Text allowFontScaling={false} style={styles.label}>
+                        điều kiện
+                      </Text>{" "}
+                      của PMC
+                    </Text>
+                  </TouchableOpacity>
                 </View>
               </ScrollView>
             </ImageBackground>
@@ -344,8 +382,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   checkboxContainer: {
-    marginTop: 30,
-    justifyContent: "center",
+    marginTop: 20,
     alignItems: "center",
     flexDirection: "row",
     gap: 4,

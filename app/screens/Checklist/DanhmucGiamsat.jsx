@@ -504,7 +504,7 @@ const DanhmucGiamsat = ({ navigation }) => {
                 snapPoints={snapPoints}
                 onChange={handleSheetChanges}
               >
-                <BottomSheetScrollView style={styles.contentContainer}>
+                <View style={styles.contentContainer}>
                   <ModalGiamsat
                     ent_chucvu={ent_chucvu}
                     ent_duan={ent_duan}
@@ -520,7 +520,7 @@ const DanhmucGiamsat = ({ navigation }) => {
                     handlePushDataEdit={handlePushDataEdit}
                     loadingSubmit={loadingSubmit}
                   />
-                </BottomSheetScrollView>
+                </View>
               </BottomSheetModal>
               <Modal
                 animationType="slide"
@@ -624,6 +624,10 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "600",
     paddingVertical: 10,
+  },
+  contentContainer: {
+    flex: 1,
+    alignItems: "center",
   },
 });
 

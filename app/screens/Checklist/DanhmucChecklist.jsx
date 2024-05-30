@@ -808,10 +808,9 @@ const DanhmucChecklist = ({ navigation }) => {
             resizeMode="cover"
             style={{ flex: 1 }}
           >
-            <View
+            <ScrollView
               style={{
                 flex: 1,
-                justifyContent: "center",
                 opacity: opacity,
               }}
             >
@@ -1016,7 +1015,7 @@ const DanhmucChecklist = ({ navigation }) => {
                   </>
                 )}
               </View>
-            </View>
+            </ScrollView>
 
             <BottomSheetModal
               ref={bottomSheetModalRef}
@@ -1025,10 +1024,7 @@ const DanhmucChecklist = ({ navigation }) => {
               onChange={handleSheetChanges}
               // android_keyboardInputMode="adjustPan"
             >
-              <BottomSheetView 
-                style={styles.contentContainer}
-                keyboardShouldPersistTaps="always"
-              >
+               <View style={styles.contentContainer}>
                 <ModalChecklist
                   ent_tang={ent_tang}
                   ent_khuvuc={ent_khuvuc}
@@ -1050,7 +1046,7 @@ const DanhmucChecklist = ({ navigation }) => {
                   setCalvFilter={setCalvFilter}
                   calvFilter={calvFilter}
                 />
-              </BottomSheetView>
+              </View>
             </BottomSheetModal>
 
             {isCheckbox === true && newActionCheckList?.length > 0 && (
