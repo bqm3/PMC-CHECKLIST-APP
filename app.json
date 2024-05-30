@@ -1,8 +1,9 @@
 {
   "expo": {
     "name": "PMC Checklist",
+    "displayName": "PMC Checklist",
     "slug": "PMC-CHECKLIST-APP",
-    "version": "1.1.4",
+    "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -47,40 +48,39 @@
         "policy": "sdkVersion"
       },
       "infoPlist": {
-        "NSCameraUsageDescription": "Ứng dụng cần truy cập vào camera của bạn để bạn có thể chụp và tải lên ảnh hồ sơ hoặc quét mã QR.",
-        "NSMicrophoneUsageDescription": "Ứng dụng cần truy cập vào micro của bạn để bạn có thể ghi âm và tải lên các bản ghi âm.",
-        "NSLocationWhenInUseUsageDescription": "Ứng dụng cần truy cập vào vị trí của bạn để cung cấp các gợi ý về các địa điểm gần bạn và cải thiện trải nghiệm sử dụng."
+        "NSCameraUsageDescription": "The app needs access to your camera so you can take and upload profile pictures or scan QR codes.",
+        "NSMicrophoneUsageDescription": "The app needs access to your microphone so you can record and upload audio recordings.",
+        "NSLocationWhenInUseUsageDescription": "The app needs access to your location to provide suggestions about nearby places and improve your experience."
       }
     },
     "web": {
       "favicon": "./assets/icon.png",
       "userInterfaceStyle": "automatic"
     },
-
     "plugins": [
       [
         "expo-camera",
         {
-          "cameraPermission": "Ứng dụng cần truy cập vào camera của bạn để bạn có thể chụp và tải lên ảnh hồ sơ hoặc quét mã QR.",
-          "microphonePermission": "Ứng dụng cần truy cập vào micro của bạn để bạn có thể ghi âm và tải lên các bản ghi âm."
+          "cameraPermission": "The app needs access to your camera so you can take and upload profile pictures or scan QR codes.",
+          "microphonePermission": "The app needs access to your microphone so you can record and upload audio recordings."
         }
       ],
       [
         "expo-image-picker",
         {
-          "photosPermission": "Ứng dụng truy cập vào ảnh của bạn để bạn có thể chia sẻ chúng với bạn bè."
+          "photosPermission": "The app accesses your photos to let you share them with your friends."
         }
       ],
       [
         "expo-barcode-scanner",
         {
-          "cameraPermission": "Ứng dụng cần truy cập vào camera của bạn để quét mã QR và mã vạch."
+          "cameraPermission": "The app needs access to your camera to scan QR codes and barcodes."
         }
       ],
       [
         "expo-location",
         {
-          "locationAlwaysAndWhenInUsePermission": "Ứng dụng cần truy cập vào vị trí của bạn để cung cấp các gợi ý về các địa điểm gần bạn và cải thiện trải nghiệm sử dụng."
+          "locationAlwaysAndWhenInUsePermission": "The app needs access to your location to provide suggestions about nearby places and improve your experience."
         }
       ]
     ],
