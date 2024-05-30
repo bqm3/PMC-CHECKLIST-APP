@@ -13,10 +13,11 @@ export const DataProvider = ({ children }) => {
   const [dataChecklists, setDataChecklists] = useState([]);
   const [dataHangmuc, setDataHangmuc] = useState([]);
   const [hangMuc, setHangMuc] = useState(ent_hangmuc);
+  const [stepKhuvuc, setStepKhuvuc] = useState(0);
 
   return (
     <DataContext.Provider
-      value={{ setDataChecklists, dataChecklists, dataHangmuc, setDataHangmuc,setHangMuc, hangMuc }}
+      value={{ setDataChecklists, dataChecklists, dataHangmuc, setDataHangmuc,setHangMuc, hangMuc, setStepKhuvuc, stepKhuvuc }}
     >
       {children}
     </DataContext.Provider>

@@ -1,12 +1,15 @@
 import React from "react";
 import { Text, View, TouchableOpacity, StyleSheet } from "react-native";
-import { Entypo } from "@expo/vector-icons";
+import { Entypo, AntDesign } from "@expo/vector-icons";
 import { COLORS } from "../../constants/theme";
 
 const ActiveChecklist = ({item, handleToggle, size,index }) => {
   return (
     <TouchableOpacity key={index} style={[styles.box, {width: size, height: size }]} onPress={() => handleToggle ? handleToggle() : {}}>
-      {item.valueCheck !== null && <Entypo name="check" size={24} color={'green'} />}
+      {item.valueCheck !== null && (
+        (item.valueCheck === item.Giatridinhdanh && item?.Anh === null && item?.GhichuChitiet === '') ? <Entypo name="check" size={24} color={'green'}/> :
+        <AntDesign name="close" size={24} color="red" />
+      ) }
     </TouchableOpacity>
   );
 };

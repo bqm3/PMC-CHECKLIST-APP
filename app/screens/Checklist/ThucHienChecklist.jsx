@@ -86,7 +86,7 @@ const ThucHienChecklist = ({ navigation }) => {
   const { ent_giamsat, ent_calv , ent_hangmuc} = useSelector((state) => state.entReducer);
   const { tb_checklistc } = useSelector((state) => state.tbReducer);
   const { user, authToken } = useSelector((state) => state.authReducer);
-  const { setDataHangmuc } = useContext(DataContext);
+  const { setDataHangmuc, stepKhuvuc } = useContext(DataContext);
 
 
   const date = new Date();
@@ -194,7 +194,7 @@ const ThucHienChecklist = ({ navigation }) => {
 
   useEffect(() => {
     int_checklistc();
-  }, [numberOfItemsPerPage, page]);
+  }, [numberOfItemsPerPage, page, stepKhuvuc]);
 
   useEffect(() => {
     init_ca();

@@ -34,7 +34,7 @@ import ChecklistContext from "../../context/ChecklistContext";
 
 const ThucHienKhuvuc = ({ route, navigation }) => {
   const { ID_ChecklistC, ID_KhoiCV, ID_Calv, ID_Toanha } = route.params;
-  const { setDataChecklists, dataHangmuc } = useContext(DataContext);
+  const { setDataChecklists, dataHangmuc,setStepKhuvuc, stepKhuvuc } = useContext(DataContext);
   const { setDataChecklistFilterContext } = useContext(ChecklistContext);
 
   const dispath = useDispatch();
@@ -52,7 +52,6 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
   const [dataSelect, setDataSelect] = useState([]);
   const [data, setData] = useState([]);
 
-  const [stepKhuvuc, setStepKhuvuc] = useState(0);
   const [checkKhuvuc, setCheckKhuvuc] = useState([]);
   const toanhaIds = checkKhuvuc.map((item) => item.ID_Toanha);
 
@@ -279,7 +278,8 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
             width: "80%",
           }}
         >
-          <Text allowFontScaling={false}
+          <Text
+            allowFontScaling={false}
             style={{
               fontSize: 16,
               color: dataSelect[0] === item ? "white" : "black",
@@ -299,6 +299,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
     return (
       <TouchableOpacity
         onPress={() => toggleSelectToanha(item)}
+        onLongPress={()=> handleSubmit()}
         style={[
           styles.content,
           {
@@ -315,7 +316,8 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
             width: "80%",
           }}
         >
-          <Text allowFontScaling={false}
+          <Text
+            allowFontScaling={false}
             style={{
               fontSize: 16,
               color: isCheck ? "white" : "black",
@@ -380,7 +382,10 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
                             gap: 8,
                           }}
                         >
-                          <Text allowFontScaling={false}  style={styles.text}>
+                          <Text
+                            allowFontScaling={false}
+                            style={[styles.text, { fontSize: 18 }]}
+                          >
                             Số lượng: {decimalNumber(data?.length)} khu vực
                           </Text>
                         </View>
@@ -442,8 +447,8 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
                         resizeMode="contain"
                         style={{ height: 120, width: 120 }}
                       />
-                      <Text allowFontScaling={false}
-                        
+                      <Text
+                        allowFontScaling={false}
                         style={[styles.danhmuc, { padding: 10 }]}
                       >
                         {isScan
@@ -473,7 +478,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
                     />
                     {dataSelect[0] && (
                       <Button
-                        text={"Khu vực"}
+                        text={"Vào khu vực"}
                         isLoading={loadingSubmit}
                         backgroundColor={COLORS.bg_button}
                         color={"white"}
@@ -512,9 +517,19 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
                             gap: 8,
                           }}
                         >
-                          <Text allowFontScaling={false}  style={styles.text}>
+                          <Text
+                            allowFontScaling={false}
+                            style={[styles.text, { fontSize: 18 }]}
+                          >
                             Số lượng: {decimalNumber(ent_toanha?.length)} tòa
                             nhà
+                          </Text>
+                          <Text
+                            allowFontScaling={false}
+                            style={[styles.text, { fontSize: 14 }]}
+                          >
+                            Chọn từ 1 tòa nhà trở lên với mỗi nhân viên đi
+                            checklist.
                           </Text>
                         </View>
                       </TouchableOpacity>
@@ -553,12 +568,14 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
                       width: "100%",
                     }}
                   >
-                    <Button
-                      text={"Chọn khu vực"}
-                      backgroundColor={COLORS.bg_button}
-                      color={"white"}
-                      onPress={() => handleSubmitKhuvuc()}
-                    />
+                    {checkKhuvuc.length > 0 && (
+                      <Button
+                        text={"Chọn khu vực"}
+                        backgroundColor={COLORS.bg_button}
+                        color={"white"}
+                        onPress={() => handleSubmitKhuvuc()}
+                      />
+                    )}
                   </View>
                 </View>
               )}

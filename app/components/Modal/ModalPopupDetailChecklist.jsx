@@ -156,7 +156,6 @@ const ModalPopupDetailChecklist = ({
           <View style={{ marginTop: 10 }}>
             <Button
               onPress={() => {
-                
                 handleChange("Anh", image, dataItem);
                 handlePopupClear();
               }}

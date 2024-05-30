@@ -30,9 +30,8 @@ import {
   BottomSheetModalProvider,
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
-import { useNavigation, useRoute } from '@react-navigation/native';
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { Entypo, MaterialIcons } from "@expo/vector-icons";
+import { Entypo, MaterialIcons, AntDesign } from "@expo/vector-icons";
 import { COLORS, SIZES } from "../../constants/theme";
 import ActiveChecklist from "../../components/Active/ActiveCheckList";
 import Button from "../../components/Button/Button";
@@ -120,7 +119,6 @@ const DetailChecklist = ({ route, navigation }) => {
     // clear item checklist
     if (it.valueCheck !== null) {
       if (key === "Anh" || key === "GhichuChitiet") {
-        console.log("anh - ghi chu chi tiet");
         // Kiểm tra và cập nhật mergedArrCheck
         const indexCheck = mergedArrCheck.findIndex(
           (item) => item.ID_Checklist === it.ID_Checklist
@@ -134,12 +132,10 @@ const DetailChecklist = ({ route, navigation }) => {
         const indexImage = mergedArrImage.findIndex(
           (item) => item.ID_Checklist === it.ID_Checklist
         );
-        console.log("indexImage", indexImage);
         if (indexImage !== -1) {
           // Cập nhật it trong mergedArrImage nếu tồn tại
           mergedArrImage[indexImage] = it;
         } else {
-          console.log("vao day", it);
           // Thêm it vào mergedArrImage nếu chưa tồn tại
           mergedArrImage.push(it);
         }
@@ -289,7 +285,6 @@ const DetailChecklist = ({ route, navigation }) => {
 
   // click item checklist
   const handleItemClick = (value, it, key) => {
-    // console.log('value',value)
     const updatedDataChecklist = dataChecklistFilter?.map((item, i) => {
       if (item.ID_Checklist === it.ID_Checklist && key === "option") {
         return {
@@ -298,7 +293,6 @@ const DetailChecklist = ({ route, navigation }) => {
           gioht: moment().format("LTS"),
         };
       } else if (item.ID_Checklist === it.ID_Checklist && key === "active") {
-        // console.log('run' )
         return {
           ...item,
           valueCheck: value ? value : null,
@@ -787,6 +781,7 @@ const DetailChecklist = ({ route, navigation }) => {
         (item) => item.ID_Hangmuc !== ID_Hangmuc
       );
       setHangMuc(filteredData);
+      navigation.goBack()
     }
 
     // Update state with the filtered context

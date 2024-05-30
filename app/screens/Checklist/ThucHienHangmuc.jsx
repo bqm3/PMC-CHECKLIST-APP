@@ -76,6 +76,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
           ID_KhoiCV: ID_KhoiCV,
           ID_Calv: ID_Calv,
           ID_Hangmuc: resData[0].ID_Hangmuc,
+          hangMuc: hangMuc,
         });
         setIsScan(false);
         setModalVisibleQr(false);
@@ -160,7 +161,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
       ID_Hangmuc: dataSelect[0].ID_Hangmuc,
       hangMuc: hangMuc,
     });
-  
+    setDataSelect([])
     // Set the non-serializable values immediately after navigation
     
   };
@@ -361,7 +362,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
                   />
                   {dataSelect[0] && (
                     <Button
-                      text={"Checklist"}
+                      text={"Vào Checklist"}
                       isLoading={loadingSubmit}
                       backgroundColor={COLORS.bg_button}
                       color={"white"}
