@@ -1,2 +1,2 @@
-export const BASE_URL="https://checklist.pmcweb.vn/be/api" 
-// export const BASE_URL="https://ff07-113-164-4-5.ngrok-free.app/api"
+// export const BASE_URL="https://checklist.pmcweb.vn/be/api" 
+export const BASE_URL="https://7e66-113-164-4-5.ngrok-free.app/api"

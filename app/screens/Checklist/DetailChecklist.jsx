@@ -647,11 +647,13 @@ const DetailChecklist = ({ route, navigation }) => {
         .join(","),
     ];
     const descriptionsJSON = JSON.stringify(descriptions);
+    const ID_Checklists = defaultActionDataChecklist.map((item) => item.ID_Checklist);
 
     const requestDone = axios.post(
       BASE_URL + "/tb_checklistchitietdone/create",
       {
         Description: descriptionsJSON,
+        ID_Checklists: ID_Checklists,
         ID_ChecklistC: ID_ChecklistC,
         checklistLength: defaultActionDataChecklist.length,
       },

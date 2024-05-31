@@ -5,7 +5,6 @@ const deviceHeight = Dimensions.get("window").height;
 const deviceWidth = Dimensions.get("window").width;
 
 const adjust = (size) => {
-  console.log('height:', deviceHeight, 'width:', deviceWidth, 'pixelRatio:', pixelRatio);
   
   // Thiết bị lớn (bao gồm cả iPad)
   if (deviceWidth >= 768 && deviceHeight >= 1024) {
