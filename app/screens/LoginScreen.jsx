@@ -475,11 +475,11 @@ const styles = StyleSheet.create({
     color: "#05375a",
   },
   iconStyle: {
-    width: 20,
-    height: 20,
+    width: adjust(20),
+    height: adjust(20),
   },
   inputSearchStyle: {
-    height: 40,
+    height: adjust(40),
     fontSize: adjust(16),
   },
   paragraph: {
