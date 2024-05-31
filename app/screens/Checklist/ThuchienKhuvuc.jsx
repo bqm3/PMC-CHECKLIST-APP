@@ -210,6 +210,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
       ID_Calv: ID_Calv,
       ID_Khuvuc: dataSelect[0].ID_Khuvuc,
     });
+    setDataSelect([])
   };
 
   const handleSubmitKhuvuc = async () => {

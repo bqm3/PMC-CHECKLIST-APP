@@ -45,11 +45,11 @@ import ChecklistContext from "../../context/ChecklistContext";
 import * as Network from "expo-network";
 
 const DetailChecklist = ({ route, navigation }) => {
-  const { ID_ChecklistC, ID_KhoiCV, ID_Calv, ID_Hangmuc, hangMuc } =
+  const { ID_ChecklistC, ID_KhoiCV, ID_Calv, ID_Hangmuc, hangMuc, ID_Khuvuc } =
     route.params;
   const dispath = useDispatch();
   const { isLoadingDetail } = useSelector((state) => state.entReducer);
-  const { setDataChecklists, dataChecklists, dataHangmuc, setHangMuc  } =
+  const { setDataChecklists, dataChecklists, dataHangmuc, setHangMuc, HangMucDefault, setHangMucDefault  } =
     useContext(DataContext);
   const { dataChecklistFilterContext, setDataChecklistFilterContext } =
     useContext(ChecklistContext);
@@ -780,6 +780,9 @@ const DetailChecklist = ({ route, navigation }) => {
       const filteredData = hangMuc.filter(
         (item) => item.ID_Hangmuc !== ID_Hangmuc
       );
+      const filteredDataDefault = HangMucDefault.filter((item)=> item.ID_Hangmuc !== ID_Hangmuc)
+      setHangMucDefault(filteredDataDefault)
+     
       setHangMuc(filteredData);
       navigation.goBack()
     }

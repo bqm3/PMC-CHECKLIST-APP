@@ -507,6 +507,8 @@ const ThucHienChecklist = ({ navigation }) => {
       ID_Calv: id3,
       ID_Toanha: id4
     });
+
+    setNewActionCheckList([])
   };
 
   const handleCloseChecklist = async (ID_ChecklistC) => {
@@ -704,10 +706,9 @@ const ThucHienChecklist = ({ navigation }) => {
               resizeMode="cover"
               style={{ flex: 1 }}
             >
-              <View
+              <ScrollView
                 style={{
                   flex: 1,
-                  justifyContent: "center",
                   opacity: opacity,
                 }}
               >
@@ -870,7 +871,7 @@ const ThucHienChecklist = ({ navigation }) => {
                     </>
                   )}
                 </View>
-              </View>
+              </ScrollView>
 
               <BottomSheetModal
                 ref={bottomSheetModalRef}

@@ -12,12 +12,20 @@ export const DataProvider = ({ children }) => {
   
   const [dataChecklists, setDataChecklists] = useState([]);
   const [dataHangmuc, setDataHangmuc] = useState([]);
+  const [khuVuc, setKhuvuc] = useState([]);
   const [hangMuc, setHangMuc] = useState(ent_hangmuc);
+  const [HangMucDefault, setHangMucDefault] = useState();
   const [stepKhuvuc, setStepKhuvuc] = useState(0);
+
+  useEffect(()=> {
+    if(ent_hangmuc){
+      setHangMucDefault(ent_hangmuc)
+    }
+  }, [ent_hangmuc])
 
   return (
     <DataContext.Provider
-      value={{ setDataChecklists, dataChecklists, dataHangmuc, setDataHangmuc,setHangMuc, hangMuc, setStepKhuvuc, stepKhuvuc }}
+      value={{ setDataChecklists, dataChecklists, dataHangmuc, setDataHangmuc,setHangMuc, hangMuc, setStepKhuvuc, stepKhuvuc, khuVuc, setKhuvuc, HangMucDefault, setHangMucDefault }}
     >
       {children}
     </DataContext.Provider>

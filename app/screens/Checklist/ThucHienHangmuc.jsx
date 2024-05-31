@@ -28,8 +28,14 @@ import DataContext from "../../context/DataContext";
 const ThucHienHangmuc = ({ route, navigation }) => {
   const { ID_ChecklistC, ID_KhoiCV, ID_Calv, ID_Khuvuc } = route.params;
   const dispath = useDispatch();
-  const { setDataChecklists, dataChecklists, setHangMuc, hangMuc } =
-    useContext(DataContext);
+  const {
+    setDataChecklists,
+    dataChecklists,
+    setHangMuc,
+    hangMuc,
+    HangMucDefault,
+    setHangMucDefault,
+  } = useContext(DataContext);
   const { ent_hangmuc } = useSelector((state) => state.entReducer);
 
   const [opacity, setOpacity] = useState(1);
@@ -42,9 +48,9 @@ const ThucHienHangmuc = ({ route, navigation }) => {
   const [dataSelect, setDataSelect] = useState([]);
 
   useEffect(() => {
-    if (ent_hangmuc && dataChecklists) {
+    if (HangMucDefault && dataChecklists) {
       // Lọc các mục có ID_Khuvuc trùng khớp
-      const filteredByKhuvuc = ent_hangmuc.filter(
+      const filteredByKhuvuc = HangMucDefault.filter(
         (item) => item.ID_Khuvuc === ID_Khuvuc
       );
 
@@ -59,7 +65,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
       // Cập nhật trạng thái hangMuc với danh sách đã lọc
       setHangMuc(finalFilteredData);
     }
-  }, [ID_Khuvuc, ent_hangmuc, dataChecklists]);
+  }, [ID_Khuvuc, HangMucDefault, dataChecklists]);
 
   const handlePushDataFilterQr = async (value) => {
     const cleanedValue = value
@@ -160,10 +166,10 @@ const ThucHienHangmuc = ({ route, navigation }) => {
       ID_Calv: ID_Calv,
       ID_Hangmuc: dataSelect[0].ID_Hangmuc,
       hangMuc: hangMuc,
+      ID_Khuvuc: ID_Khuvuc,
     });
-    setDataSelect([])
+    setDataSelect([]);
     // Set the non-serializable values immediately after navigation
-    
   };
 
   // view item flatlist
@@ -190,7 +196,8 @@ const ThucHienHangmuc = ({ route, navigation }) => {
           }}
         >
           <View style={{ width: "85%" }}>
-            <Text allowFontScaling={false}
+            <Text
+              allowFontScaling={false}
               style={{
                 fontSize: 18,
                 color: dataSelect[0] === item ? "white" : "black",
@@ -200,7 +207,8 @@ const ThucHienHangmuc = ({ route, navigation }) => {
             >
               {item?.Hangmuc}
             </Text>
-            <Text allowFontScaling={false}
+            <Text
+              allowFontScaling={false}
               style={{
                 fontSize: 16,
                 color: dataSelect[0] === item ? "white" : "black",
@@ -267,7 +275,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
                           gap: 8,
                         }}
                       >
-                        <Text allowFontScaling={false}  style={styles.text}>
+                        <Text allowFontScaling={false} style={styles.text}>
                           Số lượng: {decimalNumber(hangMuc?.length)} hạng mục
                         </Text>
                       </View>
@@ -331,8 +339,8 @@ const ThucHienHangmuc = ({ route, navigation }) => {
                       resizeMode="contain"
                       style={{ height: 120, width: 120 }}
                     />
-                    <Text allowFontScaling={false}
-                      
+                    <Text
+                      allowFontScaling={false}
                       style={[styles.danhmuc, { padding: 10 }]}
                     >
                       {isScan
@@ -351,15 +359,18 @@ const ThucHienHangmuc = ({ route, navigation }) => {
                     width: "100%",
                   }}
                 >
-                  <Button
-                    text={"Scan QR Code"}
-                    backgroundColor={"white"}
-                    color={"black"}
-                    onPress={() => {
-                      setModalVisibleQr(true);
-                      setOpacity(0.2);
-                    }}
-                  />
+                  {hangMuc.length > 0 && (
+                    <Button
+                      text={"Scan QR Code"}
+                      backgroundColor={"white"}
+                      color={"black"}
+                      onPress={() => {
+                        setModalVisibleQr(true);
+                        setOpacity(0.2);
+                      }}
+                    />
+                  )}
+
                   {dataSelect[0] && (
                     <Button
                       text={"Vào Checklist"}
