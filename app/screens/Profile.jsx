@@ -26,6 +26,7 @@ import { logoutAction } from "../redux/actions/authActions";
 import { COLORS } from "../constants/theme";
 import LoginContext from "../context/LoginContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import adjust from "../adjust";
 
 
 const Profile = () => {
@@ -136,7 +137,7 @@ const Profile = () => {
           style={{ flex: 1 }}
         >
           <ScrollView style={{ flex: 1, margin: 20 }}>
-            <Title text={"Thông tin cá nhân"} size={18} top={10} bottom={10} />
+            <Title text={"Thông tin cá nhân"} size={adjust(18)} top={10} bottom={10} />
             <View style={styles.inputs}>
               <TextInput allowFontScaling={false}  
                 value={user?.UserName}
@@ -197,7 +198,7 @@ const Profile = () => {
                 autoCapitalize="sentences"
               />
             </View>
-            <Title text={"Đổi mật khẩu"} size={18} top={10} bottom={10} />
+            <Title text={"Đổi mật khẩu"} size={adjust(18)} top={10} bottom={10} />
 
             <View style={styles.inputs}>
               <Text allowFontScaling={false}   style={styles.text}>Mật khẩu cũ</Text>
@@ -224,7 +225,7 @@ const Profile = () => {
                   <Ionicons
                     style={styles.searchIcon}
                     name={isCheckSecurity.password ? "eye" : "eye-off"}
-                    size={20}
+                    size={adjust(20)}
                     color="#000"
                   />
                 </TouchableOpacity>
@@ -255,7 +256,7 @@ const Profile = () => {
                   <Ionicons
                     style={styles.searchIcon}
                     name={isCheckSecurity.newpassword ? "eye" : "eye-off"}
-                    size={20}
+                    size={adjust(20)}
                     color="#000"
                   />
                 </TouchableOpacity>
@@ -286,7 +287,7 @@ const Profile = () => {
                   <Ionicons
                     style={styles.searchIcon}
                     name={isCheckSecurity.re_newpassword ? "eye" : "eye-off"}
-                    size={20}
+                    size={adjust(20)}
                     color="#000"
                   />
                 </TouchableOpacity>
@@ -319,7 +320,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   text: {
-    fontSize: 15,
+    fontSize: adjust(15),
     color: "white",
     fontWeight: "600",
     paddingHorizontal: 4,
@@ -327,11 +328,11 @@ const styles = StyleSheet.create({
   },
   textInput: {
     color: "#05375a",
-    fontSize: 16,
+    fontSize: adjust(16),
     borderRadius: 8,
     borderWidth: 1,
     borderColor: "gray",
-    height: 48,
+    height: adjust(50),
     paddingVertical: 4,
     backgroundColor: "#eeeeee",
   },
@@ -352,9 +353,9 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     color: "#05375a",
-    fontSize: 16,
+    fontSize: adjust(16),
     borderRadius: 8,
-    height: 48,
+    height: adjust(50),
     paddingVertical: 4,
   },
 });

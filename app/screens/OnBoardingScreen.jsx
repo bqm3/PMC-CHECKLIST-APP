@@ -12,6 +12,7 @@ import {
 import React from "react";
 import Button from "../components/Button/Button";
 import { COLORS } from "../constants/theme";
+import adjust from "../adjust";
 
 const HideKeyboard = ({ children }) => (
   <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -36,7 +37,7 @@ const OnBoardingScreen = ({ navigation }) => {
             }}
           >
             <Image
-             style={{ width: 120, height: 70, resizeMode: "contain" }}
+             style={{ width: adjust(120), height: adjust(70), resizeMode: "contain" }}
               source={require("../../assets/pmc_logo.png")}
             />
             <Button

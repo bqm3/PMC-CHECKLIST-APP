@@ -185,7 +185,7 @@ const HomeScreen = ({ navigation }) => {
               
               style={{
                 color: "white",
-                // fontSize: adjust(15),
+                fontSize: adjust(16),
               }}
             >
               Người Giám sát chỉ thực hiện công việc Check list, Tra cứu và Đổi
@@ -195,7 +195,7 @@ const HomeScreen = ({ navigation }) => {
               
               style={{
                 color: "white",
-                // fontSize: adjust(15),
+                fontSize: adjust(16),
               }}
             >
               Giám đốc Tòa nhà toàn quyền sử dụng.

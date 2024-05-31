@@ -1,6 +1,7 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 import { COLORS } from '../constants/theme'
+import adjust from '../adjust'
 
 const CopyRight = () => {
   return (
@@ -9,7 +10,7 @@ const CopyRight = () => {
       backgroundColor: COLORS.bg_button,
       position: "absolute",
       bottom: 0,
-      height: 40,
+      height: adjust(40),
       width: "100%",
       justifyContent: "center",
       alignItems: "center",
@@ -18,7 +19,7 @@ const CopyRight = () => {
     <Text allowFontScaling={false}   
       style={{
         color: "white",
-        fontSize: 14,
+        fontSize: adjust(14),
         fontWeight: "700",
       }}
     >

@@ -38,6 +38,7 @@ import {
 import DataLicense from "../components/PrivacyPolicy";
 import Checkbox from "../components/Active/Checkbox";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import adjust from "../adjust";
 
 const LoginScreen = ({ navigation }) => {
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
@@ -204,18 +205,18 @@ const LoginScreen = ({ navigation }) => {
                 style={{ opacity: opacity }}
               >
                 <Image
-                  style={{ width: 120, height: 70, resizeMode: "contain" }}
+                  style={{ width: adjust(120), height: adjust(70), resizeMode: "contain" }}
                   source={require("../../assets/pmc_logo.png")}
                 />
                 <View style={{ marginHorizontal: 20 }}>
-                  <Title text={"Đăng nhập"} size={20} top={30} />
+                  <Title text={"Đăng nhập"} size={adjust(20)} top={30} />
 
                   <View
                     style={{
                       justifyContent: "flex-start",
                     }}
                   >
-                    <View style={{ height: 20 }}></View>
+                    <View style={{ height: adjust(20) }}></View>
                     {/* <Text allowFontScaling={false} style={styles.paragraph}>{text}</Text> */}
                     <View style={styles.action}>
                       <TextInput
@@ -260,8 +261,8 @@ const LoginScreen = ({ navigation }) => {
                         {!show ? (
                           <Image
                             style={{
-                              width: 24,
-                              height: 24,
+                              width: adjust(28),
+                              height: adjust(28),
                               resizeMode: "contain",
                             }}
                             source={require("../../assets/eye.png")}
@@ -269,8 +270,8 @@ const LoginScreen = ({ navigation }) => {
                         ) : (
                           <Image
                             style={{
-                              width: 30,
-                              height: 30,
+                              width: adjust(28),
+                              height: adjust(28),
                               resizeMode: "contain",
                             }}
                             source={require("../../assets/hidden.png")}
@@ -403,7 +404,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   action: {
-    height: 50,
+    height: adjust(50),
     flexDirection: "row",
     alignItems: "center",
     marginTop: 12,
@@ -428,17 +429,17 @@ const styles = StyleSheet.create({
     paddingLeft: 12,
     color: "#05375a",
     width: "88%",
-    fontSize: 16,
-    height: 50,
+    fontSize: adjust(16),
+    height: adjust(50),
   },
   errorMsg: {
     color: "#FF0000",
-    fontSize: 14,
+    fontSize: adjust(14),
   },
 
   dropdown: {
     marginTop: 12,
-    height: 50,
+    height: adjust(50),
     paddingHorizontal: 12,
     backgroundColor: "white",
     borderRadius: 8,
@@ -463,14 +464,14 @@ const styles = StyleSheet.create({
   },
   textItem: {
     flex: 1,
-    fontSize: 16,
+    fontSize: adjust(16),
   },
   placeholderStyle: {
-    fontSize: 16,
+    fontSize: adjust(16),
     color: "#05375a",
   },
   selectedTextStyle: {
-    fontSize: 16,
+    fontSize: adjust(16),
     color: "#05375a",
   },
   iconStyle: {
@@ -479,10 +480,10 @@ const styles = StyleSheet.create({
   },
   inputSearchStyle: {
     height: 40,
-    fontSize: 16,
+    fontSize: adjust(16),
   },
   paragraph: {
-    fontSize: 18,
+    fontSize: adjust(18),
     textAlign: "center",
   },
 });

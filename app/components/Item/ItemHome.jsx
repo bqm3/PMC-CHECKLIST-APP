@@ -3,6 +3,7 @@ import React from "react";
 import { COLORS } from "../../constants/theme";
 import { useNavigation } from "@react-navigation/native";
 import { Image } from "react-native";
+import adjust from "../../adjust";
 
 export default function ItemHome({ item, index, roleUser }) {
   const navigation = useNavigation();
@@ -39,13 +40,13 @@ export default function ItemHome({ item, index, roleUser }) {
         <Image
           source={item.icon}
           resizeMode="contain"
-          style={{ width: 32, height: 32 }}
+          style={{ width: adjust(32), height: adjust(32) }}
         />
         <Text allowFontScaling={false}
         
           style={{
             color: roleUser !== 1 && item?.role === 1 ? 'white' : 'black',
-            fontSize: 16,
+            fontSize: adjust(16),
             fontWeight: "600",
             padding: 6,
             textAlign: "center",

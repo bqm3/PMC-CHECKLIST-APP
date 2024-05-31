@@ -42,6 +42,7 @@ import moment from "moment";
 import ModalChecklistC from "../../components/Modal/ModalChecklistC";
 import ModalChecklistCImage from "../../components/Modal/ModalChecklistCImage";
 import DataContext from "../../context/DataContext";
+import adjust from "../../adjust";
 // import mime from "mime";
 
 const numberOfItemsPerPageList = [20, 30, 50];
@@ -582,7 +583,7 @@ const ThucHienChecklist = ({ navigation }) => {
         >
           <DataTable.Cell style={{ width: 120, justifyContent: "center" }}>
             <Text allowFontScaling={false}
-              style={{ color: isExistIndex ? "white" : "black", fontSize: 15 }}
+              style={{ color: isExistIndex ? "white" : "black", fontSize: adjust(15) }}
               numberOfLines={2}
             >
               {moment(item?.Ngay).format("DD-MM-YYYY")}
@@ -593,7 +594,7 @@ const ThucHienChecklist = ({ navigation }) => {
             <View
               style={{
                 color: isExistIndex ? "white" : "black",
-                fontSize: 16,
+                fontSize: adjust(16),
                 flexDirection: "column",
                 justifyContent: "center",
                 alignItems: "center",
@@ -603,7 +604,7 @@ const ThucHienChecklist = ({ navigation }) => {
               <Text allowFontScaling={false}
                 style={{
                   color: isExistIndex ? "white" : "black",
-                  fontSize: 16,
+                  fontSize: adjust(16),
                   fontWeight: "700",
                 }}
                 numberOfLines={2}
@@ -613,7 +614,7 @@ const ThucHienChecklist = ({ navigation }) => {
               <Text allowFontScaling={false}
                 style={{
                   color: isExistIndex ? "white" : "black",
-                  fontSize: 15,
+                  fontSize: adjust(15),
                 }}
                 numberOfLines={2}
               >
@@ -623,7 +624,7 @@ const ThucHienChecklist = ({ navigation }) => {
           </DataTable.Cell>
           <DataTable.Cell style={{ width: 100, justifyContent: "center" }}>
             <Text allowFontScaling={false}
-              style={{ color: isExistIndex ? "white" : "black", fontSize: 15 }}
+              style={{ color: isExistIndex ? "white" : "black", fontSize: adjust(15) }}
               numberOfLines={2}
             >
               {item?.TongC}/{item?.Tong}
@@ -631,7 +632,7 @@ const ThucHienChecklist = ({ navigation }) => {
           </DataTable.Cell>
           <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
             <Text allowFontScaling={false}
-              style={{ color: isExistIndex ? "white" : "black", fontSize: 15 }}
+              style={{ color: isExistIndex ? "white" : "black", fontSize: adjust(15) }}
               numberOfLines={2}
             >
               {item?.ent_giamsat?.Hoten}
@@ -641,7 +642,7 @@ const ThucHienChecklist = ({ navigation }) => {
             <View
               style={{
                 color: isExistIndex ? "white" : "black",
-                fontSize: 15,
+                fontSize: adjust(15),
                 flexDirection: "column",
                 justifyContent: "center",
                 alignItems: "center",
@@ -651,7 +652,7 @@ const ThucHienChecklist = ({ navigation }) => {
               <Text allowFontScaling={false}
                 style={{
                   color: isExistIndex ? "white" : "black",
-                  fontSize: 15,
+                  fontSize: adjust(15),
                 }}
                 numberOfLines={2}
               >
@@ -661,7 +662,7 @@ const ThucHienChecklist = ({ navigation }) => {
               <Text allowFontScaling={false}
                 style={{
                   color: isExistIndex ? "white" : "black",
-                  fontSize: 15,
+                  fontSize: adjust(15),
                 }}
                 numberOfLines={2}
               >
@@ -672,7 +673,7 @@ const ThucHienChecklist = ({ navigation }) => {
 
           <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
             <Text allowFontScaling={false}
-              style={{ color: isExistIndex ? "white" : "black", fontSize: 15 }}
+              style={{ color: isExistIndex ? "white" : "black", fontSize: adjust(15) }}
               numberOfLines={2}
             >
               {" "}
@@ -682,7 +683,7 @@ const ThucHienChecklist = ({ navigation }) => {
 
           <DataTable.Cell style={{ width: 200, justifyContent: "center" }}>
             <Text allowFontScaling={false}
-              style={{ color: isExistIndex ? "white" : "black", fontSize: 15 }}
+              style={{ color: isExistIndex ? "white" : "black", fontSize: adjust(15) }}
               numberOfLines={3}
             >
               {item?.Ghichu}
@@ -988,12 +989,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   danhmuc: {
-    fontSize: 25,
+    fontSize: adjust(25),
     fontWeight: "700",
     color: "white",
     // paddingVertical: 40,
   },
-  text: { fontSize: 15, color: "white", fontWeight: "600" },
+  text: { fontSize: adjust(15), color: "white", fontWeight: "600" },
   headerTable: {
     color: "white",
   },
@@ -1037,7 +1038,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   modalText: {
-    fontSize: 20,
+    fontSize: adjust(20),
     fontWeight: "600",
     paddingVertical: 10,
   },

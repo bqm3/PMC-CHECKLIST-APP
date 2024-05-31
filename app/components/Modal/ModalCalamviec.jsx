@@ -20,6 +20,7 @@ import { FontAwesome, AntDesign } from "@expo/vector-icons";
 import VerticalSelect from "../VerticalSelect";
 import SelectDropdown from "react-native-select-dropdown";
 import ButtonSubmit from "../Button/ButtonSubmit";
+import adjust from "../../adjust";
 
 const ModalCalamviec = ({
   ent_khoicv,
@@ -61,7 +62,7 @@ const ModalCalamviec = ({
                   borderRadius: 8,
                   maxHeight: 400,
                 }}
-                // rowStyle={{ height: 50, justifyContent: "center" }}
+                // rowStyle={{ height: adjust(50), justifyContent: "center" }}
                 defaultButtonText={"Khối công việc"}
                 buttonTextStyle={styles.customText}
                 defaultValue={defaultKhoi}
@@ -85,7 +86,7 @@ const ModalCalamviec = ({
                       style={{
                         justifyContent: "center",
                         alignContent: "center",
-                        height: 50,
+                        height: adjust(50),
                       }}
                     >
                       <Text allowFontScaling={false} style={styles.text}>
@@ -140,8 +141,8 @@ const ModalCalamviec = ({
                       paddingLeft: 12,
                       color: "#05375a",
                       width: "80%",
-                      fontSize: 16,
-                      height: 50,
+                      fontSize: adjust(16),
+                      height: adjust(50),
                     }}
                     pointerEvents="none"
                   />
@@ -150,8 +151,8 @@ const ModalCalamviec = ({
                     style={{
                       justifyContent: "center",
                       alignItems: "center",
-                      height: 50,
-                      width: 50,
+                      height: adjust(50),
+                      width: adjust(50),
                     }}
                   >
                     <AntDesign name="calendar" size={24} color="black" />
@@ -180,7 +181,7 @@ const ModalCalamviec = ({
                       color: "#05375a",
                       width: "80%",
                       fontSize: 16,
-                      height: 50,
+                      height: adjust(50),
                     }}
                     pointerEvents="none"
                   />
@@ -189,8 +190,8 @@ const ModalCalamviec = ({
                     style={{
                       justifyContent: "center",
                       alignItems: "center",
-                      height: 50,
-                      width: 50,
+                      height: adjust(50),
+                      width: adjust(50),
                     }}
                   >
                     <AntDesign name="calendar" size={24} color="black" />
@@ -230,7 +231,7 @@ export default ModalCalamviec;
 
 const styles = StyleSheet.create({
   text: {
-    fontSize: 15,
+    fontSize: adjust(15),
     color: "black",
     fontWeight: "600",
     paddingHorizontal: 8,
@@ -238,16 +239,16 @@ const styles = StyleSheet.create({
   },
   textInput: {
     color: "#05375a",
-    fontSize: 16,
+    fontSize: adjust(16),
     borderRadius: 8,
     borderWidth: 1,
     borderColor: "gray",
-    height: 48,
+    height: adjust(50),
     paddingVertical: 4,
     backgroundColor: "white",
   },
   action: {
-    height: 50,
+    height: adjust(50),
     flexDirection: "row",
     alignItems: "center",
     borderRadius: 8,
@@ -262,7 +263,7 @@ const styles = StyleSheet.create({
     elevation: 12,
   },
   dropdown: {
-    height: 48,
+    height: adjust(50),
     paddingHorizontal: 10,
     backgroundColor: "white",
     borderRadius: 8,
@@ -296,6 +297,6 @@ const styles = StyleSheet.create({
   },
   customText: {
     fontWeight: "600",
-    fontSize: 15,
+    fontSize: adjust(15),
   },
 });

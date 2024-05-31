@@ -1,6 +1,7 @@
 import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
 import React from "react";
 import { Feather, AntDesign } from "@expo/vector-icons";
+import adjust from "../../adjust";
 
 const ItemDuan = ({ index, item, handleEditEnt, handleAlertDelete }) => {
 
@@ -46,14 +47,14 @@ const ItemDuan = ({ index, item, handleEditEnt, handleAlertDelete }) => {
           <Image
             source={require("../../../assets/icons/edit_icon.png")}
             resizeMode="contain"
-            style={{ height: 26, width: 26 }}
+            style={{ height: adjust(26), width: adjust(26) }}
           />
         </TouchableOpacity>
         <TouchableOpacity onPress={() => handleAlertDelete(item.ID_Duan)}>
           <Image
             source={require("../../../assets/icons/delete_icon.png")}
             resizeMode="contain"
-            style={{ height: 26, width: 26 }}
+            style={{ height: adjust(26), width: adjust(26) }}
           />
         </TouchableOpacity>
       </View>

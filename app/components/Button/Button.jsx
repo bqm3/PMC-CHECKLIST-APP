@@ -1,6 +1,7 @@
 import {View, Text, TouchableOpacity, ActivityIndicator} from 'react-native';
 import React from 'react';
 import {COLORS, SIZES} from '../../constants/theme';
+import adjust from '../../adjust';
 
 const Button = ({onPress, text, backgroundColor, color, border, width, isLoading}) => {
   return (
@@ -30,7 +31,7 @@ const Button = ({onPress, text, backgroundColor, color, border, width, isLoading
       <Text allowFontScaling={false}   
         style={{
           color: color,
-          fontSize: 15,
+          fontSize: adjust(15),
           textAlign: 'center',
           fontWeight: 'bold',
         }}>

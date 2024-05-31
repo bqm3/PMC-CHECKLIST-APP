@@ -3,6 +3,7 @@ import React from "react";
 import { COLORS } from "../../constants/theme";
 import { useNavigation } from "@react-navigation/native";
 import { Image } from "react-native";
+import adjust from "../../adjust";
 
 export default function ItemHomePSH({ item }) {
   const navigation = useNavigation();
@@ -35,7 +36,7 @@ export default function ItemHomePSH({ item }) {
         
           style={{
             color: "white",
-            fontSize: 18,
+            fontSize: adjust(18),
             fontWeight: "700",
             padding: 8,
             textAlign: "center",

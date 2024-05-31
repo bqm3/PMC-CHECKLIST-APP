@@ -43,6 +43,7 @@ import QRCodeScreen from "../QRCodeScreen";
 import DataContext from "../../context/DataContext";
 import ChecklistContext from "../../context/ChecklistContext";
 import * as Network from "expo-network";
+import adjust from "../../adjust";
 
 const DetailChecklist = ({ route, navigation }) => {
   const { ID_ChecklistC, ID_KhoiCV, ID_Calv, ID_Hangmuc, hangMuc, ID_Khuvuc } =
@@ -721,7 +722,7 @@ const DetailChecklist = ({ route, navigation }) => {
             <ActiveChecklist
               item={item}
               index={index}
-              size={30}
+              size={adjust(30)}
               handleToggle={() =>
                 handleItemClick(item?.Giatridinhdanh, item, "active")
               }
@@ -730,7 +731,7 @@ const DetailChecklist = ({ route, navigation }) => {
             <View style={{ width: "90%" }}>
               <Text allowFontScaling={false}
                 style={{
-                  fontSize: 16,
+                  fontSize: adjust(16),
                   color: "black",
                   fontWeight: "600",
                 }}
@@ -752,11 +753,11 @@ const DetailChecklist = ({ route, navigation }) => {
             <TouchableOpacity
               onPress={() => handlePopupActiveTieuChuan(item, index)}
             >
-              <MaterialIcons name="read-more" size={30} color="black" />
+              <MaterialIcons name="read-more" size={adjust(30)} color="black" />
             </TouchableOpacity>
 
             <TouchableOpacity onPress={() => handlePopupActive(item, index)}>
-              <Entypo name="dots-three-vertical" size={28} color="black" />
+              <Entypo name="dots-three-vertical" size={adjust(30)} color="black" />
             </TouchableOpacity>
           </View>
         </View>
@@ -908,7 +909,7 @@ const DetailChecklist = ({ route, navigation }) => {
                     
                     style={[
                       styles.text,
-                      { paddingHorizontal: 12, fontSize: 18 },
+                      { paddingHorizontal: 12, fontSize: adjust(18) },
                     ]}
                   >
                     Khu vực: {showNameDuan}
@@ -1139,17 +1140,17 @@ const styles = StyleSheet.create({
     margin: 12,
   },
   danhmuc: {
-    fontSize: 25,
+    fontSize: adjust(25),
     fontWeight: "700",
     color: "white",
   },
-  text: { fontSize: 15, color: "white", fontWeight: "600" },
+  text: { fontSize: adjust(15), color: "white", fontWeight: "600" },
   headerTable: {
     color: "white",
   },
   outter: {
-    width: 20,
-    height: 20,
+    width: adjust(20),
+    height: adjust(20),
     borderWidth: 2,
     borderColor: COLORS.gray,
     borderRadius: 2,
@@ -1188,7 +1189,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   modalText: {
-    fontSize: 20,
+    fontSize: adjust(20),
     fontWeight: "600",
     paddingVertical: 10,
   },

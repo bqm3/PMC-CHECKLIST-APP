@@ -31,6 +31,7 @@ import { BASE_URL } from "../../constants/config";
 import QRCodeScreen from "../QRCodeScreen";
 import DataContext from "../../context/DataContext";
 import ChecklistContext from "../../context/ChecklistContext";
+import adjust from "../../adjust";
 
 const ThucHienKhuvuc = ({ route, navigation }) => {
   const { ID_ChecklistC, ID_KhoiCV, ID_Calv, ID_Toanha } = route.params;
@@ -282,7 +283,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
           <Text
             allowFontScaling={false}
             style={{
-              fontSize: 16,
+              fontSize: adjust(16),
               color: dataSelect[0] === item ? "white" : "black",
               fontWeight: "600",
             }}
@@ -320,7 +321,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
           <Text
             allowFontScaling={false}
             style={{
-              fontSize: 16,
+              fontSize: adjust(16),
               color: isCheck ? "white" : "black",
               fontWeight: "600",
             }}
@@ -385,7 +386,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
                         >
                           <Text
                             allowFontScaling={false}
-                            style={[styles.text, { fontSize: 18 }]}
+                            style={[styles.text, { fontSize: adjust(18) }]}
                           >
                             Số lượng: {decimalNumber(data?.length)} khu vực
                           </Text>
@@ -520,7 +521,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
                         >
                           <Text
                             allowFontScaling={false}
-                            style={[styles.text, { fontSize: 18 }]}
+                            style={[styles.text, { fontSize: adjust(18) }]}
                           >
                             Số lượng: {decimalNumber(ent_toanha?.length)} tòa
                             nhà
@@ -620,11 +621,11 @@ const styles = StyleSheet.create({
     margin: 12,
   },
   danhmuc: {
-    fontSize: 25,
+    fontSize: adjust(25),
     fontWeight: "700",
     color: "white",
   },
-  text: { fontSize: 15, color: "white", fontWeight: "600" },
+  text: { fontSize: adjust(15), color: "white", fontWeight: "600" },
   headerTable: {
     color: "white",
   },
@@ -669,7 +670,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   modalText: {
-    fontSize: 20,
+    fontSize: adjust(20),
     fontWeight: "600",
     paddingVertical: 10,
   },

@@ -5,60 +5,37 @@ const deviceHeight = Dimensions.get("window").height;
 const deviceWidth = Dimensions.get("window").width;
 
 const adjust = (size) => {
-  if (pixelRatio >= 2 && pixelRatio < 3) {
-    // iphone 5s and older Androids
-    if (deviceWidth < 360) {
-      return size * 0.95;
+  console.log('height:', deviceHeight, 'width:', deviceWidth, 'pixelRatio:', pixelRatio);
+  
+  // Thiết bị lớn (bao gồm cả iPad)
+  if (deviceWidth >= 768 && deviceHeight >= 1024) {
+    if (pixelRatio >= 3.5) {
+      return size * 1.3;
     }
-    // iphone 5
-    if (deviceHeight < 667) {
-      return size;
-      // iphone 6-6s
-    }
-    if (deviceHeight >= 667 && deviceHeight <= 735) {
-      return size * 1.15;
-    }
-    // older phablets
-    return size * 1.25;
+    return size * 1.2;
   }
-  if (pixelRatio >= 3 && pixelRatio < 3.5) {
-    // catch Android font scaling on small machines
-    // where pixel ratio / font scale ratio => 3:3
-    if (deviceWidth <= 360) {
-      return size;
-    }
-    // Catch other weird android width sizings
-    if (deviceHeight < 667) {
-      return size * 1.15;
-      // catch in-between size Androids and scale font up
-      // a tad but not too much
-    }
-    if (deviceHeight >= 667 && deviceHeight <= 735) {
-      return size * 1.2;
-    }
-    // catch larger devices
-    // ie iphone 6s plus / 7 plus / mi note 等等
-    return size * 1.27;
+  
+  // Thiết bị nhỏ (điện thoại nhỏ)
+  if (deviceWidth < 360) {
+    return size * 0.85;
   }
-  if (pixelRatio >= 3.5) {
-    // catch Android font scaling on small machines
-    // where pixel ratio / font scale ratio => 3:3
-    if (deviceWidth <= 360) {
-      return size;
-      // Catch other smaller android height sizings
-    }
-    if (deviceHeight < 667) {
-      return size * 1.2;
-      // catch in-between size Androids and scale font up
-      // a tad but not too much
-    }
-    if (deviceHeight >= 667 && deviceHeight <= 735) {
-      return size * 1.25;
-    }
-    // catch larger phablet devices
-    return size * 1.4;
+  
+  // Các thiết bị trung bình (bao gồm iPhone, Android)
+  if (deviceHeight < 667) {
+    return size * 0.9;
   }
-  return size;
+  
+  // Các thiết bị cỡ trung bình lớn hơn một chút (ví dụ iPhone 6-8, Android tương đương)
+  if (deviceHeight >= 667 && deviceHeight < 812) {
+    return size * 0.9;
+  }
+  
+  // Các thiết bị lớn hơn nhưng không phải iPad (ví dụ iPhone X và các dòng iPhone sau đó)
+  if (deviceHeight >= 812 && deviceHeight < 1024) {
+    return size * 1;
+  }
+
+  return size; // Kích thước mặc định cho các thiết bị không rơi vào các trường hợp trên
 };
 
 export default adjust;

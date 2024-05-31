@@ -1,6 +1,7 @@
 import {View, Text, TouchableOpacity, ActivityIndicator} from 'react-native';
 import React from 'react';
 import {COLORS} from '../../constants/theme';
+import adjust from '../../adjust';
 
 const ButtonSubmit = ({text, onPress, isLoading,backgroundColor, color, width,pV}) => {
   return (
@@ -28,7 +29,7 @@ const ButtonSubmit = ({text, onPress, isLoading,backgroundColor, color, width,pV
       <Text allowFontScaling={false}   
         style={{
           color: color ? color : 'white',
-          fontSize: 15,
+          fontSize: adjust(15),
           textAlign: 'center',
           fontWeight: 'bold',
           paddingVertical: pV ? pV : 16 ,

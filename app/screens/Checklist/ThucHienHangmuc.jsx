@@ -24,6 +24,7 @@ import { COLORS, SIZES } from "../../constants/theme";
 import Button from "../../components/Button/Button";
 import QRCodeScreen from "../QRCodeScreen";
 import DataContext from "../../context/DataContext";
+import adjust from "../../adjust";
 
 const ThucHienHangmuc = ({ route, navigation }) => {
   const { ID_ChecklistC, ID_KhoiCV, ID_Calv, ID_Khuvuc } = route.params;
@@ -199,7 +200,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
             <Text
               allowFontScaling={false}
               style={{
-                fontSize: 18,
+                fontSize: adjust(18),
                 color: dataSelect[0] === item ? "white" : "black",
                 fontWeight: "600",
               }}
@@ -210,7 +211,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
             <Text
               allowFontScaling={false}
               style={{
-                fontSize: 16,
+                fontSize: adjust(16),
                 color: dataSelect[0] === item ? "white" : "black",
                 fontWeight: "500",
               }}
@@ -219,7 +220,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
             </Text>
           </View>
           <TouchableOpacity onPress={() => handlePopupActive(item, index)}>
-            <MaterialIcons name="read-more" size={30} color="black" />
+            <MaterialIcons name="read-more" size={adjust(30)} color="black" />
           </TouchableOpacity>
         </View>
       </TouchableOpacity>
@@ -458,11 +459,11 @@ const styles = StyleSheet.create({
     margin: 12,
   },
   danhmuc: {
-    fontSize: 25,
+    fontSize: adjust(25),
     fontWeight: "700",
     color: "white",
   },
-  text: { fontSize: 15, color: "white", fontWeight: "600" },
+  text: { fontSize: adjust(18), color: "white", fontWeight: "600" },
   headerTable: {
     color: "white",
   },
@@ -507,7 +508,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   modalText: {
-    fontSize: 20,
+    fontSize: adjust(20),
     fontWeight: "600",
     paddingVertical: 10,
   },

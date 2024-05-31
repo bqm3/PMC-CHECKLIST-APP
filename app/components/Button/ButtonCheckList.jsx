@@ -2,6 +2,7 @@ import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import React from 'react';
 import { COLORS } from '../../constants/theme';
 import { Ionicons } from '@expo/vector-icons';
+import adjust from '../../adjust';
 
 const ButtonChecklist = ({ text, onPress, color, marginLeft, icon }) => {
   return (
@@ -30,7 +31,7 @@ const ButtonChecklist = ({ text, onPress, color, marginLeft, icon }) => {
       <Text allowFontScaling={false}   
         style={{
           color: 'white',
-          fontSize: 15,
+          fontSize: adjust(15),
           textAlign: 'center',
           fontWeight: 'bold',
         }}>
