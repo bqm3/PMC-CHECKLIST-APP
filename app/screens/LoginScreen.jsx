@@ -57,8 +57,7 @@ const LoginScreen = ({ navigation }) => {
   const [data, setData] = useState({
     UserName: "",
     Password: "",
-    Emails: "",
-    Duan: "",
+   
   });
 
   const [location, setLocation] = useState(null);
@@ -84,9 +83,7 @@ const LoginScreen = ({ navigation }) => {
     }
   }, [message, error]);
 
-  const handleStep = () => {
-    saveStep(3);
-  };
+  
 
   useEffect(() => {
     const loadData = async () => {
@@ -94,7 +91,6 @@ const LoginScreen = ({ navigation }) => {
       const savedPassword = await AsyncStorage.getItem('Password');
       if (savedUsername && savedPassword) {
         setData({
-          ...data,
           UserName: savedUsername,
           Password: savedPassword,
         });
@@ -106,12 +102,9 @@ const LoginScreen = ({ navigation }) => {
 
   useEffect(() => {
     if (user) {
-      saveStep(2);
       setData({
         UserName: data?.UserName,
         Password: data?.Password,
-        Emails: user?.Emails,
-        Duan: user?.ent_duan?.Duan,
       });
     }
   }, [user]);
@@ -279,32 +272,6 @@ const LoginScreen = ({ navigation }) => {
                         )}
                       </TouchableOpacity>
                     </View>
-                    {/* </HideKeyboard> */}
-                    <View style={styles.action}>
-                      <TextInput
-                        allowFontScaling={false}
-                        placeholder="Email cá nhân"
-                        value={data?.Emails}
-                        editable={false}
-                        selectTextOnFocus={false}
-                        placeholderTextColor="gray"
-                        style={[styles.textInput]}
-                        autoCapitalize="sentences"
-                      />
-                    </View>
-
-                    <View style={styles.action}>
-                      <TextInput
-                        allowFontScaling={false}
-                        placeholder="Dự án tham dự"
-                        value={data?.Duan}
-                        editable={false}
-                        selectTextOnFocus={false}
-                        placeholderTextColor="gray"
-                        style={[styles.textInput]}
-                        autoCapitalize="sentences"
-                      />
-                    </View>
 
                     <View style={styles.checkboxContainer}>
                       <Checkbox
@@ -325,9 +292,9 @@ const LoginScreen = ({ navigation }) => {
                     <View style={{ height: 20 }} />
                     <ButtonSubmit
                       backgroundColor={COLORS.bg_button}
-                      text={step === 2 ? "Vào trang" : "Đăng Nhập"}
+                      text={"Đăng Nhập"}
                       isLoading={isLoading}
-                      onPress={step === 2 ? handleStep : handleSubmit}
+                      onPress={handleSubmit}
                     />
                   </View>
                 </View>
