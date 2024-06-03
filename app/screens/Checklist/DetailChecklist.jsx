@@ -50,8 +50,14 @@ const DetailChecklist = ({ route, navigation }) => {
     route.params;
   const dispath = useDispatch();
   const { isLoadingDetail } = useSelector((state) => state.entReducer);
-  const { setDataChecklists, dataChecklists, dataHangmuc, setHangMuc, HangMucDefault, setHangMucDefault  } =
-    useContext(DataContext);
+  const {
+    setDataChecklists,
+    dataChecklists,
+    dataHangmuc,
+    setHangMuc,
+    HangMucDefault,
+    setHangMucDefault,
+  } = useContext(DataContext);
   const { dataChecklistFilterContext, setDataChecklistFilterContext } =
     useContext(ChecklistContext);
   const [isConnected, setIsConnected] = useState(false);
@@ -498,7 +504,7 @@ const DetailChecklist = ({ route, navigation }) => {
           },
         })
         .then((res) => {
-          postHandleSubmit()
+          postHandleSubmit();
           setLoadingSubmit(false);
           Alert.alert("PMC Thông báo", "Checklist thành công", [
             {
@@ -511,12 +517,12 @@ const DetailChecklist = ({ route, navigation }) => {
         })
         .catch((err) => {
           setLoadingSubmit(false);
-          Alert.alert("PMC Thông báo", "Checklist thất bại. Vui lòng kiểm tra lại hình ảnh hoặc ghi chú!!!", [
-           
-            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-          ]);
+          Alert.alert(
+            "PMC Thông báo",
+            "Checklist thất bại. Vui lòng kiểm tra lại hình ảnh hoặc ghi chú!!!",
+            [{ text: "Xác nhận", onPress: () => console.log("OK Pressed") }]
+          );
         });
-      
     } catch (error) {
       setLoadingSubmit(false);
       if (error.response) {
@@ -543,7 +549,9 @@ const DetailChecklist = ({ route, navigation }) => {
         )
         .join(","),
     ];
-    const ID_Checklists = defaultActionDataChecklist.map((item) => item.ID_Checklist);
+    const ID_Checklists = defaultActionDataChecklist.map(
+      (item) => item.ID_Checklist
+    );
     const descriptionsJSON = JSON.stringify(descriptions);
 
     const requestDone = axios.post(
@@ -647,7 +655,9 @@ const DetailChecklist = ({ route, navigation }) => {
         .join(","),
     ];
     const descriptionsJSON = JSON.stringify(descriptions);
-    const ID_Checklists = defaultActionDataChecklist.map((item) => item.ID_Checklist);
+    const ID_Checklists = defaultActionDataChecklist.map(
+      (item) => item.ID_Checklist
+    );
 
     const requestDone = axios.post(
       BASE_URL + "/tb_checklistchitietdone/create",
@@ -699,11 +709,18 @@ const DetailChecklist = ({ route, navigation }) => {
     }
   };
 
-
   // view item flatlist
   const renderItem = (item, index) => {
     return (
-      <View style={[styles.content, {backgroundColor: `${item?.Tinhtrang}` === '1' ? '#ea9999' : 'white' }]} key={item?.ID_Checklist}>
+      <View
+        style={[
+          styles.content,
+          {
+            backgroundColor: `${item?.Tinhtrang}` === "1" ? "#ea9999" : "white",
+          },
+        ]}
+        key={item?.ID_Checklist}
+      >
         <View
           style={{
             flexDirection: "row",
@@ -731,7 +748,8 @@ const DetailChecklist = ({ route, navigation }) => {
               // active={}
             />
             <View style={{ width: "90%" }}>
-              <Text allowFontScaling={false}
+              <Text
+                allowFontScaling={false}
                 style={{
                   fontSize: adjust(16),
                   color: "black",
@@ -759,7 +777,11 @@ const DetailChecklist = ({ route, navigation }) => {
             </TouchableOpacity>
 
             <TouchableOpacity onPress={() => handlePopupActive(item, index)}>
-              <Entypo name="dots-three-vertical" size={adjust(30)} color="black" />
+              <Entypo
+                name="dots-three-vertical"
+                size={adjust(30)}
+                color="black"
+              />
             </TouchableOpacity>
           </View>
         </View>
@@ -783,11 +805,13 @@ const DetailChecklist = ({ route, navigation }) => {
       const filteredData = hangMuc.filter(
         (item) => item.ID_Hangmuc !== ID_Hangmuc
       );
-      const filteredDataDefault = HangMucDefault.filter((item)=> item.ID_Hangmuc !== ID_Hangmuc)
-      setHangMucDefault(filteredDataDefault)
-     
+      const filteredDataDefault = HangMucDefault.filter(
+        (item) => item.ID_Hangmuc !== ID_Hangmuc
+      );
+      setHangMucDefault(filteredDataDefault);
+
       setHangMuc(filteredData);
-      navigation.goBack()
+      navigation.goBack();
     }
 
     // Update state with the filtered context
@@ -878,11 +902,11 @@ const DetailChecklist = ({ route, navigation }) => {
                           gap: 8,
                         }}
                       >
-                        <Text allowFontScaling={false}  style={styles.text}>
+                        <Text allowFontScaling={false} style={styles.text}>
                           Số lượng: {decimalNumber(dataChecklistFilter?.length)}{" "}
                           Checklist
                         </Text>
-                        <Text allowFontScaling={false}  style={styles.text}>
+                        <Text allowFontScaling={false} style={styles.text}>
                           Đang checklist:{" "}
                           {decimalNumber(newActionDataChecklist?.length)}
                         </Text>
@@ -907,8 +931,8 @@ const DetailChecklist = ({ route, navigation }) => {
                   </View>
                 </View>
                 {showNameDuan !== "" && (
-                  <Text allowFontScaling={false}
-                    
+                  <Text
+                    allowFontScaling={false}
                     style={[
                       styles.text,
                       { paddingHorizontal: 12, fontSize: adjust(18) },
@@ -975,8 +999,8 @@ const DetailChecklist = ({ route, navigation }) => {
                         resizeMode="contain"
                         style={{ height: 120, width: 120 }}
                       />
-                      <Text allowFontScaling={false}
-                        
+                      <Text
+                        allowFontScaling={false}
                         style={[styles.danhmuc, { padding: 10 }]}
                       >
                         {isScan
@@ -1053,7 +1077,7 @@ const DetailChecklist = ({ route, navigation }) => {
             >
               <View style={styles.centeredView}>
                 <View style={styles.modalView}>
-                  <Text allowFontScaling={false}  style={styles.modalText}>
+                  <Text allowFontScaling={false} style={styles.modalText}>
                     Thông tin checklist chi tiết
                   </Text>
                   <ModalPopupDetailChecklist

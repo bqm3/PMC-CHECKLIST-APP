@@ -13,6 +13,7 @@ import {
   ActivityIndicator,
   Modal,
   TouchableHighlight,
+  TouchableWithoutFeedback,
 } from "react-native";
 import React, {
   useRef,
@@ -20,7 +21,7 @@ import React, {
   useEffect,
   useMemo,
   useCallback,
-  useContext
+  useContext,
 } from "react";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import {
@@ -34,7 +35,12 @@ import { AntDesign, Ionicons, Feather } from "@expo/vector-icons";
 import { DataTable } from "react-native-paper";
 import ButtonChecklist from "../../components/Button/ButtonCheckList";
 import { COLORS, SIZES } from "../../constants/theme";
-import { ent_calv_get, ent_giamsat_get, ent_hangmuc_get, ent_khuvuc_get } from "../../redux/actions/entActions";
+import {
+  ent_calv_get,
+  ent_giamsat_get,
+  ent_hangmuc_get,
+  ent_khuvuc_get,
+} from "../../redux/actions/entActions";
 import { tb_checklistc_get } from "../../redux/actions/tbActions";
 import axios from "axios";
 import { BASE_URL } from "../../constants/config";
@@ -43,6 +49,7 @@ import ModalChecklistC from "../../components/Modal/ModalChecklistC";
 import ModalChecklistCImage from "../../components/Modal/ModalChecklistCImage";
 import DataContext from "../../context/DataContext";
 import adjust from "../../adjust";
+import { useFocusEffect } from "@react-navigation/native";
 // import mime from "mime";
 
 const numberOfItemsPerPageList = [20, 30, 50];
@@ -84,11 +91,12 @@ const headerList = [
 const ThucHienChecklist = ({ navigation }) => {
   const ref = useRef(null);
   const dispath = useDispatch();
-  const { ent_giamsat, ent_calv , ent_hangmuc} = useSelector((state) => state.entReducer);
+  const { ent_giamsat, ent_calv, ent_hangmuc } = useSelector(
+    (state) => state.entReducer
+  );
   const { tb_checklistc } = useSelector((state) => state.tbReducer);
   const { user, authToken } = useSelector((state) => state.authReducer);
   const { setDataHangmuc, stepKhuvuc } = useContext(DataContext);
-
 
   const date = new Date();
   const dateDay = moment(date).format("YYYY-MM-DD");
@@ -154,11 +162,23 @@ const ThucHienChecklist = ({ navigation }) => {
     return () => clearTimeout(timeoutId);
   }, []); //
 
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setDataInput((prevData) => ({
+        ...prevData,
+        dateHour: moment().format("LTS"),
+      }));
+    }, 1000);
+
+    return () => clearInterval(interval); // Clear interval on component unmount
+  }, []);
+
+
   useEffect(() => {
     setData(tb_checklistc?.data);
   }, [tb_checklistc]);
 
-  
   const int_khuvuc = async () => {
     await dispath(ent_khuvuc_get());
   };
@@ -196,6 +216,13 @@ const ThucHienChecklist = ({ navigation }) => {
   useEffect(() => {
     int_checklistc();
   }, [numberOfItemsPerPage, page, stepKhuvuc]);
+
+  useFocusEffect(
+    useCallback(() => {
+      // This will run when the screen is focused
+      int_checklistc();
+    }, [])
+  );
 
   useEffect(() => {
     init_ca();
@@ -408,8 +435,8 @@ const ThucHienChecklist = ({ navigation }) => {
               response.data.data.ID_ChecklistC,
               response.data.data.ID_KhoiCV,
               response.data.data.ID_Calv,
-              null,
-            )
+              null
+            );
           });
       } catch (error) {
         setLoadingSubmit(false);
@@ -506,10 +533,10 @@ const ThucHienChecklist = ({ navigation }) => {
       ID_ChecklistC: id1,
       ID_KhoiCV: id2,
       ID_Calv: id3,
-      ID_Toanha: id4
+      ID_Toanha: id4,
     });
 
-    setNewActionCheckList([])
+    setNewActionCheckList([]);
   };
 
   const handleCloseChecklist = async (ID_ChecklistC) => {
@@ -582,8 +609,12 @@ const ThucHienChecklist = ({ navigation }) => {
           }}
         >
           <DataTable.Cell style={{ width: 120, justifyContent: "center" }}>
-            <Text allowFontScaling={false}
-              style={{ color: isExistIndex ? "white" : "black", fontSize: adjust(15) }}
+            <Text
+              allowFontScaling={false}
+              style={{
+                color: isExistIndex ? "white" : "black",
+                fontSize: adjust(15),
+              }}
               numberOfLines={2}
             >
               {moment(item?.Ngay).format("DD-MM-YYYY")}
@@ -601,7 +632,8 @@ const ThucHienChecklist = ({ navigation }) => {
               }}
               numberOfLines={4}
             >
-              <Text allowFontScaling={false}
+              <Text
+                allowFontScaling={false}
                 style={{
                   color: isExistIndex ? "white" : "black",
                   fontSize: adjust(16),
@@ -611,7 +643,8 @@ const ThucHienChecklist = ({ navigation }) => {
               >
                 {item?.ent_khoicv?.KhoiCV}
               </Text>
-              <Text allowFontScaling={false}
+              <Text
+                allowFontScaling={false}
                 style={{
                   color: isExistIndex ? "white" : "black",
                   fontSize: adjust(15),
@@ -623,16 +656,24 @@ const ThucHienChecklist = ({ navigation }) => {
             </View>
           </DataTable.Cell>
           <DataTable.Cell style={{ width: 100, justifyContent: "center" }}>
-            <Text allowFontScaling={false}
-              style={{ color: isExistIndex ? "white" : "black", fontSize: adjust(15) }}
+            <Text
+              allowFontScaling={false}
+              style={{
+                color: isExistIndex ? "white" : "black",
+                fontSize: adjust(15),
+              }}
               numberOfLines={2}
             >
               {item?.TongC}/{item?.Tong}
             </Text>
           </DataTable.Cell>
           <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
-            <Text allowFontScaling={false}
-              style={{ color: isExistIndex ? "white" : "black", fontSize: adjust(15) }}
+            <Text
+              allowFontScaling={false}
+              style={{
+                color: isExistIndex ? "white" : "black",
+                fontSize: adjust(15),
+              }}
               numberOfLines={2}
             >
               {item?.ent_giamsat?.Hoten}
@@ -649,7 +690,8 @@ const ThucHienChecklist = ({ navigation }) => {
               }}
               numberOfLines={4}
             >
-              <Text allowFontScaling={false}
+              <Text
+                allowFontScaling={false}
                 style={{
                   color: isExistIndex ? "white" : "black",
                   fontSize: adjust(15),
@@ -659,7 +701,8 @@ const ThucHienChecklist = ({ navigation }) => {
                 {item?.Giobd}
               </Text>
               <Text allowFontScaling={false}>-</Text>
-              <Text allowFontScaling={false}
+              <Text
+                allowFontScaling={false}
                 style={{
                   color: isExistIndex ? "white" : "black",
                   fontSize: adjust(15),
@@ -672,8 +715,12 @@ const ThucHienChecklist = ({ navigation }) => {
           </DataTable.Cell>
 
           <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
-            <Text allowFontScaling={false}
-              style={{ color: isExistIndex ? "white" : "black", fontSize: adjust(15) }}
+            <Text
+              allowFontScaling={false}
+              style={{
+                color: isExistIndex ? "white" : "black",
+                fontSize: adjust(15),
+              }}
               numberOfLines={2}
             >
               {" "}
@@ -682,8 +729,12 @@ const ThucHienChecklist = ({ navigation }) => {
           </DataTable.Cell>
 
           <DataTable.Cell style={{ width: 200, justifyContent: "center" }}>
-            <Text allowFontScaling={false}
-              style={{ color: isExistIndex ? "white" : "black", fontSize: adjust(15) }}
+            <Text
+              allowFontScaling={false}
+              style={{
+                color: isExistIndex ? "white" : "black",
+                fontSize: adjust(15),
+              }}
               numberOfLines={3}
             >
               {item?.Ghichu}
@@ -714,34 +765,28 @@ const ThucHienChecklist = ({ navigation }) => {
                 }}
               >
                 <View style={styles.container}>
+                <TouchableWithoutFeedback onPress={() => handleCloseSheetImage()}>
                   <View
                     style={{
                       flexDirection: "row",
                       alignContent: "center",
                       alignItems: "center",
-                      justifyContent: "space-between",
+                      justifyContent: "flex-end",
                     }}
                   >
-                    <TouchableOpacity
-                      // onPress={() => handleFilterData(true, 0.5)}
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        gap: 8,
-                      }}
-                    >
-                      <></>
-                    </TouchableOpacity>
-                    {user?.Permission !== 1 && (
-                      <ButtonChecklist
-                        text={"Thêm mới"}
-                        width={"auto"}
-                        color={COLORS.bg_button}
-                        // icon={<Ionicons name="add" size={20} color="white" />}
-                        onPress={handlePresentModalPress}
-                      />
-                    )}
+                   
+                      {user?.Permission !== 1 && (
+                        <ButtonChecklist
+                          text={"Thêm mới"}
+                          width={"auto"}
+                          color={COLORS.bg_button}
+                          // icon={<Ionicons name="add" size={20} color="white" />}
+                          onPress={handlePresentModalPress}
+                        />
+                      )}
+                   
                   </View>
+                  </TouchableWithoutFeedback>
                   {isLoading ? (
                     <View
                       style={{
@@ -794,7 +839,8 @@ const ThucHienChecklist = ({ navigation }) => {
                                         }}
                                         numberOfLines={2}
                                       >
-                                        <Text allowFontScaling={false}
+                                        <Text
+                                          allowFontScaling={false}
                                           style={[
                                             styles.text,
                                             { color: "black" },
@@ -854,7 +900,8 @@ const ThucHienChecklist = ({ navigation }) => {
                             resizeMode="contain"
                             style={{ height: 120, width: 120 }}
                           />
-                          <Text allowFontScaling={false}
+                          <Text
+                            allowFontScaling={false}
                             style={[styles.danhmuc, { paddingVertical: 10 }]}
                           >
                             Bạn chưa thêm dữ liệu nào
@@ -881,7 +928,8 @@ const ThucHienChecklist = ({ navigation }) => {
                 onChange={handleSheetChanges}
               >
                 <BottomSheetScrollView style={styles.contentContainer}>
-                  <Text allowFontScaling={false}
+                  <Text
+                    allowFontScaling={false}
                     style={{
                       color: "black",
                       fontWeight: "600",
@@ -958,21 +1006,21 @@ const ThucHienChecklist = ({ navigation }) => {
                             newActionCheckList[0]?.ID_ChecklistC,
                             newActionCheckList[0]?.ID_KhoiCV,
                             newActionCheckList[0]?.ID_Calv,
-                            newActionCheckList[0]?.ID_Toanha,
+                            newActionCheckList[0]?.ID_Toanha
                           )
                         }
                       >
                         <Feather name="unlock" size={26} color="white" />
                       </TouchableOpacity>
+
+                      <TouchableOpacity
+                        style={styles.button}
+                        onPress={() => handleToggleModal()}
+                      >
+                        <Feather name="camera" size={26} color="white" />
+                      </TouchableOpacity>
                     </>
                   )}
-
-                  <TouchableOpacity
-                    style={styles.button}
-                    onPress={() => handleToggleModal()}
-                  >
-                    <Feather name="camera" size={26} color="white" />
-                  </TouchableOpacity>
                 </View>
               )}
             </ImageBackground>

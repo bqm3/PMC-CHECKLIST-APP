@@ -25,15 +25,16 @@ const ModalChecklistC = ({
   dataInput,
   handleChangeText,
   handlePushDataSave,
-  isLoading
+  isLoading,
 }) => {
   const ref = useRef(null);
   const defaultCalv = ent_calv?.find(
     (calv) => calv.ID_Calv === dataInput?.Calv?.ID_Calv
   );
   const defaultGiamsat = ent_giamsat?.find(
-    (Giamsat) => Giamsat.ID_Giamsat !== null && Giamsat.ID_Giamsat === dataInput.ID_Giamsat
-  )
+    (Giamsat) =>
+      Giamsat.ID_Giamsat !== null && Giamsat.ID_Giamsat === dataInput.ID_Giamsat
+  );
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -51,8 +52,11 @@ const ModalChecklistC = ({
               }}
             >
               <View style={{ width: "48%" }}>
-                <Text allowFontScaling={false}   style={styles.text}>Ngày</Text>
-                <TextInput allowFontScaling={false}  
+                <Text allowFontScaling={false} style={styles.text}>
+                  Ngày
+                </Text>
+                <TextInput
+                  allowFontScaling={false}
                   value={dataInput.dateDay}
                   editable={false}
                   placeholderTextColor="gray"
@@ -60,14 +64,17 @@ const ModalChecklistC = ({
                     styles.textInput,
                     {
                       paddingHorizontal: 10,
-                      backgroundColor: "#bcbcbc"
+                      backgroundColor: "#bcbcbc",
                     },
                   ]}
                 />
               </View>
               <View style={{ width: "48%" }}>
-                <Text allowFontScaling={false}   style={styles.text}>Giờ</Text>
-                <TextInput allowFontScaling={false}  
+                <Text allowFontScaling={false} style={styles.text}>
+                  Giờ
+                </Text>
+                <TextInput
+                  allowFontScaling={false}
                   value={dataInput.dateHour}
                   editable={false}
                   placeholderTextColor="gray"
@@ -75,140 +82,149 @@ const ModalChecklistC = ({
                     styles.textInput,
                     {
                       paddingHorizontal: 10,
-                      backgroundColor: "#bcbcbc"
+                      backgroundColor: "#bcbcbc",
                     },
                   ]}
                 />
               </View>
             </View>
             <View>
-              <Text allowFontScaling={false}   style={styles.text}>Ca làm việc</Text>
+              <Text allowFontScaling={false} style={styles.text}>
+                Ca làm việc
+              </Text>
               {ent_calv && ent_calv?.length > 0 ? (
-              <SelectDropdown
-                ref={ref}
-                data={ent_calv ? ent_calv : []}
-                buttonStyle={styles.select}
-                dropdownStyle={{
-                  borderRadius: 8,
-                  maxHeight: 400,
-                }}
-                // rowStyle={{ height: 50, justifyContent: "center" }}
-                defaultButtonText={"Ca làm việc"}
-                buttonTextStyle={styles.customText}
-                defaultValue={defaultCalv}
-                onSelect={(selectedItem, index) => {
-                  handleChangeText("Calv", selectedItem);
-                }}
-                renderDropdownIcon={(isOpened) => {
-                  return (
-                    <FontAwesome
-                      name={isOpened ? "chevron-up" : "chevron-down"}
-                      color={"#637381"}
-                      size={14}
-                      style={{ marginRight: 10 }}
-                    />
-                  );
-                }}
-                dropdownIconPosition={"right"}
-                buttonTextAfterSelection={(selectedItem, index) => {
-                  return (
-                    <View
-                      style={{
-                        justifyContent: "center",
-                        alignContent: "center",
-                        height: 50,
-                      }}
-                    >
-                      <Text allowFontScaling={false}   style={styles.text}>{selectedItem?.Tenca} - {selectedItem?.ent_khoicv?.KhoiCV}</Text>
-                    </View>
-                  );
-                }}
-                renderCustomizedRowChild={(item, index) => {
-                  return (
-                    <VerticalSelect
-                      value={item.ID_Calv}
-                      label={`${item?.Tenca} - ${item?.ent_khoicv?.KhoiCV}`}
-                      key={index}
-                      selectedItem={dataInput?.Calv?.ID_Calv}
-                    />
-                  );
-                }}
-              />
-               ) : (
-                  <Text allowFontScaling={false}  style={styles.errorText}>
-                    Không có dữ liệu ca làm việc.
-                  </Text>
-                )}
+                <SelectDropdown
+                  ref={ref}
+                  data={ent_calv ? ent_calv : []}
+                  buttonStyle={styles.select}
+                  dropdownStyle={{
+                    borderRadius: 8,
+                    maxHeight: 400,
+                  }}
+                  // rowStyle={{ height: 50, justifyContent: "center" }}
+                  defaultButtonText={"Ca làm việc"}
+                  buttonTextStyle={styles.customText}
+                  defaultValue={defaultCalv}
+                  onSelect={(selectedItem, index) => {
+                    handleChangeText("Calv", selectedItem);
+                  }}
+                  renderDropdownIcon={(isOpened) => {
+                    return (
+                      <FontAwesome
+                        name={isOpened ? "chevron-up" : "chevron-down"}
+                        color={"#637381"}
+                        size={14}
+                        style={{ marginRight: 10 }}
+                      />
+                    );
+                  }}
+                  dropdownIconPosition={"right"}
+                  buttonTextAfterSelection={(selectedItem, index) => {
+                    return (
+                      <View
+                        style={{
+                          justifyContent: "center",
+                          alignContent: "center",
+                          height: 50,
+                        }}
+                      >
+                        <Text allowFontScaling={false} style={styles.text}>
+                          {selectedItem?.Tenca} -{" "}
+                          {selectedItem?.ent_khoicv?.KhoiCV}
+                        </Text>
+                      </View>
+                    );
+                  }}
+                  renderCustomizedRowChild={(item, index) => {
+                    return (
+                      <VerticalSelect
+                        value={item.ID_Calv}
+                        label={`${item?.Tenca} - ${item?.ent_khoicv?.KhoiCV}`}
+                        key={index}
+                        selectedItem={dataInput?.Calv?.ID_Calv}
+                      />
+                    );
+                  }}
+                />
+              ) : (
+                <Text allowFontScaling={false} style={styles.errorText}>
+                  Không có dữ liệu ca làm việc.
+                </Text>
+              )}
             </View>
             <View>
-              <Text allowFontScaling={false}   style={styles.text}>Nhân viên</Text>
+              <Text allowFontScaling={false} style={styles.text}>
+                Nhân viên
+              </Text>
               {ent_giamsat && ent_giamsat?.length > 0 ? (
-              <SelectDropdown
-                ref={ref}
-                data={ent_giamsat ? ent_giamsat : []}
-                buttonStyle={styles.select}
-                dropdownStyle={{
-                  borderRadius: 8,
-                  maxHeight: 400,
-                }}
-                // rowStyle={{ height: 50, justifyContent: "center" }}
-                defaultButtonText={"Nhân viên"}
-                buttonTextStyle={styles.customText}
-                defaultValue={defaultGiamsat}
-                onSelect={(selectedItem, index) => {
-                  handleChangeText("ID_Giamsat", selectedItem.ID_Giamsat);
-                }}
-                renderDropdownIcon={(isOpened) => {
-                  return (
-                    <FontAwesome
-                      name={isOpened ? "chevron-up" : "chevron-down"}
-                      color={"#637381"}
-                      size={14}
-                      style={{ marginRight: 10 }}
-                    />
-                  );
-                }}
-                dropdownIconPosition={"right"}
-                buttonTextAfterSelection={(selectedItem, index) => {
-                  return (
-                    <View
-                      style={{
-                        justifyContent: "center",
-                        alignContent: "center",
-                        height: 50,
-                      }}
-                    >
-                      <Text allowFontScaling={false}   style={styles.text}>{selectedItem?.Hoten}</Text>
-                    </View>
-                  );
-                }}
-                renderCustomizedRowChild={(item, index) => {
-                  return (
-                    <VerticalSelect
-                      value={item.ID_Giamsat}
-                      label={item.Hoten}
-                      key={index}
-                      selectedItem={dataInput.ID_Giamsat}
-                    />
-                  );
-                }}
-              />
-               ) : (
-                  <Text allowFontScaling={false}  style={styles.errorText}>
-                    Không có dữ liệu nhân viên.
-                  </Text>
-                )}
+                <SelectDropdown
+                  ref={ref}
+                  data={ent_giamsat ? ent_giamsat : []}
+                  buttonStyle={styles.select}
+                  dropdownStyle={{
+                    borderRadius: 8,
+                    maxHeight: 400,
+                  }}
+                  // rowStyle={{ height: 50, justifyContent: "center" }}
+                  defaultButtonText={"Nhân viên"}
+                  buttonTextStyle={styles.customText}
+                  defaultValue={defaultGiamsat}
+                  onSelect={(selectedItem, index) => {
+                    handleChangeText("ID_Giamsat", selectedItem.ID_Giamsat);
+                  }}
+                  renderDropdownIcon={(isOpened) => {
+                    return (
+                      <FontAwesome
+                        name={isOpened ? "chevron-up" : "chevron-down"}
+                        color={"#637381"}
+                        size={14}
+                        style={{ marginRight: 10 }}
+                      />
+                    );
+                  }}
+                  dropdownIconPosition={"right"}
+                  buttonTextAfterSelection={(selectedItem, index) => {
+                    return (
+                      <View
+                        style={{
+                          justifyContent: "center",
+                          alignContent: "center",
+                          height: 50,
+                        }}
+                      >
+                        <Text allowFontScaling={false} style={styles.text}>
+                          {selectedItem?.Hoten}
+                        </Text>
+                      </View>
+                    );
+                  }}
+                  renderCustomizedRowChild={(item, index) => {
+                    return (
+                      <VerticalSelect
+                        value={item.ID_Giamsat}
+                        label={item.Hoten}
+                        key={index}
+                        selectedItem={dataInput.ID_Giamsat}
+                      />
+                    );
+                  }}
+                />
+              ) : (
+                <Text allowFontScaling={false} style={styles.errorText}>
+                  Không có dữ liệu nhân viên.
+                </Text>
+              )}
             </View>
             <View style={{ marginTop: 20 }}>
-            <ButtonSubmit
-              text={"Lưu"}
-              width={"auto"}
-              backgroundColor={COLORS.bg_button}
-              color={'white'}
-              isLoading={isLoading}
-              onPress={handlePushDataSave}
-            />
-          </View>
+              <ButtonSubmit
+                text={"Tạo ca làm việc"}
+                width={"auto"}
+                backgroundColor={COLORS.bg_button}
+                color={"white"}
+                isLoading={isLoading}
+                onPress={handlePushDataSave}
+              />
+            </View>
           </View>
         </View>
       </KeyboardAvoidingView>
