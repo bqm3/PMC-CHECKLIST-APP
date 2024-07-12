@@ -40,7 +40,7 @@ export default function ItemHome({ item, index, roleUser }) {
         <Image
           source={item.icon}
           resizeMode="contain"
-          style={{ width: adjust(32), height: adjust(32) }}
+          style={{ width: adjust(30), height: adjust(30) }}
         />
         <Text allowFontScaling={false}
         

@@ -106,7 +106,7 @@ const HomeStack = ({ navigation }) => {
         })}
       />
       <Stack.Screen
-        name="Thực hiện Check list"
+        name="Thực hiện Checklist"
         component={ThucHienChecklist}
         lazy={false}
         options={({ navigation, route }) => ({

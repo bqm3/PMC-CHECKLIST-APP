@@ -14,6 +14,7 @@ import {
   Modal,
   TouchableHighlight,
   TouchableWithoutFeedback,
+  TouchableNativeFeedback
 } from "react-native";
 import React, {
   useRef,
@@ -399,7 +400,7 @@ const ThucHienChecklist = ({ navigation }) => {
 
   const handlePushDataSave = async () => {
     if (dataInput.ID_Calv === null || dataInput.ID_Giamsat === null) {
-      Alert.alert("PMC Thông báo", "Thiếu thông tin Checklist", [
+      Alert.alert("PMC Thông báo", "Chưa chọn ca làm việc hoặc người giám sát", [
         {
           text: "Hủy",
           onPress: () => console.log("Cancel Pressed"),
@@ -435,6 +436,8 @@ const ThucHienChecklist = ({ navigation }) => {
               response.data.data.ID_ChecklistC,
               response.data.data.ID_KhoiCV,
               response.data.data.ID_Calv,
+              response.data.data.ID_Toanha,
+              response.data.data.ID_Khuvucs,
               null
             );
           });
@@ -498,14 +501,18 @@ const ThucHienChecklist = ({ navigation }) => {
 
   const handleCloseSheetImage = useCallback(() => {
     bottomSheetModalRef?.current?.close();
+    bottomSheetModalRef2?.current?.close();
+    setOpacity(1);
   }, []);
 
   const handleToggleModal = () => {
     bottomSheetModalRef2?.current?.present();
+    setOpacity(0.2);
   };
 
   const handlePresentModalPress = useCallback(() => {
     bottomSheetModalRef?.current?.present();
+    setOpacity(0.2);
   }, []);
 
   const handleAdd = () => {
@@ -528,12 +535,13 @@ const ThucHienChecklist = ({ navigation }) => {
     });
   };
 
-  const handleChecklistDetail = (id1, id2, id3, id4) => {
+  const handleChecklistDetail = (id1, id2, id3, id4, id5) => {
     navigation.navigate("Thực hiện khu vực", {
       ID_ChecklistC: id1,
       ID_KhoiCV: id2,
       ID_Calv: id3,
       ID_Toanha: id4,
+      ID_Khuvucs: id5
     });
 
     setNewActionCheckList([]);
@@ -904,16 +912,9 @@ const ThucHienChecklist = ({ navigation }) => {
                             allowFontScaling={false}
                             style={[styles.danhmuc, { paddingVertical: 10 }]}
                           >
-                            Bạn chưa thêm dữ liệu nào
+                            Bạn chưa có dữ liệu nào
                           </Text>
-                          {user?.Permission !== 1 && (
-                            <ButtonChecklist
-                              text={"Thêm mới"}
-                              width={"auto"}
-                              color={COLORS.bg_button}
-                              onPress={handlePresentModalPress}
-                            />
-                          )}
+                          
                         </View>
                       )}
                     </>
@@ -927,7 +928,7 @@ const ThucHienChecklist = ({ navigation }) => {
                 snapPoints={snapPoints}
                 onChange={handleSheetChanges}
               >
-                <BottomSheetScrollView style={styles.contentContainer}>
+                <View style={styles.contentContainer}>
                   <Text
                     allowFontScaling={false}
                     style={{
@@ -948,7 +949,7 @@ const ThucHienChecklist = ({ navigation }) => {
                     handlePushDataSave={handlePushDataSave}
                     isLoading={loadingSubmit}
                   />
-                </BottomSheetScrollView>
+                </View>
               </BottomSheetModal>
 
               <BottomSheetModal
@@ -957,7 +958,7 @@ const ThucHienChecklist = ({ navigation }) => {
                 snapPoints={snapPoints2}
                 onChange={handleSheetChanges2}
               >
-                <BottomSheetScrollView style={styles.contentContainer}>
+                <View style={styles.contentContainer}>
                   <ModalChecklistCImage
                     dataImages={dataImages}
                     handleChangeImages={handleChangeImages}
@@ -970,7 +971,7 @@ const ThucHienChecklist = ({ navigation }) => {
                     handlePushDataImagesSave={handlePushDataImagesSave}
                     newActionCheckList={newActionCheckList}
                   />
-                </BottomSheetScrollView>
+                </View>
               </BottomSheetModal>
 
               {newActionCheckList?.length > 0 && user?.Permission !== 1 && (
@@ -1006,7 +1007,8 @@ const ThucHienChecklist = ({ navigation }) => {
                             newActionCheckList[0]?.ID_ChecklistC,
                             newActionCheckList[0]?.ID_KhoiCV,
                             newActionCheckList[0]?.ID_Calv,
-                            newActionCheckList[0]?.ID_Toanha
+                            newActionCheckList[0]?.ID_Toanha,
+                            newActionCheckList[0]?.ID_Khuvucs
                           )
                         }
                       >
@@ -1089,6 +1091,10 @@ const styles = StyleSheet.create({
     fontSize: adjust(20),
     fontWeight: "600",
     paddingVertical: 10,
+  },
+  contentContainer: {
+    flex: 1,
+    alignItems: "center",
   },
 });
 

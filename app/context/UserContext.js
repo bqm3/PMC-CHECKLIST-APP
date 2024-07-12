@@ -8,7 +8,6 @@ export const UserProvider = ({ children }) => {
     setUser(data);
   };
 
-
   return (
     <UserContext.Provider value={{ userData, saveUser }}>
       {children}

@@ -142,7 +142,7 @@ const ModalPopupDetailChecklist = ({
               {image && (
                 <TouchableOpacity
                   onPress={() => {
-                    setImage();
+                    setImage(null);
                     handleChange("Anh", null, dataItem);
                   }}
                   style={{ flexDirection: "row", alignItems: "center", gap: 2 }}
@@ -195,7 +195,6 @@ const ModalPopupDetailChecklist = ({
               onPress={() => {
                 
                 dataItem.GhichuChitiet = ghichu;
-                console.log('ghichu',ghichu)
                 handleChange("GhichuChitiet", ghichu, dataItem);
                 handlePopupClear();
               }}

@@ -212,6 +212,7 @@ const ModalKhuvuc = ({
                   </Text>
                   <BottomSheetTextInput
                     allowFontScaling={false}
+                    keyboardType="numeric"
                     value={`${sothutu}`}
                     placeholder="Nhập số thứ tự khu vực thực hiện checklist"
                     placeholderTextColor="gray"

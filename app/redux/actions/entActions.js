@@ -163,7 +163,7 @@ export const ent_khuvuc_get = () => {
         console.error("initialized error");
       }
     } catch (err) {
-      console.log("err ent_khuvuc_get", err.response);
+      console.log("err ent_khuvuc_get", err.response.data.message);
     }
   };
 };
@@ -294,7 +294,7 @@ export const ent_checklist_get_detail = (ID_KhoiCV, ID_ChecklistC, ID_Calv, ID_H
           isLoading: false
         },
       });
-      console.log("ent_checklist_get_detail", err);
+      console.log("ent_checklist_get_detail 1", err.response);
     }
   };
 };
@@ -432,7 +432,7 @@ export const ent_checklist_mul_hm = (dataHangmuc, ID_Calv, ID_ChecklistC) => {
           isLoading: false
         },
       });
-      console.log("ent_checklist_get_detail", err);
+      console.log("ent_checklist_get_detail 2", err.response);
     }
   };
 }

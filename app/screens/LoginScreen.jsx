@@ -44,7 +44,6 @@ const LoginScreen = ({ navigation }) => {
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
   const dispatch = useDispatch();
 
-  const { step, saveStep } = useContext(LoginContext);
   const { error, user, message, isLoading } = useSelector(
     (state) => state.authReducer
   );
@@ -70,6 +69,8 @@ const LoginScreen = ({ navigation }) => {
       ]);
     } else {
       dispatch(login(data?.UserName, data?.Password));
+      await AsyncStorage.setItem("UserName", data?.UserName);
+      await AsyncStorage.setItem("Password", data?.Password);
     }
   };
 
@@ -173,12 +174,7 @@ const LoginScreen = ({ navigation }) => {
     })();
   }, []);
 
-  let text = "Waiting..";
-  if (errorMsg) {
-    text = errorMsg;
-  } else if (location) {
-    text = JSON.stringify(location);
-  }
+  
 
   return (
     <>
@@ -410,7 +406,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     backgroundColor: "white",
     borderRadius: 8,
-    backgroundColor: "white",
     shadowColor: "#000000",
     shadowOffset: {
       width: 0,

@@ -84,6 +84,8 @@ const ThucHienHangmuc = ({ route, navigation }) => {
           ID_Calv: ID_Calv,
           ID_Hangmuc: resData[0].ID_Hangmuc,
           hangMuc: hangMuc,
+          ID_Khuvuc: ID_Khuvuc,
+          Hangmuc: resData[0].Hangmuc,
         });
         setIsScan(false);
         setModalVisibleQr(false);
@@ -168,6 +170,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
       ID_Hangmuc: dataSelect[0].ID_Hangmuc,
       hangMuc: hangMuc,
       ID_Khuvuc: ID_Khuvuc,
+      Hangmuc: dataSelect[0].Hangmuc,
     });
     setDataSelect([]);
     // Set the non-serializable values immediately after navigation

@@ -18,7 +18,7 @@ import DataContext from "../../context/DataContext";
 const dataDanhMuc = [
   {
     id: 1,
-    path: "Thực hiện Check list",
+    path: "Thực hiện Checklist",
     icon: require("../../../assets/icons/o-01.png"),
     role: 2,
   },
