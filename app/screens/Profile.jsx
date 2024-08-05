@@ -121,8 +121,8 @@ const Profile = () => {
   const logout = async()=> {
     dispatch(logoutAction());
     saveStep(1)
-    await AsyncStorage.removeItem("UserName");
-    await AsyncStorage.removeItem("Password");
+    // await AsyncStorage.removeItem("UserName");
+    // await AsyncStorage.removeItem("Password");
    }
 
   return (

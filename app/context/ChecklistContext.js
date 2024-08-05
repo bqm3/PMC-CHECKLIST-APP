@@ -12,7 +12,7 @@ export const ChecklistProvider = ({ children }) => {
     []
   );
   const [newActionDataChecklist1, setNewActionDataChecklist1] = useState([]);
-  const [defaultActionDataChecklist1, setDefaultActionDataChecklist1] =
+  const [defaultActionDataChecklist1, setDataChecklistDefault1] =
     useState([]);
   const [dataChecklistFaild1, setDataChecklistFaild1] = useState([]);
   return (
@@ -25,7 +25,7 @@ export const ChecklistProvider = ({ children }) => {
         newActionDataChecklist1,
         setNewActionDataChecklist1,
         defaultActionDataChecklist1,
-        setDefaultActionDataChecklist1,
+        setDataChecklistDefault1,
         dataChecklistFaild1,
         setDataChecklistFaild1,
       }}

@@ -959,7 +959,7 @@ const DanhmucChecklist = ({ navigation }) => {
                                 />
                               )}
                             <DataTable.Pagination
-                              style={{ justifyContent: "flex-start" }}
+                              style={{ justifyContent: "flex-start", backgroundColor: '#eeeeee' }}
                               page={page}
                               numberOfPages={Math.ceil(
                                 ent_checklist?.totalPages

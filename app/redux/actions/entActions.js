@@ -436,3 +436,61 @@ export const ent_checklist_mul_hm = (dataHangmuc, ID_Calv, ID_ChecklistC) => {
     }
   };
 }
+
+export const ent_checklist_mul_hm_return = (dataHangmuc, ID_Calv, ID_ChecklistC) => {
+  
+  return async (dispatch) => {
+    dispatch({
+      type: type.SET_ENT_CHECKLIST_STATE,
+      payload: {
+        ent_checklist_detail: [],
+        isLoading: true
+      },
+    });
+    try {
+      const token = await AsyncStorage.getItem("tokenUser");
+      
+      if (token !== null) {
+        const response = await axios.put(
+          `${BASE_URL}/ent_checklist/filter/${ID_ChecklistC}/${ID_Calv}`,
+          { ID_Hangmuc: dataHangmuc },
+          {
+            headers: {
+              Accept: "application/json",
+              Authorization: "Bearer " + token,
+            },
+          }
+        );
+        const data = response.data.data;
+        console.log('data',data)
+        const processedData = data?.map((item) => {
+          return {
+            ...item,
+            Giatrinhan: item?.Giatrinhan?.split("/"),
+            valueCheck: null,
+            GhichuChitiet: "",
+            ID_ChecklistC: ID_ChecklistC,
+            Anh: null,
+            gioht: moment().format("LTS"),
+          };
+        });
+        dispatch({
+          type: type.SET_ENT_CHECKLIST_DETAIL_SUCCESS,
+          payload: {
+            ent_checklist_detail: processedData,
+            isLoading: false
+          },
+        });
+      } 
+    } catch (err) {
+      dispatch({
+        type: type.SET_ENT_CHECKLIST_FAIL,
+        payload: {
+          ent_checklist_detail: [],
+          isLoading: false
+        },
+      });
+      console.log("ent_checklist_get_detail 2", err.response);
+    }
+  };
+}

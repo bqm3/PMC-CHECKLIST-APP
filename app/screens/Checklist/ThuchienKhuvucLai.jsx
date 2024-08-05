@@ -21,7 +21,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import {
   ent_khuvuc_get,
   ent_toanha_get,
-  ent_checklist_mul_hm,
+  ent_checklist_mul_hm_return,
 } from "../../redux/actions/entActions";
 import { COLORS, SIZES } from "../../constants/theme";
 import Button from "../../components/Button/Button";
@@ -36,21 +36,28 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Network from "expo-network";
 import ConnectContext from "../../context/ConnectContext";
 
-const ThucHienKhuvuc = ({ route, navigation }) => {
+const ThucHienKhuvucLai = ({ route, navigation }) => {
   const { ID_ChecklistC, ID_KhoiCV, ID_Calv, ID_Toanha, ID_Khuvucs } =
     route.params;
 
-  const { setDataChecklists, dataHangmuc, hangMuc, setStepKhuvuc } =
-    useContext(DataContext);
+  const {
+    setDataChecklists,
+    dataHangmuc,
+    hangMuc,
+    setStepKhuvuc,
+    stepKhuvuc,
+    HangMucDefault,
+    dataChecklists,
+  } = useContext(DataContext);
   const { setDataChecklistFilterContext, dataChecklistFilterContext } =
     useContext(ChecklistContext);
+
+  const { isConnect, saveConnect } = useContext(ConnectContext);
 
   const dispath = useDispatch();
   const { ent_khuvuc, ent_checklist_detail, ent_toanha } = useSelector(
     (state) => state.entReducer
   );
-
-  const { isConnect, saveConnect } = useContext(ConnectContext);
 
   const { user, authToken } = useSelector((state) => state.authReducer);
 
@@ -67,10 +74,10 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
   const [dataChecklistFaild, setDataChecklistFaild] = useState([]);
 
   const [checkKhuvuc, setCheckKhuvuc] = useState([]);
-  // const toanhaIds = checkKhuvuc.map((item) => item.ID_Toanha);
-
   const init_checklist = async () => {
-    await dispath(ent_checklist_mul_hm(dataHangmuc, ID_Calv, ID_ChecklistC));
+    await dispath(
+      ent_checklist_mul_hm_return(dataHangmuc, ID_Calv, ID_ChecklistC)
+    );
   };
 
   useEffect(() => {
@@ -80,14 +87,36 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
     setStepKhuvuc(1);
     // Kiểm tra xem mảng ent_khuvuc có dữ liệu không
     if (ent_khuvuc && ent_khuvuc.length > 0) {
-      const matchingEntKhuvuc = ent_khuvuc?.filter((item) =>
+      const matchingEntKhuvuc = ent_khuvuc.filter((item) =>
         // Kiểm tra xem ID_Khuvuc có nằm trong mảng ID_KhuvucsArray không
-        ID_KhuvucsArray?.includes(item.ID_Khuvuc)
+        ID_KhuvucsArray.includes(item.ID_Khuvuc)
       );
       setData(matchingEntKhuvuc);
     } else {
     }
   }, [ID_Khuvucs, ent_khuvuc]);
+
+  useEffect(() => {
+    const dataChecklistAction = dataChecklistFilterContext.filter(
+      (item) => item.valueCheck !== null
+    );
+    const dataChecklistDefault = dataChecklistAction.filter(
+      (item) =>
+        item.valueCheck === item.Giatridinhdanh &&
+        item.GhichuChitiet === "" &&
+        item.Anh === null
+    );
+
+    const dataChecklistActionWithoutDefault = dataChecklistAction.filter(
+      (item) =>
+        !dataChecklistDefault.some(
+          (defaultItem) => defaultItem.ID_Checklist === item.ID_Checklist
+        )
+    );
+
+    setDataChecklistDefault(dataChecklistDefault);
+    setDataChecklistFaild(dataChecklistActionWithoutDefault);
+  }, [dataChecklistFilterContext]);
 
   useEffect(() => {
     const fetchNetworkStatus = async () => {
@@ -115,61 +144,14 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
 
   useEffect(() => {
     init_checklist();
-  }, []);
+  }, [dataHangmuc]);
 
-  const saveData = async (data) => {
-    try {
-      await AsyncStorage.setItem("dataChecklist", JSON.stringify(data));
-      await AsyncStorage.setItem("checkNetwork", "1");
-    } catch (e) {
-      console.log("Failed to save data", e);
-    }
-  };
-
-  // Tải lại dữ liệu khi vào lại trang
-  const loadData = async () => {
-    const savedData = await AsyncStorage.getItem("dataChecklist");
-    if (savedData !== "[]" && saveData !== null) {
-      console.log('run')
-      setDataChecklists(JSON.parse(savedData));
-      setDataChecklistFilterContext(JSON.parse(savedData));
-    } else {
+  useEffect(() => {
+    if (ent_checklist_detail) {
       setDataChecklists(ent_checklist_detail);
       setDataChecklistFilterContext(ent_checklist_detail);
     }
-  };
-
-  useEffect(() => {
-    loadData();
-  }, [dataHangmuc, ent_checklist_detail]);
-
-  useEffect(() => {
-    return () => {
-      saveData(dataChecklistFilterContext);
-    };
-  }, [dataChecklistFilterContext]);
-
-  useEffect(() => {
-    const dataChecklistAction = dataChecklistFilterContext?.filter(
-      (item) => item.valueCheck !== null
-    );
-    const dataChecklistDefault = dataChecklistAction?.filter(
-      (item) =>
-        item.valueCheck === item.Giatridinhdanh &&
-        item.GhichuChitiet === "" &&
-        item.Anh === null
-    );
-
-    const dataChecklistActionWithoutDefault = dataChecklistAction?.filter(
-      (item) =>
-        !dataChecklistDefault.some(
-          (defaultItem) => defaultItem.ID_Checklist === item.ID_Checklist
-        )
-    );
-
-    setDataChecklistDefault(dataChecklistDefault);
-    setDataChecklistFaild(dataChecklistActionWithoutDefault);
-  }, [dataChecklistFilterContext]);
+  }, [ent_checklist_detail]);
 
   const handlePushDataFilterQr = async (value) => {
     const cleanedValue = value
@@ -268,6 +250,21 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
     }
   };
 
+  const toggleSelectToanha = async (item) => {
+    setCheckKhuvuc((prevDataSelect) => {
+      // Kiểm tra xem item đã tồn tại trong mảng chưa
+      const isExist = prevDataSelect.includes(item);
+
+      // Nếu item đã tồn tại, xóa item đó đi
+      if (isExist) {
+        return prevDataSelect.filter((existingItem) => existingItem !== item);
+      } else {
+        // Nếu item chưa tồn tại, thêm vào mảng
+        return [...prevDataSelect, item];
+      }
+    });
+  };
+
   const handleSubmit = () => {
     navigation.navigate("Thực hiện hạng mục", {
       ID_ChecklistC: ID_ChecklistC,
@@ -288,14 +285,14 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
           dataChecklistFaild.length === 0
         ) {
           await AsyncStorage.removeItem("checkNetwork");
-          await AsyncStorage.removeItem("dataChecklist");
           // Hiển thị thông báo cho người dùng
           Alert.alert("PMC Thông báo", "Không có checklist để kiểm tra!", [
             { text: "OK", onPress: () => console.log("OK Pressed") },
           ]);
           setLoadingSubmit(false);
-          setSubmit(false);
-          saveConnect(false);
+          setSubmit(false)
+          saveConnect(false)
+         
         }
         // Kiểm tra dữ liệu và xử lý tùy thuộc vào trạng thái của `defaultActionDataChecklist` và `dataChecklistFaild`
         if (
@@ -377,7 +374,6 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
         })
         .then(async (res) => {
           await AsyncStorage.removeItem("checkNetwork");
-          await AsyncStorage.removeItem("dataChecklist");
           setSubmit(false);
           postHandleSubmit();
           setLoadingSubmit(false);
@@ -414,6 +410,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
     }
   };
 
+  // api faild tb_checklistchitietdone
   const handleDefaultActionDataChecklist = async () => {
     // Xử lý API cho defaultActionDataChecklist
     const descriptions = [
@@ -449,9 +446,8 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
       postHandleSubmit();
       setLoadingSubmit(false);
       await AsyncStorage.removeItem("checkNetwork");
-      await AsyncStorage.removeItem("dataChecklist");
       setSubmit(false);
-      saveConnect(false);
+      saveConnect(false)
       // Hiển thị cảnh báo sau khi tất cả các yêu cầu hoàn thành
       Alert.alert("PMC Thông báo", "Checklist thành công", [
         {
@@ -557,9 +553,8 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
       // Gộp các promise lại và chờ cho tất cả các promise hoàn thành
       await Promise.all([requestFaild, requestDone]);
       await AsyncStorage.removeItem("checkNetwork");
-      await AsyncStorage.removeItem("dataChecklist");
       setSubmit(false);
-      saveConnect(false);
+      saveConnect(false)
       postHandleSubmit();
       setLoadingSubmit(false);
       // Hiển thị thông báo thành công
@@ -645,6 +640,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
     );
   };
 
+
   // format number
   const decimalNumber = (number) => {
     if (number < 10 && number >= 1) return `0${number}`;
@@ -665,149 +661,149 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
               resizeMode="cover"
               style={{ flex: 1 }}
             >
-              <View
-                style={{
-                  flex: 1,
-                  opacity: opacity,
-                }}
-              >
-                <View style={{ margin: 12 }}>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignContent: "center",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <TouchableOpacity
-                      // onPress={() => handleFilterData(true, 0.5)}
+                <View
+                  style={{
+                    flex: 1,
+                    opacity: opacity
+                  }}
+                >
+                  <View style={{ margin: 12 }}>
+                    <View
                       style={{
                         flexDirection: "row",
+                        alignContent: "center",
                         alignItems: "center",
-                        gap: 8,
+                        justifyContent: "space-between",
                       }}
                     >
-                      <View
+                      <TouchableOpacity
+                        // onPress={() => handleFilterData(true, 0.5)}
                         style={{
-                          flexDirection: "cloumn",
+                          flexDirection: "row",
+                          alignItems: "center",
                           gap: 8,
                         }}
                       >
-                        <Text
-                          allowFontScaling={false}
-                          style={[styles.text, { fontSize: adjust(18) }]}
+                        <View
+                          style={{
+                            flexDirection: "cloumn",
+                            gap: 8,
+                          }}
                         >
-                          Số lượng: {decimalNumber(data?.length)} khu vực
-                        </Text>
-                      </View>
-                      {submit === true && (
-                        <Button
-                          text={"Checklist tất cả"}
-                          isLoading={loadingSubmit}
-                          backgroundColor={COLORS.bg_button}
-                          color={"white"}
-                          onPress={() => handleSubmitChecklist()}
-                        />
-                      )}
-                    </TouchableOpacity>
+                          <Text
+                            allowFontScaling={false}
+                            style={[styles.text, { fontSize: adjust(18) }]}
+                          >
+                            Số lượng: {decimalNumber(data?.length)} khu vực
+                          </Text>
+                        </View>
+                        {submit === true && (
+                          <Button
+                            text={"Checklist tất cả"}
+                            isLoading={loadingSubmit}
+                            backgroundColor={COLORS.bg_button}
+                            color={"white"}
+                            onPress={() => handleSubmitChecklist()}
+                          />
+                        )}
+                      </TouchableOpacity>
+                    </View>
                   </View>
-                </View>
 
-                {isLoadingDetail === false && data && data?.length > 0 && (
-                  <>
-                    <FlatList
-                      style={{
-                        margin: 12,
-                        flex: 1,
-                        marginBottom: 100,
-                      }}
-                      data={data}
-                      renderItem={({ item, index, separators }) =>
-                        renderItem(item, index)
-                      }
-                      ItemSeparatorComponent={() => (
-                        <View style={{ height: 16 }} />
-                      )}
-                      keyExtractor={(item, index) =>
-                        `${item?.ID_Checklist}_${index}`
-                      }
-                    />
-                  </>
-                )}
-
-                {isLoadingDetail === true && ent_khuvuc?.length == 0 && (
-                  <View
-                    style={{
-                      flex: 1,
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <ActivityIndicator
-                      style={{
-                        marginRight: 4,
-                      }}
-                      size="large"
-                      color={COLORS.bg_white}
-                    ></ActivityIndicator>
-                  </View>
-                )}
-
-                {isLoadingDetail === false && ent_khuvuc?.length == 0 && (
-                  <View
-                    style={{
-                      flex: 1,
-                      justifyContent: "center",
-                      alignItems: "center",
-                      marginBottom: 80,
-                    }}
-                  >
-                    <Image
-                      source={require("../../../assets/icons/delete_bg.png")}
-                      resizeMode="contain"
-                      style={{ height: 120, width: 120 }}
-                    />
-                    <Text
-                      allowFontScaling={false}
-                      style={[styles.danhmuc, { padding: 10 }]}
-                    >
-                      {isScan
-                        ? "Không thấy khu vực này"
-                        : "Không có khu vực trong ca làm việc này !"}
-                    </Text>
-                  </View>
-                )}
-                <View
-                  style={{
-                    position: "absolute",
-                    bottom: 40,
-                    flexDirection: "row",
-                    justifyContent: "space-around",
-                    alignItems: "center",
-                    width: "100%",
-                  }}
-                >
-                  <Button
-                    text={"Scan QR Code"}
-                    backgroundColor={"white"}
-                    color={"black"}
-                    onPress={() => {
-                      setModalVisibleQr(true);
-                      setOpacity(0.2);
-                    }}
-                  />
-                  {dataSelect[0] && (
-                    <Button
-                      text={"Vào khu vực"}
-                      isLoading={loadingSubmit}
-                      backgroundColor={COLORS.bg_button}
-                      color={"white"}
-                      onPress={() => handleSubmit()}
-                    />
+                  {isLoadingDetail === false && data && data?.length > 0 && (
+                    <>
+                      <FlatList
+                        style={{
+                          margin: 12,
+                          flex: 1,
+                          marginBottom: 100,
+                        }}
+                        data={data}
+                        renderItem={({ item, index, separators }) =>
+                          renderItem(item, index)
+                        }
+                        ItemSeparatorComponent={() => (
+                          <View style={{ height: 16 }} />
+                        )}
+                        keyExtractor={(item, index) =>
+                          `${item?.ID_Checklist}_${index}`
+                        }
+                      />
+                    </>
                   )}
+
+                  {isLoadingDetail === true && ent_khuvuc?.length == 0 && (
+                    <View
+                      style={{
+                        flex: 1,
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <ActivityIndicator
+                        style={{
+                          marginRight: 4,
+                        }}
+                        size="large"
+                        color={COLORS.bg_white}
+                      ></ActivityIndicator>
+                    </View>
+                  )}
+
+                  {isLoadingDetail === false && ent_khuvuc?.length == 0 && (
+                    <View
+                      style={{
+                        flex: 1,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        marginBottom: 80,
+                      }}
+                    >
+                      <Image
+                        source={require("../../../assets/icons/delete_bg.png")}
+                        resizeMode="contain"
+                        style={{ height: 120, width: 120 }}
+                      />
+                      <Text
+                        allowFontScaling={false}
+                        style={[styles.danhmuc, { padding: 10 }]}
+                      >
+                        Không có khu vực trong ca làm việc này
+                      </Text>
+                    </View>
+                  )}
+                  <View
+                    style={{
+                      position: "absolute",
+                      bottom: 40,
+                      flexDirection: "row",
+                      justifyContent: "space-around",
+                      alignItems: "center",
+                      width: "100%",
+                    }}
+                  >
+                    <Button
+                      text={"Scan QR Code"}
+                      backgroundColor={"white"}
+                      color={"black"}
+                      onPress={() => {
+                        setModalVisibleQr(true);
+                        setOpacity(0.2);
+                      }}
+                    />
+                   
+                    {dataSelect[0] && (
+                      <Button
+                        text={"Vào khu vực"}
+                        isLoading={loadingSubmit}
+                        backgroundColor={COLORS.bg_button}
+                        color={"white"}
+                        onPress={() => handleSubmit()}
+                      />
+                    )}
+                  </View>
                 </View>
-              </View>
+              
             </ImageBackground>
 
             <Modal
@@ -841,7 +837,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
   );
 };
 
-export default ThucHienKhuvuc;
+export default ThucHienKhuvucLai;
 
 const styles = StyleSheet.create({
   container: {

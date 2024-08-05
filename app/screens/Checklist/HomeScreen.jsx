@@ -29,6 +29,12 @@ const dataDanhMuc = [
     role: 2,
   },
   {
+    id: 7,
+    path: "Checklist Lại",
+    icon: require("../../../assets/icons/o-01.png"),
+    role: 2,
+  },
+  {
     id: 3,
     path: "Danh mục Khu vực",
     icon: require("../../../assets/icons/o-03.png"),
@@ -58,6 +64,7 @@ const dataDanhMuc = [
     icon: require("../../../assets/icons/o-05.png"),
     role: 1,
   },
+ 
 ];
 
 const dataDanhMucPSH = [

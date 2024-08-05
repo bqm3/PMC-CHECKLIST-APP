@@ -1,5 +1,6 @@
 // const ThucHienChecklist = require('./ThucHienChecklist')
 import ThucHienChecklist from "./ThucHienChecklist"
+import ThuchienKhuvucLai from "./ThuchienKhuvucLai"
 import HomeScreen from "./HomeScreen"
 import DanhmucCalamviec from "./DanhmucCalamviec"
 import DanhmucGiamsat from "./DanhmucGiamsat"
@@ -9,6 +10,7 @@ import DanhmucTracuu from "./DanhmucTracuu"
 import Profile from "../Profile"
 import DanhmucChecklist from "./DanhmucChecklist"
 import DanhmucThongKe from "./DanhmucThongKe"
+import ChecklistLaiScreen from "./ChecklistLaiScreen"
 
 
 
@@ -22,5 +24,7 @@ module.exports = {
     DanhmucTracuu,
     Profile,
     DanhmucChecklist,
-    DanhmucThongKe
+    DanhmucThongKe,
+    ChecklistLaiScreen,
+    ThuchienKhuvucLai
 }

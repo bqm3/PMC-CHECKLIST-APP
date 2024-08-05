@@ -29,14 +29,8 @@ import adjust from "../../adjust";
 const ThucHienHangmuc = ({ route, navigation }) => {
   const { ID_ChecklistC, ID_KhoiCV, ID_Calv, ID_Khuvuc } = route.params;
   const dispath = useDispatch();
-  const {
-    setDataChecklists,
-    dataChecklists,
-    setHangMuc,
-    hangMuc,
-    HangMucDefault,
-    setHangMucDefault,
-  } = useContext(DataContext);
+  const { dataChecklists, setHangMuc, hangMuc, HangMucDefault } =
+    useContext(DataContext);
   const { ent_hangmuc } = useSelector((state) => state.entReducer);
 
   const [opacity, setOpacity] = useState(1);
@@ -84,7 +78,6 @@ const ThucHienHangmuc = ({ route, navigation }) => {
           ID_Calv: ID_Calv,
           ID_Hangmuc: resData[0].ID_Hangmuc,
           hangMuc: hangMuc,
-          ID_Khuvuc: ID_Khuvuc,
           Hangmuc: resData[0].Hangmuc,
         });
         setIsScan(false);
@@ -422,19 +415,24 @@ const ThucHienHangmuc = ({ route, navigation }) => {
                 setOpacity(1);
               }}
             >
-              <View style={[styles.centeredView]}>
+              <View
+                style={[styles.centeredView, { width: "100%", height: "80%" }]}
+              >
                 <View
                   style={[
                     styles.modalView,
                     {
-                      width: "85%",
-                      height: "65%",
+                      width: "80%",
+                      height: "auto",
+                      maxHeight: "70%",
                       justifyContent: "space-between",
                     },
                   ]}
                 >
                   <ScrollView>
-                    <Text allowFontScaling={false}>{tieuChuan} </Text>
+                    <Text allowFontScaling={false} style={styles.modalText}>
+                      {tieuChuan}{" "}
+                    </Text>
                   </ScrollView>
                   <Button
                     text={"Đóng"}
@@ -511,8 +509,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   modalText: {
-    fontSize: adjust(20),
-    fontWeight: "600",
+    fontSize: adjust(16),
     paddingVertical: 10,
   },
   content: {

@@ -24,9 +24,12 @@ const ModalPopupDetailChecklist = ({
 }) => {
   const ref = useRef(null);
   const [step, setStep] = useState(1);
-  const [defaultChecklist, setDefaultChecklist] = useState(dataItem?.valueCheck);
+  const [defaultChecklist, setDefaultChecklist] = useState(
+    dataItem?.valueCheck
+  );
   const [image, setImage] = useState();
   const [ghichu, setGhichu] = useState();
+  const [chiso, setChiso] = useState();
 
   const pickImage = async () => {
     // Ask the user for the permission to access the camera
@@ -49,71 +52,105 @@ const ModalPopupDetailChecklist = ({
   useEffect(() => {
     setImage(dataItem?.Anh);
     setGhichu(dataItem?.GhichuChitiet);
+    setChiso(dataItem?.valueCheck);
   }, [dataItem]);
 
   return (
     <View style={{ width: SIZES.width - 60 }}>
-      {step === 1 && (
-        <View>
-          <Text allowFontScaling={false}  style={styles.text}>
-            Trạng thái
-          </Text>
-          <SelectDropdown
-            ref={ref}
-            data={dataItem?.Giatrinhan ? dataItem?.Giatrinhan : []}
-            buttonStyle={styles.select}
-            dropdownStyle={{
-              borderRadius: 8,
-              maxHeight: 400,
-            }}
-            // rowStyle={{ height: 50, justifyContent: "center" }}
-            defaultButtonText={"Trạng thái"}
-            buttonTextStyle={styles.customText}
-            defaultValue={defaultChecklist}
-            onSelect={(selectedItem, i) => {
-              dataItem.valueCheck = selectedItem;
-              handleItemClick(selectedItem, dataItem, "option");
-              setDefaultChecklist(selectedItem);
-            }}
-            renderDropdownIcon={(isOpened) => {
-              return (
-                <FontAwesome
-                  name={isOpened ? "chevron-up" : "chevron-down"}
-                  color={"#637381"}
-                  size={14}
-                  style={{ marginRight: 10 }}
-                />
-              );
-            }}
-            dropdownIconPosition={"right"}
-            buttonTextAfterSelection={(selectedItem, index) => {
-              return (
-                <View
-                  style={{
-                    justifyContent: "center",
-                    alignContent: "center",
-                    height: 50,
-                  }}
-                >
-                  <Text allowFontScaling={false}  style={[styles.text]}>
-                    {selectedItem}
-                  </Text>
-                </View>
-              );
-            }}
-            renderCustomizedRowChild={(item, index) => {
-              return (
-                <VerticalSelect
-                  value={item}
-                  label={item}
-                  key={item}
-                  selectedItem={defaultChecklist}
-                />
-              );
-            }}
-          />
-        </View>
-      )}
+      {step === 1 &&
+        (`${dataItem?.isCheck}` === "0" ? (
+          <View>
+            <Text allowFontScaling={false} style={styles.text}>
+              Trạng thái
+            </Text>
+            <SelectDropdown
+              ref={ref}
+              data={dataItem?.Giatrinhan ? dataItem?.Giatrinhan : []}
+              buttonStyle={styles.select}
+              dropdownStyle={{
+                borderRadius: 8,
+                maxHeight: 400,
+              }}
+              // rowStyle={{ height: 50, justifyContent: "center" }}
+              defaultButtonText={"Trạng thái"}
+              buttonTextStyle={styles.customText}
+              defaultValue={defaultChecklist}
+              onSelect={(selectedItem, i) => {
+                dataItem.valueCheck = selectedItem;
+                handleItemClick(selectedItem, dataItem, "option");
+                setDefaultChecklist(selectedItem);
+              }}
+              renderDropdownIcon={(isOpened) => {
+                return (
+                  <FontAwesome
+                    name={isOpened ? "chevron-up" : "chevron-down"}
+                    color={"#637381"}
+                    size={14}
+                    style={{ marginRight: 10 }}
+                  />
+                );
+              }}
+              dropdownIconPosition={"right"}
+              buttonTextAfterSelection={(selectedItem, index) => {
+                return (
+                  <View
+                    style={{
+                      justifyContent: "center",
+                      alignContent: "center",
+                      height: 50,
+                    }}
+                  >
+                    <Text allowFontScaling={false} style={[styles.text]}>
+                      {selectedItem}
+                    </Text>
+                  </View>
+                );
+              }}
+              renderCustomizedRowChild={(item, index) => {
+                return (
+                  <VerticalSelect
+                    value={item}
+                    label={item}
+                    key={item}
+                    selectedItem={defaultChecklist}
+                  />
+                );
+              }}
+            />
+          </View>
+        ) : (
+          <View>
+            <Text allowFontScaling={false} style={styles.text}>
+              Chỉ số
+            </Text>
+            <TextInput
+              allowFontScaling={false}
+              value={chiso}
+              placeholder="Thêm chỉ số"
+              placeholderTextColor="gray"
+              blurOnSubmit={true}
+              onChangeText={(text) => {
+                setChiso(text);
+              }}
+              style={styles.textInput}
+            />
+
+            <View style={{ marginTop: 10 }}>
+              <Button
+                onPress={() => {
+                  dataItem.valueCheck = chiso;
+                  handleItemClick(chiso, dataItem, "isCheck");
+                  handlePopupClear();
+                }}
+                backgroundColor={COLORS.bg_button}
+                border={COLORS.bg_button}
+                color={"white"}
+                text={"Hoàn thành"}
+                width={"100%"}
+              />
+            </View>
+          </View>
+        ))}
       {step === 2 && (
         <>
           <View style={styles.container}>
@@ -148,7 +185,12 @@ const ModalPopupDetailChecklist = ({
                   style={{ flexDirection: "row", alignItems: "center", gap: 2 }}
                 >
                   <AntDesign name="close" size={24} color="black" />
-                  <Text allowFontScaling={false} style={{ fontSize: 16, fontWeight: "600" }}>Clear</Text>
+                  <Text
+                    allowFontScaling={false}
+                    style={{ fontSize: 16, fontWeight: "600" }}
+                  >
+                    Clear
+                  </Text>
                 </TouchableOpacity>
               )}
             </View>
@@ -170,11 +212,11 @@ const ModalPopupDetailChecklist = ({
       )}
       {step === 3 && (
         <View>
-          <Text allowFontScaling={false}  style={styles.text}>
+          <Text allowFontScaling={false} style={styles.text}>
             Ghi chú
           </Text>
-          <TextInput allowFontScaling={false}
-            
+          <TextInput
+            allowFontScaling={false}
             value={ghichu}
             placeholder="Thêm ghi chú"
             placeholderTextColor="gray"
@@ -187,13 +229,13 @@ const ModalPopupDetailChecklist = ({
               styles.textInput,
               {
                 paddingHorizontal: 10,
+                height: 100,
               },
             ]}
           />
           <View style={{ marginTop: 10 }}>
             <Button
               onPress={() => {
-                
                 dataItem.GhichuChitiet = ghichu;
                 handleChange("GhichuChitiet", ghichu, dataItem);
                 handlePopupClear();
@@ -282,10 +324,11 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderWidth: 1,
     borderColor: "gray",
-    height: 100,
+    height: 50,
     paddingVertical: 4,
     backgroundColor: "white",
     textAlign: "left",
+    paddingLeft: 10,
   },
   image: {
     width: 150,

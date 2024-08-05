@@ -83,6 +83,13 @@
           "locationAlwaysAndWhenInUsePermission": "The app needs access to your location to provide suggestions about nearby places and improve your experience."
         }
       ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/icon.png",
+          "color": "#ffffff"
+        }
+      ],
      [
       "expo-build-properties",
       {

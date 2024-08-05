@@ -1,6 +1,6 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Image, Button, Text, TouchableOpacity, Platform } from "react-native";
+import { Image, Button, Text, TouchableOpacity, Platform, Alert } from "react-native";
 import {
   ThucHienChecklist,
   HomeScreen,
@@ -11,14 +11,14 @@ import {
   Profile,
   DanhmucChecklist,
   DanhmucTracuu,
+  ChecklistLaiScreen,
+  ThuchienKhuvucLai,
 } from "../screens/Checklist";
 import { COLORS } from "../constants/theme";
 import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
-import QRCodeScreen from "../screens/QRCodeScreen";
 import DanhmucToanhaScreen from "../screens/PSH/DanhmucToanhaScreen";
 import DanhmucDuanScreen from "../screens/PSH/DanhmucDuanScreen";
 import DanhmucUserScreen from "../screens/PSH/DanhmucUserScreen";
-import WebViewImage from "../screens/WebViewImage";
 import DanhmucHangmuc from "../screens/Checklist/DanhmucHangmuc";
 import ThucHienHangmuc from "../screens/Checklist/ThucHienHangmuc";
 import ThucHienKhuvuc from "../screens/Checklist/ThuchienKhuvuc";
@@ -57,9 +57,13 @@ const HomeStack = ({ navigation }) => {
           },
           headerBackTitleVisible: false,
           headerTitle: () => (
-            <Text allowFontScaling={false}
-              
-              style={{ fontSize: adjust(20), fontWeight: "700", color: "white" }}
+            <Text
+              allowFontScaling={false}
+              style={{
+                fontSize: adjust(20),
+                fontWeight: "700",
+                color: "white",
+              }}
             >
               CHECKLIST - PMC
             </Text>
@@ -67,13 +71,15 @@ const HomeStack = ({ navigation }) => {
           headerTitleAlign: "center",
           headerLeft: () => (
             <Image
-              style={{ width: adjust(80), height: adjust(36), resizeMode: "cover" }}
+              style={{
+                width: adjust(80),
+                height: adjust(36),
+                resizeMode: "cover",
+              }}
               source={require("../../assets/pmc_logo.png")}
             />
           ),
-          headerRight: () => (
-            <Back navigation={navigation} title={"Profile"} />
-          ),
+          headerRight: () => <Back navigation={navigation} title={"Profile"} />,
         })}
       />
       <Stack.Screen
@@ -84,9 +90,13 @@ const HomeStack = ({ navigation }) => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text allowFontScaling={false}
-              
-              style={{ fontSize: adjust(20), fontWeight: "700", color: "white" }}
+            <Text
+              allowFontScaling={false}
+              style={{
+                fontSize: adjust(20),
+                fontWeight: "700",
+                color: "white",
+              }}
             >
               Thông tin cá nhân
             </Text>
@@ -113,11 +123,49 @@ const HomeStack = ({ navigation }) => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text allowFontScaling={false}
-              
-              style={{ fontSize: adjust(20), fontWeight: "700", color: "white" }}
+            <Text
+              allowFontScaling={false}
+              style={{
+                fontSize: adjust(20),
+                fontWeight: "700",
+                color: "white",
+              }}
             >
               Thực hiện Checklist
+            </Text>
+          ),
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              {Platform.OS === "ios" && (
+                <Ionicons name="chevron-back" size={adjust(28)} color="white" />
+              )}
+            </TouchableOpacity>
+          ),
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: COLORS.bg_button,
+          },
+          headerBackTitleVisible: false,
+        })}
+      />
+
+      <Stack.Screen
+        name="Checklist Lại"
+        component={ChecklistLaiScreen}
+        lazy={false}
+        options={({ navigation, route }) => ({
+          headerShown: true,
+
+          headerTitle: () => (
+            <Text
+              allowFontScaling={false}
+              style={{
+                fontSize: adjust(20),
+                fontWeight: "700",
+                color: "white",
+              }}
+            >
+              Checklist Lại
             </Text>
           ),
           headerLeft: () => (
@@ -143,9 +191,13 @@ const HomeStack = ({ navigation }) => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text allowFontScaling={false}
-              
-              style={{ fontSize: adjust(20), fontWeight: "700", color: "white" }}
+            <Text
+              allowFontScaling={false}
+              style={{
+                fontSize: adjust(20),
+                fontWeight: "700",
+                color: "white",
+              }}
             >
               Hạng mục theo khu vực
             </Text>
@@ -171,11 +223,66 @@ const HomeStack = ({ navigation }) => {
         lazy={false}
         options={({ navigation, route }) => ({
           headerShown: true,
+          headerTitle: () => (
+            <Text
+              allowFontScaling={false}
+              style={{
+                fontSize: 20, // Adjust font size as needed
+                fontWeight: "700",
+                color: "white",
+              }}
+            >
+              Khu vực
+            </Text>
+          ),
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => {
+                Alert.alert(
+                  "PMC",
+                  "Thoát khỏi khu vực sẽ mất hết checklist đã kiểm tra. Vui lòng xác nhận",
+                  [
+                    {
+                      text: "Hủy", 
+                      onPress: () => console.log("Hủy Pressed"),
+                      style: "cancel",
+                    },
+                    {
+                      text: "Xác nhận",
+                      onPress: () => navigation.goBack(),
+                    },
+                  ]
+                );
+              }}
+            >
+              {Platform.OS === "ios" && (
+                <Ionicons name="chevron-back" size={28} color="white" />
+              )}
+            </TouchableOpacity>
+          ),
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: COLORS.bg_button, // Replace with your color
+          },
+          headerBackTitleVisible: false,
+        })}
+      />
+
+      <Stack.Screen
+        name="Thực hiện khu vực lại"
+        component={ThuchienKhuvucLai}
+        lazy={false}
+        options={({ navigation, route }) => ({
+          headerShown: true,
 
           headerTitle: () => (
-            <Text allowFontScaling={false}
-              
-              style={{ fontSize: adjust(20), fontWeight: "700", color: "white" }}
+            <Text
+              allowFontScaling={false}
+              style={{
+                fontSize: adjust(20),
+                fontWeight: "700",
+                color: "white",
+              }}
             >
               Khu vực
             </Text>
@@ -203,9 +310,13 @@ const HomeStack = ({ navigation }) => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text allowFontScaling={false}
-              
-              style={{ fontSize: adjust(20), fontWeight: "700", color: "white" }}
+            <Text
+              allowFontScaling={false}
+              style={{
+                fontSize: adjust(20),
+                fontWeight: "700",
+                color: "white",
+              }}
             >
               Hạng mục
             </Text>
@@ -232,9 +343,13 @@ const HomeStack = ({ navigation }) => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text allowFontScaling={false}
-              
-              style={{ fontSize: adjust(20), fontWeight: "700", color: "white" }}
+            <Text
+              allowFontScaling={false}
+              style={{
+                fontSize: adjust(20),
+                fontWeight: "700",
+                color: "white",
+              }}
             >
               Danh mục Khu vực
             </Text>
@@ -261,9 +376,13 @@ const HomeStack = ({ navigation }) => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text allowFontScaling={false}
-              
-              style={{ fontSize: adjust(20), fontWeight: "700", color: "white" }}
+            <Text
+              allowFontScaling={false}
+              style={{
+                fontSize: adjust(20),
+                fontWeight: "700",
+                color: "white",
+              }}
             >
               Danh mục Check list
             </Text>
@@ -290,9 +409,13 @@ const HomeStack = ({ navigation }) => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text allowFontScaling={false}
-              
-              style={{ fontSize: adjust(20), fontWeight: "700", color: "white" }}
+            <Text
+              allowFontScaling={false}
+              style={{
+                fontSize: adjust(20),
+                fontWeight: "700",
+                color: "white",
+              }}
             >
               Danh mục Giám sát
             </Text>
@@ -320,9 +443,13 @@ const HomeStack = ({ navigation }) => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text allowFontScaling={false}
-              
-              style={{ fontSize: adjust(20), fontWeight: "700", color: "white" }}
+            <Text
+              allowFontScaling={false}
+              style={{
+                fontSize: adjust(20),
+                fontWeight: "700",
+                color: "white",
+              }}
             >
               Danh mục Ca làm việc
             </Text>
@@ -350,9 +477,13 @@ const HomeStack = ({ navigation }) => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text allowFontScaling={false}
-              
-              style={{ fontSize: adjust(20), fontWeight: "700", color: "white" }}
+            <Text
+              allowFontScaling={false}
+              style={{
+                fontSize: adjust(20),
+                fontWeight: "700",
+                color: "white",
+              }}
             >
               Danh mục tòa nhà
             </Text>
@@ -380,9 +511,13 @@ const HomeStack = ({ navigation }) => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text allowFontScaling={false}
-              
-              style={{ fontSize: adjust(20), fontWeight: "700", color: "white" }}
+            <Text
+              allowFontScaling={false}
+              style={{
+                fontSize: adjust(20),
+                fontWeight: "700",
+                color: "white",
+              }}
             >
               Quản lý người dùng
             </Text>
@@ -409,9 +544,13 @@ const HomeStack = ({ navigation }) => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text allowFontScaling={false}
-              
-              style={{ fontSize: adjust(20), fontWeight: "700", color: "white" }}
+            <Text
+              allowFontScaling={false}
+              style={{
+                fontSize: adjust(20),
+                fontWeight: "700",
+                color: "white",
+              }}
             >
               Danh mục dự án
             </Text>
@@ -439,9 +578,13 @@ const HomeStack = ({ navigation }) => {
           headerShown: true,
 
           headerTitle: () => (
-            <Text allowFontScaling={false}
-              
-              style={{ fontSize: adjust(20), fontWeight: "700", color: "white" }}
+            <Text
+              allowFontScaling={false}
+              style={{
+                fontSize: adjust(20),
+                fontWeight: "700",
+                color: "white",
+              }}
             >
               Thống kê và tra cứu
             </Text>
@@ -468,9 +611,13 @@ const HomeStack = ({ navigation }) => {
         options={({ route, navigation }) => ({
           headerShown: true,
           headerTitle: () => (
-            <Text allowFontScaling={false}
-              
-              style={{ fontSize: adjust(20), fontWeight: "700", color: "white" }}
+            <Text
+              allowFontScaling={false}
+              style={{
+                fontSize: adjust(20),
+                fontWeight: "700",
+                color: "white",
+              }}
             >
               Chi tiết Checklist
             </Text>

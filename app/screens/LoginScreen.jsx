@@ -69,8 +69,8 @@ const LoginScreen = ({ navigation }) => {
       ]);
     } else {
       dispatch(login(data?.UserName, data?.Password));
-      await AsyncStorage.setItem("UserName", data?.UserName);
-      await AsyncStorage.setItem("Password", data?.Password);
+      // await AsyncStorage.setItem("UserName", data?.UserName);
+      // await AsyncStorage.setItem("Password", data?.Password);
     }
   };
 
