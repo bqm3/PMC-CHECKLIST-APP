@@ -44,6 +44,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
     setDataChecklists,
     dataHangmuc,
     hangMuc,
+    setHangMuc,
     setStepKhuvuc,
     stepKhuvuc,
     HangMucDefault,
@@ -95,6 +96,21 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
     } else {
     }
   }, [ID_Khuvucs, ent_khuvuc]);
+
+  useEffect(() => {
+    if (HangMucDefault && dataChecklists) {
+      // Lấy danh sách ID_Hangmuc từ dataChecklists
+      const checklistIDs = dataChecklists.map((item) => item.ID_Hangmuc);
+
+      // Lọc filteredByKhuvuc để chỉ giữ lại các mục có ID_Hangmuc tồn tại trong checklistIDs
+      const finalFilteredData = HangMucDefault.filter((item) =>
+        checklistIDs.includes(item.ID_Hangmuc)
+      );
+
+      // Cập nhật trạng thái hangMuc với danh sách đã lọc
+      setHangMuc(finalFilteredData);
+    }
+  }, [HangMucDefault, dataChecklists]);
 
   useEffect(() => {
     const dataChecklistAction = dataChecklistFilterContext.filter(
@@ -236,19 +252,6 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
     }
   };
 
-  const toggleTodo = async (item) => {
-    const isExistIndex = dataSelect.find(
-      (existingItem) => existingItem === item
-    );
-
-    // Nếu item đã tồn tại, xóa item đó đi
-    if (isExistIndex) {
-      setDataSelect([]);
-    } else {
-      // Nếu item chưa tồn tại, thêm vào mảng mới
-      setDataSelect([item]);
-    }
-  };
 
   const toggleSelectToanha = async (item) => {
     setCheckKhuvuc((prevDataSelect) => {
@@ -263,16 +266,6 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
         return [...prevDataSelect, item];
       }
     });
-  };
-
-  const handleSubmit = () => {
-    navigation.navigate("Thực hiện hạng mục", {
-      ID_ChecklistC: ID_ChecklistC,
-      ID_KhoiCV: ID_KhoiCV,
-      ID_Calv: ID_Calv,
-      ID_Khuvuc: dataSelect[0].ID_Khuvuc,
-    });
-    setDataSelect([]);
   };
 
   const handleSubmitChecklist = async () => {
@@ -412,6 +405,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
 
   // api faild tb_checklistchitietdone
   const handleDefaultActionDataChecklist = async () => {
+    setLoadingSubmit(true);
     // Xử lý API cho defaultActionDataChecklist
     const descriptions = [
       defaultActionDataChecklist
@@ -477,111 +471,159 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
 
   // api all
   const hadlChecklistAll = async () => {
-    // Tạo một đối tượng FormData để chứa dữ liệu của dataChecklistFaild
-    const formData = new FormData();
-
-    // Lặp qua từng phần tử trong dataChecklistFaild để thêm vào FormData
-    dataChecklistFaild.forEach((item, index) => {
-      // Thêm các trường dữ liệu vào FormData
-      formData.append("ID_ChecklistC", ID_ChecklistC);
-      formData.append("ID_Checklist", item.ID_Checklist);
-      formData.append("Ketqua", item.valueCheck || "");
-      formData.append("Gioht", item.gioht);
-      formData.append("Ghichu", item.GhichuChitiet || "");
-
-      // Nếu có hình ảnh, thêm vào FormData
-      if (item.Anh) {
-        const file = {
-          uri:
-            Platform.OS === "android"
-              ? item.Anh.uri
-              : item.Anh.uri.replace("file://", ""),
-          name:
-            item.Anh.fileName || `${Math.floor(Math.random() * 999999999)}.jpg`,
-          type: "image/jpeg",
-        };
-        formData.append(`Images_${index}`, file);
-        formData.append("Anh", file.name);
-      } else {
-        formData.append("Anh", "");
-        formData.append(`Images_${index}`, {});
-      }
-    });
-
-    // Gửi FormData trong một yêu cầu duy nhất
-    const requestFaild = axios.post(
-      BASE_URL + `/tb_checklistchitiet/create`,
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: "Bearer " + authToken,
-        },
-      }
-    );
-
-    // Chuẩn bị dữ liệu cho yêu cầu thứ hai
-    const descriptions = [
-      defaultActionDataChecklist
-        .map(
-          (item) => `${item.ID_Checklist}/${item.Giatridinhdanh}/${item.gioht}`
-        )
-        .join(","),
-    ];
-    const descriptionsJSON = JSON.stringify(descriptions);
-    const ID_Checklists = defaultActionDataChecklist.map(
-      (item) => item.ID_Checklist
-    );
-
-    const requestDone = axios.post(
-      BASE_URL + "/tb_checklistchitietdone/create",
-      {
-        Description: descriptionsJSON,
-        ID_Checklists: ID_Checklists,
-        ID_ChecklistC: ID_ChecklistC,
-        checklistLength: defaultActionDataChecklist.length,
-      },
-      {
-        headers: {
-          Accept: "application/json",
-          Authorization: "Bearer " + authToken,
-        },
-      }
-    );
-
     try {
-      // Gộp các promise lại và chờ cho tất cả các promise hoàn thành
-      await Promise.all([requestFaild, requestDone]);
-      await AsyncStorage.removeItem("checkNetwork");
-      setSubmit(false);
-      saveConnect(false)
-      postHandleSubmit();
-      setLoadingSubmit(false);
-      // Hiển thị thông báo thành công
-      Alert.alert("PMC Thông báo", "Checklist thành công", [
-        {
-          text: "Hủy",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel",
-        },
-        { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-      ]);
+      setLoadingSubmit(true);
 
-      // Thiết lập lại dữ liệu và trạng thái loading
+      // Tạo một đối tượng FormData để chứa dữ liệu của dataChecklistFaild
+      const formData = new FormData();
+
+      // Lặp qua từng phần tử trong dataChecklistFaild để thêm vào FormData
+      dataChecklistFaild.forEach((item, index) => {
+        formData.append("ID_ChecklistC", ID_ChecklistC);
+        formData.append("ID_Checklist", item.ID_Checklist);
+        formData.append("Ketqua", item.valueCheck || "");
+        formData.append("Gioht", item.gioht);
+        formData.append("Ghichu", item.GhichuChitiet || "");
+
+        // Nếu có hình ảnh, thêm vào FormData
+        if (item.Anh) {
+          const file = {
+            uri:
+              Platform.OS === "android"
+                ? item.Anh.uri
+                : item.Anh.uri.replace("file://", ""),
+            name:
+              item.Anh.fileName ||
+              `${Math.floor(Math.random() * 999999999)}.jpg`,
+            type: "image/jpeg",
+          };
+          formData.append(`Images_${index}`, file);
+          formData.append("Anh", file.name);
+        } else {
+          // formData.append("Anh", "");
+          // formData.append(`Images_${index}`, {});
+        }
+      });
+
+      // Chuẩn bị dữ liệu cho yêu cầu thứ hai
+      const descriptions = [
+        defaultActionDataChecklist
+          .map(
+            (item) =>
+              `${item.ID_Checklist}/${item.Giatridinhdanh}/${item.gioht}`
+          )
+          .join(","),
+      ];
+      const descriptionsJSON = JSON.stringify(descriptions);
+      const ID_Checklists = defaultActionDataChecklist.map(
+        (item) => item.ID_Checklist
+      );
+
+      // Tạo các yêu cầu API
+      const requestFaild = axios.post(
+        `${BASE_URL}/tb_checklistchitiet/create`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+
+      const requestDone = axios.post(
+        `${BASE_URL}/tb_checklistchitietdone/create`,
+        {
+          Description: descriptionsJSON,
+          ID_Checklists: ID_Checklists,
+          ID_ChecklistC: ID_ChecklistC,
+          checklistLength: defaultActionDataChecklist.length,
+        },
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+
+      axios
+        .all([requestFaild, requestDone])
+        .then(
+          axios.spread(async (faildResponse, doneResponse) => {
+            postHandleSubmit();
+            setLoadingSubmit(false);
+            await AsyncStorage.removeItem("checkNetwork");
+            await AsyncStorage.removeItem("dataChecklist");
+            setSubmit(false);
+            saveConnect(false);
+            // Hiển thị thông báo thành công
+            Alert.alert("PMC Thông báo", "Checklist thành công", [
+              {
+                text: "Hủy",
+                onPress: () => console.log("Cancel Pressed"),
+                style: "cancel",
+              },
+              { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+            ]);
+          })
+        )
+        .catch((error) => {
+          setLoadingSubmit(false);
+
+          if (error.response) {
+            // Xử lý lỗi từ server
+            Alert.alert("PMC Thông báo", error.response.data.message, [
+              {
+                text: "Hủy",
+                onPress: () => console.log("Cancel Pressed"),
+                style: "cancel",
+              },
+              { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+            ]);
+          } else if (error.request) {
+            // Xử lý lỗi yêu cầu (không nhận được phản hồi từ server)
+            Alert.alert(
+              "PMC Thông báo",
+              "Network error. Please try again later.",
+              [
+                {
+                  text: "Hủy",
+                  onPress: () => console.log("Cancel Pressed"),
+                  style: "cancel",
+                },
+                { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+              ]
+            );
+          } else {
+            Alert.alert(
+              "PMC Thông báo",
+              "An error occurred. Please try again later.",
+              [
+                {
+                  text: "Hủy",
+                  onPress: () => console.log("Cancel Pressed"),
+                  style: "cancel",
+                },
+                { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+              ]
+            );
+          }
+        });
     } catch (error) {
       setLoadingSubmit(false);
-
-      if (error.response) {
-        // Xử lý lỗi từ server
-        Alert.alert("PMC Thông báo", error.response.data.message, [
+      Alert.alert(
+        "PMC Thông báo",
+        "An error occurred. Please try again later.",
+        [
           {
             text: "Hủy",
             onPress: () => console.log("Cancel Pressed"),
             style: "cancel",
           },
           { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-        ]);
-      }
+        ]
+      );
     }
   };
 
@@ -605,8 +647,8 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
   // view item flatlist
   const renderItem = (item, index) => {
     return (
-      <TouchableOpacity
-        onPress={() => toggleTodo(item)}
+      <View
+        // onPress={() => toggleTodo(item)}
         style={[
           styles.content,
           {
@@ -636,7 +678,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
             {item?.Tenkhuvuc} - {item?.ent_toanha?.Toanha}
           </Text>
         </View>
-      </TouchableOpacity>
+      </View>
     );
   };
 
@@ -699,7 +741,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
                         </View>
                         {submit === true && (
                           <Button
-                            text={"Checklist tất cả"}
+                            text={"Hoàn thành tất cả"}
                             isLoading={loadingSubmit}
                             backgroundColor={COLORS.bg_button}
                             color={"white"}
@@ -792,7 +834,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
                       }}
                     />
                    
-                    {dataSelect[0] && (
+                    {/* {dataSelect[0] && (
                       <Button
                         text={"Vào khu vực"}
                         isLoading={loadingSubmit}
@@ -800,7 +842,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
                         color={"white"}
                         onPress={() => handleSubmit()}
                       />
-                    )}
+                    )} */}
                   </View>
                 </View>
               

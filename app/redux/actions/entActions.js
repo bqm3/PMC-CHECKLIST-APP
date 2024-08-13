@@ -462,7 +462,6 @@ export const ent_checklist_mul_hm_return = (dataHangmuc, ID_Calv, ID_ChecklistC)
           }
         );
         const data = response.data.data;
-        console.log('data',data)
         const processedData = data?.map((item) => {
           return {
             ...item,

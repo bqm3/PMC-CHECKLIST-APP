@@ -28,13 +28,11 @@ import LoginContext from "../context/LoginContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import adjust from "../adjust";
 
-
 const Profile = () => {
   const { user, authToken } = useSelector((state) => state.authReducer);
   const dispatch = useDispatch();
-  const navigation = useNavigation()
+  const navigation = useNavigation();
   const { step, saveStep } = useContext(LoginContext);
-  
 
   const [isCheckSecurity, setIsCheckSecurity] = useState({
     password: true,
@@ -42,7 +40,7 @@ const Profile = () => {
     re_newpassword: true,
   });
 
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
 
   const [dataPassword, setDataPassword] = useState({
     password: "",
@@ -64,66 +62,65 @@ const Profile = () => {
     }));
   };
 
-  const handleAdd =() => {
+  const handleAdd = () => {
     setDataPassword({
       password: "",
       newpassword: "",
       re_newpassword: "",
-    })
-  }
+    });
+  };
 
   const handleSubmit = async () => {
-    setIsLoading(true)
-    if(dataPassword.newpassword !== dataPassword.re_newpassword){
+    setIsLoading(true);
+    if (dataPassword.newpassword !== dataPassword.re_newpassword) {
       Alert.alert("PMC Thông báo", "Mật khẩu phải trùng nhau", [
-      
         { text: "Xác nhận", onPress: () => console.log("Cancel Pressed") },
       ]);
-      setIsLoading(false)
-    }else {
+      setIsLoading(false);
+    } else {
       await axios
-      .post(BASE_URL + `/ent_user/change-password/`,{
-        currentPassword: dataPassword.password,
-        newPassword: dataPassword.newpassword
-      }, {
-        headers: {
-          Accept: "application/json",
-          Authorization: "Bearer " + authToken,
-        },
-      })
-      .then((response) => {
-        handleAdd();
-        setIsLoading(false)
-        Alert.alert("PMC Thông báo", response.data.message, [
+        .post(
+          BASE_URL + `/ent_user/change-password/`,
           {
-            text: "Hủy",
-            onPress: () => console.log("Cancel Pressed"),
-            style: "cancel",
+            currentPassword: dataPassword.password,
+            newPassword: dataPassword.newpassword,
           },
-          { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-        ]);
-      })
-      .catch((err) => {
-        setIsLoading(false)
-        Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
           {
-            text: "Hủy",
-            onPress: () => console.log("Cancel Pressed"),
-            style: "cancel",
-          },
-          { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-        ]);
-      });
-      
+            headers: {
+              Accept: "application/json",
+              Authorization: "Bearer " + authToken,
+            },
+          }
+        )
+        .then((response) => {
+          handleAdd();
+          setIsLoading(false);
+          Alert.alert("PMC Thông báo", response.data.message, [
+            {
+              text: "Hủy",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel",
+            },
+            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+          ]);
+        })
+        .catch((err) => {
+          setIsLoading(false);
+          Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
+            {
+              text: "Hủy",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel",
+            },
+            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+          ]);
+        });
     }
-  }
+  };
 
-  const logout = async()=> {
+  const logout = async () => {
     dispatch(logoutAction());
-    saveStep(1)
-    // await AsyncStorage.removeItem("UserName");
-    // await AsyncStorage.removeItem("Password");
-   }
+  };
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -137,9 +134,15 @@ const Profile = () => {
           style={{ flex: 1 }}
         >
           <ScrollView style={{ flex: 1, margin: 20 }}>
-            <Title text={"Thông tin cá nhân"} size={adjust(18)} top={10} bottom={10} />
+            <Title
+              text={"Thông tin cá nhân"}
+              size={adjust(18)}
+              top={10}
+              bottom={10}
+            />
             <View style={styles.inputs}>
-              <TextInput allowFontScaling={false}  
+              <TextInput
+                allowFontScaling={false}
                 value={user?.UserName}
                 editable={false}
                 placeholder="Nhập tên ca thực hiện checklist"
@@ -154,7 +157,8 @@ const Profile = () => {
               />
             </View>
             <View style={styles.inputs}>
-              <TextInput allowFontScaling={false}  
+              <TextInput
+                allowFontScaling={false}
                 value={user?.Emails}
                 editable={false}
                 placeholder="Nhập tên ca thực hiện checklist"
@@ -169,7 +173,8 @@ const Profile = () => {
               />
             </View>
             <View style={styles.inputs}>
-              <TextInput allowFontScaling={false}  
+              <TextInput
+                allowFontScaling={false}
                 value={user?.ent_chucvu?.Chucvu}
                 editable={false}
                 placeholder="Nhập tên ca thực hiện checklist"
@@ -184,7 +189,8 @@ const Profile = () => {
               />
             </View>
             <View style={styles.inputs}>
-              <TextInput allowFontScaling={false}  
+              <TextInput
+                allowFontScaling={false}
                 value={user?.ent_duan?.Duan}
                 editable={false}
                 placeholder="Tên dự án"
@@ -198,12 +204,20 @@ const Profile = () => {
                 autoCapitalize="sentences"
               />
             </View>
-            <Title text={"Đổi mật khẩu"} size={adjust(18)} top={10} bottom={10} />
+            <Title
+              text={"Đổi mật khẩu"}
+              size={adjust(18)}
+              top={10}
+              bottom={10}
+            />
 
             <View style={styles.inputs}>
-              <Text allowFontScaling={false}   style={styles.text}>Mật khẩu cũ</Text>
+              <Text allowFontScaling={false} style={styles.text}>
+                Mật khẩu cũ
+              </Text>
               <View style={styles.searchSection}>
-                <TextInput allowFontScaling={false}  
+                <TextInput
+                  allowFontScaling={false}
                   style={styles.input}
                   placeholder="Mật khẩu cũ"
                   placeholderTextColor="gray"
@@ -232,9 +246,12 @@ const Profile = () => {
               </View>
             </View>
             <View style={styles.inputs}>
-              <Text allowFontScaling={false}   style={styles.text}>Mật khẩu mới</Text>
+              <Text allowFontScaling={false} style={styles.text}>
+                Mật khẩu mới
+              </Text>
               <View style={styles.searchSection}>
-                <TextInput allowFontScaling={false}  
+                <TextInput
+                  allowFontScaling={false}
                   style={styles.input}
                   placeholder="Mật khẩu mới"
                   placeholderTextColor="gray"
@@ -263,9 +280,12 @@ const Profile = () => {
               </View>
             </View>
             <View style={styles.inputs}>
-              <Text allowFontScaling={false}   style={styles.text}>Nhập lại mật khẩu</Text>
+              <Text allowFontScaling={false} style={styles.text}>
+                Nhập lại mật khẩu
+              </Text>
               <View style={styles.searchSection}>
-                <TextInput allowFontScaling={false}  
+                <TextInput
+                  allowFontScaling={false}
                   style={styles.input}
                   placeholder="Nhập lại mật khẩu"
                   placeholderTextColor="gray"
@@ -297,14 +317,14 @@ const Profile = () => {
             <ButtonSubmit
               backgroundColor={COLORS.bg_button}
               text={"Lưu"}
-               isLoading={isLoading}
-               onPress={() => handleSubmit()}
+              isLoading={isLoading}
+              onPress={() => handleSubmit()}
             />
             <View style={{ height: 12 }}></View>
             <ButtonSubmit
               backgroundColor={COLORS.bg_red}
               text={"Đăng xuất"}
-               onPress={() => logout()}
+              onPress={() => logout()}
             />
           </ScrollView>
         </ImageBackground>

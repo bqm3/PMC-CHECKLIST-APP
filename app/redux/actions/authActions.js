@@ -80,8 +80,6 @@ export const login = (UserName, Password) => {
 
 export const logoutAction = () => {
   return async (dispatch) => {
-
-    await AsyncStorage.clear();
     dispatch({
       type: type.SET_LOGOUT,
       payload: {

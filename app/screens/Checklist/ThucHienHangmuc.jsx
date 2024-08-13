@@ -28,19 +28,15 @@ import adjust from "../../adjust";
 
 const ThucHienHangmuc = ({ route, navigation }) => {
   const { ID_ChecklistC, ID_KhoiCV, ID_Calv, ID_Khuvuc } = route.params;
-  const dispath = useDispatch();
   const { dataChecklists, setHangMuc, hangMuc, HangMucDefault } =
     useContext(DataContext);
-  const { ent_hangmuc } = useSelector((state) => state.entReducer);
 
   const [opacity, setOpacity] = useState(1);
   const [isLoadingDetail, setIsLoadingDetail] = useState(false);
-  const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [isScan, setIsScan] = useState(false);
   const [modalVisibleQr, setModalVisibleQr] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [tieuChuan, setTieuChuan] = useState();
-  const [dataSelect, setDataSelect] = useState([]);
 
   useEffect(() => {
     if (HangMucDefault && dataChecklists) {
@@ -135,53 +131,22 @@ const ThucHienHangmuc = ({ route, navigation }) => {
     }
   };
 
-  const toggleTodo = async (item) => {
-    const isExistIndex = dataSelect.find(
-      (existingItem) => existingItem === item
-    );
-
-    // Nếu item đã tồn tại, xóa item đó đi
-    if (isExistIndex) {
-      setDataSelect([]);
-    } else {
-      // Nếu item chưa tồn tại, thêm vào mảng mới
-      setDataSelect([item]);
-    }
-  };
-
   const handlePopupActive = (item, index) => {
     setModalVisible(true);
     setOpacity(0.2);
     setTieuChuan(item.Tieuchuankt);
   };
 
-  const handleSubmit = () => {
-    navigation.navigate("Chi tiết Checklist", {
-      ID_ChecklistC: ID_ChecklistC,
-      ID_KhoiCV: ID_KhoiCV,
-      ID_Calv: ID_Calv,
-      ID_Hangmuc: dataSelect[0].ID_Hangmuc,
-      hangMuc: hangMuc,
-      ID_Khuvuc: ID_Khuvuc,
-      Hangmuc: dataSelect[0].Hangmuc,
-    });
-    setDataSelect([]);
-    // Set the non-serializable values immediately after navigation
-  };
-
   // view item flatlist
   const renderItem = (item, index) => {
     return (
-      <TouchableOpacity
-        onPress={() => toggleTodo(item)}
+      <View
         style={[
           styles.content,
           {
-            backgroundColor:
-              dataSelect[0] === item ? COLORS.bg_button : "white",
+            backgroundColor: "white",
           },
         ]}
-        key={index}
       >
         <View
           style={{
@@ -197,7 +162,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
               allowFontScaling={false}
               style={{
                 fontSize: adjust(18),
-                color: dataSelect[0] === item ? "white" : "black",
+                color: "black",
                 fontWeight: "600",
               }}
               numberOfLines={5}
@@ -208,7 +173,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
               allowFontScaling={false}
               style={{
                 fontSize: adjust(16),
-                color: dataSelect[0] === item ? "white" : "black",
+                color: "black",
                 fontWeight: "500",
               }}
             >
@@ -219,7 +184,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
             <MaterialIcons name="read-more" size={adjust(30)} color="black" />
           </TouchableOpacity>
         </View>
-      </TouchableOpacity>
+      </View>
     );
   };
 
@@ -258,7 +223,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
                       justifyContent: "space-between",
                     }}
                   >
-                    <TouchableOpacity
+                    <View
                       // onPress={() => handleFilterData(true, 0.5)}
                       style={{
                         flexDirection: "row",
@@ -276,7 +241,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
                           Số lượng: {decimalNumber(hangMuc?.length)} hạng mục
                         </Text>
                       </View>
-                    </TouchableOpacity>
+                    </View>
                   </View>
                 </View>
 
@@ -365,16 +330,6 @@ const ThucHienHangmuc = ({ route, navigation }) => {
                         setModalVisibleQr(true);
                         setOpacity(0.2);
                       }}
-                    />
-                  )}
-
-                  {dataSelect[0] && (
-                    <Button
-                      text={"Vào Checklist"}
-                      isLoading={loadingSubmit}
-                      backgroundColor={COLORS.bg_button}
-                      color={"white"}
-                      onPress={() => handleSubmit()}
                     />
                   )}
                 </View>

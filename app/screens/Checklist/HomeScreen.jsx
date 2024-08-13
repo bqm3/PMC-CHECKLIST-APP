@@ -6,6 +6,7 @@ import {
   StyleSheet,
   FlatList,
   ImageBackground,
+  Image,
 } from "react-native";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import ItemHome from "../../components/Item/ItemHome";
@@ -13,7 +14,6 @@ import CopyRight from "../../components/CopyRight";
 import ItemHomePSH from "../../components/Item/ItemHomePSH";
 import adjust from "../../adjust";
 import DataContext from "../../context/DataContext";
-
 
 const dataDanhMuc = [
   {
@@ -64,7 +64,6 @@ const dataDanhMuc = [
     icon: require("../../../assets/icons/o-05.png"),
     role: 1,
   },
- 
 ];
 
 const dataDanhMucPSH = [
@@ -92,12 +91,13 @@ const HomeScreen = ({ navigation }) => {
   const renderItemPSH = ({ item, index }) => (
     <ItemHomePSH item={item} index={index} />
   );
+  console.log('user',user)
 
   return (
     <ImageBackground
       source={require("../../../assets/bg_new.png")}
-      resizeMode="cover"
-      style={{ flex: 1 }}
+      resizeMode="stretch"
+      style={{ flex: 1, width: '100%' }}
     >
       {user?.ent_chucvu?.Chucvu == "PSH" ? (
         <>
@@ -134,7 +134,20 @@ const HomeScreen = ({ navigation }) => {
       ) : (
         <View style={styles.container}>
           <View style={styles.content}>
-            <Text allowFontScaling={false}
+            {user.ent_duan.Logo ? (
+              <Image
+                source={{ uri: user.ent_duan.Logo }}
+                resizeMode="contain"
+                style={{ height: adjust(70), width: adjust(180) }}
+              />
+            ) : (
+              <Image
+                source={require("../../../assets/pmc_logo.png")}
+                resizeMode="contain"
+                style={{ height: adjust(80), width: adjust(200) }}
+              />
+            )}
+            {/* <Text allowFontScaling={false}
               style={{
                 color: "white",
                 fontSize: adjust(16),
@@ -144,9 +157,9 @@ const HomeScreen = ({ navigation }) => {
               // adjustsFontSizeToFit
             >
               Digital Transformation Good day and Happy
-            </Text>
-            <Text allowFontScaling={false}
-              
+            </Text> */}
+            <Text
+              allowFontScaling={false}
               style={{
                 fontSize: adjust(20),
                 color: "white",
@@ -156,6 +169,18 @@ const HomeScreen = ({ navigation }) => {
               }}
             >
               Dự án: {user?.ent_duan?.Duan}
+            </Text>
+             <Text allowFontScaling={false}
+              style={{
+                color: "white",
+                fontSize: adjust(16),
+                marginTop: 10
+              }}
+              numberOfLines={1}
+              
+              // adjustsFontSizeToFit
+            >
+              Tài khoản: {user?.UserName}
             </Text>
           </View>
 
@@ -188,18 +213,18 @@ const HomeScreen = ({ navigation }) => {
               marginHorizontal: 20,
             }}
           >
-            <Text allowFontScaling={false}
-              
+            <Text
+              allowFontScaling={false}
               style={{
                 color: "white",
                 fontSize: adjust(16),
               }}
             >
-              Người Giám sát chỉ thực hiện công việc Check list, Tra cứu và Đổi
+              Người Giám sát chỉ thực hiện công việc Checklist, Tra cứu và Đổi
               mật khẩu.
             </Text>
-            <Text allowFontScaling={false}
-              
+            <Text
+              allowFontScaling={false}
               style={{
                 color: "white",
                 fontSize: adjust(16),
@@ -209,7 +234,7 @@ const HomeScreen = ({ navigation }) => {
             </Text>
           </View>
 
-          <CopyRight />
+          {/* <CopyRight /> */}
         </View>
       )}
     </ImageBackground>

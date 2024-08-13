@@ -56,7 +56,6 @@ const LoginScreen = ({ navigation }) => {
   const [data, setData] = useState({
     UserName: "",
     Password: "",
-   
   });
 
   const [location, setLocation] = useState(null);
@@ -69,8 +68,10 @@ const LoginScreen = ({ navigation }) => {
       ]);
     } else {
       dispatch(login(data?.UserName, data?.Password));
-      // await AsyncStorage.setItem("UserName", data?.UserName);
-      // await AsyncStorage.setItem("Password", data?.Password);
+      if (isChecked) {
+        await AsyncStorage.setItem("UserName", data?.UserName);
+        await AsyncStorage.setItem("Password", data?.Password);
+      }
     }
   };
 
@@ -84,12 +85,10 @@ const LoginScreen = ({ navigation }) => {
     }
   }, [message, error]);
 
-  
-
   useEffect(() => {
     const loadData = async () => {
-      const savedUsername = await AsyncStorage.getItem('UserName');
-      const savedPassword = await AsyncStorage.getItem('Password');
+      const savedUsername = await AsyncStorage.getItem("UserName");
+      const savedPassword = await AsyncStorage.getItem("Password");
       if (savedUsername && savedPassword) {
         setData({
           UserName: savedUsername,
@@ -174,8 +173,6 @@ const LoginScreen = ({ navigation }) => {
     })();
   }, []);
 
-  
-
   return (
     <>
       <GestureHandlerRootView style={{ flex: 1 }}>
@@ -194,7 +191,11 @@ const LoginScreen = ({ navigation }) => {
                 style={{ opacity: opacity }}
               >
                 <Image
-                  style={{ width: adjust(120), height: adjust(70), resizeMode: "contain" }}
+                  style={{
+                    width: adjust(120),
+                    height: adjust(70),
+                    resizeMode: "contain",
+                  }}
                   source={require("../../assets/pmc_logo.png")}
                 />
                 <View style={{ marginHorizontal: 20 }}>
