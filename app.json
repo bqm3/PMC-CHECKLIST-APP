@@ -11,9 +11,13 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "notification": {
+      "icon": "./assets/icon.png",
+      "color": "#ffffff",
+      "iosDisplayInForeground": true,
+      "androidMode": "default"
+    },
+    "assetBundlePatterns": ["**/*"],
     "userInterfaceStyle": "automatic",
     "android": {
       "adaptiveIcon": {
@@ -21,14 +25,15 @@
         "backgroundColor": "#ffffff"
       },
       "googleServicesFile": "./google-services.json",
-      "useNextNotificationsApi": true,
       "versionCode": 1,
       "package": "com.anonymous.PMCCHECKLISTAPP",
       "permissions": [
         "android.permission.CAMERA",
         "android.permission.RECORD_AUDIO",
         "android.permission.ACCESS_COARSE_LOCATION",
-        "android.permission.ACCESS_FINE_LOCATION"
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.LOCATION"
       ],
       "runtimeVersion": {
         "policy": "appVersion"
@@ -91,14 +96,14 @@
           "color": "#ffffff"
         }
       ],
-     [
-      "expo-build-properties",
-      {
-        "android": {
-          "usesCleartextTraffic": true
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
         }
-      }
-     ]
+      ]
     ],
     "extra": {
       "eas": {
@@ -107,9 +112,6 @@
     },
     "updates": {
       "url": "https://u.expo.dev/88067883-8168-4e0c-8f05-124ae86a6067"
-    },
-    "notification": {
-      "iosDisplayInForeground": true
     }
   }
 }

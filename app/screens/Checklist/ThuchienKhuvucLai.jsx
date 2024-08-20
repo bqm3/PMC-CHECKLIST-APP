@@ -644,11 +644,36 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
     setDataChecklistFaild([]);
   };
 
+
+  const toggleTodo = async (item) => {
+    const isExistIndex = dataSelect.find(
+      (existingItem) => existingItem === item
+    );
+
+    // Nếu item đã tồn tại, xóa item đó đi
+    if (isExistIndex) {
+      setDataSelect([]);
+    } else {
+      // Nếu item chưa tồn tại, thêm vào mảng mới
+      setDataSelect([item]);
+    }
+  };
+
+  const handleSubmit = () => {
+    navigation.navigate("Thực hiện hạng mục", {
+      ID_ChecklistC: ID_ChecklistC,
+      ID_KhoiCV: ID_KhoiCV,
+      ID_Calv: ID_Calv,
+      ID_Khuvuc: dataSelect[0].ID_Khuvuc,
+    });
+    setDataSelect([]);
+  };
+
   // view item flatlist
   const renderItem = (item, index) => {
     return (
-      <View
-        // onPress={() => toggleTodo(item)}
+      <TouchableOpacity
+        onPress={() => toggleTodo(item)}
         style={[
           styles.content,
           {
@@ -678,7 +703,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
             {item?.Tenkhuvuc} - {item?.ent_toanha?.Toanha}
           </Text>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   };
 
@@ -834,7 +859,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
                       }}
                     />
                    
-                    {/* {dataSelect[0] && (
+                    {dataSelect[0] && (
                       <Button
                         text={"Vào khu vực"}
                         isLoading={loadingSubmit}
@@ -842,7 +867,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
                         color={"white"}
                         onPress={() => handleSubmit()}
                       />
-                    )} */}
+                    )}
                   </View>
                 </View>
               

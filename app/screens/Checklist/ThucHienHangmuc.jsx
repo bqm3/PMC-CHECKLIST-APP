@@ -37,6 +37,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
   const [modalVisibleQr, setModalVisibleQr] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [tieuChuan, setTieuChuan] = useState();
+  const [dataSelect, setDataSelect] = useState([]);
 
   useEffect(() => {
     if (HangMucDefault && dataChecklists) {
@@ -137,16 +138,48 @@ const ThucHienHangmuc = ({ route, navigation }) => {
     setTieuChuan(item.Tieuchuankt);
   };
 
+  // toggle Data select
+  const toggleTodo = async (item) => {
+    const isExistIndex = dataSelect.find(
+      (existingItem) => existingItem === item
+    );
+
+    // Nếu item đã tồn tại, xóa item đó đi
+    if (isExistIndex) {
+      setDataSelect([]);
+    } else {
+      // Nếu item chưa tồn tại, thêm vào mảng mới
+      setDataSelect([item]);
+    }
+  };
+
+  const handleSubmit = () => {
+    navigation.navigate("Chi tiết Checklist", {
+      ID_ChecklistC: ID_ChecklistC,
+      ID_KhoiCV: ID_KhoiCV,
+      ID_Calv: ID_Calv,
+      ID_Hangmuc: dataSelect[0].ID_Hangmuc,
+      hangMuc: hangMuc,
+      ID_Khuvuc: ID_Khuvuc,
+      Hangmuc: dataSelect[0].Hangmuc,
+    });
+    setDataSelect([]);
+    // Set the non-serializable values immediately after navigation
+  };
+
   // view item flatlist
   const renderItem = (item, index) => {
     return (
-      <View
+      <TouchableOpacity
+        onPress={() => toggleTodo(item)}
         style={[
           styles.content,
           {
-            backgroundColor: "white",
+            backgroundColor:
+              dataSelect[0] === item ? COLORS.bg_button : "white",
           },
         ]}
+        key={index}
       >
         <View
           style={{
@@ -162,7 +195,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
               allowFontScaling={false}
               style={{
                 fontSize: adjust(18),
-                color: "black",
+                color: dataSelect[0] === item ? "white" : "black",
                 fontWeight: "600",
               }}
               numberOfLines={5}
@@ -173,7 +206,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
               allowFontScaling={false}
               style={{
                 fontSize: adjust(16),
-                color: "black",
+                color: dataSelect[0] === item ? "white" : "black",
                 fontWeight: "500",
               }}
             >
@@ -184,7 +217,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
             <MaterialIcons name="read-more" size={adjust(30)} color="black" />
           </TouchableOpacity>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   };
 
@@ -330,6 +363,15 @@ const ThucHienHangmuc = ({ route, navigation }) => {
                         setModalVisibleQr(true);
                         setOpacity(0.2);
                       }}
+                    />
+                  )}
+
+                  {dataSelect[0] && (
+                    <Button
+                      text={"Vào Checklist"}
+                      backgroundColor={COLORS.bg_button}
+                      color={"white"}
+                      onPress={() => handleSubmit()}
                     />
                   )}
                 </View>

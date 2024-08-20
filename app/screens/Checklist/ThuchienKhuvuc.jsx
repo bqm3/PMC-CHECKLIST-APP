@@ -68,6 +68,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
   const [isScan, setIsScan] = useState(false);
   const [modalVisibleQr, setModalVisibleQr] = useState(false);
   const [data, setData] = useState([]);
+  const [dataSelect, setDataSelect] = useState([]);
 
   const [defaultActionDataChecklist, setDataChecklistDefault] = useState([]);
   const [dataChecklistFaild, setDataChecklistFaild] = useState([]);
@@ -649,15 +650,40 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
     setDataChecklistFaild([]);
   };
 
+  const toggleTodo = async (item) => {
+    const isExistIndex = dataSelect.find(
+      (existingItem) => existingItem === item
+    );
+
+    // Nếu item đã tồn tại, xóa item đó đi
+    if (isExistIndex) {
+      setDataSelect([]);
+    } else {
+      // Nếu item chưa tồn tại, thêm vào mảng mới
+      setDataSelect([item]);
+    }
+  };
+
+  const handleSubmit = () => {
+    navigation.navigate("Thực hiện hạng mục", {
+      ID_ChecklistC: ID_ChecklistC,
+      ID_KhoiCV: ID_KhoiCV,
+      ID_Calv: ID_Calv,
+      ID_Khuvuc: dataSelect[0].ID_Khuvuc,
+    });
+    setDataSelect([]);
+  };
+
   // view item flatlist
   const renderItem = (item, index) => {
     return (
-      <View
-        // onPress={() => toggleTodo(item)}
+      <TouchableOpacity
+        onPress={() => toggleTodo(item)}
         style={[
           styles.content,
           {
-            backgroundColor: "white",
+            backgroundColor:
+              dataSelect[0] === item ? COLORS.bg_button : "white",
           },
         ]}
         key={index}
@@ -674,7 +700,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
             allowFontScaling={false}
             style={{
               fontSize: adjust(16),
-              color: "black",
+              color: dataSelect[0] === item ? "white" : "black",
               fontWeight: "600",
             }}
             numberOfLines={5}
@@ -682,7 +708,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
             {item?.Tenkhuvuc} - {item?.ent_toanha?.Toanha}
           </Text>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   };
 
@@ -838,6 +864,16 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
                       setOpacity(0.2);
                     }}
                   />
+
+                  {dataSelect[0] && (
+                    <Button
+                      text={"Vào khu vực"}
+                      isLoading={loadingSubmit}
+                      backgroundColor={COLORS.bg_button}
+                      color={"white"}
+                      onPress={() => handleSubmit()}
+                    />
+                  )}
                 </View>
               </View>
             </ImageBackground>

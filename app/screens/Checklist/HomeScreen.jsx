@@ -10,10 +10,8 @@ import {
 } from "react-native";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import ItemHome from "../../components/Item/ItemHome";
-import CopyRight from "../../components/CopyRight";
 import ItemHomePSH from "../../components/Item/ItemHomePSH";
 import adjust from "../../adjust";
-import DataContext from "../../context/DataContext";
 
 const dataDanhMuc = [
   {
@@ -29,6 +27,12 @@ const dataDanhMuc = [
     role: 2,
   },
   {
+    id: 9,
+    path: "Báo cáo sự cố",
+    icon: require("../../../assets/icons/o-05.png"),
+    role: 2,
+  },
+  {
     id: 7,
     path: "Checklist Lại",
     icon: require("../../../assets/icons/o-01.png"),
@@ -41,7 +45,7 @@ const dataDanhMuc = [
     role: 1,
   },
   {
-    id: 7,
+    id: 8,
     path: "Danh mục Hạng mục",
     icon: require("../../../assets/icons/o-03.png"),
     role: 1,
@@ -91,13 +95,12 @@ const HomeScreen = ({ navigation }) => {
   const renderItemPSH = ({ item, index }) => (
     <ItemHomePSH item={item} index={index} />
   );
-  console.log('user',user)
 
   return (
     <ImageBackground
       source={require("../../../assets/bg_new.png")}
       resizeMode="stretch"
-      style={{ flex: 1, width: '100%' }}
+      style={{ flex: 1, width: "100%" }}
     >
       {user?.ent_chucvu?.Chucvu == "PSH" ? (
         <>
@@ -147,17 +150,6 @@ const HomeScreen = ({ navigation }) => {
                 style={{ height: adjust(80), width: adjust(200) }}
               />
             )}
-            {/* <Text allowFontScaling={false}
-              style={{
-                color: "white",
-                fontSize: adjust(16),
-              }}
-              numberOfLines={1}
-              
-              // adjustsFontSizeToFit
-            >
-              Digital Transformation Good day and Happy
-            </Text> */}
             <Text
               allowFontScaling={false}
               style={{
@@ -170,15 +162,14 @@ const HomeScreen = ({ navigation }) => {
             >
               Dự án: {user?.ent_duan?.Duan}
             </Text>
-             <Text allowFontScaling={false}
+            <Text
+              allowFontScaling={false}
               style={{
                 color: "white",
                 fontSize: adjust(16),
-                marginTop: 10
+                marginTop: 10,
               }}
               numberOfLines={1}
-              
-              // adjustsFontSizeToFit
             >
               Tài khoản: {user?.UserName}
             </Text>
@@ -198,7 +189,7 @@ const HomeScreen = ({ navigation }) => {
                 width: "100%",
                 paddingHorizontal: 20,
               }}
-              numColumns={3}
+              numColumns={2}
               data={dataDanhMuc}
               renderItem={renderItem}
               ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
@@ -234,7 +225,6 @@ const HomeScreen = ({ navigation }) => {
             </Text>
           </View>
 
-          {/* <CopyRight /> */}
         </View>
       )}
     </ImageBackground>

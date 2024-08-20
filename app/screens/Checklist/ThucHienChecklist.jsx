@@ -49,10 +49,12 @@ import { BASE_URL } from "../../constants/config";
 import moment from "moment";
 import ModalChecklistC from "../../components/Modal/ModalChecklistC";
 import ModalChecklistCImage from "../../components/Modal/ModalChecklistCImage";
+import ItemCaChecklist from "../../components/Item/ItemCaChecklist";
 import DataContext from "../../context/DataContext";
 import adjust from "../../adjust";
 import { useFocusEffect } from "@react-navigation/native";
 import ButtonSubmit from "../../components/Button/ButtonSubmit";
+
 
 // import mime from "mime";
 
@@ -168,16 +170,16 @@ const ThucHienChecklist = ({ navigation }) => {
     return () => clearTimeout(timeoutId);
   }, []); //
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setDataInput((prevData) => ({
-        ...prevData,
-        dateHour: moment().format("LTS"),
-      }));
-    }, 1000);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setDataInput((prevData) => ({
+  //       ...prevData,
+  //       dateHour: moment().format("LTS"),
+  //     }));
+  //   }, 1000);
 
-    return () => clearInterval(interval); // Clear interval on component unmount
-  }, []);
+  //   return () => clearInterval(interval); // Clear interval on component unmount
+  // }, []);
 
   useEffect(() => {
     setData(tb_checklistc?.data);
@@ -234,7 +236,7 @@ const ThucHienChecklist = ({ navigation }) => {
     int_checklistc();
   }, []);
 
-  const toggleTodo = async (item) => {
+  const toggleTodo = async (item, index) => {
     // setIsCheckbox(true);
     const isExistIndex = newActionCheckList.findIndex(
       (existingItem) => existingItem.ID_ChecklistC === item.ID_ChecklistC
@@ -251,9 +253,8 @@ const ThucHienChecklist = ({ navigation }) => {
     }
   };
 
-  React.useEffect(() => {
-    setPage(0);
-  }, [numberOfItemsPerPage]);
+  
+
 
   const handlePushDataImagesSave = async (id) => {
     try {
@@ -611,159 +612,6 @@ const ThucHienChecklist = ({ navigation }) => {
     ]);
   };
 
-  React.useEffect(() => {
-    setPage(0);
-  }, [numberOfItemsPerPage]);
-
-  const _renderItem = ({ item, index }) => {
-    const isExistIndex = newActionCheckList?.find(
-      (existingItem) => existingItem?.ID_ChecklistC === item?.ID_ChecklistC
-    );
-    return (
-      <TouchableHighlight key={index} onPress={() => toggleTodo(item)}>
-        <DataTable.Row
-          style={{
-            gap: 20,
-            paddingVertical: 10,
-            backgroundColor: isExistIndex ? COLORS.bg_button : "white",
-          }}
-        >
-          <DataTable.Cell style={{ width: 120, justifyContent: "center" }}>
-            <Text
-              allowFontScaling={false}
-              style={{
-                color: isExistIndex ? "white" : "black",
-                fontSize: adjust(15),
-              }}
-              numberOfLines={2}
-            >
-              {moment(item?.Ngay).format("DD-MM-YYYY")}
-            </Text>
-          </DataTable.Cell>
-
-          <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
-            <View
-              style={{
-                color: isExistIndex ? "white" : "black",
-                fontSize: adjust(16),
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-              numberOfLines={4}
-            >
-              <Text
-                allowFontScaling={false}
-                style={{
-                  color: isExistIndex ? "white" : "black",
-                  fontSize: adjust(16),
-                  fontWeight: "700",
-                }}
-                numberOfLines={2}
-              >
-                {item?.ent_khoicv?.KhoiCV}
-              </Text>
-              <Text
-                allowFontScaling={false}
-                style={{
-                  color: isExistIndex ? "white" : "black",
-                  fontSize: adjust(15),
-                }}
-                numberOfLines={2}
-              >
-                {item?.ent_calv?.Tenca}
-              </Text>
-            </View>
-          </DataTable.Cell>
-          <DataTable.Cell style={{ width: 100, justifyContent: "center" }}>
-            <Text
-              allowFontScaling={false}
-              style={{
-                color: isExistIndex ? "white" : "black",
-                fontSize: adjust(15),
-              }}
-              numberOfLines={2}
-            >
-              {item?.Tong}
-            </Text>
-          </DataTable.Cell>
-          <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
-            <Text
-              allowFontScaling={false}
-              style={{
-                color: isExistIndex ? "white" : "black",
-                fontSize: adjust(15),
-              }}
-              numberOfLines={2}
-            >
-              {item?.ent_giamsat?.Hoten}
-            </Text>
-          </DataTable.Cell>
-          <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
-            <View
-              style={{
-                color: isExistIndex ? "white" : "black",
-                fontSize: adjust(15),
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-              numberOfLines={4}
-            >
-              <Text
-                allowFontScaling={false}
-                style={{
-                  color: isExistIndex ? "white" : "black",
-                  fontSize: adjust(15),
-                }}
-                numberOfLines={2}
-              >
-                {item?.Giobd}
-              </Text>
-              <Text allowFontScaling={false}>-</Text>
-              <Text
-                allowFontScaling={false}
-                style={{
-                  color: isExistIndex ? "white" : "black",
-                  fontSize: adjust(15),
-                }}
-                numberOfLines={2}
-              >
-                {item?.Giokt}
-              </Text>
-            </View>
-          </DataTable.Cell>
-
-          <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
-            <Text
-              allowFontScaling={false}
-              style={{
-                color: isExistIndex ? "white" : "black",
-                fontSize: adjust(15),
-              }}
-              numberOfLines={2}
-            >
-              {" "}
-              {item?.Tinhtrang === 1 ? "Xong" : ""}
-            </Text>
-          </DataTable.Cell>
-
-          <DataTable.Cell style={{ width: 200, justifyContent: "center" }}>
-            <Text
-              allowFontScaling={false}
-              style={{
-                color: isExistIndex ? "white" : "black",
-                fontSize: adjust(15),
-              }}
-              numberOfLines={3}
-            >
-              {item?.Ghichu}
-            </Text>
-          </DataTable.Cell>
-        </DataTable.Row>
-      </TouchableHighlight>
-    );
-  };
 
   return (
     <>
@@ -778,7 +626,7 @@ const ThucHienChecklist = ({ navigation }) => {
               resizeMode="cover"
               style={{ flex: 1 }}
             >
-              <ScrollView
+              <View
                 style={{
                   flex: 1,
                   opacity: opacity,
@@ -803,6 +651,7 @@ const ThucHienChecklist = ({ navigation }) => {
                           color={COLORS.bg_button}
                           // icon={<Ionicons name="add" size={20} color="white" />}
                           onPress={() => handleOpenPopUp()}
+                          newActionCheckList={newActionCheckList}
                         />
                       )}
                     </View>
@@ -821,94 +670,23 @@ const ThucHienChecklist = ({ navigation }) => {
                   ) : (
                     <>
                       {data && data?.length > 0 ? (
-                        <ScrollView
-                          style={{ flex: 1, marginBottom: 20, marginTop: 20 }}
-                        >
-                          <DataTable
-                            style={{
-                              backgroundColor: "white",
-                              borderRadius: 8,
-                            }}
-                          >
-                            <ScrollView
-                              horizontal
-                              contentContainerStyle={{
-                                flexDirection: "column",
-                              }}
-                            >
-                              <DataTable.Header
-                                style={{
-                                  backgroundColor: "#eeeeee",
-                                  borderTopRightRadius: 8,
-                                  borderTopLeftRadius: 8,
-                                }}
-                              >
-                                {headerList &&
-                                  headerList.map((item, index) => {
-                                    return (
-                                      <DataTable.Title
-                                        key={index}
-                                        style={{
-                                          width: item?.width,
-                                          borderRightWidth:
-                                            index === headerList.length - 1
-                                              ? 0
-                                              : 2,
-                                          borderRightColor: "white",
-                                          justifyContent: "center",
-                                        }}
-                                        numberOfLines={2}
-                                      >
-                                        <Text
-                                          allowFontScaling={false}
-                                          style={[
-                                            styles.text,
-                                            { color: "black" },
-                                          ]}
-                                        >
-                                          {item?.til}
-                                        </Text>
-                                      </DataTable.Title>
-                                    );
-                                  })}
-                              </DataTable.Header>
-
-                              {data && data?.length > 0 && (
-                                <FlatList
-                                  keyExtractor={(item, index) =>
-                                    `${item?.ID_ChecklistC}_${index}`
-                                  }
-                                  scrollEnabled={true}
-                                  data={data}
-                                  renderItem={_renderItem}
-                                />
-                              )}
-                              <DataTable.Pagination
-                                style={{
-                                  justifyContent: "flex-start",
-                                  backgroundColor: "#eeeeee",
-                                }}
-                                page={page}
-                                numberOfPages={Math.ceil(
-                                  tb_checklistc?.totalPages
-                                )}
-                                onPageChange={(page) => {
-                                  setPage(page);
-                                }}
-                                label={`Từ ${page + 1} đến ${
-                                  tb_checklistc?.totalPages
-                                }`}
-                                showFastPaginationControls
-                                numberOfItemsPerPageList={
-                                  numberOfItemsPerPageList
-                                }
-                                numberOfItemsPerPage={numberOfItemsPerPage}
-                                onItemsPerPageChange={onItemsPerPageChange}
-                                selectPageDropdownLabel={"Hàng trên mỗi trang"}
+                        <FlatList
+                            horizontal={false}
+                            contentContainerStyle={{ flexGrow: 1 }}
+                            style={{ marginVertical: 10 }}
+                            data={data}
+                            renderItem={({ item, index }) => (
+                              <ItemCaChecklist
+                                key={index}
+                                item={item}
+                                toggleTodo={toggleTodo}
+                                newActionCheckList={newActionCheckList}
                               />
-                            </ScrollView>
-                          </DataTable>
-                        </ScrollView>
+                            )}
+                            keyExtractor={(item, index) => index.toString()}
+                            scrollEventThrottle={16}
+                            scrollEnabled={true}
+                          />
                       ) : (
                         <View
                           style={{
@@ -934,45 +712,16 @@ const ThucHienChecklist = ({ navigation }) => {
                     </>
                   )}
                 </View>
-              </ScrollView>
+              </View>
 
-              {/* <BottomSheetModal
-                ref={bottomSheetModalRef}
-                index={0}
-                snapPoints={snapPoints}
-                shouldMeasureContentHeight={true}
-                onChange={handleSheetChanges}
-              >
-                <View style={styles.contentContainer}>
-                  <Text
-                    allowFontScaling={false}
-                    style={{
-                      color: "black",
-                      fontWeight: "600",
-                      fontSize: 20,
-                      textAlign: "center",
-                      paddingTop: 10,
-                    }}
-                  >
-                    {user?.ent_khoicv?.KhoiCV}
-                  </Text>
-                  <ModalChecklistC
-                    ent_giamsat={ent_giamsat}
-                    ent_calv={ent_calv}
-                    dataInput={dataInput}
-                    handleChangeText={handleChangeText}
-                    handlePushDataSave={handlePushDataSave}
-                    isLoading={loadingSubmit}
-                  />
-                </View>
-              </BottomSheetModal> */}
+              
 
               <Modal
                 animationType="slide"
                 transparent={true}
                 visible={modalVisible}
                 onRequestClose={() => {
-                  Alert.alert("Modal has been closed.");
+                  //Alert.alert("Modal has been closed.");
                   setModalVisible(!modalVisible);
                 }}
               >
@@ -1100,7 +849,6 @@ const styles = StyleSheet.create({
     fontSize: adjust(25),
     fontWeight: "700",
     color: "white",
-    // paddingVertical: 40,
   },
   text: { fontSize: adjust(15), color: "white", fontWeight: "600" },
   headerTable: {

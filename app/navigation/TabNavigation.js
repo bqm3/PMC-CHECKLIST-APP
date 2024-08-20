@@ -60,25 +60,25 @@ const HomeStack = ({ navigation }) => {
             <Text
               allowFontScaling={false}
               style={{
-                fontSize: adjust(20),
+                fontSize: adjust(18),
                 fontWeight: "700",
                 color: "white",
               }}
             >
-              CHECKLIST - PMC
+              CHECKLIST
             </Text>
           ),
           headerTitleAlign: "center",
-          headerLeft: () => (
-            <Image
-              style={{
-                width: adjust(80),
-                height: adjust(42),
-                resizeMode: "cover",
-              }}
-              source={require("../../assets/pmc_logo.png")}
-            />
-          ),
+          // headerLeft: () => (
+          //   <Image
+          //     style={{
+          //       width: adjust(80),
+          //       height: adjust(42),
+          //       resizeMode: "cover",
+          //     }}
+          //     source={require("../../assets/pmc_logo.png")}
+          //   />
+          // ),
           headerRight: () => <Back navigation={navigation} title={"Profile"} />,
         })}
       />

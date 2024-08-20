@@ -30,6 +30,7 @@ import {
   BottomSheetModalProvider,
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
+import * as Location from "expo-location";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Entypo, MaterialIcons, AntDesign } from "@expo/vector-icons";
 import { COLORS, SIZES } from "../../constants/theme";
@@ -56,7 +57,7 @@ const DetailChecklist = ({ route, navigation }) => {
   const { setHangMuc, HangMucDefault, setHangMucDefault } =
     useContext(DataContext);
 
-    const {isConnect, saveConnect} = useContext(ConnectContext);
+  const { isConnect, saveConnect } = useContext(ConnectContext);
   const { dataChecklistFilterContext, setDataChecklistFilterContext } =
     useContext(ChecklistContext);
   const [isConnected, setIsConnected] = useState(false);
@@ -65,9 +66,7 @@ const DetailChecklist = ({ route, navigation }) => {
 
   const [dataChecklistFilter, setDataChecklistFilter] = useState([]);
   const [newActionDataChecklist, setNewActionDataChecklist] = useState([]);
-  const [defaultActionDataChecklist, setDataChecklistDefault] = useState(
-    []
-  );
+  const [defaultActionDataChecklist, setDataChecklistDefault] = useState([]);
   const [dataChecklistFaild, setDataChecklistFaild] = useState([]);
   const [dataItem, setDataItem] = useState(null);
   const [tieuchuan, setTieuchuan] = useState(null);
@@ -80,6 +79,14 @@ const DetailChecklist = ({ route, navigation }) => {
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [isScan, setIsScan] = useState(false);
   const [activeAll, setActiveAll] = useState(false);
+  const [location, setLocation] = useState(null);
+
+  useEffect(() => {
+    (async () => {
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+    })();
+  }, [defaultActionDataChecklist, dataChecklistFaild]);
 
   useEffect(() => {
     const dataChecklist = dataChecklistFilterContext?.filter(
@@ -252,8 +259,7 @@ const DetailChecklist = ({ route, navigation }) => {
         if (indexDefault !== -1) {
           mergedArrCheck.splice(indexDefault, 1);
         }
-      }
-      else if(key === "isCheck"){
+      } else if (key === "isCheck") {
         const indexFaild = newDataChecklist.findIndex((item) => {
           return (
             item.ID_Checklist === it.ID_Checklist &&
@@ -292,7 +298,7 @@ const DetailChecklist = ({ route, navigation }) => {
         }
       }
     } else {
-      if (key === "option" || key === "active" ) {
+      if (key === "option" || key === "active") {
         const indexFaild = newDataChecklist.find(
           (item) =>
             item.ID_Checklist === it.ID_Checklist &&
@@ -452,6 +458,8 @@ const DetailChecklist = ({ route, navigation }) => {
     }
   };
 
+  console.log('location',location)
+
   // call api submit data checklsit
   const handleSubmit = async () => {
     try {
@@ -461,8 +469,8 @@ const DetailChecklist = ({ route, navigation }) => {
       if (networkState.isConnected) {
         setLoadingSubmit(true);
         setActiveAll(false);
-        saveConnect(false)
-        
+        saveConnect(false);
+
         if (
           defaultActionDataChecklist.length === 0 &&
           dataChecklistFaild.length === 0
@@ -502,11 +510,12 @@ const DetailChecklist = ({ route, navigation }) => {
           "Không có kết nối mạng",
           "Vui lòng kiểm tra kết nối mạng của bạn."
         );
-        saveConnect(true)
+        saveConnect(true);
       }
     } catch (error) {
       // Cập nhật sau khi hoàn thành xử lý API} catch (error) {
       console.error("Lỗi khi kiểm tra kết nối mạng:", error);
+      setLoadingSubmit(false)
     }
   };
 
@@ -525,6 +534,9 @@ const DetailChecklist = ({ route, navigation }) => {
         formData.append("Ketqua", item.valueCheck || "");
         formData.append("Gioht", item.gioht);
         formData.append("Ghichu", item.GhichuChitiet || "");
+        formData.append("Vido", location?.coords?.latitude || "");
+        formData.append("Kinhdo", location?.coords?.longitude || "");
+        formData.append("Docao", location?.coords?.altitude || "");
 
         // If there is an image, append it to formData
         if (item.Anh) {
@@ -612,6 +624,9 @@ const DetailChecklist = ({ route, navigation }) => {
         ID_Checklists: ID_Checklists,
         ID_ChecklistC: ID_ChecklistC,
         checklistLength: defaultActionDataChecklist.length,
+        Vido: location?.coords?.latitude || "",
+        Kinhdo: location?.coords?.longitude || "",
+        Docao: location?.coords?.altitude || "",
       },
       {
         headers: {
@@ -666,6 +681,9 @@ const DetailChecklist = ({ route, navigation }) => {
         formData.append("Ketqua", item.valueCheck || "");
         formData.append("Gioht", item.gioht);
         formData.append("Ghichu", item.GhichuChitiet || "");
+        formData.append("Vido", location?.coords?.latitude || "");
+        formData.append("Kinhdo", location?.coords?.longitude || "");
+        formData.append("Docao", location?.coords?.altitude || "");
 
         // Nếu có hình ảnh, thêm vào FormData
         if (item.Anh) {
@@ -713,8 +731,6 @@ const DetailChecklist = ({ route, navigation }) => {
         }
       );
 
-      
-
       const requestDone = axios.post(
         `${BASE_URL}/tb_checklistchitietdone/create`,
         {
@@ -722,6 +738,9 @@ const DetailChecklist = ({ route, navigation }) => {
           ID_Checklists: ID_Checklists,
           ID_ChecklistC: ID_ChecklistC,
           checklistLength: defaultActionDataChecklist.length,
+          Vido: location?.coords?.latitude || "",
+          Kinhdo: location?.coords?.longitude || "",
+          Docao: location?.coords?.altitude || "",
         },
         {
           headers: {
@@ -861,7 +880,7 @@ const DetailChecklist = ({ route, navigation }) => {
     setTieuchuan(item.Tieuchuan);
     setModalVisibleTieuChuan(true);
     setIndex(index);
-  },[]);
+  }, []);
 
   // close modal bottom sheet
   const handlePopupClear = useCallback(() => {
@@ -1137,8 +1156,9 @@ const DetailChecklist = ({ route, navigation }) => {
               transparent={true}
               visible={modalVisible}
               onRequestClose={() => {
-                Alert.alert("Modal has been closed.");
+                //Alert.alert("Modal has been closed.");
                 setModalVisible(!modalVisible);
+                setOpacity(1)
               }}
             >
               <View style={styles.centeredView}>
