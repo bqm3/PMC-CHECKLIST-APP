@@ -133,7 +133,7 @@ const Profile = () => {
           resizeMode="cover"
           style={{ flex: 1 }}
         >
-          <ScrollView style={{ flex: 1, margin: 20 }}>
+          <ScrollView style={{ flex: 1, margin: 20 }} showsVerticalScrollIndicator={false}>
             <Title
               text={"Thông tin cá nhân"}
               size={adjust(18)}
