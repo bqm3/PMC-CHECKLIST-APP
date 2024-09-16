@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, Switch } from "react-native";
 import React, { useState } from "react";
 import { FontAwesome } from "@expo/vector-icons";
-import VerticalSelect from "../VerticalSelect";
+import VerticalSelect from "../Vertical/VerticalSelect";
 import SelectDropdown from "react-native-select-dropdown";
 import ActionCheckbox from "../Active/ActiveCheckbox";
 import { COLORS } from "../../constants/theme";

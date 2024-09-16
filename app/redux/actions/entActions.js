@@ -87,33 +87,6 @@ export const ent_calv_filter = (id) => {
   };
 };
 
-export const ent_giamsat_get = () => {
-  return async (dispatch) => {
-    try {
-      const token = await AsyncStorage.getItem("tokenUser");
-      if (token !== null) {
-        const response = await axios.get(BASE_URL + "/ent_giamsat", {
-          headers: {
-            Accept: "application/json",
-            Authorization: "Bearer " + token,
-          },
-        });
-        const data = response.data.data;
-        dispatch({
-          type: type.SET_ENT_GIAMSAT_SUCCESS,
-          payload: {
-            ent_giamsat: data,
-          },
-        });
-      } else {
-        console.error("initialized error");
-      }
-    } catch (err) {
-      console.log("err", err);
-    }
-  };
-};
-
 export const ent_toanha_get = () => {
   return async (dispatch) => {
     try {
@@ -396,7 +369,7 @@ export const ent_checklist_mul_hm = (dataHangmuc, ID_Calv, ID_ChecklistC) => {
       if (token !== null) {
         const response = await axios.put(
           `${BASE_URL}/ent_checklist/filter-mul/${ID_ChecklistC}/${ID_Calv}`,
-          { ID_Hangmuc: dataHangmuc },
+          { dataHangmuc: dataHangmuc },
           {
             headers: {
               Accept: "application/json",
@@ -452,7 +425,7 @@ export const ent_checklist_mul_hm_return = (dataHangmuc, ID_Calv, ID_ChecklistC)
       
       if (token !== null) {
         const response = await axios.put(
-          `${BASE_URL}/ent_checklist/filter/${ID_ChecklistC}/${ID_Calv}`,
+          `${BASE_URL}/ent_checklist/filter-return/${ID_ChecklistC}/${ID_Calv}`,
           { ID_Hangmuc: dataHangmuc },
           {
             headers: {
@@ -489,7 +462,7 @@ export const ent_checklist_mul_hm_return = (dataHangmuc, ID_Calv, ID_ChecklistC)
           isLoading: false
         },
       });
-      console.log("ent_checklist_get_detail 2", err.response);
+      console.log("ent_checklist_get_detail 3", err.response);
     }
   };
 }

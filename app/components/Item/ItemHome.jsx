@@ -9,7 +9,6 @@ export default function ItemHome({ item, index, roleUser }) {
   const navigation = useNavigation();
   return (
     <TouchableOpacity
-      disabled={roleUser !== 1 && item?.role === 1 ? true : false}
       onPress={() => {
         navigation.navigate(item.path);
       }}

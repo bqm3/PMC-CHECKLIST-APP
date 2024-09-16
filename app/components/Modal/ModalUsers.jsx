@@ -16,7 +16,7 @@ import { COLORS } from "../../constants/theme";
 import ButtonChecklist from "../Button/ButtonCheckList";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { FontAwesome } from "@expo/vector-icons";
-import VerticalSelect from "../VerticalSelect";
+import VerticalSelect from "../Vertical/VerticalSelect";
 import SelectDropdown from "react-native-select-dropdown";
 import ButtonSubmit from "../Button/ButtonSubmit";
 
@@ -35,7 +35,7 @@ const ModalUsers = ({
   const ref = useRef(null);
 
   const defaultChucvu = ent_chucvu?.find(
-    (chucvu) => chucvu.ID_Chucvu === (dataInput.Permission || 2)
+    (chucvu) => chucvu.ID_Chucvu === (dataInput.ID_Chucvu || 2)
   );
   const defaultDuan = ent_duan?.find(
     (duan) => duan.ID_Duan === dataInput?.ID_Duan
@@ -143,7 +143,7 @@ const ModalUsers = ({
                     buttonTextStyle={styles.customText}
                     defaultValue={defaultChucvu}
                     onSelect={(selectedItem, index) => {
-                      handleChangeText("Permission", selectedItem.ID_Chucvu);
+                      handleChangeText("ID_Chucvu", selectedItem.ID_Chucvu);
                     }}
                     renderDropdownIcon={(isOpened) => {
                       return (
@@ -177,7 +177,7 @@ const ModalUsers = ({
                           value={item.ID_Chucvu}
                           label={item.Chucvu}
                           key={index}
-                          selectedItem={dataInput?.Permission}
+                          selectedItem={dataInput?.ID_Chucvu}
                         />
                       );
                     }}
@@ -332,7 +332,7 @@ const ModalUsers = ({
               backgroundColor={COLORS.bg_button}
               onPress={
                 isCheckUpdate.check
-                  ? () => handlePushDataEdit(isCheckUpdate.ID_Giamsat)
+                  ? () => handlePushDataEdit(isCheckUpdate.ID_User)
                   : () => handlePushDataSave()
               }
             />

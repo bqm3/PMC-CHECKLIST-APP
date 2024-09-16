@@ -18,7 +18,7 @@ import { COLORS } from "../../constants/theme";
 import ButtonSubmit from "../Button/ButtonSubmit";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { FontAwesome } from "@expo/vector-icons";
-import VerticalSelect from "../VerticalSelect";
+import VerticalSelect from "../Vertical/VerticalSelect";
 import VerticalSelectMul from "../Vertical/VerticalSelectMul";
 import SelectDropdown from "react-native-select-dropdown";
 import { useHeaderHeight } from "@react-navigation/elements";

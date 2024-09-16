@@ -13,7 +13,7 @@ import { Dropdown } from "react-native-element-dropdown";
 import { COLORS } from "../../constants/theme";
 import ButtonChecklist from "../Button/ButtonCheckList";
 import { FontAwesome } from "@expo/vector-icons";
-import VerticalSelect from "../VerticalSelect";
+import VerticalSelect from "../Vertical/VerticalSelect";
 import SelectDropdown from "react-native-select-dropdown";
 import ButtonSubmit from "../Button/ButtonSubmit";
 

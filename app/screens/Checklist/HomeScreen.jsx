@@ -9,6 +9,14 @@ import {
   Image,
 } from "react-native";
 import { Provider, useDispatch, useSelector } from "react-redux";
+import {
+  ent_calv_get,
+  ent_hangmuc_get,
+  ent_khuvuc_get,
+  ent_tang_get,
+  ent_toanha_get,
+  ent_khoicv_get
+} from "../../redux/actions/entActions";
 import ItemHome from "../../components/Item/ItemHome";
 import ItemHomePSH from "../../components/Item/ItemHomePSH";
 import adjust from "../../adjust";
@@ -18,83 +26,73 @@ const dataDanhMuc = [
     id: 1,
     path: "Thực hiện Checklist",
     icon: require("../../../assets/icons/o-01.png"),
-    role: 2,
   },
   {
     id: 2,
     path: "Tra cứu",
     icon: require("../../../assets/icons/o-02.png"),
-    role: 2,
-  },
-  {
-    id: 9,
-    path: "Báo cáo sự cố",
-    icon: require("../../../assets/icons/o-05.png"),
-    role: 2,
-  },
-  {
-    id: 7,
-    path: "Checklist Lại",
-    icon: require("../../../assets/icons/o-01.png"),
-    role: 2,
   },
   {
     id: 3,
-    path: "Danh mục Khu vực",
-    icon: require("../../../assets/icons/o-03.png"),
-    role: 1,
-  },
-  {
-    id: 8,
-    path: "Danh mục Hạng mục",
-    icon: require("../../../assets/icons/o-03.png"),
-    role: 1,
+    path: "Checklist Lại",
+    icon: require("../../../assets/icons/o-01.png"),
   },
   {
     id: 4,
-    path: "Danh mục Check list",
+    path: "Xử lý sự cố",
     icon: require("../../../assets/icons/o-04.png"),
-    role: 1,
-  },
-  {
-    id: 6,
-    path: "Danh mục Ca làm việc",
-    icon: require("../../../assets/icons/o-06.png"),
-    role: 1,
-  },
-  {
-    id: 5,
-    path: "Danh mục Giám sát",
-    icon: require("../../../assets/icons/o-05.png"),
-    role: 1,
   },
 ];
 
-const dataDanhMucPSH = [
+const dataGDKST = [
   {
     id: 1,
-    path: "Danh mục dự án",
+    path: "Thông báo sự cố",
+    icon: require("../../../assets/icons/o-04.png"),
   },
   {
     id: 2,
-    path: "Danh mục tòa nhà",
-  },
-  {
-    id: 3,
-    path: "Quản lý người dùng",
+    path: "Tra cứu",
+    icon: require("../../../assets/icons/o-02.png"),
   },
 ];
+
 // create a component
 const HomeScreen = ({ navigation }) => {
+  const dispath = useDispatch();
   const { user, authToken } = useSelector((state) => state.authReducer);
 
   const renderItem = ({ item, index }) => (
-    <ItemHome roleUser={user?.Permission} item={item} index={index} />
+    <ItemHome ID_Chucvu={user?.ID_Chucvu} item={item} index={index} />
   );
 
-  const renderItemPSH = ({ item, index }) => (
-    <ItemHomePSH item={item} index={index} />
-  );
+  const int_khuvuc = async () => {
+    await dispath(ent_khuvuc_get());
+  };
+
+  const int_hangmuc = async () => {
+    await dispath(ent_hangmuc_get());
+  };
+
+  const init_toanha = async () => {
+    await dispath(ent_toanha_get());
+  };
+
+  const init_khoicv = async () => {
+    await dispath(ent_khoicv_get());
+  };
+
+  const init_tang = async () => {
+    await dispath(ent_tang_get());
+  };
+
+  useEffect(() => {
+    int_khuvuc();
+    int_hangmuc();
+    init_toanha();
+    init_khoicv();
+    init_tang();
+  }, []);
 
   return (
     <ImageBackground
@@ -102,131 +100,96 @@ const HomeScreen = ({ navigation }) => {
       resizeMode="stretch"
       style={{ flex: 1, width: "100%" }}
     >
-      {user?.ent_chucvu?.Chucvu == "PSH" ? (
-        <>
-          <View style={styles.container}>
-            <View
-              style={[
-                styles.content,
-                {
-                  width: "100%",
-                  alignContent: "center",
-                },
-              ]}
-            >
-              <FlatList
-                style={{
-                  width: "100%",
-                  paddingHorizontal: 20,
-                  gap: 20,
-                }}
-                numColumns={2}
-                keyExtractor={({ item, index }) => `${index}`}
-                data={dataDanhMucPSH}
-                renderItem={renderItemPSH}
-                // ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
-                contentContainerStyle={{ gap: 20 }}
-                columnWrapperStyle={{
-                  justifyContent: "space-between",
-                  gap: 20,
-                }}
-              />
-            </View>
-          </View>
-        </>
-      ) : (
-        <View style={styles.container}>
-          <View style={styles.content}>
-            {user.ent_duan.Logo ? (
-              <Image
-                source={{ uri: user.ent_duan.Logo }}
-                resizeMode="contain"
-                style={{ height: adjust(70), width: adjust(180) }}
-              />
-            ) : (
-              <Image
-                source={require("../../../assets/pmc_logo.png")}
-                resizeMode="contain"
-                style={{ height: adjust(80), width: adjust(200) }}
-              />
-            )}
-            <Text
-              allowFontScaling={false}
-              style={{
-                fontSize: adjust(20),
-                color: "white",
-                fontWeight: "700",
-                textTransform: "uppercase",
-                paddingTop: 8,
-              }}
-            >
-              Dự án: {user?.ent_duan?.Duan}
-            </Text>
-            <Text
-              allowFontScaling={false}
-              style={{
-                color: "white",
-                fontSize: adjust(16),
-                marginTop: 10,
-              }}
-              numberOfLines={1}
-            >
-              Tài khoản: {user?.UserName}
-            </Text>
-          </View>
-
-          <View
-            style={[
-              styles.content,
-              {
-                width: "100%",
-                alignContent: "center",
-              },
-            ]}
-          >
-            <FlatList
-              style={{
-                width: "100%",
-                paddingHorizontal: 20,
-              }}
-              numColumns={2}
-              data={dataDanhMuc}
-              renderItem={renderItem}
-              ItemSeparatorComponent={() => <View style={{ height: 20 }} />}
-              contentContainerStyle={{ gap: 16 }}
-              columnWrapperStyle={{ gap: 16 }}
+      <View style={styles.container}>
+        <View style={styles.content}>
+          {user.ent_duan.Logo ? (
+            <Image
+              source={{ uri: user.ent_duan.Logo }}
+              resizeMode="contain"
+              style={{ height: adjust(70), width: adjust(180) }}
             />
-          </View>
-          <View
+          ) : (
+            <Image
+              source={require("../../../assets/pmc_logo.png")}
+              resizeMode="contain"
+              style={{ height: adjust(80), width: adjust(200) }}
+            />
+          )}
+          <Text
+            allowFontScaling={false}
             style={{
-              flexDirection: "column",
-              marginTop: 20,
-              marginHorizontal: 20,
+              fontSize: adjust(20),
+              color: "white",
+              fontWeight: "700",
+              textTransform: "uppercase",
+              paddingTop: 8,
             }}
           >
-            <Text
-              allowFontScaling={false}
-              style={{
-                color: "white",
-                fontSize: adjust(16),
-              }}
-            >
-              Người Giám sát chỉ thực hiện công việc Checklist, Tra cứu và Đổi
-              mật khẩu.
-            </Text>
-            <Text
-              allowFontScaling={false}
-              style={{
-                color: "white",
-                fontSize: adjust(16),
-              }}
-            >
-              Giám đốc Tòa nhà toàn quyền sử dụng.
-            </Text>
-          </View>
-
+            Dự án: {user?.ent_duan?.Duan}
+          </Text>
+          <Text
+            allowFontScaling={false}
+            style={{
+              color: "white",
+              fontSize: adjust(16),
+              marginTop: 10,
+            }}
+            numberOfLines={1}
+          >
+            Tài khoản: {user?.UserName}
+          </Text>
         </View>
-      )}
+
+        <View
+          style={[
+            styles.content,
+            {
+              width: "100%",
+              alignContent: "center",
+            },
+          ]}
+        >
+          <FlatList
+            style={{
+              width: "100%",
+              paddingHorizontal: 20,
+            }}
+            numColumns={2}
+            data={(user.ID_Chucvu == 4 || user.ID_Chucvu == 3) ? dataDanhMuc : dataGDKST}
+            renderItem={renderItem}
+            ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+            contentContainerStyle={{ gap: 10 }}
+            columnWrapperStyle={{ gap: 10 }}
+          />
+        </View>
+        <View
+          style={{
+            flexDirection: "column",
+            marginTop: 20,
+            marginHorizontal: 20,
+          }}
+        >
+          <Text
+            allowFontScaling={false}
+            style={{
+              color: "white",
+              fontSize: adjust(16),
+            }}
+          >
+            Người Giám sát chỉ thực hiện công việc Checklist, Tra cứu và Đổi mật
+            khẩu.
+          </Text>
+          <Text
+            allowFontScaling={false}
+            style={{
+              color: "white",
+              fontSize: adjust(16),
+            }}
+          >
+            Giám đốc Tòa nhà toàn quyền sử dụng.
+          </Text>
+        </View>
+      </View>
     </ImageBackground>
   );
 };

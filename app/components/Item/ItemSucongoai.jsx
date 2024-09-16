@@ -1,19 +1,20 @@
 import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
 import React from "react";
-import { Feather, AntDesign } from "@expo/vector-icons";
 import adjust from "../../adjust";
 import moment from "moment";
-import { COLORS } from "../../constants/theme";
+import { COLORS, SIZES } from "../../constants/theme";
 
-export default function ItemCaChecklist({
+export default function ItemSucongoai({
   item,
   index,
   toggleTodo,
-  newActionCheckList,
+  newActionClick,
 }) {
-  const isExistIndex = newActionCheckList.findIndex(
-    (existingItem) => existingItem.ID_ChecklistC === item.ID_ChecklistC
+  const isExistIndex = newActionClick.findIndex(
+    (existingItem) => existingItem.ID_Suco === item.ID_Suco
   );
+
+  const formattedTime = item?.Giosuco.slice(0,5)
   return (
     <TouchableOpacity
       style={[
@@ -25,12 +26,12 @@ export default function ItemCaChecklist({
       onPress={() => toggleTodo(item)}
     >
       <View style={styles.row}>
-        <View style={{ width: 120 }}>
+        <View style={{ width: 100 }}>
           <Text
             allowFontScaling={false}
             style={[styles.title, { color: isExistIndex ? "black" : "white" }]}
           >
-            Ngày nhập
+            Ngày sự cố
           </Text>
         </View>
         <Text
@@ -40,19 +41,19 @@ export default function ItemCaChecklist({
             { fontWeight: "500", color: isExistIndex ? "black" : "white" },
           ]}
         >
-          : {moment(item?.Ngay).format("DD/MM/YYYY")}
+          : {formattedTime} {moment(item?.Ngaysuco).format("DD/MM/YYYY")}
         </Text>
       </View>
       <View style={styles.row}>
-        <View style={{ width: 120 }}>
+        <View style={{ width: 100 }}>
           <Text
             allowFontScaling={false}
             style={[styles.title, { color: isExistIndex ? "black" : "white" }]}
           >
-            Giờ vào - ra
+            Hạng mục
           </Text>
         </View>
-        <View style={{ width: 200 }}>
+        <View style={{ width: SIZES.width - 160 }}>
           <Text
             allowFontScaling={false}
             style={[
@@ -60,17 +61,17 @@ export default function ItemCaChecklist({
               { fontWeight: "500", color: isExistIndex ? "black" : "white" },
             ]}
           >
-            : {item?.Giobd} - {item?.Giokt}
+            : {item?.ent_hangmuc?.Hangmuc}
           </Text>
         </View>
       </View>
       <View style={styles.row}>
-        <View style={{ width: 120 }}>
+        <View style={{ width: 100 }}>
           <Text
             allowFontScaling={false}
             style={[styles.title, { color: isExistIndex ? "black" : "white" }]}
           >
-            Tên nhân viên
+            Người gửi
           </Text>
         </View>
         <Text
@@ -84,45 +85,7 @@ export default function ItemCaChecklist({
         </Text>
       </View>
       <View style={styles.row}>
-        <View style={{ width: 120 }}>
-          <Text
-            allowFontScaling={false}
-            style={[styles.title, { color: isExistIndex ? "black" : "white" }]}
-          >
-            Số lượng
-          </Text>
-        </View>
-        <Text
-          allowFontScaling={false}
-          style={[
-            styles.title,
-            { fontWeight: "500", color: isExistIndex ? "black" : "white" },
-          ]}
-        >
-          : {item?.Tong}
-        </Text>
-      </View>
-      <View style={styles.row}>
-        <View style={{ width: 120 }}>
-          <Text
-            allowFontScaling={false}
-            style={[styles.title, { color: isExistIndex ? "black" : "white" }]}
-          >
-            Tên ca
-          </Text>
-        </View>
-        <Text
-          allowFontScaling={false}
-          style={[
-            styles.title,
-            { fontWeight: "500", color: isExistIndex ? "black" : "white" },
-          ]}
-        >
-          : {item?.ent_calv.Tenca}
-        </Text>
-      </View>
-      <View style={styles.row}>
-        <View style={{ width: 120 }}>
+        <View style={{ width: 100 }}>
           <Text
             allowFontScaling={false}
             style={[styles.title, { color: isExistIndex ? "black" : "white" }]}
@@ -135,12 +98,18 @@ export default function ItemCaChecklist({
           style={[
             styles.title,
             {
-              fontWeight: "500",
-              color: item?.Tinhtrang === 1 ? "green" : "red",
+              fontWeight: "600",
+              color:
+                (item?.Tinhtrangxuly == 0 && "red") ||
+                (item?.Tinhtrangxuly == 1 && "orange") ||
+                (item?.Tinhtrangxuly == 2 && "green"),
             },
           ]}
         >
-          : {item?.Tinhtrang === 1 ? "Xong" : "Đang thực hiện"}
+          :{" "}
+          {(item?.Tinhtrangxuly == 0 && "Chưa xử lý") ||
+            (item?.Tinhtrangxuly == 1 && "Đang xử lý") ||
+            (item?.Tinhtrangxuly == 2 && "Đã xử lý")}
         </Text>
       </View>
     </TouchableOpacity>

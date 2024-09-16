@@ -38,7 +38,6 @@ import ButtonChecklist from "../../components/Button/ButtonCheckList";
 import { COLORS, SIZES } from "../../constants/theme";
 import {
   ent_calv_get,
-  ent_giamsat_get,
   ent_hangmuc_get,
   ent_khuvuc_get,
 } from "../../redux/actions/entActions";
@@ -53,53 +52,11 @@ import ItemCaChecklist from "../../components/Item/ItemCaChecklist";
 import DataContext from "../../context/DataContext";
 import adjust from "../../adjust";
 import { useFocusEffect } from "@react-navigation/native";
-import ButtonSubmit from "../../components/Button/ButtonSubmit";
-
-
-// import mime from "mime";
-
-const numberOfItemsPerPageList = [20, 30, 50];
-
-const headerList = [
-  {
-    til: "Ngày",
-    width: 120,
-  },
-
-  {
-    til: "Tên ca",
-    width: 150,
-  },
-  {
-    til: "Số lượng",
-    width: 100,
-  },
-
-  {
-    til: "Nhân viên",
-    width: 150,
-  },
-  {
-    til: "Giờ bắt đầu - Giờ kết thúc",
-    width: 150,
-  },
-
-  {
-    til: "Tình trạng",
-    width: 150,
-  },
-  {
-    til: "Ghi chú",
-    width: 200,
-  },
-];
 
 const ThucHienChecklist = ({ navigation }) => {
   const ref = useRef(null);
   const dispath = useDispatch();
-  const { ent_giamsat, ent_calv, ent_hangmuc } = useSelector(
-    (state) => state.entReducer
-  );
+  const { ent_calv, ent_hangmuc } = useSelector((state) => state.entReducer);
   const { tb_checklistc } = useSelector((state) => state.tbReducer);
   const { user, authToken } = useSelector((state) => state.authReducer);
   const { setDataHangmuc, stepKhuvuc } = useContext(DataContext);
@@ -108,29 +65,21 @@ const ThucHienChecklist = ({ navigation }) => {
   const dateDay = moment(date).format("YYYY-MM-DD");
   const dateHour = moment(date).format("LTS");
 
-  const [data, setData] = useState([]);
-  const bottomSheetModalRef = useRef(null);
+  const [dataCalv, setDataCalv] = useState([]);
   const bottomSheetModalRef2 = useRef(null);
-  const snapPoints = useMemo(() => ["90%"], []);
   const snapPoints2 = useMemo(() => ["90%"], []);
   const [opacity, setOpacity] = useState(1);
-  const [page, setPage] = React.useState(0);
 
   const [modalVisible, setModalVisible] = useState(false);
 
-  const [numberOfItemsPerPage, onItemsPerPageChange] = React.useState(
-    numberOfItemsPerPageList[0]
-  );
-
   const [newActionCheckList, setNewActionCheckList] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
 
   const [dataInput, setDataInput] = useState({
     dateDay: dateDay,
     dateHour: dateHour,
     Calv: null,
-    ID_Giamsat: null,
     ID_Duan: user?.ID_Duan,
   });
 
@@ -160,43 +109,8 @@ const ThucHienChecklist = ({ navigation }) => {
   };
 
   useEffect(() => {
-    setIsLoading(true);
-    // Use setTimeout to update the message after 2000 milliseconds (2 seconds)
-    const timeoutId = setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-
-    // Cleanup function to clear the timeout if the component unmounts
-    return () => clearTimeout(timeoutId);
-  }, []); //
-
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     setDataInput((prevData) => ({
-  //       ...prevData,
-  //       dateHour: moment().format("LTS"),
-  //     }));
-  //   }, 1000);
-
-  //   return () => clearInterval(interval); // Clear interval on component unmount
-  // }, []);
-
-  useEffect(() => {
-    setData(tb_checklistc?.data);
+    setDataCalv(tb_checklistc?.data);
   }, [tb_checklistc]);
-
-  const int_khuvuc = async () => {
-    await dispath(ent_khuvuc_get());
-  };
-
-  const int_hangmuc = async () => {
-    await dispath(ent_hangmuc_get());
-  };
-
-  useEffect(() => {
-    int_khuvuc();
-    int_hangmuc();
-  }, []);
 
   useEffect(() => {
     if (ent_hangmuc) {
@@ -209,30 +123,12 @@ const ThucHienChecklist = ({ navigation }) => {
     await dispath(ent_calv_get());
   };
 
-  const int_giamsat = async () => {
-    await dispath(ent_giamsat_get());
-  };
-
   const int_checklistc = async () => {
-    await dispath(
-      tb_checklistc_get({ page: page, limit: numberOfItemsPerPage })
-    );
+    await dispath(tb_checklistc_get({ page: 0, limit: 30 }));
   };
-
-  useEffect(() => {
-    int_checklistc();
-  }, [numberOfItemsPerPage, page, stepKhuvuc]);
-
-  useFocusEffect(
-    useCallback(() => {
-      // This will run when the screen is focused
-      int_checklistc();
-    }, [])
-  );
 
   useEffect(() => {
     init_ca();
-    int_giamsat();
     int_checklistc();
   }, []);
 
@@ -252,9 +148,6 @@ const ThucHienChecklist = ({ navigation }) => {
       setNewActionCheckList([item]);
     }
   };
-
-  
-
 
   const handlePushDataImagesSave = async (id) => {
     try {
@@ -403,24 +296,19 @@ const ThucHienChecklist = ({ navigation }) => {
   };
 
   const handlePushDataSave = async () => {
-    if (dataInput.ID_Calv === null || dataInput.ID_Giamsat === null) {
-      Alert.alert(
-        "PMC Thông báo",
-        "Chưa chọn ca làm việc hoặc người giám sát",
-        [
-          {
-            text: "Hủy",
-            onPress: () => console.log("Cancel Pressed"),
-            style: "cancel",
-          },
-          { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-        ]
-      );
+    if (dataInput.ID_Calv === null) {
+      Alert.alert("PMC Thông báo", "Chưa chọn ca làm việc", [
+        {
+          text: "Hủy",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+        { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+      ]);
     } else {
       let data = {
         ID_Calv: dataInput.Calv.ID_Calv,
         ID_User: user.ID_User,
-        ID_Giamsat: dataInput.ID_Giamsat,
         ID_Duan: user.ID_Duan,
         ID_KhoiCV: user.ID_KhoiCV,
         Ngay: dataInput.dateDay,
@@ -436,7 +324,7 @@ const ThucHienChecklist = ({ navigation }) => {
             },
           })
           .then((response) => {
-            clearAsyncStorage()
+            clearAsyncStorage();
             handleAdd();
             handleClosePopUp();
             int_checklistc();
@@ -445,9 +333,8 @@ const ThucHienChecklist = ({ navigation }) => {
             handleChecklistDetail(
               response.data.data.ID_ChecklistC,
               response.data.data.ID_KhoiCV,
-              response.data.data.ID_Calv,
-              response.data.data.ID_Toanha,
-              response.data.data.ID_Khuvucs,
+              response.data.data.ID_ThietLapCa,
+              response.data.data.ID_Hangmucs,
               null
             );
           });
@@ -533,7 +420,6 @@ const ThucHienChecklist = ({ navigation }) => {
       dateDay: dateDay,
       dateHour: dateHour,
       Calv: null,
-      ID_Giamsat: null,
       ID_Duan: user?.ID_Duan,
     });
     setDataImages({
@@ -548,13 +434,12 @@ const ThucHienChecklist = ({ navigation }) => {
     });
   };
 
-  const handleChecklistDetail = (id1, id2, id3, id4, id5) => {
+  const handleChecklistDetail = (id1, id2, id3, id4) => {
     navigation.navigate("Thực hiện khu vực", {
       ID_ChecklistC: id1,
       ID_KhoiCV: id2,
-      ID_Calv: id3,
-      ID_Toanha: id4,
-      ID_Khuvucs: id5,
+      ID_ThietLapCa: id3,
+      ID_Hangmucs: id4,
     });
 
     setNewActionCheckList([]);
@@ -612,7 +497,6 @@ const ThucHienChecklist = ({ navigation }) => {
     ]);
   };
 
-
   return (
     <>
       <GestureHandlerRootView style={{ flex: 1 }}>
@@ -644,7 +528,7 @@ const ThucHienChecklist = ({ navigation }) => {
                         justifyContent: "flex-end",
                       }}
                     >
-                      {user?.Permission !== 1 && (
+                      {user?.ID_Chucvu !== 1 && (
                         <ButtonChecklist
                           text={"Thêm mới"}
                           width={"auto"}
@@ -669,24 +553,24 @@ const ThucHienChecklist = ({ navigation }) => {
                     </View>
                   ) : (
                     <>
-                      {data && data?.length > 0 ? (
+                      {dataCalv && dataCalv?.length > 0 ? (
                         <FlatList
-                            horizontal={false}
-                            contentContainerStyle={{ flexGrow: 1 }}
-                            style={{ marginVertical: 10 }}
-                            data={data}
-                            renderItem={({ item, index }) => (
-                              <ItemCaChecklist
-                                key={index}
-                                item={item}
-                                toggleTodo={toggleTodo}
-                                newActionCheckList={newActionCheckList}
-                              />
-                            )}
-                            keyExtractor={(item, index) => index.toString()}
-                            scrollEventThrottle={16}
-                            scrollEnabled={true}
-                          />
+                          horizontal={false}
+                          contentContainerStyle={{ flexGrow: 1 }}
+                          style={{ marginVertical: 10 }}
+                          data={dataCalv}
+                          renderItem={({ item, index }) => (
+                            <ItemCaChecklist
+                              key={index}
+                              item={item}
+                              toggleTodo={toggleTodo}
+                              newActionCheckList={newActionCheckList}
+                            />
+                          )}
+                          keyExtractor={(item, index) => index.toString()}
+                          scrollEventThrottle={16}
+                          scrollEnabled={true}
+                        />
                       ) : (
                         <View
                           style={{
@@ -714,8 +598,6 @@ const ThucHienChecklist = ({ navigation }) => {
                 </View>
               </View>
 
-              
-
               <Modal
                 animationType="slide"
                 transparent={true}
@@ -729,7 +611,7 @@ const ThucHienChecklist = ({ navigation }) => {
                   <View
                     style={[
                       styles.modalView,
-                      { width: "80%", height: "auto", minHeight: 450 },
+                      { width: "80%", height: "auto", minHeight: 300 },
                     ]}
                   >
                     <View style={styles.contentContainer}>
@@ -746,7 +628,6 @@ const ThucHienChecklist = ({ navigation }) => {
                         {user?.ent_khoicv?.KhoiCV}
                       </Text>
                       <ModalChecklistC
-                        ent_giamsat={ent_giamsat}
                         ent_calv={ent_calv}
                         dataInput={dataInput}
                         handleChangeText={handleChangeText}
@@ -769,7 +650,6 @@ const ThucHienChecklist = ({ navigation }) => {
                   <ModalChecklistCImage
                     dataImages={dataImages}
                     handleChangeImages={handleChangeImages}
-                    ent_giamsat={ent_giamsat}
                     ent_calv={ent_calv}
                     dataInput={dataInput}
                     handleChangeText={handleChangeText}
@@ -781,7 +661,7 @@ const ThucHienChecklist = ({ navigation }) => {
                 </View>
               </BottomSheetModal>
 
-              {newActionCheckList?.length > 0 && user?.Permission !== 1 && (
+              {newActionCheckList?.length > 0 && user?.ID_Chucvu !== 1 && (
                 <View
                   style={{
                     width: 60,
@@ -814,8 +694,7 @@ const ThucHienChecklist = ({ navigation }) => {
                             newActionCheckList[0]?.ID_ChecklistC,
                             newActionCheckList[0]?.ID_KhoiCV,
                             newActionCheckList[0]?.ID_Calv,
-                            newActionCheckList[0]?.ID_Toanha,
-                            newActionCheckList[0]?.ID_Khuvucs
+                            newActionCheckList[0]?.ID_Hangmucs
                           )
                         }
                       >

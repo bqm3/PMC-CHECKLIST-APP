@@ -26,7 +26,6 @@ import React, {
 } from "react";
 import {
   ent_calv_get,
-  ent_giamsat_get,
   ent_hangmuc_get,
   ent_khuvuc_get,
 } from "../../redux/actions/entActions";
@@ -47,7 +46,7 @@ import adjust from "../../adjust";
 const ThucHienChecklist = ({ navigation }) => {
   const ref = useRef(null);
   const dispath = useDispatch();
-  const { ent_giamsat, ent_calv, ent_hangmuc } = useSelector(
+  const { ent_calv, ent_hangmuc } = useSelector(
     (state) => state.entReducer
   );
   const { tb_checklistc } = useSelector((state) => state.tbReducer);
@@ -115,13 +114,12 @@ const ThucHienChecklist = ({ navigation }) => {
     }
   };
 
-  const handleChecklistDetail = (id1, id2, id3, id4, id5) => {
+  const handleChecklistDetail = (id1, id2, id3, id4) => {
     navigation.navigate("Thực hiện khu vực lại", {
       ID_ChecklistC: id1,
       ID_KhoiCV: id2,
-      ID_Calv: id3,
-      ID_Toanha: id4,
-      ID_Khuvucs: id5,
+      ID_ThietLapCa: id3,
+      ID_Hangmucs: id4,
     });
 
     setNewActionCheckList([]);
@@ -178,7 +176,7 @@ const ThucHienChecklist = ({ navigation }) => {
             }}
             numberOfLines={5}
           >
-            Người giám sát: {item?.ent_giamsat.Hoten}
+            Người giám sát: {item?.ent_user.Hoten}
           </Text>
         </View>
       </TouchableOpacity>
@@ -231,7 +229,7 @@ const ThucHienChecklist = ({ navigation }) => {
                 </>
               )}
 
-              {newActionCheckList?.length > 0 && user?.Permission !== 1 && (
+              {newActionCheckList?.length > 0 && user?.ID_Chucvu !== 1 && (
                 <View
                   style={{
                     width: 60,
@@ -252,9 +250,8 @@ const ThucHienChecklist = ({ navigation }) => {
                           handleChecklistDetail(
                             newActionCheckList[0]?.ID_ChecklistC,
                             newActionCheckList[0]?.ID_KhoiCV,
-                            newActionCheckList[0]?.ID_Calv,
-                            newActionCheckList[0]?.ID_Toanha,
-                            newActionCheckList[0]?.ID_Khuvucs
+                            newActionCheckList[0]?.ID_ThietLapCa,
+                            newActionCheckList[0]?.ID_Hangmucs
                           )
                         }
                       >

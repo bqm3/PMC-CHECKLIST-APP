@@ -17,7 +17,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { COLORS } from "../../constants/theme";
 import KeyboardAvoidingComponent from "../KeyboardAvoidingComponent";
 import { FontAwesome, AntDesign } from "@expo/vector-icons";
-import VerticalSelect from "../VerticalSelect";
+import VerticalSelect from "../Vertical/VerticalSelect";
 import SelectDropdown from "react-native-select-dropdown";
 import ButtonSubmit from "../Button/ButtonSubmit";
 import adjust from "../../adjust";

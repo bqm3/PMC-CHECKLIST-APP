@@ -2,7 +2,6 @@ import * as type from "../types";
 const initialState = {
   ent_khoicv: [],
   ent_calv: [],
-  ent_giamsat: [],
   ent_chucvu: [],
   ent_duan: [],
   ent_khuvuc: [],
@@ -68,30 +67,7 @@ export const entReducer = (state = initialState, action) => {
         isLoading: true,
         message: null,
       };
-    case type.SET_ENT_GIAMSAT_STATE:
-      return {
-        ...state,
-        ent_giamsat: null,
-        error: false,
-        isLoading: true,
-        message: null,
-      };
-    case type.SET_ENT_GIAMSAT_SUCCESS:
-      return {
-        ...state,
-        ent_giamsat: action.payload.ent_giamsat,
-        error: false,
-        isLoading: false,
-        message: null,
-      };
-    case type.SET_ENT_GIAMSAT_FAIL:
-      return {
-        ...state,
-        ent_giamsat: null,
-        error: false,
-        isLoading: true,
-        message: null,
-      };
+   
     case type.SET_ENT_KHUVUC_STATE:
       return {
         ...state,

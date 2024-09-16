@@ -159,9 +159,9 @@ const Profile = () => {
             <View style={styles.inputs}>
               <TextInput
                 allowFontScaling={false}
-                value={user?.Emails}
+                value={user?.Email}
                 editable={false}
-                placeholder="Nhập tên ca thực hiện checklist"
+                placeholder="Nhập email cá nhân"
                 placeholderTextColor="gray"
                 style={[
                   styles.textInput,
@@ -177,7 +177,6 @@ const Profile = () => {
                 allowFontScaling={false}
                 value={user?.ent_chucvu?.Chucvu}
                 editable={false}
-                placeholder="Nhập tên ca thực hiện checklist"
                 placeholderTextColor="gray"
                 style={[
                   styles.textInput,

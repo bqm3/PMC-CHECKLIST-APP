@@ -34,7 +34,7 @@ import { AntDesign, Ionicons, Feather } from "@expo/vector-icons";
 import { DataTable } from "react-native-paper";
 import ButtonChecklist from "../../components/Button/ButtonCheckList";
 import { COLORS, SIZES } from "../../constants/theme";
-import { ent_calv_get, ent_giamsat_get } from "../../redux/actions/entActions";
+import { ent_calv_get } from "../../redux/actions/entActions";
 import { tb_checklistc_get } from "../../redux/actions/tbActions";
 import axios from "axios";
 import { BASE_URL } from "../../constants/config";
@@ -82,7 +82,7 @@ const headerList = [
 const DanhmucThongKe = ({ handlePresentModalPress2 }) => {
   const ref = useRef(null);
   const dispath = useDispatch();
-  const { ent_giamsat, ent_calv } = useSelector((state) => state.entReducer);
+  const { ent_calv } = useSelector((state) => state.entReducer);
   const { tb_checklistc } = useSelector((state) => state.tbReducer);
   const { user, authToken } = useSelector((state) => state.authReducer);
 
@@ -110,7 +110,6 @@ const DanhmucThongKe = ({ handlePresentModalPress2 }) => {
     dateDay: dateDay,
     dateHour: dateHour,
     Calv: null,
-    ID_Giamsat: null,
     ID_Duan: user?.ID_Duan,
   });
 
@@ -158,10 +157,6 @@ const DanhmucThongKe = ({ handlePresentModalPress2 }) => {
     await dispath(ent_calv_get());
   };
 
-  const int_giamsat = async () => {
-    await dispath(ent_giamsat_get());
-  };
-
   const int_checklistc = async () => {
     await dispath(
       tb_checklistc_get({ page: page, limit: numberOfItemsPerPage })
@@ -174,7 +169,6 @@ const DanhmucThongKe = ({ handlePresentModalPress2 }) => {
 
   useEffect(() => {
     init_ca();
-    int_giamsat();
     int_checklistc();
   }, []);
 
@@ -270,7 +264,7 @@ const DanhmucThongKe = ({ handlePresentModalPress2 }) => {
               style={{ color: isExistIndex ? "white" : "black", fontSize: 15 }}
               numberOfLines={2}
             >
-              {item?.ent_giamsat?.Hoten}
+              {item?.user?.Hoten}
             </Text>
           </DataTable.Cell>
           <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>

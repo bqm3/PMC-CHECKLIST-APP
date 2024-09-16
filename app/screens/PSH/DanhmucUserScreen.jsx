@@ -87,7 +87,7 @@ const DanhmucUserScreen = ({ navigation }) => {
 
   const [dataInput, setDataInput] = useState({
     ID_Duan: null,
-    Permission: 2,
+    ID_Chucvu: 2,
     ID_KhoiCV: null,
     UserName: "",
     Password: "",
@@ -124,7 +124,7 @@ const DanhmucUserScreen = ({ navigation }) => {
     } else {
       let data = {
         ID_Duan: dataInput.ID_Duan,
-        Permission: dataInput.Permission,
+        ID_Chucvu: dataInput.ID_Chucvu,
         ID_KhoiCV: dataInput.ID_KhoiCV,
         UserName: dataInput.UserName,
         Password: dataInput.Password,
@@ -171,7 +171,7 @@ const DanhmucUserScreen = ({ navigation }) => {
     handlePresentModalPress();
     setDataInput({
       ID_Duan: data.ID_Duan,
-      Permission: data.Permission,
+      ID_Chucvu: data.ID_Chucvu,
       ID_KhoiCV: data.ID_KhoiCV,
       UserName: data.UserName,
       Password: "",
@@ -207,7 +207,7 @@ const DanhmucUserScreen = ({ navigation }) => {
     } else {
       let data = {
         ID_Duan: dataInput.ID_Duan,
-        Permission: dataInput.Permission,
+        ID_Chucvu: dataInput.ID_Chucvu,
         ID_KhoiCV: dataInput.ID_KhoiCV,
         UserName: dataInput.UserName,
         Password: dataInput.Password,
@@ -303,7 +303,7 @@ const DanhmucUserScreen = ({ navigation }) => {
       Password: "",
       Emails: "",
       rePassword: "",
-      Permission: 2,
+      ID_Chucvu: 2,
       ID_KhoiCV: null,
     });
   };

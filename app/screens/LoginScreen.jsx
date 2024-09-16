@@ -289,7 +289,7 @@ const LoginScreen = ({ navigation }) => {
                     <View style={{ height: 20 }} />
                     <ButtonSubmit
                       backgroundColor={COLORS.bg_button}
-                      text={"Đăng Nhập"}
+                      text={"Đăng nhập"}
                       isLoading={isLoading}
                       onPress={handleSubmit}
                     />

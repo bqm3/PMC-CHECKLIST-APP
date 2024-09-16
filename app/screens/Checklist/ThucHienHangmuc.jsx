@@ -27,7 +27,7 @@ import DataContext from "../../context/DataContext";
 import adjust from "../../adjust";
 
 const ThucHienHangmuc = ({ route, navigation }) => {
-  const { ID_ChecklistC, ID_KhoiCV, ID_Calv, ID_Khuvuc } = route.params;
+  const { ID_ChecklistC, ID_KhoiCV, ID_Khuvuc } = route.params;
   const { dataChecklists, setHangMuc, hangMuc, HangMucDefault } =
     useContext(DataContext);
 
@@ -40,6 +40,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
   const [dataSelect, setDataSelect] = useState([]);
 
   useEffect(() => {
+   
     if (HangMucDefault && dataChecklists) {
       // Lọc các mục có ID_Khuvuc trùng khớp
       const filteredByKhuvuc = HangMucDefault.filter(
@@ -56,6 +57,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
 
       // Cập nhật trạng thái hangMuc với danh sách đã lọc
       setHangMuc(finalFilteredData);
+      
     }
   }, [ID_Khuvuc, HangMucDefault, dataChecklists]);
 
@@ -72,7 +74,6 @@ const ThucHienHangmuc = ({ route, navigation }) => {
         navigation.navigate("Chi tiết Checklist", {
           ID_ChecklistC: ID_ChecklistC,
           ID_KhoiCV: ID_KhoiCV,
-          ID_Calv: ID_Calv,
           ID_Hangmuc: resData[0].ID_Hangmuc,
           hangMuc: hangMuc,
           Hangmuc: resData[0].Hangmuc,
@@ -157,7 +158,6 @@ const ThucHienHangmuc = ({ route, navigation }) => {
     navigation.navigate("Chi tiết Checklist", {
       ID_ChecklistC: ID_ChecklistC,
       ID_KhoiCV: ID_KhoiCV,
-      ID_Calv: ID_Calv,
       ID_Hangmuc: dataSelect[0].ID_Hangmuc,
       hangMuc: hangMuc,
       ID_Khuvuc: ID_Khuvuc,

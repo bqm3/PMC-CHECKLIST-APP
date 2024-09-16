@@ -36,7 +36,6 @@ import ItemCalamviec from "../../components/Item/ItemCalamviec";
 
 import {
   ent_chucvu_get,
-  ent_giamsat_get,
   ent_duan_get,
   ent_khoicv_get,
 } from "../../redux/actions/entActions";
@@ -79,12 +78,9 @@ const DanhmucGiamsat = ({ navigation }) => {
     await dispath(ent_chucvu_get());
   };
 
-  const init_giamsat = async () => {
-    await dispath(ent_giamsat_get());
-  };
+ 
 
   useEffect(() => {
-    init_giamsat();
     init_duan();
     init_chucvu();
     init_khoicv();
@@ -149,7 +145,6 @@ const DanhmucGiamsat = ({ navigation }) => {
           },
         })
         .then((response) => {
-          init_giamsat();
           handleAdd();
           handleCloseModal();
           setLoadingSubmit(false);
@@ -244,7 +239,6 @@ const DanhmucGiamsat = ({ navigation }) => {
           }
         )
         .then((response) => {
-          init_giamsat();
           handleAdd();
           handleCloseModal();
           setLoadingSubmit(false);
@@ -292,7 +286,6 @@ const DanhmucGiamsat = ({ navigation }) => {
         },
       })
       .then((response) => {
-        init_giamsat();
         handleAdd();
         handleCloseModal();
         Alert.alert("PMC Thông báo", response.data.message, [

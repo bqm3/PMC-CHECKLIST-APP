@@ -12,7 +12,7 @@ import React, { useRef, useState, useEffect } from "react";
 import BottomSheet, { BottomSheetTextInput } from "@gorhom/bottom-sheet";
 import { COLORS } from "../../constants/theme";
 import { FontAwesome } from "@expo/vector-icons";
-import VerticalSelect from "../VerticalSelect";
+import VerticalSelect from "../Vertical/VerticalSelect";
 import SelectDropdown from "react-native-select-dropdown";
 import ButtonSubmit from "../Button/ButtonSubmit";
 import { GestureHandlerRootView } from "react-native-gesture-handler";

@@ -7,9 +7,8 @@ import { ent_khuvuc_get, ent_hangmuc_get } from "../redux/actions/entActions";
 const DataContext = createContext();
 
 export const DataProvider = ({ children }) => {
-
   const { ent_hangmuc } = useSelector((state) => state.entReducer);
-  
+
   const [dataChecklists, setDataChecklists] = useState([]);
   const [dataHangmuc, setDataHangmuc] = useState([]);
   const [khuVuc, setKhuvuc] = useState([]);
@@ -17,15 +16,28 @@ export const DataProvider = ({ children }) => {
   const [HangMucDefault, setHangMucDefault] = useState();
   const [stepKhuvuc, setStepKhuvuc] = useState(0);
 
-  useEffect(()=> {
-    if(ent_hangmuc){
-      setHangMucDefault(ent_hangmuc)
+  useEffect(() => {
+    if (ent_hangmuc) {
+      setHangMucDefault(ent_hangmuc);
     }
-  }, [ent_hangmuc])
+  }, [ent_hangmuc]);
 
   return (
     <DataContext.Provider
-      value={{ setDataChecklists, dataChecklists, dataHangmuc, setDataHangmuc,setHangMuc, hangMuc, setStepKhuvuc, stepKhuvuc, khuVuc, setKhuvuc, HangMucDefault, setHangMucDefault }}
+      value={{
+        setDataChecklists,
+        dataChecklists,
+        dataHangmuc,
+        setDataHangmuc,
+        setHangMuc,
+        hangMuc,
+        setStepKhuvuc,
+        stepKhuvuc,
+        khuVuc,
+        setKhuvuc,
+        HangMucDefault,
+        setHangMucDefault,
+      }}
     >
       {children}
     </DataContext.Provider>
