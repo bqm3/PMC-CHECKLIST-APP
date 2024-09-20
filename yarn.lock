@@ -1383,11 +1383,6 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@notifee/react-native@^7.8.2":
-  version "7.8.2"
-  resolved "https://registry.npmjs.org/@notifee/react-native/-/react-native-7.8.2.tgz"
-  integrity sha512-VG4IkWJIlOKqXwa3aExC3WFCVCGCC9BA55Ivg0SMRfEs+ruvYy/zlLANcrVGiPtgkUEryXDhA8SXx9+JcO8oLA==
-
 "@npmcli/fs@^3.1.0":
   version "3.1.1"
   resolved "https://registry.npmjs.org/@npmcli/fs/-/fs-3.1.1.tgz"
@@ -3655,6 +3650,11 @@ expo-camera@~15.0.14:
   integrity sha512-O4uvVywGsQ3a89d0BX4lq6mDuGYGukx1PYY4QrC9zw1yzD2W9BVTl8lanFRPC5h4PRniekfeWUVH1a0jJmkLIw==
   dependencies:
     invariant "^2.2.4"
+
+expo-checkbox@~3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/expo-checkbox/-/expo-checkbox-3.0.0.tgz#73a5d60678dd4a1d2971b48957b08acf1dd734f1"
+  integrity sha512-ZfNUawE0Bp/Xa5Gwtn04yfg6rCnKdqdmBXvEGbYg5U+IfRfLh+ocLiiBAcx760DfdYpzMGQOGpUtWQeEVmJwNw==
 
 expo-constants@~16.0.0, expo-constants@~16.0.2:
   version "16.0.2"
