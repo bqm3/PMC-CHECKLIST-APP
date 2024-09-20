@@ -58,10 +58,13 @@ export default function ItemSucongoai({
             allowFontScaling={false}
             style={[
               styles.title,
-              { fontWeight: "500", color: isExistIndex ? "black" : "white" },
+          //    { fontWeight: "500", color: isExistIndex ? "black" : "white", },
+              { fontWeight: "500",   color: isExistIndex
+                ? item?.ent_hangmuc?.Hangmuc ? "black" : "red"
+                : item?.ent_hangmuc?.Hangmuc ? "white" : "red", },
             ]}
           >
-            : {item?.ent_hangmuc?.Hangmuc}
+            : {item?.ent_hangmuc?.Hangmuc || 'Chưa có hạng mục'}
           </Text>
         </View>
       </View>

@@ -39,16 +39,11 @@ import DataLicense from "../components/PrivacyPolicy";
 import Checkbox from "../components/Active/Checkbox";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import adjust from "../adjust";
-import {logScreenName} from "../utils/util";
 
 const LoginScreen = ({ navigation }) => {
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    logScreenName(LoginScreen.name);
-  }, []);
-  
   const { error, user, message, isLoading } = useSelector(
     (state) => state.authReducer
   );

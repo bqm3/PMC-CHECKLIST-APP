@@ -2,7 +2,7 @@ import * as type from '../types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { BASE_URL } from '../../constants/config';
-
+import axiosClient from '../../api/axiosClient';
 // export const initialize = () => {
 //   return async (dispatch) => {
 //     let token = await AsyncStorage.getItem("tokenUser");

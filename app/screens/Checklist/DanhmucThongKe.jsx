@@ -13,7 +13,7 @@ import {
   ActivityIndicator,
   Modal,
   TouchableHighlight,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
 } from "react-native";
 import React, {
   useRef,
@@ -21,6 +21,7 @@ import React, {
   useEffect,
   useMemo,
   useCallback,
+  memo
 } from "react";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import {
@@ -73,13 +74,17 @@ const headerList = [
     til: "Tình trạng",
     width: 150,
   },
-  {
-    til: "Ghi chú",
-    width: 200,
-  },
+  // {
+  //   til: "Ghi chú",
+  //   width: 200,
+  // },
 ];
 
-const DanhmucThongKe = ({ handlePresentModalPress2 }) => {
+//const DanhmucThongKe = ({ handlePresentModalPress2,data }) => {
+  const DanhmucThongKe = memo(({
+    handlePresentModalPress2 = () => {},
+    data = [],
+  }) => {
   const ref = useRef(null);
   const dispath = useDispatch();
   const { ent_calv } = useSelector((state) => state.entReducer);
@@ -90,7 +95,7 @@ const DanhmucThongKe = ({ handlePresentModalPress2 }) => {
   const dateDay = moment(date).format("YYYY-MM-DD");
   const dateHour = moment(date).format("LTS");
 
-  const [data, setData] = useState([]);
+  // const [data, setData] = useState([]);
   const bottomSheetModalRef = useRef(null);
   const bottomSheetModalRef2 = useRef(null);
   const snapPoints = useMemo(() => ["90%"], []);
@@ -149,9 +154,9 @@ const DanhmucThongKe = ({ handlePresentModalPress2 }) => {
     return () => clearTimeout(timeoutId);
   }, []); //
 
-  useEffect(() => {
-    setData(tb_checklistc?.data);
-  }, [tb_checklistc]);
+  // useEffect(() => {
+  //   setData(tb_checklistc?.data);
+  // }, [tb_checklistc]);
 
   const init_ca = async () => {
     await dispath(ent_calv_get());
@@ -209,9 +214,10 @@ const DanhmucThongKe = ({ handlePresentModalPress2 }) => {
             paddingVertical: 10,
             backgroundColor: isExistIndex ? COLORS.bg_button : "white",
           }}
-        >
+        >  
           <DataTable.Cell style={{ width: 120, justifyContent: "center" }}>
-            <Text allowFontScaling={false}
+            <Text
+              allowFontScaling={false}
               style={{ color: isExistIndex ? "white" : "black", fontSize: 15 }}
               numberOfLines={2}
             >
@@ -230,7 +236,8 @@ const DanhmucThongKe = ({ handlePresentModalPress2 }) => {
               }}
               numberOfLines={4}
             >
-              <Text allowFontScaling={false}
+              <Text
+                allowFontScaling={false}
                 style={{
                   color: isExistIndex ? "white" : "black",
                   fontSize: 16,
@@ -240,7 +247,8 @@ const DanhmucThongKe = ({ handlePresentModalPress2 }) => {
               >
                 {item?.ent_khoicv?.KhoiCV}
               </Text>
-              <Text allowFontScaling={false}
+              <Text
+                allowFontScaling={false}
                 style={{
                   color: isExistIndex ? "white" : "black",
                   fontSize: 15,
@@ -252,7 +260,8 @@ const DanhmucThongKe = ({ handlePresentModalPress2 }) => {
             </View>
           </DataTable.Cell>
           <DataTable.Cell style={{ width: 100, justifyContent: "center" }}>
-            <Text allowFontScaling={false}
+            <Text
+              allowFontScaling={false}
               style={{ color: isExistIndex ? "white" : "black", fontSize: 15 }}
               numberOfLines={2}
             >
@@ -260,11 +269,12 @@ const DanhmucThongKe = ({ handlePresentModalPress2 }) => {
             </Text>
           </DataTable.Cell>
           <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
-            <Text allowFontScaling={false}
+            <Text
+              allowFontScaling={false}
               style={{ color: isExistIndex ? "white" : "black", fontSize: 15 }}
               numberOfLines={2}
             >
-              {item?.user?.Hoten}
+              {item?.ent_user?.Hoten}
             </Text>
           </DataTable.Cell>
           <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
@@ -278,7 +288,8 @@ const DanhmucThongKe = ({ handlePresentModalPress2 }) => {
               }}
               numberOfLines={4}
             >
-              <Text allowFontScaling={false}
+              <Text
+                allowFontScaling={false}
                 style={{
                   color: isExistIndex ? "white" : "black",
                   fontSize: 15,
@@ -288,7 +299,8 @@ const DanhmucThongKe = ({ handlePresentModalPress2 }) => {
                 {item?.Giobd}
               </Text>
               <Text allowFontScaling={false}>-</Text>
-              <Text allowFontScaling={false}
+              <Text
+                allowFontScaling={false}
                 style={{
                   color: isExistIndex ? "white" : "black",
                   fontSize: 15,
@@ -301,7 +313,8 @@ const DanhmucThongKe = ({ handlePresentModalPress2 }) => {
           </DataTable.Cell>
 
           <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
-            <Text allowFontScaling={false}
+            <Text
+              allowFontScaling={false}
               style={{ color: isExistIndex ? "white" : "black", fontSize: 15 }}
               numberOfLines={2}
             >
@@ -310,14 +323,15 @@ const DanhmucThongKe = ({ handlePresentModalPress2 }) => {
             </Text>
           </DataTable.Cell>
 
-          <DataTable.Cell style={{ width: 200, justifyContent: "center" }}>
-            <Text allowFontScaling={false}
+          {/* <DataTable.Cell style={{ width: 200, justifyContent: "center" }}>
+            <Text
+              allowFontScaling={false}
               style={{ color: isExistIndex ? "white" : "black", fontSize: 15 }}
               numberOfLines={3}
             >
               {item?.Ghichu}
             </Text>
-          </DataTable.Cell>
+          </DataTable.Cell> */}
         </DataTable.Row>
       </TouchableHighlight>
     );
@@ -339,44 +353,6 @@ const DanhmucThongKe = ({ handlePresentModalPress2 }) => {
         }}
       >
         <View style={styles.container}>
-          <Text allowFontScaling={false}  style={styles.danhmuc}>
-            Thống kê
-          </Text>
-          <Text allowFontScaling={false}
-            style={{
-              fontSize: 18,
-              color: "white",
-              fontWeight: "600",
-              paddingBottom: 20,
-            }}
-          >
-            Số lượng: {decimalNumber(data?.length)}
-          </Text>
-          <View
-            style={{
-              flexDirection: "row",
-              alignContent: "center",
-              alignItems: "left",
-            }}
-          >
-            <TouchableOpacity
-              onPress={handlePresentModalPress2}
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 8,
-              }}
-            >
-              <Image
-                source={require("../../../assets/icons/filter_icon.png")}
-                resizeMode="contain"
-                style={{ height: 24, width: 24 }}
-              />
-              <Text allowFontScaling={false}  style={styles.text}>
-                Lọc dữ liệu
-              </Text>
-            </TouchableOpacity>
-          </View>
           <View
             style={{
               flexDirection: "row",
@@ -409,81 +385,129 @@ const DanhmucThongKe = ({ handlePresentModalPress2 }) => {
             </View>
           ) : (
             <>
-              {data && data?.length > 0 ? (
-                <ScrollView
-                  style={{ flex: 1, marginBottom: 20, marginTop: 20 }}
+              
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between", // Điều chỉnh khoảng cách giữa các phần tử
+                  alignItems: "center", // Canh giữa các phần tử theo trục dọc
+                  paddingBottom: 20,
+                }}
+              >
+                {/* Text hiển thị số lượng */}
+                <Text
+                  allowFontScaling={false}
+                  style={{
+                    fontSize: 18,
+                    color: "white",
+                    fontWeight: "600",
+                  }}
                 >
-                  <DataTable
-                    style={{
-                      backgroundColor: "white",
-                      borderRadius: 8,
+                  Số lượng: {decimalNumber(data?.length)}
+                </Text>
+
+                {/* Button lọc dữ liệu */}
+                <TouchableOpacity
+                  onPress={handlePresentModalPress2}
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 8,
+                  }}
+                >
+                  <Image
+                    source={require("../../../assets/icons/filter_icon.png")}
+                    resizeMode="contain"
+                    style={{ height: 24, width: 24 }}
+                  />
+                  <Text allowFontScaling={false} style={styles.text}>
+                    Lọc dữ liệu
+                  </Text>
+                </TouchableOpacity>
+              </View>
+              {data && data?.length > 0 ? (
+                // <ScrollView
+                //   style={{ flex: 1, marginBottom: 20 }}
+                //   showsVerticalScrollIndicator={false}
+                // >
+                <DataTable
+                  style={{
+                    backgroundColor: "white",
+                    borderRadius: 10,
+                    marginBottom: 40,
+                  }}
+                >
+                  <ScrollView
+                    horizontal
+                    contentContainerStyle={{
+                      flexDirection: "column",
                     }}
                   >
-                    <ScrollView
-                      horizontal
-                      contentContainerStyle={{
-                        flexDirection: "column",
+                    <DataTable.Header
+                      style={{
+                        backgroundColor: "#eeeeee",
+                        borderTopRightRadius: 8,
+                        borderTopLeftRadius: 8,
                       }}
                     >
-                      <DataTable.Header
-                        style={{
-                          backgroundColor: "#eeeeee",
-                          borderTopRightRadius: 8,
-                          borderTopLeftRadius: 8,
-                        }}
-                      >
-                        {headerList &&
-                          headerList.map((item, index) => {
-                            return (
-                              <DataTable.Title
-                                key={index}
-                                style={{
-                                  width: item?.width,
-                                  borderRightWidth:
-                                    index === headerList.length - 1 ? 0 : 2,
-                                  borderRightColor: "white",
-                                  justifyContent: "center",
-                                }}
-                                numberOfLines={2}
+                      {headerList &&
+                        headerList.map((item, index) => {
+                          return (
+                            <DataTable.Title
+                              key={index}
+                              style={{
+                                width: item?.width,
+                                borderRightWidth:
+                                  index === headerList.length - 1 ? 0 : 2,
+                                borderRightColor: "white",
+                                justifyContent: "center",
+                              }}
+                              numberOfLines={2}
+                            >
+                              <Text
+                                allowFontScaling={false}
+                                style={[styles.text, { color: "black" }]}
                               >
-                                <Text allowFontScaling={false} style={[styles.text, { color: "black" }]}>
-                                  {item?.til}
-                                </Text>
-                              </DataTable.Title>
-                            );
-                          })}
-                      </DataTable.Header>
+                                {item?.til}
+                              </Text>
+                            </DataTable.Title>
+                          );
+                        })}
+                    </DataTable.Header>
 
-                      {data && data?.length > 0 && (
-                        <FlatList
-                          keyExtractor={(item, index) =>
-                            `${item?.ID_ChecklistC}_${index}`
-                          }
-                          scrollEnabled={true}
-                          data={data}
-                          renderItem={_renderItem}
-                        />
-                      )}
-                      <DataTable.Pagination
-                        style={{ justifyContent: "flex-start", backgroundColor: '#eeeeee' }}
-                        page={page}
-                        numberOfPages={Math.ceil(tb_checklistc?.totalPages)}
-                        onPageChange={(page) => {
-                          setPage(page);
-                        }}
-                        label={`Từ ${page + 1} đến ${
-                          tb_checklistc?.totalPages
-                        }`}
-                        showFastPaginationControls
-                        numberOfItemsPerPageList={numberOfItemsPerPageList}
-                        numberOfItemsPerPage={numberOfItemsPerPage}
-                        onItemsPerPageChange={onItemsPerPageChange}
-                        selectPageDropdownLabel={"Hàng trên mỗi trang"}
+                    {data && data?.length > 0 && (
+                      <FlatList
+                        keyExtractor={(item, index) =>
+                          `${item?.ID_ChecklistC}_${index}`
+                        }
+                        scrollEnabled={true}
+                        data={data}
+                        renderItem={_renderItem}
                       />
-                    </ScrollView>
-                  </DataTable>
-                </ScrollView>
+                    )}
+                    <DataTable.Pagination
+                      style={{
+                        justifyContent: "flex-start",
+                        backgroundColor: "#eeeeee",
+                        borderBottomRightRadius: 8,
+                        borderBottomLeftRadius: 8,
+                      }}
+                      page={page}
+                      numberOfPages={Math.ceil(tb_checklistc?.totalPages)}
+                      onPageChange={(page) => {
+                        setPage(page);
+                      }}
+                      label={`Từ ${page + 1} đến ${tb_checklistc?.totalPages}`}
+                      showFastPaginationControls
+                      numberOfItemsPerPageList={numberOfItemsPerPageList}
+                      numberOfItemsPerPage={numberOfItemsPerPage}
+                      onItemsPerPageChange={onItemsPerPageChange}
+                      selectPageDropdownLabel={"Hàng trên mỗi trang"}
+                    />
+                  </ScrollView>
+                </DataTable>
               ) : (
+                // </ScrollView>
                 <View
                   style={{
                     flex: 1,
@@ -497,7 +521,10 @@ const DanhmucThongKe = ({ handlePresentModalPress2 }) => {
                     resizeMode="contain"
                     style={{ height: 120, width: 120 }}
                   />
-                  <Text allowFontScaling={false} style={[styles.danhmuc, { paddingVertical: 10 }]}>
+                  <Text
+                    allowFontScaling={false}
+                    style={[styles.danhmuc, { paddingVertical: 10 }]}
+                  >
                     Bạn chưa thêm dữ liệu nào
                   </Text>
                 </View>
@@ -508,7 +535,7 @@ const DanhmucThongKe = ({ handlePresentModalPress2 }) => {
       </View>
     </>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {

@@ -21,3 +21,5 @@ export const SIZES = {
     height: height,
     width: width,
 }
+
+export const marginBottomValue = height > 600 ? 40 : 10;

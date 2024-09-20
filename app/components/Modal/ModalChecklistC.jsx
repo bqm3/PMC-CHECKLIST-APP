@@ -8,8 +8,9 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
+  BackHandler
 } from "react-native";
-import React, { useRef } from "react";
+import React, { useRef ,useEffect } from "react";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 import { COLORS } from "../../constants/theme";

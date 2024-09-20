@@ -16,7 +16,7 @@ import {
   DetailChecklist,
   Profile,
   DanhmucChecklist,
-  DanhmucTracuu,
+  DanhmucTracuuVsThongke,
   ChecklistLaiScreen,
   ThuchienKhuvucLai,
 } from "../screens/Checklist";
@@ -704,7 +704,7 @@ const HomeStack = ({ navigation }) => {
 
       <Stack.Screen
         name="Tra cứu"
-        component={DanhmucTracuu}
+        component={DanhmucTracuuVsThongke}
         lazy={false}
         options={({ navigation, route }) => ({
           headerShown: true,

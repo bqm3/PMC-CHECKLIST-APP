@@ -6,6 +6,7 @@ import DanhmucCalamviec from "./DanhmucCalamviec"
 import DanhmucKhuvuc from "./DanhmucKhuvuc"
 import DetailChecklist from "./DetailChecklist"
 import DanhmucTracuu from "./DanhmucTracuu"
+import DanhmucTracuuVsThongke from "./DanhmucTracuuVsThongke"
 import Profile from "../Profile"
 import DanhmucChecklist from "./DanhmucChecklist"
 import DanhmucThongKe from "./DanhmucThongKe"
@@ -28,5 +29,6 @@ module.exports = {
     ChecklistLaiScreen,
     ThuchienKhuvucLai,
     ChecklistHangNgay,
-    Sucongoai
+    Sucongoai,
+    DanhmucTracuuVsThongke
 }

@@ -256,7 +256,7 @@ const DanhmucTracuu = () => {
   }, []);
 
   const handlePresentModalPress2 = useCallback(() => {
-    bottomSheetModalRef?.current?.present();
+    bottomSheetModalRef2?.current?.present();
   }, []);
 
   const handlePresentModalClose = useCallback(() => {

@@ -62,9 +62,6 @@ const HomeScreen = ({ navigation }) => {
   const dispath = useDispatch();
   const { user, authToken } = useSelector((state) => state.authReducer);
 
-  useEffect(() => {
-    logScreenName(HomeScreen.name);
-  }, []);
 
   const renderItem = ({ item, index }) => (
     <ItemHome ID_Chucvu={user?.ID_Chucvu} item={item} index={index} />
@@ -118,6 +115,7 @@ const HomeScreen = ({ navigation }) => {
               resizeMode="contain"
               style={{ height: adjust(80), width: adjust(200) }}
             />
+            // <Text>Hello</Text>
           )}
           <Text
             allowFontScaling={false}
