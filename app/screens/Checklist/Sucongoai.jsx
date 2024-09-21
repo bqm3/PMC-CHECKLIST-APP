@@ -103,9 +103,9 @@ const Sucongoai = ({ navigation }) => {
     setSaveStatus(
       key === "status1" && val == true
         ? 0
-        : (key === "status2"&& val == true)
+        : key === "status2" && val == true
         ? 1
-        : (key === "status3" && val == true )
+        : key === "status3" && val == true
         ? 2
         : null
     );
@@ -209,10 +209,9 @@ const Sucongoai = ({ navigation }) => {
     } else if (changeStatus.status3) {
       height = 500;
     }
-  
+
     setModalHeight(height);
   }, [hangmuc, changeStatus]);
-
 
   // const handleChangeHeight = (status,val) => {
   //   if (status === "status3" && val == true) {
@@ -294,7 +293,11 @@ const Sucongoai = ({ navigation }) => {
       await axios
         .put(
           BASE_URL + `/tb_sucongoai/status/${newActionClick[0].ID_Suco}`,
-          { Tinhtrangxuly: saveStatus, ngayXuLy: formatDate(ngayXuLy.date) ,ID_Hangmuc: dataInput.ID_Hangmuc},
+          {
+            Tinhtrangxuly: saveStatus,
+            ngayXuLy: formatDate(ngayXuLy.date),
+            ID_Hangmuc: dataInput.ID_Hangmuc,
+          },
           {
             headers: {
               Accept: "application/json",
@@ -313,6 +316,7 @@ const Sucongoai = ({ navigation }) => {
           handleCloseTinhTrang();
           init_sucongoai();
           resetDataInput();
+          setNewActionClick([]);
           Alert.alert("PMC Thông báo", "Cập nhật trạng thái thành công", [
             {
               text: "Xác nhận",
@@ -381,7 +385,7 @@ const Sucongoai = ({ navigation }) => {
     formData.append("Ghichu", dataInput.Noidungghichu);
     formData.append("ngayXuLy", formatDate(ngayXuLy.date));
     formData.append("ID_Hangmuc", dataInput.ID_Hangmuc);
-    if (saveStatus == null ) {
+    if (saveStatus == null) {
       Alert.alert("PMC Thông báo", "Phải chọn trạng thái", [
         {
           text: "Hủy",
@@ -394,7 +398,7 @@ const Sucongoai = ({ navigation }) => {
       ]);
     } else {
       setLoadingStatus(true);
-      await axiosClient
+      await axios
         .put(
           BASE_URL + `/tb_sucongoai/status/${newActionClick[0].ID_Suco}`,
           formData,
@@ -434,7 +438,6 @@ const Sucongoai = ({ navigation }) => {
                 text: "Hủy",
                 onPress: () => {
                   console.log("Cancel Pressed");
-             
                 },
                 style: "cancel",
               },
@@ -486,7 +489,7 @@ const Sucongoai = ({ navigation }) => {
         });
     }
   };
- 
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <KeyboardAvoidingView
@@ -587,9 +590,9 @@ const Sucongoai = ({ navigation }) => {
                         dataInput={dataInput}
                         handleChangeText={handleChangeText}
                         resetDataInput={resetDataInput}
-                        setDataInput ={setDataInput}
-                        modalHeight = {modalHeight}
-                        setModalHeight = {setModalHeight}
+                        setDataInput={setDataInput}
+                        modalHeight={modalHeight}
+                        setModalHeight={setModalHeight}
                         newActionClick={newActionClick}
                       />
                     </View>

@@ -63,7 +63,6 @@ const XulySuco = ({ navigation }) => {
     isCheck: false,
   });
 
-  console.log("dataInput", dataInput);
   const [saveStatus, setSaveStatus] = useState(null);
 
   const init_sucongoai = async () => {
@@ -244,7 +243,6 @@ const XulySuco = ({ navigation }) => {
   };
   //result {"assets": null, "canceled": true}
 
-  console.log("images", images);
   useEffect(() => {
     let height = 300;
     if (hangmuc === undefined) {
@@ -272,23 +270,16 @@ const XulySuco = ({ navigation }) => {
         },
         { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
       ]);
-    } else if (newActionClick[0].Ngaysuco > formatDate(ngayXuLy.date)) {
-      console.log("ngay 1 : ", newActionClick[0].Ngaysuco);
-      console.log("ngay 2 : ", formatDate(ngayXuLy.date));
-      Alert.alert("PMC Thông báo", "Ngày không phù hợp", [
-        {
-          text: "Hủy",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel",
-        },
-        { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-      ]);
     } else {
       setLoadingStatus(true);
       await axios
         .put(
           BASE_URL + `/tb_sucongoai/status/${newActionClick[0].ID_Suco}`,
-          { Tinhtrangxuly: saveStatus, ngayXuLy: formatDate(ngayXuLy.date) },
+          {
+            Tinhtrangxuly: saveStatus,
+            ngayXuLy: formatDate(ngayXuLy.date),
+            ID_Hangmuc: dataInput.ID_Hangmuc,
+          },
           {
             headers: {
               Accept: "application/json",
@@ -306,11 +297,19 @@ const XulySuco = ({ navigation }) => {
           setSaveStatus(null);
           handleCloseTinhTrang();
           init_sucongoai();
+          resetDataInput();
+          setNewActionClick([]);
           Alert.alert("PMC Thông báo", "Cập nhật trạng thái thành công", [
-            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+            {
+              text: "Xác nhận",
+              onPress: () => {
+                console.log("OK Pressed");
+              },
+            },
           ]);
         })
         .catch((error) => {
+          resetDataInput();
           setLoadingStatus(false);
           if (error.response) {
             // Lỗi từ phía server (có response từ server)
@@ -352,7 +351,6 @@ const XulySuco = ({ navigation }) => {
   };
   const handleSubmitStatusImage = async () => {
     let formData = new FormData();
-    console.log(images.length);
     images.map((item, index) => {
       const file = {
         uri: Platform.OS === "android" ? item : item.replace("file://", ""),
@@ -369,7 +367,6 @@ const XulySuco = ({ navigation }) => {
     formData.append("Ghichu", dataInput.Noidungghichu);
     formData.append("ngayXuLy", formatDate(ngayXuLy.date));
     formData.append("ID_Hangmuc", dataInput.ID_Hangmuc);
-    console.log(saveStatus);
     if (saveStatus == null) {
       Alert.alert("PMC Thông báo", "Phải chọn trạng thái", [
         {
@@ -381,26 +378,9 @@ const XulySuco = ({ navigation }) => {
         },
         { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
       ]);
-    } else if (
-      moment(newActionClick[0].Ngaysuco, "YYYY-MM-DD") >
-      moment(ngayXuLy.date, "DD-MM-YYYY")
-    ) {
-      console.log(
-        "ngay 1 : ",
-        moment(newActionClick[0].Ngaysuco, "YYYY-MM-DD")
-      );
-      console.log("ngay 2 : ", moment(ngayXuLy.date, "DD-MM-YYYY"));
-      Alert.alert("PMC Thông báo", "Ngày không phù hợp", [
-        {
-          text: "Hủy",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel",
-        },
-        { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-      ]);
     } else {
       setLoadingStatus(true);
-      await axiosClient
+      await axios
         .put(
           BASE_URL + `/tb_sucongoai/status/${newActionClick[0].ID_Suco}`,
           formData,
@@ -422,6 +402,7 @@ const XulySuco = ({ navigation }) => {
           setSaveStatus(null);
           handleCloseTinhTrang();
           init_sucongoai();
+          setNewActionClick([]);
           Alert.alert("PMC Thông báo", "Cập nhật trạng thái thành công", [
             {
               text: "Xác nhận",
@@ -440,7 +421,6 @@ const XulySuco = ({ navigation }) => {
                 text: "Hủy",
                 onPress: () => {
                   console.log("Cancel Pressed");
-                  setModalHeight(350);
                 },
                 style: "cancel",
               },
