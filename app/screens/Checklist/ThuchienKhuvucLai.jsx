@@ -30,7 +30,7 @@ import moment from "moment";
 import { BASE_URL } from "../../constants/config";
 import QRCodeScreen from "../QRCodeScreen";
 import DataContext from "../../context/DataContext";
-import ChecklistContext from "../../context/ChecklistContext";
+import ChecklistLaiContext from "../../context/ChecklistLaiContext";
 import adjust from "../../adjust";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Network from "expo-network";
@@ -49,7 +49,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
     HangMucDefault,
   } = useContext(DataContext);
   const { setDataChecklistFilterContext, dataChecklistFilterContext } =
-    useContext(ChecklistContext);
+    useContext(ChecklistLaiContext);
 
   const dispath = useDispatch();
   const { ent_khuvuc, ent_checklist_detail, ent_toanha } = useSelector(

@@ -14,6 +14,7 @@ import {
   TouchableWithoutFeedbackBase,
   TouchableHighlight,
   Alert,
+  BackHandler,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Provider, useDispatch, useSelector } from "react-redux";
@@ -50,6 +51,7 @@ const Sucongoai = ({ navigation }) => {
   const [loadingStatus, setLoadingStatus] = useState(false);
   const [modalHeight, setModalHeight] = useState(350);
   const [images, setImages] = useState([]);
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const hangmuc = newActionClick[0]?.ent_hangmuc?.Hangmuc;
 
   const [dataInput, setDataInput] = useState({
@@ -120,6 +122,23 @@ const Sucongoai = ({ navigation }) => {
     setLoading(false);
   }, [tb_sucongoai]);
 
+  useEffect(() => {
+    const backAction = () => {
+      if (isBottomSheetOpen) {
+        handleCloseTinhTrang();
+        return true;
+      }
+      return false;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, [isBottomSheetOpen, opacity]);
+
   const toggleTodo = async (item, index) => {
     // setIsCheckbox(true);
     const isExistIndex = newActionClick.findIndex(
@@ -183,9 +202,10 @@ const Sucongoai = ({ navigation }) => {
     }
   };
 
-  const handleCloseTinhTrang = async (data) => {
+  const handleCloseTinhTrang = async () => {
     setModalVisible(false);
     setOpacity(1);
+    setIsBottomSheetOpen(false);
   };
 
   // useEffect(() => {
@@ -420,6 +440,7 @@ const Sucongoai = ({ navigation }) => {
           setSaveStatus(null);
           handleCloseTinhTrang();
           init_sucongoai();
+          setNewActionClick([]);
           Alert.alert("PMC Thông báo", "Cập nhật trạng thái thành công", [
             {
               text: "Xác nhận",
@@ -563,7 +584,7 @@ const Sucongoai = ({ navigation }) => {
                 transparent={true}
                 visible={modalVisible}
                 onRequestClose={() => {
-                  setModalVisible(!modalVisible);
+                  handleCloseTinhTrang();
                 }}
               >
                 <View style={styles.centeredView}>
