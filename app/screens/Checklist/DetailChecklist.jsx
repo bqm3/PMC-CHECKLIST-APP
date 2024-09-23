@@ -59,7 +59,7 @@ const DetailChecklist = ({ route, navigation }) => {
     useContext(DataContext);
 
   const { isConnect, saveConnect } = useContext(ConnectContext);
-  const { dataChecklistFilterContext, setDataChecklistFilterContext } =
+  const { dataChecklistFilterContext, setDataChecklistFilterContext, setLocationContext } =
     useContext(ChecklistContext);
   const [isConnected, setIsConnected] = useState(false);
 
@@ -87,9 +87,9 @@ const DetailChecklist = ({ route, navigation }) => {
     (async () => {
       let location = await Location.getCurrentPositionAsync({});
       setLocation(location);
+      setLocationContext(location)
     })();
   }, [dataChecklistFaild, defaultActionDataChecklist]);
-
   useEffect(() => {
     const dataChecklist = dataChecklistFilterContext?.filter(
       (item) => item.ID_Hangmuc == ID_Hangmuc
@@ -119,6 +119,7 @@ const DetailChecklist = ({ route, navigation }) => {
   }, [ID_Hangmuc]);
 
   const handleChange = (key, value, it) => {
+    console.log(it.valueCheck)
     const updatedDataChecklist = dataChecklistFilter?.map((item, i) => {
       if (item.ID_Checklist === it.ID_Checklist) {
         return {
@@ -561,13 +562,17 @@ const DetailChecklist = ({ route, navigation }) => {
     const ID_Checklists = defaultActionDataChecklist.map(
       (item) => item.ID_Checklist
     );
+    const gioht = defaultActionDataChecklist.map(
+      (item) => item.gioht
+    );
+
     const requestDone = axios.post(
       BASE_URL + "/tb_checklistchitietdone/create",
       {
         Description: descriptions,
         ID_Checklists: ID_Checklists,
         ID_ChecklistC: ID_ChecklistC,
-        Gioht: defaultActionDataChecklist[0].gioht,
+        Gioht: gioht[0],
         checklistLength: defaultActionDataChecklist.length,
         Vido: location?.coords?.latitude || "",
         Kinhdo: location?.coords?.longitude || "",

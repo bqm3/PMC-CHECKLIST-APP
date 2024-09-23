@@ -288,7 +288,7 @@ const Sucongoai = ({ navigation }) => {
       quality: 0.5, // Adjust image quality (0 to 1)
     });
 
-    if (!result.cancelled) {
+    if (!result.canceled) {
       setImages((prevImages) => {
         const updatedImages = [...prevImages, result.assets[0].uri].filter(
           (uri) => uri

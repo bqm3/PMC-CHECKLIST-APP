@@ -48,7 +48,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
     dataChecklists,
     HangMucDefault,
   } = useContext(DataContext);
-  const { setDataChecklistFilterContext, dataChecklistFilterContext } =
+  const { setDataChecklistFilterContext, dataChecklistFilterContext ,localtionContext} =
     useContext(ChecklistLaiContext);
 
   const dispath = useDispatch();
@@ -73,11 +73,11 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
   const [dataChecklistFaild, setDataChecklistFaild] = useState([]);
 
   const init_checklist = async () => {
-    setIsLoadingDetail(true)
+    setIsLoadingDetail(true);
     await dispath(
       ent_checklist_mul_hm_return(ID_Hangmucs, ID_ThietLapCa, ID_ChecklistC)
     );
-    setIsLoadingDetail(false)
+    setIsLoadingDetail(false);
   };
 
   useEffect(() => {
@@ -147,7 +147,6 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
       setDataChecklistFilterContext(ent_checklist_detail);
     }
   }, [ent_checklist_detail]);
-
 
   useEffect(() => {
     const dataChecklistAction = dataChecklistFilterContext?.filter(
@@ -319,6 +318,9 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
         formData.append("Ketqua", item.valueCheck || "");
         formData.append("Gioht", item.gioht);
         formData.append("Ghichu", item.GhichuChitiet || "");
+        formData.append("Vido", localtionContext?.coords?.latitude || "");
+        formData.append("Kinhdo", localtionContext?.coords?.longitude || "");
+        formData.append("Docao", localtionContext?.coords?.altitude || "");
 
         // If there is an image, append it to formData
         if (item.Anh) {
@@ -405,6 +407,9 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
         ID_Checklists: ID_Checklists,
         ID_ChecklistC: ID_ChecklistC,
         checklistLength: defaultActionDataChecklist.length,
+        Vido: localtionContext?.coords?.latitude || "",
+        Kinhdo: localtionContext?.coords?.longitude || "",
+        Docao: localtionContext?.coords?.altitude || "",
       },
       {
         headers: {
@@ -415,7 +420,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
     );
     try {
       // Gộp cả hai mảng promise và đợi cho tất cả các promise hoàn thành
-      await Promise.all(requestDone);
+      await Promise.all([requestDone]);
       postHandleSubmit();
       setLoadingSubmit(false);
       await AsyncStorage.removeItem("checkNetwork");
@@ -463,6 +468,9 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
         formData.append("Ketqua", item.valueCheck || "");
         formData.append("Gioht", item.gioht);
         formData.append("Ghichu", item.GhichuChitiet || "");
+        formData.append("Vido", localtionContext?.coords?.latitude || "");
+        formData.append("Kinhdo", localtionContext?.coords?.longitude || "");
+        formData.append("Docao", localtionContext?.coords?.altitude || "");
 
         // Nếu có hình ảnh, thêm vào FormData
         if (item.Anh) {
@@ -513,6 +521,9 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
           ID_Checklists: ID_Checklists,
           ID_ChecklistC: ID_ChecklistC,
           checklistLength: defaultActionDataChecklist.length,
+          Vido: localtionContext?.coords?.latitude || "",
+          Kinhdo: localtionContext?.coords?.longitude || "",
+          Docao: localtionContext?.coords?.altitude || "",
         },
         {
           headers: {
@@ -677,6 +688,26 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
             {item?.Tenkhuvuc} - {item?.ent_toanha?.Toanha}
           </Text>
         </View>
+        <View
+          style={{
+            width: 30,
+            height: 30,
+            borderRadius: 50,
+            backgroundColor: dataSelect[0] === item ? "white" : "gray",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Text
+            style={{
+              fontSize: adjust(16),
+              color: dataSelect[0] === item ? "black" : "white",
+              fontWeight: "600",
+            }}
+          >
+            {item?.ent_hangmuc.length}
+          </Text>
+        </View>
       </TouchableOpacity>
     );
   };
@@ -687,6 +718,22 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
     if (number == 0) return `0`;
     return number;
   };
+
+  if (isLoadingDetail) {
+    return (
+      <ImageBackground
+        source={require("../../../assets/bg.png")}
+        resizeMode="cover"
+        style={{ flex: 1 }}
+      >
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <ActivityIndicator size="large" color="white" />
+        </View>
+      </ImageBackground>
+    );
+  }
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>

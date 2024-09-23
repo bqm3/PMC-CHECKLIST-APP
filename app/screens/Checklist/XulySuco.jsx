@@ -114,12 +114,12 @@ const XulySuco = ({ navigation }) => {
       }
       return false;
     };
-  
+
     const backHandler = BackHandler.addEventListener(
       "hardwareBackPress",
       backAction
     );
-  
+
     return () => backHandler.remove();
   }, [isBottomSheetOpen, opacity]);
 
@@ -256,10 +256,10 @@ const XulySuco = ({ navigation }) => {
       });
     }
 
-    if (result.canceled == true) {
-      console.log("RUN");
-      setImages([]);
-    }
+    // if (result.canceled == true) {
+    //   console.log("RUN");
+    //   setImages(...prevImages,[]);
+    // }
   };
   //result {"assets": null, "canceled": true}
 
@@ -554,37 +554,45 @@ const XulySuco = ({ navigation }) => {
                   handleCloseTinhTrang();
                 }}
               >
-                <View style={styles.centeredView}>
-                  <View
-                    style={[
-                      styles.modalView,
-                      { width: "80%", height: modalHeight, minHeight: 350 },
-                    ]}
-                  >
-                    <View style={styles.contentContainer}>
-                      <ModalChangeTinhTrangSuCo
-                        handleChangeStatus={handleChangeStatus}
-                        changeStatus={changeStatus}
-                        handleCloseTinhTrang={handleCloseTinhTrang}
-                        handleSubmitStatus={handleSubmitStatus}
-                        loadingStatus={loadingStatus}
-                        handleChangeDate={handleChangeDate}
-                        ngayXuLy={ngayXuLy}
-                        handleSubmitStatusImage={handleSubmitStatusImage}
-                        images={images}
-                        handleRemoveImage={handleRemoveImage}
-                        pickImage={pickImage}
-                        dataInput={dataInput}
-                        handleChangeText={handleChangeText}
-                        resetDataInput={resetDataInput}
-                        setDataInput={setDataInput}
-                        modalHeight={modalHeight}
-                        setModalHeight={setModalHeight}
-                        newActionClick={newActionClick}
-                      />
+                <KeyboardAvoidingView
+                  behavior={Platform.OS === "ios" ? "padding" : "height"}
+                  style={{ flex: 1 }}
+                  keyboardVerticalOffset={
+                    Platform.OS === "ios" && modalVisible ? 0 : 0
+                  }
+                >
+                  <View style={styles.centeredView}>
+                    <View
+                      style={[
+                        styles.modalView,
+                        { width: "80%", height: modalHeight, minHeight: 350 },
+                      ]}
+                    >
+                      <View style={styles.contentContainer}>
+                        <ModalChangeTinhTrangSuCo
+                          handleChangeStatus={handleChangeStatus}
+                          changeStatus={changeStatus}
+                          handleCloseTinhTrang={handleCloseTinhTrang}
+                          handleSubmitStatus={handleSubmitStatus}
+                          loadingStatus={loadingStatus}
+                          handleChangeDate={handleChangeDate}
+                          ngayXuLy={ngayXuLy}
+                          handleSubmitStatusImage={handleSubmitStatusImage}
+                          images={images}
+                          handleRemoveImage={handleRemoveImage}
+                          pickImage={pickImage}
+                          dataInput={dataInput}
+                          handleChangeText={handleChangeText}
+                          resetDataInput={resetDataInput}
+                          setDataInput={setDataInput}
+                          modalHeight={modalHeight}
+                          setModalHeight={setModalHeight}
+                          newActionClick={newActionClick}
+                        />
+                      </View>
                     </View>
                   </View>
-                </View>
+                </KeyboardAvoidingView>
               </Modal>
               {newActionClick?.length > 0 && (
                 <View
