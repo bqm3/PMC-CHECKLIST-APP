@@ -587,39 +587,47 @@ const Sucongoai = ({ navigation }) => {
                   handleCloseTinhTrang();
                 }}
               >
-                <View style={styles.centeredView}>
-                  <View
-                    style={[
-                      styles.modalView,
-                      { width: "80%", minHeight: modalHeight },
-                    ]}
-                  >
-                    <View style={styles.contentContainer}>
-                      <ModalChangeTinhTrangSuCo
-                        handleChangeStatus={handleChangeStatus}
-                        changeStatus={changeStatus}
-                        handleCloseTinhTrang={handleCloseTinhTrang}
-                        handleSubmitStatus={handleSubmitStatus}
-                        loadingStatus={loadingStatus}
-                        handleChangeDate={handleChangeDate}
-                        ngayXuLy={ngayXuLy}
-                        // handleChangeHeight={handleChangeHeight}
-                        handleSubmitStatusImage={handleSubmitStatusImage}
-                        images={images}
-                        handleRemoveImage={handleRemoveImage}
-                        pickImage={pickImage}
-                        dataInput={dataInput}
-                        handleChangeText={handleChangeText}
-                        resetDataInput={resetDataInput}
-                        setDataInput={setDataInput}
-                        modalHeight={modalHeight}
-                        setModalHeight={setModalHeight}
-                        newActionClick={newActionClick}
-                      />
+                <KeyboardAvoidingView
+                  behavior={Platform.OS === "ios" ? "padding" : "height"}
+                  style={{ flex: 1 }}
+                  keyboardVerticalOffset={
+                    Platform.OS === "ios" && modalVisible ? 0 : 0
+                  } // Adjust the offset if needed
+                >
+                  <View style={styles.centeredView}>
+                    <View
+                      style={[
+                        styles.modalView,
+                        { width: "80%", minHeight: modalHeight },
+                      ]}
+                    >
+                      <View style={styles.contentContainer}>
+                        <ModalChangeTinhTrangSuCo
+                          handleChangeStatus={handleChangeStatus}
+                          changeStatus={changeStatus}
+                          handleCloseTinhTrang={handleCloseTinhTrang}
+                          handleSubmitStatus={handleSubmitStatus}
+                          loadingStatus={loadingStatus}
+                          handleChangeDate={handleChangeDate}
+                          ngayXuLy={ngayXuLy}
+                          handleSubmitStatusImage={handleSubmitStatusImage}
+                          images={images}
+                          handleRemoveImage={handleRemoveImage}
+                          pickImage={pickImage}
+                          dataInput={dataInput}
+                          handleChangeText={handleChangeText}
+                          resetDataInput={resetDataInput}
+                          setDataInput={setDataInput}
+                          modalHeight={modalHeight}
+                          setModalHeight={setModalHeight}
+                          newActionClick={newActionClick}
+                        />
+                      </View>
                     </View>
                   </View>
-                </View>
+                </KeyboardAvoidingView>
               </Modal>
+
               {newActionClick?.length > 0 && (
                 <View
                   style={{
