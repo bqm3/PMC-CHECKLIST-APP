@@ -63,7 +63,7 @@ const ModalChecklistCImage = ({
       quality: 0.5, // Adjust image quality (0 to 1)
     });
 
-    if (!result.cancelled) {
+    if (!result.canceled) {
       const assetFile = result?.assets[0];
       handleChangeImages(text, assetFile);
       handleChangeImages(hour, dateHour);

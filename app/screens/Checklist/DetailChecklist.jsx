@@ -59,8 +59,11 @@ const DetailChecklist = ({ route, navigation }) => {
     useContext(DataContext);
 
   const { isConnect, saveConnect } = useContext(ConnectContext);
-  const { dataChecklistFilterContext, setDataChecklistFilterContext, setLocationContext } =
-    useContext(ChecklistContext);
+  const {
+    dataChecklistFilterContext,
+    setDataChecklistFilterContext,
+    setLocationContext,
+  } = useContext(ChecklistContext);
   const [isConnected, setIsConnected] = useState(false);
 
   const { user, authToken } = useSelector((state) => state.authReducer);
@@ -87,7 +90,7 @@ const DetailChecklist = ({ route, navigation }) => {
     (async () => {
       let location = await Location.getCurrentPositionAsync({});
       setLocation(location);
-      setLocationContext(location)
+      setLocationContext(location);
     })();
   }, [dataChecklistFaild, defaultActionDataChecklist]);
   useEffect(() => {
@@ -119,13 +122,13 @@ const DetailChecklist = ({ route, navigation }) => {
   }, [ID_Hangmuc]);
 
   const handleChange = (key, value, it) => {
-    console.log(it.valueCheck)
+    console.log(it.valueCheck);
     const updatedDataChecklist = dataChecklistFilter?.map((item, i) => {
       if (item.ID_Checklist === it.ID_Checklist) {
         return {
           ...item,
           [key]: value,
-          gioht: moment().format("LTS"),
+          Gioht: moment().format("LTS"),
         };
       }
       return item;
@@ -143,12 +146,12 @@ const DetailChecklist = ({ route, navigation }) => {
           return {
             ...item,
             valueCheck: item.Giatridinhdanh,
-            gioht: moment().format("LTS"),
+            Gioht: moment().format("LTS"),
           };
         } else {
           return {
             ...item,
-            gioht: moment().format("LTS"),
+            Gioht: moment().format("LTS"),
           };
         }
       });
@@ -181,7 +184,7 @@ const DetailChecklist = ({ route, navigation }) => {
         return {
           ...item,
           valueCheck: null,
-          gioht: item.giohtBeforeUpdate || item.gioht, // Use a previous value or initial value if available
+          Gioht: moment().format("LTS"), // Use a previous value or initial value if available
         };
       });
 
@@ -191,7 +194,7 @@ const DetailChecklist = ({ route, navigation }) => {
       setDataChecklistFaild([]);
     }
   };
-  
+
   // set data checklist and image || ghichu
   const handleSetData = async (key, data, it) => {
     let mergedArrCheck = [...defaultActionDataChecklist];
@@ -355,13 +358,15 @@ const DetailChecklist = ({ route, navigation }) => {
         return {
           ...item,
           valueCheck: value ? value : null,
-          gioht: moment().format("LTS"),
+          Gioht: moment().format("LTS"),
         };
       }
       return item;
     });
 
-    handleSetData(key, updatedDataChecklist, it);
+    const newItem = { ...it, Gioht: moment().format("LTS") };
+
+    handleSetData(key, updatedDataChecklist, newItem);
   };
 
   const handleItemClear = (itemID) => {
@@ -371,9 +376,9 @@ const DetailChecklist = ({ route, navigation }) => {
         return {
           ...item,
           valueCheck: null, // Xóa giá trị của item này
-          gioht: item.giohtBeforeUpdate || item.gioht, 
-          Anh: null, 
-          Ghichu: null, 
+          Gioht: moment().format("LTS"),
+          Anh: null,
+          Ghichu: null,
         };
       }
       return item; // Giữ nguyên các item khác
@@ -482,7 +487,7 @@ const DetailChecklist = ({ route, navigation }) => {
         formData.append("ID_ChecklistC", ID_ChecklistC);
         formData.append("ID_Checklist", item.ID_Checklist);
         formData.append("Ketqua", item.valueCheck || "");
-        formData.append("Gioht", item.gioht);
+        formData.append("Gioht", item.Gioht);
         formData.append("Ghichu", item.GhichuChitiet || "");
         formData.append("Vido", location?.coords?.latitude || "");
         formData.append("Kinhdo", location?.coords?.longitude || "");
@@ -562,9 +567,7 @@ const DetailChecklist = ({ route, navigation }) => {
     const ID_Checklists = defaultActionDataChecklist.map(
       (item) => item.ID_Checklist
     );
-    const gioht = defaultActionDataChecklist.map(
-      (item) => item.gioht
-    );
+    const Gioht = defaultActionDataChecklist.map((item) => item.Gioht);
 
     const requestDone = axios.post(
       BASE_URL + "/tb_checklistchitietdone/create",
@@ -572,7 +575,7 @@ const DetailChecklist = ({ route, navigation }) => {
         Description: descriptions,
         ID_Checklists: ID_Checklists,
         ID_ChecklistC: ID_ChecklistC,
-        Gioht: gioht[0],
+        Gioht: Gioht[0],
         checklistLength: defaultActionDataChecklist.length,
         Vido: location?.coords?.latitude || "",
         Kinhdo: location?.coords?.longitude || "",
@@ -629,7 +632,7 @@ const DetailChecklist = ({ route, navigation }) => {
         formData.append("ID_ChecklistC", ID_ChecklistC);
         formData.append("ID_Checklist", item.ID_Checklist);
         formData.append("Ketqua", item.valueCheck || "");
-        formData.append("Gioht", item.gioht);
+        formData.append("Gioht", item.Gioht);
         formData.append("Ghichu", item.GhichuChitiet || "");
         formData.append("Vido", location?.coords?.latitude || "");
         formData.append("Kinhdo", location?.coords?.longitude || "");
@@ -680,7 +683,7 @@ const DetailChecklist = ({ route, navigation }) => {
           Description: descriptions,
           ID_Checklists: ID_Checklists,
           ID_ChecklistC: ID_ChecklistC,
-          Gioht: defaultActionDataChecklist[0].gioht,
+          Gioht: defaultActionDataChecklist[0].Gioht,
           checklistLength: defaultActionDataChecklist.length,
           Vido: location?.coords?.latitude || "",
           Kinhdo: location?.coords?.longitude || "",
@@ -777,7 +780,7 @@ const DetailChecklist = ({ route, navigation }) => {
       ...defaultActionDataChecklist.map((item) => item.ID_Checklist),
       ...dataChecklistFaild.map((item) => item.ID_Checklist),
     ]);
-    
+
     // Filter out items in dataChecklistFilterContext that are present in idsToRemove
     const dataChecklistFilterContextReset = dataChecklistFilterContext.filter(
       (item) => !idsToRemove.has(item.ID_Checklist)
@@ -790,7 +793,7 @@ const DetailChecklist = ({ route, navigation }) => {
         (item) => item.ID_Hangmuc !== ID_Hangmuc
       );
       setHangMucDefault(filteredDataDefault);
-      
+
       setHangMuc(filteredData);
       navigation.goBack();
     }
@@ -798,7 +801,7 @@ const DetailChecklist = ({ route, navigation }) => {
       (item) => item.ID_Hangmuc == ID_Hangmuc
     );
 
-    setDataChecklistFilter(dataChecklist)
+    setDataChecklistFilter(dataChecklist);
     // Update state with the filtered context
     setDataChecklistFilterContext(dataChecklistFilterContextReset);
     // Optionally, reset newActionDataChecklist, defaultActionDataChecklist, and dataChecklistFaild if needed
@@ -1174,7 +1177,7 @@ const DetailChecklist = ({ route, navigation }) => {
                 setModalVisibleTieuChuan(!modalVisibleTieuChuan);
               }}
             >
-              <View style={[styles.centeredView, {height: '100%'}]}>
+              <View style={[styles.centeredView, { height: "100%" }]}>
                 <View
                   style={[
                     styles.modalView,
@@ -1182,8 +1185,8 @@ const DetailChecklist = ({ route, navigation }) => {
                       width: "60%",
                       height: "auto",
                       justifyContent: "space-between",
-                      alignItems: 'center',
-                      alignContent: 'center'
+                      alignItems: "center",
+                      alignContent: "center",
                     },
                   ]}
                 >

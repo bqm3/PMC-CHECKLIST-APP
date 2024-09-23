@@ -359,7 +359,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
         formData.append("ID_ChecklistC", ID_ChecklistC);
         formData.append("ID_Checklist", item.ID_Checklist);
         formData.append("Ketqua", item.valueCheck || "");
-        formData.append("Gioht", item.gioht);
+        formData.append("Gioht", item.Gioht);
         formData.append("Ghichu", item.GhichuChitiet || "");
         formData.append("Vido", localtionContext?.coords?.latitude || "");
         formData.append("Kinhdo", localtionContext?.coords?.longitude || "");
@@ -447,7 +447,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
       BASE_URL + "/tb_checklistchitietdone/create",
       {
         Description: descriptions,
-        Gioht: defaultActionDataChecklist[0].gioht,
+        Gioht: defaultActionDataChecklist[0].Gioht,
         ID_Checklists: ID_Checklists,
         ID_ChecklistC: ID_ChecklistC,
         checklistLength: defaultActionDataChecklist.length,
@@ -511,7 +511,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
         formData.append("ID_ChecklistC", ID_ChecklistC);
         formData.append("ID_Checklist", item.ID_Checklist);
         formData.append("Ketqua", item.valueCheck || "");
-        formData.append("Gioht", item.gioht);
+        formData.append("Gioht", item.Gioht);
         formData.append("Ghichu", item.GhichuChitiet || "");
         formData.append("Vido", localtionContext?.coords?.latitude || "");
         formData.append("Kinhdo", localtionContext?.coords?.longitude || "");
@@ -562,7 +562,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
         `${BASE_URL}/tb_checklistchitietdone/create`,
         {
           Description: descriptions,
-          Gioht: defaultActionDataChecklist[0].gioht,
+          Gioht: defaultActionDataChecklist[0].Gioht,
           ID_Checklists: ID_Checklists,
           ID_ChecklistC: ID_ChecklistC,
           checklistLength: defaultActionDataChecklist.length,

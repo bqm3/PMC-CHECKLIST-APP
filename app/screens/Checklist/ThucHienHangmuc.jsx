@@ -40,24 +40,25 @@ const ThucHienHangmuc = ({ route, navigation }) => {
   const [dataSelect, setDataSelect] = useState([]);
 
   useEffect(() => {
-   
     if (HangMucDefault && dataChecklists) {
       // Lọc các mục có ID_Khuvuc trùng khớp
-      const filteredByKhuvuc = HangMucDefault.filter(
-        (item) => item.ID_Khuvuc === ID_Khuvuc
+      const filteredByKhuvuc = HangMucDefault?.filter(
+        (item) => item.ID_Khuvuc == ID_Khuvuc
       );
 
       // Lấy danh sách ID_Hangmuc từ dataChecklists
-      const checklistIDs = dataChecklists.map((item) => item.ID_Hangmuc);
+      const checklistIDs = dataChecklists?.map((item) => item.ID_Hangmuc);
 
       // Lọc filteredByKhuvuc để chỉ giữ lại các mục có ID_Hangmuc tồn tại trong checklistIDs
-      const finalFilteredData = filteredByKhuvuc.filter((item) =>
+      const finalFilteredData = filteredByKhuvuc?.filter((item) =>
         checklistIDs.includes(item.ID_Hangmuc)
       );
 
-      // Cập nhật trạng thái hangMuc với danh sách đã lọc
-      setHangMuc(finalFilteredData);
-      
+      if (finalFilteredData.length == 0 && filteredByKhuvuc.length == 0) {
+        navigation.goBack();
+      } else {
+        setHangMuc(finalFilteredData);
+      }
     }
   }, [ID_Khuvuc, HangMucDefault, dataChecklists]);
 

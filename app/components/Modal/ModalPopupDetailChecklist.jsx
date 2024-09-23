@@ -52,7 +52,7 @@ const ModalPopupDetailChecklist = ({
 
     const result = await ImagePicker.launchCameraAsync();
 
-    if (!result.cancelled) {
+    if (!result.canceled) {
       dataItem.Anh = result?.assets[0];
       handleChange("Anh", result?.assets[0], dataItem);
       setImage(result?.assets[0]);
