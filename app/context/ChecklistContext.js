@@ -15,6 +15,7 @@ export const ChecklistProvider = ({ children }) => {
   const [defaultActionDataChecklist1, setDataChecklistDefault1] =
     useState([]);
   const [dataChecklistFaild1, setDataChecklistFaild1] = useState([]);
+  const [localtionContext, setLocationContext] = useState([]);
   return (
     <ChecklistContext.Provider
       value={{
@@ -28,6 +29,8 @@ export const ChecklistProvider = ({ children }) => {
         setDataChecklistDefault1,
         dataChecklistFaild1,
         setDataChecklistFaild1,
+        localtionContext,
+        setLocationContext
       }}
     >
       {children}

@@ -28,6 +28,7 @@ import ButtonSubmit from "../Button/ButtonSubmit";
 import Checkbox from "expo-checkbox";
 import adjust from "../../adjust";
 import moment from "moment";
+import { filter, set } from "lodash";
 
 const ModalChangeTinhTrangSuCo = ({
   changeStatus,
@@ -59,9 +60,11 @@ const ModalChangeTinhTrangSuCo = ({
     ID_Toanha: null,
     ID_Khuvuc: null,
   });
-
-  const tinhTrang = newActionClick[0].Tinhtrangxuly;
-  const hangmuc = newActionClick[0].ent_hangmuc?.Hangmuc;
+  const [isCheckhangmuc, setHangMuc] = useState(
+    newActionClick[0]?.ent_hangmuc?.Hangmuc
+  );
+  const tinhTrang = newActionClick[0]?.Tinhtrangxuly;
+  let hangmuc = newActionClick[0]?.ent_hangmuc?.Hangmuc;
 
   const init_toanha = async () => {
     await dispath(ent_toanha_get());
@@ -87,21 +90,39 @@ const ModalChangeTinhTrangSuCo = ({
         (item) => item.ID_Toanha === dataCheckKhuvuc.ID_Toanha
       );
       setDataKhuvuc(filterData);
+      if (filterData.length == 0) {
+        dataCheckKhuvuc.ID_Khuvuc = [];
+      }
     }
 
-    if (ent_hangmuc && dataCheckKhuvuc.ID_Khuvuc) {
+    if (ent_hangmuc && dataCheckKhuvuc?.ID_Khuvuc) {
       const filterData = ent_hangmuc.filter(
         (item) => item.ID_Khuvuc === dataCheckKhuvuc.ID_Khuvuc
       );
       setDataHangmuc(filterData);
+    } else if (dataKhuvuc.length === 0) {
+      setDataHangmuc([]);
     }
   }, [ent_khuvuc, ent_hangmuc, dataCheckKhuvuc]);
 
   const handleSubmit = () => {
-    if (changeStatus?.status3) {
-      handleSubmitStatusImage();
+    if (isCheckhangmuc == undefined) {
+      Alert.alert("PMC Thông báo", "Phải chọn hạng mục", [
+        {
+          text: "Hủy",
+          onPress: () => {
+            console.log("Cancel Pressed");
+          },
+          style: "cancel",
+        },
+        { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+      ]);
     } else {
-      handleSubmitStatus();
+      if (changeStatus?.status3) {
+        handleSubmitStatusImage();
+      } else {
+        handleSubmitStatus();
+      }
     }
   };
 
@@ -111,7 +132,7 @@ const ModalChangeTinhTrangSuCo = ({
       [key]: value,
     }));
   };
-  
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <KeyboardAvoidingView
@@ -267,109 +288,120 @@ const ModalChangeTinhTrangSuCo = ({
                       )}
                     </View>
                   </View>
-
                   <View style={{ width: "100%" }}>
-                    <Text allowFontScaling={false} style={styles.text}>
-                      Hạng mục
-                    </Text>
                     {dataHangmuc && dataHangmuc?.length > 0 && (
-                      <SelectDropdown
-                        data={dataHangmuc}
-                        buttonStyle={styles.select}
-                        dropdownStyle={{
-                          borderRadius: 8,
-                          maxHeight: 400,
-                        }}
-                        defaultButtonText={"Hạng mục"}
-                        buttonTextStyle={styles.customText}
-                        // defaultValue={defaultHangmuc}
-                        onSelect={(selectedItem, index) => {
-                          handleChangeText(
-                            "ID_Hangmuc",
-                            selectedItem.ID_Hangmuc
-                          );
-                        }}
-                        renderDropdownIcon={(isOpened) => {
-                          return (
-                            <FontAwesome
-                              name={isOpened ? "chevron-up" : "chevron-down"}
-                              color={"#637381"}
-                              size={14}
-                              style={{ marginRight: 10 }}
-                            />
-                          );
-                        }}
-                        dropdownIconPosition={"right"}
-                        buttonTextAfterSelection={(selectedItem, index) => {
-                          return (
-                            <View
-                              style={{
-                                justifyContent: "center",
-                                alignContent: "center",
-                                height: adjust(30),
-                              }}
-                            >
-                              <Text
-                                allowFontScaling={false}
-                                style={[styles.text, { color: "black" }]}
+                      <View>
+                        <Text allowFontScaling={false} style={styles.text}>
+                          Hạng mục
+                        </Text>
+                        <SelectDropdown
+                          data={dataHangmuc}
+                          buttonStyle={[styles.select]}
+                          dropdownStyle={{
+                            borderRadius: 8,
+                            maxHeight: 400,
+                          }}
+                          defaultButtonText={"Hạng mục"}
+                          buttonTextStyle={[styles.customText]}
+                          // defaultValue={defaultHangmuc}
+                          onSelect={(selectedItem, index) => {
+                            handleChangeText(
+                              "ID_Hangmuc",
+                              selectedItem.ID_Hangmuc
+                            );
+                            setHangMuc(selectedItem.ID_Hangmuc);
+                          }}
+                          renderDropdownIcon={(isOpened) => {
+                            return (
+                              <FontAwesome
+                                name={isOpened ? "chevron-up" : "chevron-down"}
+                                color={"#637381"}
+                                size={14}
+                                style={{ marginRight: 10 }}
+                              />
+                            );
+                          }}
+                          dropdownIconPosition={"right"}
+                          buttonTextAfterSelection={(selectedItem, index) => {
+                            return (
+                              <View
+                                style={{
+                                  justifyContent: "center",
+                                  alignContent: "center",
+                                  height: adjust(30),
+                                }}
                               >
-                                {selectedItem?.Hangmuc}
-                              </Text>
-                            </View>
-                          );
-                        }}
-                        renderCustomizedRowChild={(item, index) => {
-                          return (
-                            <VerticalSelect
-                              value={item.ID_Hangmuc}
-                              label={item.Hangmuc}
-                              key={index}
-                              selectedItem={dataInput.ID_Hangmuc}
-                            />
-                          );
-                        }}
-                      />
+                                <Text
+                                  allowFontScaling={false}
+                                  style={[styles.text, { color: "black" }]}
+                                >
+                                  {selectedItem?.Hangmuc}
+                                </Text>
+                              </View>
+                            );
+                          }}
+                          renderCustomizedRowChild={(item, index) => {
+                            return (
+                              <VerticalSelect
+                                value={item.ID_Hangmuc}
+                                label={item.Hangmuc}
+                                key={index}
+                                selectedItem={dataInput.ID_Hangmuc}
+                              />
+                            );
+                          }}
+                        />
+                      </View>
                     )}
                   </View>
                 </View>
               ) : null}
-              {tinhTrang != 0 ? (
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  marginTop: 10,
+                }}
+              >
+                {tinhTrang != 0 ? (
+                  <View style={styles.section}>
+                    <Checkbox
+                      disabled
+                      style={styles.checkbox}
+                      value={changeStatus?.status1}
+                      onValueChange={() => {
+                        handleChangeStatus("status1", !changeStatus?.status1);
+                      }}
+                      color={changeStatus?.status1 ? "#4630EB" : undefined}
+                    />
+                    <Text style={styles.paragraph}>Chưa xử lý</Text>
+                  </View>
+                ) : null}
+                {tinhTrang != 1 ? (
+                  <View style={styles.section}>
+                    <Checkbox
+                      style={styles.checkbox}
+                      value={changeStatus?.status2}
+                      onValueChange={() => {
+                        handleChangeStatus("status2", !changeStatus?.status2);
+                      }}
+                      color={changeStatus?.status2 ? "#4630EB" : undefined}
+                    />
+                    <Text style={styles.paragraph}>Đang xử lý</Text>
+                  </View>
+                ) : null}
                 <View style={styles.section}>
                   <Checkbox
-                    disabled
                     style={styles.checkbox}
-                    value={changeStatus?.status1}
+                    value={changeStatus?.status3}
                     onValueChange={() => {
-                      handleChangeStatus("status1", !changeStatus?.status1);
+                      handleChangeStatus("status3", !changeStatus?.status3);
                     }}
-                    color={changeStatus?.status1 ? "#4630EB" : undefined}
+                    color={changeStatus?.status3 ? "#4630EB" : undefined}
                   />
-                  <Text style={styles.paragraph}>Chưa xử lý</Text>
+                  <Text style={styles.paragraph}>Đã xử lý</Text>
                 </View>
-              ) : null}
-              {tinhTrang != 1 ? (
-                <View style={styles.section}>
-                  <Checkbox
-                    style={styles.checkbox}
-                    value={changeStatus?.status2}
-                    onValueChange={() => {
-                      handleChangeStatus("status2", !changeStatus?.status2);
-                    }}
-                    color={changeStatus?.status2 ? "#4630EB" : undefined}
-                  />
-                  <Text style={styles.paragraph}>Đang xử lý</Text>
-                </View>
-              ) : null}
-              <View style={styles.section}>
-                <Checkbox
-                  style={styles.checkbox}
-                  value={changeStatus?.status3}
-                  onValueChange={() => {
-                    handleChangeStatus("status3", !changeStatus?.status3);
-                  }}
-                  color={changeStatus?.status3 ? "#4630EB" : undefined}
-                />
-                <Text style={styles.paragraph}>Đã xử lý</Text>
               </View>
             </View>
             <View style={{ width: "100%" }}>
@@ -607,6 +639,5 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     fontSize: 14,
     width: "100%",
-    textAlign: "left",
   },
 });

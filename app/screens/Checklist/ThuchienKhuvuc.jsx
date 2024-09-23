@@ -35,9 +35,10 @@ import adjust from "../../adjust";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Network from "expo-network";
 import ConnectContext from "../../context/ConnectContext";
+import axiosClient from "../../api/axiosClient";
 
 const ThucHienKhuvuc = ({ route, navigation }) => {
-  const { ID_ChecklistC, ID_KhoiCV, ID_Calv, ID_Hangmucs } = route.params;
+  const { ID_ChecklistC, ID_KhoiCV, ID_Calv, ID_Hangmucs ,ID_Hangmuc} = route.params;
 
   const {
     setDataChecklists,
@@ -48,7 +49,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
     dataChecklists,
     HangMucDefault,
   } = useContext(DataContext);
-  const { setDataChecklistFilterContext, dataChecklistFilterContext } =
+  const { setDataChecklistFilterContext, dataChecklistFilterContext , localtionContext} =
     useContext(ChecklistContext);
 
   const dispath = useDispatch();
@@ -75,7 +76,6 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
   const init_checklist = async () => {
     await dispath(ent_checklist_mul_hm(ID_Hangmucs, ID_Calv, ID_ChecklistC));
   };
-
   useEffect(() => {
     const ID_HangmucsArray = Array.isArray(ID_Hangmucs)
       ? ID_Hangmucs
@@ -361,6 +361,9 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
         formData.append("Ketqua", item.valueCheck || "");
         formData.append("Gioht", item.gioht);
         formData.append("Ghichu", item.GhichuChitiet || "");
+        formData.append("Vido", localtionContext?.coords?.latitude || "");
+        formData.append("Kinhdo", localtionContext?.coords?.longitude || "");
+        formData.append("Docao", localtionContext?.coords?.altitude || "");
 
         // If there is an image, append it to formData
         if (item.Anh) {
@@ -448,6 +451,9 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
         ID_Checklists: ID_Checklists,
         ID_ChecklistC: ID_ChecklistC,
         checklistLength: defaultActionDataChecklist.length,
+        Vido: localtionContext?.coords?.latitude || "",
+        Kinhdo: localtionContext?.coords?.longitude || "",
+        Docao: localtionContext?.coords?.altitude || "",
       },
       {
         headers: {
@@ -458,7 +464,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
     );
     try {
       // Gộp cả hai mảng promise và đợi cho tất cả các promise hoàn thành
-      await Promise.all(requestDone);
+      await Promise.all([requestDone]);
       postHandleSubmit();
       setLoadingSubmit(false);
       await AsyncStorage.removeItem("checkNetwork");
@@ -507,6 +513,9 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
         formData.append("Ketqua", item.valueCheck || "");
         formData.append("Gioht", item.gioht);
         formData.append("Ghichu", item.GhichuChitiet || "");
+        formData.append("Vido", localtionContext?.coords?.latitude || "");
+        formData.append("Kinhdo", localtionContext?.coords?.longitude || "");
+        formData.append("Docao", localtionContext?.coords?.altitude || "");
 
         // Nếu có hình ảnh, thêm vào FormData
         if (item.Anh) {
@@ -557,6 +566,9 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
           ID_Checklists: ID_Checklists,
           ID_ChecklistC: ID_ChecklistC,
           checklistLength: defaultActionDataChecklist.length,
+          Vido: localtionContext?.coords?.latitude || "",
+          Kinhdo: localtionContext?.coords?.longitude || "",
+          Docao: localtionContext?.coords?.altitude || "",
         },
         {
           headers: {
