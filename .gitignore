@@ -76,3 +76,7 @@ yarn-error.*
 # @end expo-cli/ios
 /android
 
+package-lock.json
+package.json
+yarn.lock
+app/constants/config.js
