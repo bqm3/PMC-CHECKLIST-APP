@@ -87,6 +87,7 @@ const DetailChecklist = ({ route, navigation }) => {
   const [location, setLocation] = useState(null);
   const [show, setShow] = useState(false);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
@@ -938,7 +939,9 @@ const DetailChecklist = ({ route, navigation }) => {
     if (number == 0) return `0`;
     return number;
   };
-
+  //   console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxx")
+  // //  console.log(Hangmuc)
+  //  console.log(hangMuc)
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <KeyboardAvoidingView
@@ -1213,25 +1216,40 @@ const DetailChecklist = ({ route, navigation }) => {
                   size={40}
                   color="black"
                   style={{
-                    paddingTop: 50,
+                    marginTop : 10,
                     textAlign: "right",
-                    paddingRight: 30,
+                    paddingRight: 10,
                   }}
                 />
               </TouchableOpacity>
               {Hangmuc?.FileTieuChuan !== null &&
                 Hangmuc?.FileTieuChuan !== undefined && (
-                  <WebView
-                  
-                    customStyle={{
-                      readerContainerNavigateArrow: true,
-                      readerContainerNavigate: true,
-                    }}
-                    style={{ flex: 1 }}
-                    source={{
-                      uri: Hangmuc?.FileTieuChuan,
-                    }}
-                  />
+                  <View style={{ flex: 1 }}>
+                    {loading && (
+                      <ActivityIndicator
+                        size="large"
+                        color="#0000ff"
+                        style={{
+                          position: "absolute",
+                          top: "50%",
+                          left: "50%",
+                          zIndex: 1,
+                        }}
+                      />
+                    )}
+                    <WebView
+                      customStyle={{
+                        readerContainerNavigateArrow: true,
+                        readerContainerNavigate: true,
+                      }}
+                      style={{ flex: 1 }}
+                      source={{
+                        uri: Hangmuc?.FileTieuChuan,
+                      }}
+                      onLoadStart={() => setLoading(true)} 
+                      onLoadEnd={() => setLoading(false)} 
+                    />
+                  </View>
                 )}
             </Modal>
           </BottomSheetModalProvider>

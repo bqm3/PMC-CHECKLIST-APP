@@ -77,7 +77,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
           ID_KhoiCV: ID_KhoiCV,
           ID_Hangmuc: resData[0].ID_Hangmuc,
           hangMuc: hangMuc,
-          Hangmuc: resData[0].Hangmuc,
+          Hangmuc: resData[0],
         });
         setIsScan(false);
         setModalVisibleQr(false);

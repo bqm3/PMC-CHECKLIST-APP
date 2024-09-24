@@ -190,7 +190,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
           ID_ChecklistC: ID_ChecklistC,
           ID_KhoiCV: ID_KhoiCV,
           hangMuc: hangMuc,
-          Hangmuc: resDataHangmuc[0].Hangmuc,
+          Hangmuc: resDataHangmuc[0],
           ID_Hangmuc: resDataHangmuc[0].ID_Hangmuc,
         });
       } else if (resDataKhuvuc.length >= 1) {

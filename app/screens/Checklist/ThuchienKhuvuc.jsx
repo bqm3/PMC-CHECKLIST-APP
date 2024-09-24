@@ -231,7 +231,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
           ID_KhoiCV: ID_KhoiCV,
           ID_Calv: ID_Calv,
           hangMuc: hangMuc,
-          Hangmuc: resDataHangmuc[0].Hangmuc,
+          Hangmuc: resDataHangmuc[0],
           ID_Hangmuc: resDataHangmuc[0].ID_Hangmuc,
         });
       } else if (resDataKhuvuc.length >= 1) {
