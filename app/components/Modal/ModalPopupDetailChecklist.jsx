@@ -29,7 +29,6 @@ const ModalPopupDetailChecklist = ({
   dataItem,
   index,
   handleItemClick,
-  handleChange,
 }) => {
   const headerHeight = useHeaderHeight();
   const ref = useRef(null);
@@ -51,10 +50,9 @@ const ModalPopupDetailChecklist = ({
     }
 
     const result = await ImagePicker.launchCameraAsync();
-
     if (!result.canceled) {
       dataItem.Anh = result?.assets[0];
-      handleChange("Anh", result?.assets[0], dataItem);
+      handleItemClick(result?.assets[0], "option", "Anh", dataItem);
       setImage(result?.assets[0]);
     }
   };
@@ -94,7 +92,12 @@ const ModalPopupDetailChecklist = ({
                     defaultValue={defaultChecklist}
                     onSelect={(selectedItem, i) => {
                       dataItem.valueCheck = selectedItem;
-                      handleItemClick(selectedItem, dataItem, "option");
+                      handleItemClick(
+                        selectedItem,
+                        "option",
+                        "valueCheck",
+                        dataItem
+                      );
                       setDefaultChecklist(selectedItem);
                     }}
                     renderDropdownIcon={(isOpened) => {
@@ -196,7 +199,7 @@ const ModalPopupDetailChecklist = ({
                         <TouchableOpacity
                           onPress={() => {
                             setImage(null);
-                            handleChange("Anh", null, dataItem);
+                            handleItemClick(null, "option", "Anh", dataItem);
                           }}
                           style={{
                             flexDirection: "row",
@@ -241,29 +244,20 @@ const ModalPopupDetailChecklist = ({
                         },
                       ]}
                     />
-                    {/* <View style={{ marginTop: 10 }}>
-            <Button
-              onPress={() => {
-                dataItem.GhichuChitiet = ghichu;
-                handleChange("GhichuChitiet", ghichu, dataItem);
-                handlePopupClear();
-              }}
-              backgroundColor={COLORS.bg_button}
-              border={COLORS.bg_button}
-              color={"white"}
-              text={"Hoàn thành"}
-              width={"100%"}
-            />
-          </View> */}
                   </View>
                 </View>
                 <View style={{ marginTop: 10 }}>
                   <Button
                     onPress={() => {
-                      handleChange("Anh", image, dataItem);
-                      handlePopupClear();
                       dataItem.GhichuChitiet = ghichu;
-                      handleChange("GhichuChitiet", ghichu, dataItem);
+                      handleItemClick(image, "option", "Anh", dataItem);
+                      handleItemClick(
+                        ghichu,
+                        "option",
+                        "GhichuChitiet",
+                        dataItem
+                      );
+                      handlePopupClear();
                     }}
                     backgroundColor={COLORS.bg_button}
                     border={COLORS.bg_button}
@@ -296,7 +290,21 @@ const ModalPopupDetailChecklist = ({
                 <Button
                   onPress={() => {
                     dataItem.valueCheck = chiso;
-                    handleItemClick(chiso, dataItem, "isCheck");
+                    dataItem?.isCheck == 1
+                      ? handleItemClick(chiso, "option", "valueCheck", dataItem)
+                      : handleItemClick(
+                          defaultChecklist,
+                          "option",
+                          "valueCheck",
+                          dataItem
+                        );
+                    handleItemClick(image, "option", "Anh", dataItem);
+                    handleItemClick(
+                      ghichu,
+                      "option",
+                      "GhichuChitiet",
+                      dataItem
+                    );
                     handlePopupClear();
                   }}
                   backgroundColor={COLORS.bg_button}

@@ -162,7 +162,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
       ID_Hangmuc: dataSelect[0].ID_Hangmuc,
       hangMuc: hangMuc,
       ID_Khuvuc: ID_Khuvuc,
-      Hangmuc: dataSelect[0].Hangmuc,
+      Hangmuc: dataSelect[0],
     });
     setDataSelect([]);
     // Set the non-serializable values immediately after navigation

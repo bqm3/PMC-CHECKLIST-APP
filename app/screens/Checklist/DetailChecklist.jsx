@@ -141,37 +141,31 @@ const DetailChecklist = ({ route, navigation }) => {
     setDataChecklistFaild(dataChecklistActionWithoutDefault);
   }, [ID_Hangmuc]);
 
-  const handleChange = (key, value, it) => {
-    console.log(it.valueCheck);
-    const updatedDataChecklist = dataChecklistFilter?.map((item, i) => {
-      if (item.ID_Checklist === it.ID_Checklist) {
-        return {
-          ...item,
-          [key]: value,
-          Gioht: moment().format("LTS"),
-        };
-      }
-      return item;
-    });
-
-    handleSetData(key, updatedDataChecklist, it);
-    // }
-  };
-
   const handleCheckAll = (value) => {
     setActiveAll(value);
     if (value) {
       const updateDataChecklist = dataChecklistFilter?.map((item, i) => {
-        if (item.Tinhtrang == 0) {
-          if (item.valueCheck == "Không bình thường") {
+        if (
+          item.Anh == null &&
+          item.GhichuChitiet == "" &&
+          item.isCheck == 0 &&
+          item.Tinhtrang == 0
+        ) {
+          if (item.valueCheck == null) {
             return {
               ...item,
+              valueCheck: item.Giatridinhdanh,
+              Gioht: moment().format("LTS"),
+            };
+          } else if (item.valueCheck == item.Giatridinhdanh) {
+            return {
+              ...item,
+              valueCheck: item.Giatridinhdanh,
               Gioht: moment().format("LTS"),
             };
           } else {
             return {
               ...item,
-              valueCheck: item.Giatridinhdanh,
               Gioht: moment().format("LTS"),
             };
           }
@@ -208,192 +202,141 @@ const DetailChecklist = ({ route, navigation }) => {
       setDataChecklistFilterContext(updatedData1);
     } else {
       const revertDataChecklist = dataChecklistFilter?.map((item) => {
-        return {
-          ...item,
-          valueCheck: null,
-          Gioht: moment().format("LTS"), // Use a previous value or initial value if available
-        };
+        if (
+          item.Anh == null &&
+          item.GhichuChitiet == "" &&
+          item.isCheck == 0 &&
+          item.Tinhtrang == 0 &&
+          item.valueCheck == item.Giatridinhdanh
+        ) {
+          return {
+            ...item,
+            valueCheck: null,
+            Gioht: moment().format("LTS"),
+          };
+        } else {
+          return {
+            ...item,
+          };
+        }
       });
 
+      console.log("updateDataChecklist 2", revertDataChecklist);
       setDataChecklistFilter(revertDataChecklist);
-      setNewActionDataChecklist([]);
       setDataChecklistDefault([]);
-      setDataChecklistFaild([]);
+      const data2Map = new Map(
+        revertDataChecklist.map((item) => [item.ID_Checklist, item])
+      );
+
+      const updatedData1 = dataChecklistFilterContext.map((item) =>
+        data2Map.has(item.ID_Checklist) ? data2Map.get(item.ID_Checklist) : item
+      );
+      setDataChecklistFilterContext(updatedData1);
     }
-  };
-
-  // set data checklist and image || ghichu
-  const handleSetData = async (key, data, it) => {
-    let mergedArrCheck = [...defaultActionDataChecklist];
-    let mergedArrImage = [...dataChecklistFaild];
-
-    // newDataChecklist là data được chọn.
-    let newDataChecklist = data.filter((item) => item.valueCheck !== null);
-
-    // Clear item checklist nếu valueCheck không phải là null
-    if (it.valueCheck !== null) {
-      if (key === "option") {
-        const indexFaild = newDataChecklist.findIndex((item) => {
-          return (
-            item.ID_Checklist === it.ID_Checklist &&
-            item.Giatridinhdanh === item.valueCheck &&
-            it.Anh === null &&
-            it.GhichuChitiet === ""
-          );
-        });
-
-        if (indexFaild === -1) {
-          if (
-            !mergedArrImage.some(
-              (existingItem) => existingItem.ID_Checklist === it.ID_Checklist
-            )
-          ) {
-            mergedArrImage.push(it);
-          }
-          const indexDefault = mergedArrCheck.findIndex(
-            (item) => item.ID_Checklist === it.ID_Checklist
-          );
-          if (indexDefault !== -1) {
-            mergedArrCheck.splice(indexDefault, 1);
-          }
-        } else {
-          if (
-            !mergedArrCheck.some(
-              (existingItem) => existingItem.ID_Checklist === it.ID_Checklist
-            )
-          ) {
-            mergedArrCheck.push(it);
-          }
-          const indexDefault = mergedArrImage.findIndex(
-            (item) => item.ID_Checklist === it.ID_Checklist
-          );
-          if (indexDefault !== -1) {
-            mergedArrImage.splice(indexDefault, 1);
-          }
-        }
-      } else if (key === "active") {
-        const indexFaild = mergedArrImage.findIndex(
-          (item) => item.ID_Checklist === it.ID_Checklist
-        );
-        if (indexFaild !== -1) {
-          mergedArrImage.splice(indexFaild, 1);
-        }
-        const indexDefault = mergedArrCheck.findIndex(
-          (item) => item.ID_Checklist === it.ID_Checklist
-        );
-        if (indexDefault !== -1) {
-          mergedArrCheck.splice(indexDefault, 1);
-        }
-      } else if (key === "isCheck") {
-        const indexFaild = newDataChecklist.findIndex((item) => {
-          return (
-            item.ID_Checklist === it.ID_Checklist &&
-            it.Anh === null &&
-            it.GhichuChitiet === ""
-          );
-        });
-        if (indexFaild === -1) {
-          if (
-            !mergedArrImage.some(
-              (existingItem) => existingItem.ID_Checklist === it.ID_Checklist
-            )
-          ) {
-            mergedArrImage.push(it);
-          }
-          const indexDefault = mergedArrCheck.findIndex(
-            (item) => item.ID_Checklist === it.ID_Checklist
-          );
-          if (indexDefault !== -1) {
-            mergedArrCheck.splice(indexDefault, 1);
-          }
-        } else {
-          if (
-            !mergedArrCheck.some(
-              (existingItem) => existingItem.ID_Checklist === it.ID_Checklist
-            )
-          ) {
-            mergedArrCheck.push(it);
-          }
-          const indexDefault = mergedArrImage.findIndex(
-            (item) => item.ID_Checklist === it.ID_Checklist
-          );
-          if (indexDefault !== -1) {
-            mergedArrImage.splice(indexDefault, 1);
-          }
-        }
-      }
-    } else {
-      if (key === "option" || key === "active") {
-        const indexFaild = newDataChecklist.find(
-          (item) =>
-            item.ID_Checklist === it.ID_Checklist &&
-            item.valueCheck !== item.Giatridinhdanh
-        );
-
-        if (indexFaild) {
-          if (
-            !mergedArrImage.some(
-              (existingItem) => existingItem.ID_Checklist === it.ID_Checklist
-            )
-          ) {
-            mergedArrImage.push(it);
-          }
-
-          const indexCheck = mergedArrCheck.findIndex((item) => {
-            return (
-              item.ID_Checklist === it.ID_Checklist &&
-              it.valueCheck === item.valueCheck &&
-              it.Anh === null &&
-              it.GhichuChitiet === ""
-            );
-          });
-          if (indexCheck !== -1) {
-            mergedArrCheck.splice(indexCheck, 1);
-          }
-        } else {
-          const found = mergedArrCheck.some(
-            (existingItem) =>
-              it.ID_Checklist === existingItem.ID_Checklist &&
-              item.Giatridinhdanh === existingItem.valueCheck &&
-              it.Anh === null &&
-              it.GhichuChitiet === ""
-          );
-          if (!found) {
-            mergedArrCheck.push(it);
-          }
-        }
-      }
-    }
-
-    setDataChecklistFaild([...mergedArrImage]);
-    setDataChecklistDefault(mergedArrCheck);
-    setNewActionDataChecklist([...mergedArrImage, ...mergedArrCheck]);
-    setDataChecklistFilter(data);
-
-    const data2Map = new Map(data.map((item) => [item.ID_Checklist, item]));
-
-    const updatedData1 = dataChecklistFilterContext.map((item) =>
-      data2Map.has(item.ID_Checklist) ? data2Map.get(item.ID_Checklist) : item
-    );
-    setDataChecklistFilterContext(updatedData1);
   };
 
   // click item checklist
-  const handleItemClick = (value, it, key) => {
+  const handleItemClick = (value, status, key, itemData) => {
     const updatedDataChecklist = dataChecklistFilter?.map((item, i) => {
-      if (item.ID_Checklist === it.ID_Checklist) {
+      if (item.ID_Checklist == itemData.ID_Checklist) {
         return {
           ...item,
-          valueCheck: value ? value : null,
+          [key]: value ? value : null,
           Gioht: moment().format("LTS"),
         };
       }
       return item;
     });
 
-    const newItem = { ...it, Gioht: moment().format("LTS") };
+    const newItem = {
+      ...itemData,
+      [key]: value ? value : null,
+      Gioht: moment().format("LTS"),
+    };
 
-    handleSetData(key, updatedDataChecklist, newItem);
+    handleSetData(status, updatedDataChecklist, newItem);
+  };
+
+  // set data checklist
+  const handleSetData = async (status, dataChecklist, it) => {
+    let mergedArrClick = [...defaultActionDataChecklist];
+    let mergedArrOption = [...dataChecklistFaild];
+
+    // newDataChecklist là data được chọn.
+    let newDataChecklist = dataChecklist.filter(
+      (item) => item.valueCheck !== null
+    );
+    const indexFaild = newDataChecklist.findIndex((item) => {
+      return (
+        item.ID_Checklist === it.ID_Checklist &&
+        item.Giatridinhdanh === item.valueCheck &&
+        it.Anh === null &&
+        it.GhichuChitiet === ""
+      );
+    });
+    if (it.valueCheck === null) {
+      if (
+        !mergedArrOption.some(
+          (existingItem) => existingItem.ID_Checklist === it.ID_Checklist
+        )
+      ) {
+        mergedArrOption.push(it);
+      }
+    } else {
+      if (status === "click") {
+        if (
+          !mergedArrClick.some(
+            (existingItem) => existingItem.ID_Checklist === it.ID_Checklist
+          )
+        ) {
+          mergedArrClick.push(it);
+        }
+      }
+
+      if (status === "option") {
+        const indexDefault = mergedArrClick.findIndex(
+          (item) => item.ID_Checklist === it.ID_Checklist
+        );
+
+        // Xóa phần tử nếu có trong mergedArrClick
+        if (indexDefault !== -1) {
+          mergedArrClick.splice(indexDefault, 1);
+        }
+
+        // Tìm phần tử trong mergedArrOption theo ID_Checklist
+        const indexOption = mergedArrOption.findIndex(
+          (existingItem) => existingItem.ID_Checklist === it.ID_Checklist
+        );
+
+        // Kiểm tra nếu phần tử đã tồn tại trong mergedArrOption
+        if (indexOption !== -1) {
+          const existingItem = mergedArrOption[indexOption];
+
+          // Kiểm tra nếu dữ liệu của 'it' khác so với dữ liệu hiện tại
+          if (JSON.stringify(existingItem) !== JSON.stringify(it)) {
+            // Nếu khác, thay thế phần tử cũ bằng phần tử mới
+            mergedArrOption.splice(indexOption, 1, it);
+          }
+        } else {
+          // Nếu phần tử chưa tồn tại, thêm 'it' mới vào
+          mergedArrOption.push(it);
+        }
+      }
+    }
+
+    setDataChecklistFaild([...mergedArrOption]);
+    setDataChecklistDefault(mergedArrClick);
+    setNewActionDataChecklist([...mergedArrOption, ...mergedArrClick]);
+    setDataChecklistFilter(dataChecklist);
+
+    const data2Map = new Map(
+      dataChecklist.map((item) => [item.ID_Checklist, item])
+    );
+
+    const updatedData = dataChecklistFilterContext.map((item) =>
+      data2Map.has(item.ID_Checklist) ? data2Map.get(item.ID_Checklist) : item
+    );
+    setDataChecklistFilterContext(updatedData);
   };
 
   const handleItemClear = (itemID) => {
@@ -405,7 +348,7 @@ const DetailChecklist = ({ route, navigation }) => {
           valueCheck: null, // Xóa giá trị của item này
           Gioht: moment().format("LTS"),
           Anh: null,
-          Ghichu: null,
+          Ghichu: "",
         };
       }
       return item; // Giữ nguyên các item khác
@@ -931,7 +874,12 @@ const DetailChecklist = ({ route, navigation }) => {
                     index={index}
                     size={adjust(30)}
                     handleToggle={() =>
-                      handleItemClick(item?.Giatridinhdanh, item, "active")
+                      handleItemClick(
+                        item?.Giatridinhdanh,
+                        "click",
+                        "valueCheck",
+                        item
+                      )
                     }
                   />
                 )}
@@ -1037,7 +985,7 @@ const DetailChecklist = ({ route, navigation }) => {
                           allowFontScaling={false}
                           style={[styles.text, { fontSize: 17 }]}
                         >
-                          Hạng mục: {Hangmuc}
+                          Hạng mục: {Hangmuc?.Hangmuc}
                         </Text>
                         <Text allowFontScaling={false} style={styles.text}>
                           Số lượng: {decimalNumber(dataChecklistFilter?.length)}{" "}
@@ -1055,8 +1003,8 @@ const DetailChecklist = ({ route, navigation }) => {
                             Đang checklist:{" "}
                             {decimalNumber(newActionDataChecklist?.length)}
                           </Text>
-                          {hangMuc[0]?.FileTieuChuan !== null &&
-                            hangMuc[0]?.FileTieuChuan !== undefined && (
+                          {Hangmuc?.FileTieuChuan !== null &&
+                            Hangmuc?.FileTieuChuan !== undefined && (
                               <View>
                                 <TouchableOpacity
                                   onPress={() => setShow(true)}
@@ -1203,7 +1151,7 @@ const DetailChecklist = ({ route, navigation }) => {
                   dataItem={dataItem}
                   handleItemClick={handleItemClick}
                   index={index}
-                  handleChange={handleChange}
+                  // handleChange={handleChange}
                 />
               </View>
             </BottomSheetModal>
@@ -1271,16 +1219,17 @@ const DetailChecklist = ({ route, navigation }) => {
                   }}
                 />
               </TouchableOpacity>
-              {hangMuc[0]?.FileTieuChuan !== null &&
-                hangMuc[0]?.FileTieuChuan !== undefined && (
+              {Hangmuc?.FileTieuChuan !== null &&
+                Hangmuc?.FileTieuChuan !== undefined && (
                   <WebView
+                  
                     customStyle={{
                       readerContainerNavigateArrow: true,
                       readerContainerNavigate: true,
                     }}
                     style={{ flex: 1 }}
                     source={{
-                      uri: hangMuc[0]?.FileTieuChuan,
+                      uri: Hangmuc?.FileTieuChuan,
                     }}
                   />
                 )}

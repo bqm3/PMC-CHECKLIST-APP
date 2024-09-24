@@ -76,8 +76,8 @@ yarn-error.*
 # @end expo-cli/ios
 /android
 
-credentials.json
-google-services.json
-pmc-cskh-firebase-adminsdk-y7378-5122f6edc7.json
+# credentials.json
+# google-services.json
+# pmc-cskh-firebase-adminsdk-y7378-5122f6edc7.json
 
-app/constants/config.js
+# app/constants/config.js

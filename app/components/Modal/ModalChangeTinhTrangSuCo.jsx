@@ -324,20 +324,15 @@ const ModalChangeTinhTrangSuCo = ({
                           dropdownIconPosition={"right"}
                           buttonTextAfterSelection={(selectedItem, index) => {
                             return (
-                              <View
-                                style={{
-                                  justifyContent: "center",
-                                  alignContent: "center",
-                                  height: adjust(30),
-                                }}
+                              <Text
+                                allowFontScaling={false}
+                                style={[
+                                  styles.text,
+                                  { color: "black", textAlign: "center" },
+                                ]}
                               >
-                                <Text
-                                  allowFontScaling={false}
-                                  style={[styles.text, { color: "black" }]}
-                                >
-                                  {selectedItem?.Hangmuc}
-                                </Text>
-                              </View>
+                                {selectedItem?.Hangmuc}
+                              </Text>
                             );
                           }}
                           renderCustomizedRowChild={(item, index) => {
@@ -589,7 +584,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   text: {
-    fontSize: 15,
+    fontSize: 14,
     color: "black",
     fontWeight: "600",
     paddingHorizontal: 8,
