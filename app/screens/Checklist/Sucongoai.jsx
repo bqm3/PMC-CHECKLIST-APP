@@ -73,7 +73,7 @@ const Sucongoai = ({ navigation }) => {
 
   const [saveStatus, setSaveStatus] = useState(null);
 
-  const init_sucongoai = async () => {
+   const init_sucongoai = async () => {
     await dispath(tb_sucongoai_get());
   };
 
@@ -83,6 +83,14 @@ const Sucongoai = ({ navigation }) => {
       [key]: value,
     }));
   };
+  
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      init_sucongoai();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   useEffect(() => {
     setLoading(true);

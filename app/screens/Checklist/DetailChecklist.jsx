@@ -14,6 +14,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Image,
+  BackHandler,
 } from "react-native";
 import React, {
   useRef,
@@ -85,6 +86,7 @@ const DetailChecklist = ({ route, navigation }) => {
   const [activeAll, setActiveAll] = useState(false);
   const [location, setLocation] = useState(null);
   const [show, setShow] = useState(false);
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -93,6 +95,24 @@ const DetailChecklist = ({ route, navigation }) => {
       setLocationContext(location);
     })();
   }, [dataChecklistFaild, defaultActionDataChecklist]);
+
+  useEffect(() => {
+    const backAction = () => {
+      if (isBottomSheetOpen) {
+        handleBackAnroid();
+        return true;
+      }
+      return false;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, [isBottomSheetOpen]);
+
   useEffect(() => {
     const dataChecklist = dataChecklistFilterContext?.filter(
       (item) => item.ID_Hangmuc == ID_Hangmuc
@@ -143,11 +163,18 @@ const DetailChecklist = ({ route, navigation }) => {
     if (value) {
       const updateDataChecklist = dataChecklistFilter?.map((item, i) => {
         if (item.Tinhtrang == 0) {
-          return {
-            ...item,
-            valueCheck: item.Giatridinhdanh,
-            Gioht: moment().format("LTS"),
-          };
+          if (item.valueCheck == "Không bình thường") {
+            return {
+              ...item,
+              Gioht: moment().format("LTS"),
+            };
+          } else {
+            return {
+              ...item,
+              valueCheck: item.Giatridinhdanh,
+              Gioht: moment().format("LTS"),
+            };
+          }
         } else {
           return {
             ...item,
@@ -849,6 +876,15 @@ const DetailChecklist = ({ route, navigation }) => {
     bottomSheetModalRef.current?.close();
   }, []);
 
+  const handleBackAnroid = async () => {
+    setOpacity(1);
+    setDataItem(null);
+    setModalVisible(false);
+    setIndex(null);
+    bottomSheetModalRef.current?.close();
+    setIsBottomSheetOpen(false);
+  };
+
   // view item flatlist
   const renderItem = (item, index) => {
     return (
@@ -931,7 +967,11 @@ const DetailChecklist = ({ route, navigation }) => {
               <MaterialIcons name="read-more" size={adjust(30)} color="black" />
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => handlePopupActive(item, index)}>
+            <TouchableOpacity
+              onPress={() => {
+                handlePopupActive(item, index), setIsBottomSheetOpen(true);
+              }}
+            >
               <Entypo
                 name="dots-three-vertical"
                 size={adjust(30)}

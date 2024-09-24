@@ -39,6 +39,7 @@ import ButtonSubmit from "../../components/Button/ButtonSubmit";
 import axios from "axios";
 import { BASE_URL } from "../../constants/config";
 import { axiosClient } from "../../api/axiosClient";
+import { nowDate } from "../../utils/util"
 
 const ThuchienSucongoai = ({ navigation }) => {
   const dispath = useDispatch();
@@ -147,6 +148,9 @@ const ThuchienSucongoai = ({ navigation }) => {
   const init_khuvuc = async () => {
     await dispath(ent_khuvuc_get());
   };
+  const init_sucongoai = async () => {
+    await dispath(tb_sucongoai_get());
+  };
 
   useEffect(() => {
     init_toanha();
@@ -222,6 +226,15 @@ const ThuchienSucongoai = ({ navigation }) => {
           ]);
           setLoadingSubmit(false);
           resetDataInput();
+        } else if (dataInput.Ngaysuco > nowDate()) {
+          Alert.alert("PMC Thông báo", "Ngày không hợp lệ", [
+            {
+              text: "Hủy",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel",
+            },
+            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+          ]);
         } else {
           const response = await axios.post(
             BASE_URL + "/tb_sucongoai/create",
@@ -264,20 +277,24 @@ const ThuchienSucongoai = ({ navigation }) => {
           ]);
           setLoadingSubmit(false);
           resetDataInput();
-        } else {
-          const response = axios.post(
-            BASE_URL + "/tb_sucongoai/create",
-            data,
+        } else if (data.Ngaysuco > nowDate()){
+          Alert.alert("PMC Thông báo", "Ngày không hợp lệ", [
             {
-              headers: {
-                Accept: "application/json",
-                Authorization: "Bearer " + authToken,
-              },
-            }
-          );
+              text: "Hủy",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel",
+            },
+            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+          ]);
+        } else {
+          const response = axios.post(BASE_URL + "/tb_sucongoai/create", data, {
+            headers: {
+              Accept: "application/json",
+              Authorization: "Bearer " + authToken,
+            },
+          });
           setLoadingSubmit(false);
           resetDataInput();
-          console.log(response)
           Alert.alert("PMC Thông báo", "Gửi sự cố thành công!", [
             {
               text: "Hủy",
@@ -311,7 +328,7 @@ const ThuchienSucongoai = ({ navigation }) => {
           { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
         ]);
       } else {
-        console.log(error)
+        console.log(error);
         // Lỗi khi cấu hình request
         Alert.alert("PMC Thông báo", "Lỗi khi gửi yêu cầu", [
           {
