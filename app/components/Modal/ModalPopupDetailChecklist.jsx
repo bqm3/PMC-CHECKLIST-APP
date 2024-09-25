@@ -249,6 +249,7 @@ const ModalPopupDetailChecklist = ({
                 <View style={{ marginTop: 10 }}>
                   <Button
                     onPress={() => {
+                      dataItem.valueCheck = chiso
                       dataItem.GhichuChitiet = ghichu;
                       handleItemClick(image, "option", "Anh", dataItem);
                       handleItemClick(

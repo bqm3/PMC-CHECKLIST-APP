@@ -43,7 +43,7 @@ import axios, { isCancel } from "axios";
 import { BASE_URL } from "../../constants/config";
 import QRCodeScreen from "../QRCodeScreen";
 import DataContext from "../../context/DataContext";
-import ChecklistContext from "../../context/ChecklistContext";
+import ChecklistLaiContext from "../../context/ChecklistLaiContext";
 import * as Network from "expo-network";
 import adjust from "../../adjust";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -51,9 +51,10 @@ import Checkbox from "../../components/Active/Checkbox";
 import ConnectContext from "../../context/ConnectContext";
 import WebView from "react-native-webview";
 
-const DetailChecklist = ({ route, navigation }) => {
-  const { ID_ChecklistC, ID_KhoiCV, ID_Hangmuc, hangMuc, Hangmuc } =
+const DetailChecklistLai = ({ route, navigation }) => {
+  const { ID_ChecklistC, ID_Hangmuc, hangMuc, Hangmuc } =
     route.params;
+  console.log(Hangmuc)
   const dispath = useDispatch();
   const { isLoadingDetail } = useSelector((state) => state.entReducer);
   const { setHangMuc, HangMucDefault, setHangMucDefault } =
@@ -64,7 +65,7 @@ const DetailChecklist = ({ route, navigation }) => {
     dataChecklistFilterContext,
     setDataChecklistFilterContext,
     setLocationContext,
-  } = useContext(ChecklistContext);
+  } = useContext(ChecklistLaiContext);
   const [isConnected, setIsConnected] = useState(false);
 
   const { user, authToken } = useSelector((state) => state.authReducer);
@@ -245,6 +246,7 @@ const DetailChecklist = ({ route, navigation }) => {
         }
       });
 
+      // console.log("updateDataChecklist 2", revertDataChecklist.length);
       setDataChecklistFilter(revertDataChecklist);
       setDataChecklistDefault([]);
       const data2Map = new Map(
@@ -1268,8 +1270,8 @@ const DetailChecklist = ({ route, navigation }) => {
                       source={{
                         uri: Hangmuc?.FileTieuChuan,
                       }}
-                      onLoadStart={() => setLoading(true)} 
-                      onLoadEnd={() => setLoading(false)} 
+                      onLoadStart={() => setLoading(true)}
+                      onLoadEnd={() => setLoading(false)}
                     />
                   </View>
                 )}
@@ -1281,7 +1283,7 @@ const DetailChecklist = ({ route, navigation }) => {
   );
 };
 
-export default DetailChecklist;
+export default DetailChecklistLai;
 
 const styles = StyleSheet.create({
   container: {

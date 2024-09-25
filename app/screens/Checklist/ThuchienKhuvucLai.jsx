@@ -68,6 +68,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
   const [modalVisibleQr, setModalVisibleQr] = useState(false);
   const [data, setData] = useState([]);
   const [dataSelect, setDataSelect] = useState([]);
+  const [dataKhuvuc, setDataKhuvuc] = useState([]);
 
   const [defaultActionDataChecklist, setDataChecklistDefault] = useState([]);
   const [dataChecklistFaild, setDataChecklistFaild] = useState([]);
@@ -79,7 +80,6 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
     );
     setIsLoadingDetail(false);
   };
-
   useEffect(() => {
     const ID_HangmucsArray = Array.isArray(ID_Hangmucs)
       ? ID_Hangmucs
@@ -93,7 +93,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
         )
       );
       // Cập nhật dữ liệu sau khi lọc
-      setData(matchingEntKhuvuc);
+      setDataKhuvuc(matchingEntKhuvuc);
     } else {
     }
   }, [ID_Hangmucs, ent_khuvuc]);
@@ -107,10 +107,30 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
       const finalFilteredData = HangMucDefault.filter((item) =>
         checklistIDs.includes(item.ID_Hangmuc)
       );
+      const validKhuvucIDs = finalFilteredData.map((item) => item.ID_Khuvuc);
+
+      // Lọc danh sách hạng mục dựa trên ID_Khuvuc có trong validKhuvucIDs
+      const filteredHangMuc = ent_khuvuc
+        .filter((item) => validKhuvucIDs.includes(item.ID_Khuvuc))
+        .map((khuvuc) => {
+          // Đếm số lượng hạng mục còn lại trong từng khu vực
+          const hangMucCount = finalFilteredData.filter(
+            (hangmuc) => hangmuc.ID_Khuvuc === khuvuc.ID_Khuvuc
+          ).length;
+
+          // Gắn số lượng hạng mục vào từng khu vực
+          return {
+            ...khuvuc,
+            hangMucCount,
+          };
+        });
 
       // Cập nhật trạng thái hangMuc với danh sách đã lọc
       setHangMuc(finalFilteredData);
+      setDataKhuvuc(filteredHangMuc);
     }
+
+    // }
   }, [HangMucDefault, dataChecklists]);
 
   useEffect(() => {
@@ -194,7 +214,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
           ID_Hangmuc: resDataHangmuc[0].ID_Hangmuc,
         });
       } else if (resDataKhuvuc.length >= 1) {
-        navigation.navigate("Thực hiện hạng mục", {
+        navigation.navigate("Thực hiện hạng mục lại", {
           ID_ChecklistC: ID_ChecklistC,
           ID_KhoiCV: ID_KhoiCV,
           ID_Khuvuc: resDataKhuvuc[0].ID_Khuvuc,
@@ -646,7 +666,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
   };
 
   const handleSubmit = () => {
-    navigation.navigate("Thực hiện hạng mục", {
+    navigation.navigate("Thực hiện hạng mục lại", {
       ID_ChecklistC: ID_ChecklistC,
       ID_KhoiCV: ID_KhoiCV,
       ID_Khuvuc: dataSelect[0].ID_Khuvuc,
@@ -705,7 +725,8 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
               fontWeight: "600",
             }}
           >
-            {item?.ent_hangmuc.length}
+            {/* {item?.ent_hangmuc.length} */}
+            {item?.hangMucCount}
           </Text>
         </View>
       </TouchableOpacity>
@@ -797,7 +818,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
                   </View>
                 </View>
 
-                {isLoadingDetail === false && data && data?.length > 0 && (
+                {isLoadingDetail === false && dataKhuvuc && dataKhuvuc?.length > 0 && (
                   <>
                     <FlatList
                       style={{
@@ -805,7 +826,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
                         flex: 1,
                         marginBottom: 100,
                       }}
-                      data={data}
+                      data={dataKhuvuc}
                       renderItem={({ item, index, separators }) =>
                         renderItem(item, index)
                       }

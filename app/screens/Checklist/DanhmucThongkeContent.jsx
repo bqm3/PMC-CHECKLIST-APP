@@ -32,7 +32,7 @@ import axiosClient from "../../api/axiosClient";
 
 const numberOfItemsPerPageList = [20, 30, 50];
 
-const DanhmucThongkeContent = ({ setOpacity, opacity }) => {
+const DanhmucThongkeContent = ({ setOpacity, opacity ,navigation}) => {
   const dispath = useDispatch();
   const { user, authToken } = useSelector((state) => state.authReducer);
   const { ent_khoicv, ent_calv } = useSelector((state) => state.entReducer);
@@ -84,30 +84,30 @@ const DanhmucThongkeContent = ({ setOpacity, opacity }) => {
     );
     setFilteredCalv(filtered);
   };
-
   const toggleTodo = async (item) => {
+    console.log(item)
     // setIsCheckbox(true);
-    const isExistIndex = newActionCheckList.findIndex(
-      (existingItem) =>
-        existingItem.ID_Checklistchitiet === item.ID_Checklistchitiet
-    );
+    // const isExistIndex = newActionCheckList.findIndex(
+    //   (existingItem) =>
+    //     existingItem.ID_Checklistchitiet === item.ID_Checklistchitiet
+    // );
 
-    // Nếu item đã tồn tại, xóa item đó đi
-    if (isExistIndex !== -1) {
-      setNewActionCheckList((prevArray) =>
-        prevArray.filter((_, index) => index !== isExistIndex)
-      );
-    } else {
-      // Nếu item chưa tồn tại, thêm vào mảng mới
-      setNewActionCheckList([item]);
-      const filter =
-        item.Ketqua == item?.ent_checklist?.Giatridinhdanh &&
-        item?.Ghichu == "" &&
-        (item?.Anh == "" || item?.Anh === null)
-          ? false
-          : true;
-      setIsShowChecklist(filter);
-    }
+    // // Nếu item đã tồn tại, xóa item đó đi
+    // if (isExistIndex !== -1) {
+    //   setNewActionCheckList((prevArray) =>
+    //     prevArray.filter((_, index) => index !== isExistIndex)
+    //   );
+    // } else {
+    //   // Nếu item chưa tồn tại, thêm vào mảng mới
+    //   setNewActionCheckList([item]);
+    //   const filter =
+    //     item.Ketqua == item?.ent_checklist?.Giatridinhdanh &&
+    //     item?.Ghichu == "" &&
+    //     (item?.Anh == "" || item?.Anh === null)
+    //       ? false
+    //       : true;
+    //   setIsShowChecklist(filter);
+    // }
   };
 
   const toggleDatePicker = (key, isCheck) => {
@@ -140,7 +140,6 @@ const DanhmucThongkeContent = ({ setOpacity, opacity }) => {
         }
       )
       .then((res) => {
-        console.log("manh", JSON.stringify(res?.data?.data, null, 2));
         //setDataTraCuu(res?.data?.data);
         setData(res?.data?.data);
         handlePresentModalClose();
@@ -229,108 +228,107 @@ const DanhmucThongkeContent = ({ setOpacity, opacity }) => {
     setPage(0);
   }, [numberOfItemsPerPage]);
 
-  const _renderItem = ({ item, index }) => {
-    const isExistIndex = newActionCheckList?.find(
-      (existingItem) =>
-        existingItem?.ID_Checklistchitiet === item?.ID_Checklistchitiet
-    );
+  // const _renderItem = ({ item, index }) => {
+  //   const isExistIndex = newActionCheckList?.find(
+  //     (existingItem) =>
+  //       existingItem?.ID_Checklistchitiet === item?.ID_Checklistchitiet
+  //   );
 
-    return (
-      <TouchableHighlight key={index} onPress={() => toggleTodo(item)}>
-        <DataTable.Row
-          style={{
-            gap: 20,
-            paddingVertical: 10,
-            backgroundColor: isExistIndex ? COLORS.bg_button : "white",
-          }}
-        >
-          <DataTable.Cell style={{ width: 120, justifyContent: "center" }}>
-            <Text
-              allowFontScaling={false}
-              style={{ color: isExistIndex ? "white" : "black" }}
-              numberOfLines={2}
-            >
-              {moment(item?.tb_checklistc?.Ngay).format("DD-MM-YYYY")}
-            </Text>
-          </DataTable.Cell>
-          <DataTable.Cell style={{ width: 200, justifyContent: "center" }}>
-            <Text
-              allowFontScaling={false}
-              style={{ color: isExistIndex ? "white" : "black" }}
-              numberOfLines={3}
-            >
-              {item?.ent_checklist?.Checklist}
-            </Text>
-          </DataTable.Cell>
-          {/* <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
-              <Text allowFontScaling={false}
-                style={{ color: isExistIndex ? "white" : "black" }}
-                numberOfLines={2}
-              >
-                {item?.ent_checklist?.ent_hangmuc?.ent_khuvuc?.ent_toanha?.Toanha}
-              </Text>
-            </DataTable.Cell> */}
-          <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
-            <Text
-              allowFontScaling={false}
-              style={{ color: isExistIndex ? "white" : "black" }}
-              numberOfLines={2}
-            >
-              {item?.ent_checklist?.ent_tang?.Tentang}
-            </Text>
-          </DataTable.Cell>
-          <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
-            <Text
-              allowFontScaling={false}
-              style={{ color: isExistIndex ? "white" : "black" }}
-              numberOfLines={2}
-            >
-              {item?.ent_checklist?.ent_khuvuc?.Tenkhuvuc}
-            </Text>
-          </DataTable.Cell>
-          <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
-            <Text
-              allowFontScaling={false}
-              style={{ color: isExistIndex ? "white" : "black" }}
-              numberOfLines={2}
-            >
-              {" "}
-              {item?.tb_checklistc?.ent_khoicv?.KhoiCV}
-            </Text>
-          </DataTable.Cell>
-          <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
-            <Text
-              allowFontScaling={false}
-              style={{ color: isExistIndex ? "white" : "black" }}
-              numberOfLines={2}
-            >
-              {item?.tb_checklistc?.ent_calv?.Tenca}
-            </Text>
-          </DataTable.Cell>
-          <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
-            <Text
-              allowFontScaling={false}
-              style={{ color: isExistIndex ? "white" : "black" }}
-              numberOfLines={2}
-            >
-              {item?.tb_checklistc?.ent_user?.Hoten}
-            </Text>
-          </DataTable.Cell>
+  //   return (
+  //     <TouchableHighlight key={index} onPress={() => toggleTodo(item)}>
+  //       <DataTable.Row
+  //         style={{
+  //           gap: 20,
+  //           paddingVertical: 10,
+  //           backgroundColor: isExistIndex ? COLORS.bg_button : "white",
+  //         }}
+  //       >
+  //         <DataTable.Cell style={{ width: 120, justifyContent: "center" }}>
+  //           <Text
+  //             allowFontScaling={false}
+  //             style={{ color: isExistIndex ? "white" : "black" }}
+  //             numberOfLines={2}
+  //           >
+  //             {moment(item?.tb_checklistc?.Ngay).format("DD-MM-YYYY")}
+  //           </Text>
+  //         </DataTable.Cell>
+  //         <DataTable.Cell style={{ width: 200, justifyContent: "center" }}>
+  //           <Text
+  //             allowFontScaling={false}
+  //             style={{ color: isExistIndex ? "white" : "black" }}
+  //             numberOfLines={3}
+  //           >
+  //             {item?.ent_checklist?.Checklist}
+  //           </Text>
+  //         </DataTable.Cell>
+  //         {/* <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
+  //             <Text allowFontScaling={false}
+  //               style={{ color: isExistIndex ? "white" : "black" }}
+  //               numberOfLines={2}
+  //             >
+  //               {item?.ent_checklist?.ent_hangmuc?.ent_khuvuc?.ent_toanha?.Toanha}
+  //             </Text>
+  //           </DataTable.Cell> */}
+  //         <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
+  //           <Text
+  //             allowFontScaling={false}
+  //             style={{ color: isExistIndex ? "white" : "black" }}
+  //             numberOfLines={2}
+  //           >
+  //             {item?.ent_checklist?.ent_tang?.Tentang}
+  //           </Text>
+  //         </DataTable.Cell>
+  //         <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
+  //           <Text
+  //             allowFontScaling={false}
+  //             style={{ color: isExistIndex ? "white" : "black" }}
+  //             numberOfLines={2}
+  //           >
+  //             {item?.ent_checklist?.ent_khuvuc?.Tenkhuvuc}
+  //           </Text>
+  //         </DataTable.Cell>
+  //         <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
+  //           <Text
+  //             allowFontScaling={false}
+  //             style={{ color: isExistIndex ? "white" : "black" }}
+  //             numberOfLines={2}
+  //           >
+  //             {" "}
+  //             {item?.tb_checklistc?.ent_khoicv?.KhoiCV}
+  //           </Text>
+  //         </DataTable.Cell>
+  //         <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
+  //           <Text
+  //             allowFontScaling={false}
+  //             style={{ color: isExistIndex ? "white" : "black" }}
+  //             numberOfLines={2}
+  //           >
+  //             {item?.tb_checklistc?.ent_calv?.Tenca}
+  //           </Text>
+  //         </DataTable.Cell>
+  //         <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
+  //           <Text
+  //             allowFontScaling={false}
+  //             style={{ color: isExistIndex ? "white" : "black" }}
+  //             numberOfLines={2}
+  //           >
+  //             {item?.tb_checklistc?.ent_user?.Hoten}
+  //           </Text>
+  //         </DataTable.Cell>
 
-          <DataTable.Cell style={{ width: 100, justifyContent: "center" }}>
-            <Text
-              allowFontScaling={false}
-              style={{ color: isExistIndex ? "white" : "black" }}
-              numberOfLines={2}
-            >
-              {item?.Ketqua}
-            </Text>
-          </DataTable.Cell>
-        </DataTable.Row>
-      </TouchableHighlight>
-    );
-  };
-
+  //         <DataTable.Cell style={{ width: 100, justifyContent: "center" }}>
+  //           <Text
+  //             allowFontScaling={false}
+  //             style={{ color: isExistIndex ? "white" : "black" }}
+  //             numberOfLines={2}
+  //           >
+  //             {item?.Ketqua}
+  //           </Text>
+  //         </DataTable.Cell>
+  //       </DataTable.Row>
+  //     </TouchableHighlight>
+  //   );
+  // };
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <KeyboardAvoidingView
@@ -342,6 +340,7 @@ const DanhmucThongkeContent = ({ setOpacity, opacity }) => {
             <DanhmucThongKe
               handlePresentModalPress2={handlePresentModalPress2}
               data={data}
+              navigation = {navigation}
             />
           </View>
           <BottomSheetModal

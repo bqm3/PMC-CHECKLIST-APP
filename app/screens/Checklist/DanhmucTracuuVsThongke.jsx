@@ -9,6 +9,8 @@ import {
 import DanhmucTracuuContent from "./DanhmucTracuuContent";
 import DanhmucThongkeContent from "./DanhmucThongkeContent";
 import { COLORS } from "../../constants/theme";
+import { WebView } from "react-native-webview";
+import DanhmucThongkeDashBoard from "./DanhmucThongkeDashboard";
 
 const TabButtons = ({
   tabButtonType,
@@ -42,20 +44,39 @@ const TabButtons = ({
   );
 };
 
-const DanhmucTracuuVsThongke = () => {
+const DanhmucTracuuVsThongke = ({ route, navigation }) => {
   const [selectedTab, setSelectedTab] = useState("Tra cứu");
   const [opacity, setOpacity] = useState(1);
 
   const TabButtonType = [{ title: "Tra cứu" }, { title: "Thống kê" }];
+  const injectedJavaScript = `
+  document.getElementById('username').value = 'admin'; 
+  document.getElementById('password').value = '123'; 
+  document.querySelector('form').submit(); 
+`;
   const renderContent = () => {
     switch (selectedTab) {
       case "Tra cứu":
         return (
-          <DanhmucTracuuContent opacity={opacity} setOpacity={setOpacity} />
+          //<DanhmucTracuuContent opacity={opacity} setOpacity={setOpacity} navigation />
+          <DanhmucThongkeContent
+            opacity={opacity}
+            setOpacity={setOpacity}
+            navigation={navigation}
+          />
         );
       case "Thống kê":
         return (
-          <DanhmucThongkeContent opacity={opacity} setOpacity={setOpacity} />
+        //   <WebView
+        //   style={{ flex: 1 }}
+        //   source={{ uri: "https://demo.pmcweb.vn" }}
+        //   // injectedJavaScript={injectedJavaScript}
+        //   onMessage={(event) => {
+        //     console.log(event.nativeEvent.data);
+        //   }}
+        // />
+          //<DanhmucThongkeContent opacity={opacity} setOpacity={setOpacity} navigation = {navigation}/>
+          <DanhmucThongkeDashBoard></DanhmucThongkeDashBoard>
         );
       default:
         return (

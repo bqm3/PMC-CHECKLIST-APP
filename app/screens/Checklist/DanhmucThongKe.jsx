@@ -42,6 +42,8 @@ import { BASE_URL } from "../../constants/config";
 import moment from "moment";
 import ModalChecklistC from "../../components/Modal/ModalChecklistC";
 import ModalChecklistCImage from "../../components/Modal/ModalChecklistCImage";
+import WebView from "react-native-webview";
+
 // import mime from "mime";
 
 const numberOfItemsPerPageList = [20, 30, 50];
@@ -84,6 +86,7 @@ const headerList = [
   const DanhmucThongKe = memo(({
     handlePresentModalPress2 = () => {},
     data = [],
+    navigation
   }) => {
   const ref = useRef(null);
   const dispath = useDispatch();
@@ -178,20 +181,25 @@ const headerList = [
   }, []);
 
   const toggleTodo = async (item) => {
+    navigation.navigate("Chi tiết checklist ca",{
+      ID_ChecklistC : item.ID_ChecklistC
+      
+    });
+    
     // setIsCheckbox(true);
-    const isExistIndex = newActionCheckList.findIndex(
-      (existingItem) => existingItem.ID_ChecklistC === item.ID_ChecklistC
-    );
+    // const isExistIndex = newActionCheckList.findIndex(
+    //   (existingItem) => existingItem.ID_ChecklistC === item.ID_ChecklistC
+    // );
 
-    // Nếu item đã tồn tại, xóa item đó đi
-    if (isExistIndex !== -1) {
-      setNewActionCheckList((prevArray) =>
-        prevArray.filter((_, index) => index !== isExistIndex)
-      );
-    } else {
-      // Nếu item chưa tồn tại, thêm vào mảng mới
-      setNewActionCheckList([item]);
-    }
+    // // Nếu item đã tồn tại, xóa item đó đi
+    // if (isExistIndex !== -1) {
+    //   setNewActionCheckList((prevArray) =>
+    //     prevArray.filter((_, index) => index !== isExistIndex)
+    //   );
+    // } else {
+    //   // Nếu item chưa tồn tại, thêm vào mảng mới
+    //   setNewActionCheckList([item]);
+    // }
   };
 
   React.useEffect(() => {
