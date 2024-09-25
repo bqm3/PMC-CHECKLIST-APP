@@ -239,6 +239,10 @@ const ModalChangeTinhTrangSuCo = ({
                           dropdownStyle={{
                             borderRadius: 8,
                             maxHeight: 400,
+                            minWidth : 200,
+                            position: 'absolute',
+                            top: 0,
+                            left: 200
                           }}
                           // rowStyle={{ height: 50, justifyContent: "center" }}
                           defaultButtonText={"Khu vực"}
