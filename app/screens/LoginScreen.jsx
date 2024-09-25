@@ -12,6 +12,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Linking 
 } from "react-native";
 import React, {
   useEffect,
@@ -60,6 +61,7 @@ const LoginScreen = ({ navigation }) => {
 
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
+  const [statusLocation, setStatusLocation] = useState(1);
 
   const handleSubmit = async () => {
     if (data?.UserName === "" || data?.Password === "") {
@@ -160,18 +162,62 @@ const LoginScreen = ({ navigation }) => {
   }, []);
 
   useEffect(() => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        setErrorMsg("Permission to access location was denied");
+    if (statusLocation === 0) {
+      Alert.alert(
+        "PMC Thông báo",
+        "Hãy cấp quyền định vị vị trí của bạn!!",
+        [
+          {
+            text: "Xác nhận",
+            onPress: () => {
+              setStatusLocation(2);
+            },
+          },
+        ]
+      );
+    }
+  }, [statusLocation]);
 
-        return;
+  useEffect(() => {
+    (async () => {
+      if (statusLocation === 1) {
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status === "denied") {
+          setStatusLocation(0);
+          setErrorMsg("Permission to access location was denied");
+          return;
+        }
+        if (status === "granted") {
+          console.log("Đã cấp quyền");
+        }
       }
 
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
+      if (statusLocation === 2) {
+        let { status } = await Location.requestForegroundPermissionsAsync();
+        if (status === "denied") {
+          setErrorMsg("Permission denied. Please enable location services in settings.");
+          Alert.alert(
+            "PMC Thông báo",
+            "Bạn cần bật quyền truy cập vị trí trong Cài đặt để tiếp tục sử dụng ứng dụng.",
+            [
+              {
+                text: "Mở cài đặt",
+                onPress: () => Linking.openSettings(), // Open app settings
+              },
+              { text: "Hủy", style: "cancel" },
+            ]
+          );
+          return;
+        }
+
+        if (status === "granted") {
+          let location = await Location.getCurrentPositionAsync({});
+          setLocation(location);
+          console.log("location", location);
+        }
+      }
     })();
-  }, []);
+  }, [statusLocation]);
 
   return (
     <>
