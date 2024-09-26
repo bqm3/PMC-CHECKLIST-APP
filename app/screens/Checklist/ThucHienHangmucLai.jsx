@@ -25,7 +25,8 @@ import DataContext from "../../context/DataContext";
 import adjust from "../../adjust";
 
 const ThucHienHangmucLai = ({ route, navigation }) => {
-  const { ID_ChecklistC, ID_KhoiCV, ID_Khuvuc } = route.params;
+  const { ID_ChecklistC, ID_KhoiCV, ID_Khuvuc, dataFilterHandler } =
+    route.params;
   const { dataChecklists, setHangMuc, hangMuc, HangMucDefault } =
     useContext(DataContext);
 
@@ -39,18 +40,38 @@ const ThucHienHangmucLai = ({ route, navigation }) => {
 
   useEffect(() => {
     if (HangMucDefault && dataChecklists) {
-      const filteredByKhuvuc = HangMucDefault.filter(
+      // Lọc các mục có ID_Khuvuc trùng khớp
+      const filteredByKhuvuc = HangMucDefault?.filter(
         (item) => item.ID_Khuvuc == ID_Khuvuc
       );
-      const checklistIDs = dataChecklists.map((item) => item.ID_Hangmuc);
-      const finalFilteredData = filteredByKhuvuc.filter((item) =>
-        checklistIDs.includes(item.ID_Hangmuc)
-      );
 
-      if (finalFilteredData.length === 0 && filteredByKhuvuc.length === 0) {
-        navigation.goBack();
+      if (dataFilterHandler.length > 0) {
+        const checklistIDs = dataFilterHandler?.map((item) => item.ID_Hangmuc);
+
+        // Lọc filteredByKhuvuc để chỉ giữ lại các mục có ID_Hangmuc tồn tại trong checklistIDs
+        const finalFilteredData = filteredByKhuvuc?.filter((item) =>
+          checklistIDs.includes(item.ID_Hangmuc)
+        );
+
+        if (finalFilteredData.length == 0 && filteredByKhuvuc.length == 0) {
+          navigation.goBack();
+        } else {
+          setHangMuc(finalFilteredData);
+        }
       } else {
-        setHangMuc(finalFilteredData);
+        // Lấy danh sách ID_Hangmuc từ dataChecklists
+        const checklistIDs = dataChecklists?.map((item) => item.ID_Hangmuc);
+
+        // Lọc filteredByKhuvuc để chỉ giữ lại các mục có ID_Hangmuc tồn tại trong checklistIDs
+        const finalFilteredData = filteredByKhuvuc?.filter((item) =>
+          checklistIDs.includes(item.ID_Hangmuc)
+        );
+
+        if (finalFilteredData.length == 0 && filteredByKhuvuc.length == 0) {
+          navigation.goBack();
+        } else {
+          setHangMuc(finalFilteredData);
+        }
       }
     }
   }, [ID_Khuvuc, HangMucDefault, dataChecklists]);

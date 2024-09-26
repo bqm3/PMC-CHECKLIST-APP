@@ -76,6 +76,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
 
   const [defaultActionDataChecklist, setDataChecklistDefault] = useState([]);
   const [dataChecklistFaild, setDataChecklistFaild] = useState([]);
+  const [dataFilterHandler, setDataFilterHandler] = useState([]);
 
   const init_checklist = async () => {
     await dispath(ent_checklist_mul_hm(ID_Hangmucs, ID_Calv, ID_ChecklistC));
@@ -244,6 +245,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
           ID_KhoiCV: ID_KhoiCV,
           ID_Calv: ID_Calv,
           ID_Khuvuc: resDataKhuvuc[0].ID_Khuvuc,
+          dataFilterHandler : dataFilterHandler
         });
       } else if (resDataKhuvuc.length === 0 && resDataHangmuc.length === 0) {
         Alert.alert(
@@ -297,62 +299,62 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
     }
   };
 
-  // const handleSubmitChecklist = async () => {
-  //   try {
-  //     const networkState = await Network.getNetworkStateAsync();
-  //     if (networkState.isConnected) {
-  //       setLoadingSubmit(true);
-  //       if (
-  //         defaultActionDataChecklist.length === 0 &&
-  //         dataChecklistFaild.length === 0
-  //       ) {
-  //         await AsyncStorage.removeItem("checkNetwork");
-  //         await AsyncStorage.removeItem("dataChecklist");
-  //         // Hiển thị thông báo cho người dùng
-  //         Alert.alert("PMC Thông báo", "Không có checklist để kiểm tra!", [
-  //           { text: "OK", onPress: () => console.log("OK Pressed") },
-  //         ]);
-  //         setLoadingSubmit(false);
-  //         setSubmit(false);
-  //         saveConnect(false);
-  //       }
-  //       // Kiểm tra dữ liệu và xử lý tùy thuộc vào trạng thái của `defaultActionDataChecklist` và `dataChecklistFaild`
-  //       if (
-  //         defaultActionDataChecklist.length === 0 &&
-  //         dataChecklistFaild.length > 0
-  //       ) {
-  //         // Xử lý API cho dataChecklistFaild
-  //         await handleDataChecklistFaild();
-  //       } else if (
-  //         defaultActionDataChecklist.length > 0 &&
-  //         dataChecklistFaild.length == 0
-  //       ) {
-  //         // Xử lý API cho defaultActionDataChecklist
-  //         await handleDefaultActionDataChecklist();
-  //       }
+  const handleSubmitChecklist = async () => {
+    try {
+      const networkState = await Network.getNetworkStateAsync();
+      if (networkState.isConnected) {
+        setLoadingSubmit(true);
+        if (
+          defaultActionDataChecklist.length === 0 &&
+          dataChecklistFaild.length === 0
+        ) {
+          await AsyncStorage.removeItem("checkNetwork");
+          await AsyncStorage.removeItem("dataChecklist");
+          // Hiển thị thông báo cho người dùng
+          Alert.alert("PMC Thông báo", "Không có checklist để kiểm tra!", [
+            { text: "OK", onPress: () => console.log("OK Pressed") },
+          ]);
+          setLoadingSubmit(false);
+          setSubmit(false);
+          saveConnect(false);
+        }
+        // Kiểm tra dữ liệu và xử lý tùy thuộc vào trạng thái của `defaultActionDataChecklist` và `dataChecklistFaild`
+        if (
+          defaultActionDataChecklist.length === 0 &&
+          dataChecklistFaild.length > 0
+        ) {
+          // Xử lý API cho dataChecklistFaild
+          await handleDataChecklistFaild();
+        } else if (
+          defaultActionDataChecklist.length > 0 &&
+          dataChecklistFaild.length == 0
+        ) {
+          // Xử lý API cho defaultActionDataChecklist
+          await handleDefaultActionDataChecklist();
+        }
 
-  //       if (
-  //         defaultActionDataChecklist.length > 0 &&
-  //         dataChecklistFaild.length > 0
-  //       ) {
-  //         await hadlChecklistAll();
-  //       }
-  //     } else {
-  //       Alert.alert(
-  //         "Không có kết nối mạng",
-  //         "Vui lòng kiểm tra kết nối mạng của bạn."
-  //       );
-  //       await AsyncStorage.setItem("checkNetwork", "1");
-  //     }
-  //   } catch (error) {
-  //     // Cập nhật sau khi hoàn thành xử lý API} catch (error) {
-  //     console.error("Lỗi khi kiểm tra kết nối mạng:", error);
-  //   }
-  // };
-    const handleSubmitChecklist = async () => {
-      console.clear();
-      postHandleSubmit();
-  }
+        if (
+          defaultActionDataChecklist.length > 0 &&
+          dataChecklistFaild.length > 0
+        ) {
+          await hadlChecklistAll();
+        }
+      } else {
+        Alert.alert(
+          "Không có kết nối mạng",
+          "Vui lòng kiểm tra kết nối mạng của bạn."
+        );
+        await AsyncStorage.setItem("checkNetwork", "1");
+      }
+    } catch (error) {
+      // Cập nhật sau khi hoàn thành xử lý API} catch (error) {
+      console.error("Lỗi khi kiểm tra kết nối mạng:", error);
+    }
+  };
+  //   const handleSubmitChecklist = async () => {
+  //     console.clear();
+  //     postHandleSubmit();
+  // }
   // api faild tb_checklistchitiet
   const handleDataChecklistFaild = async () => {
     try {
@@ -707,13 +709,11 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
     if (HangMucDefault && dataChecklistFilterContextReset) {
       // Lấy danh sách ID_Hangmuc từ dataChecklists
       const checklistIDs = dataChecklistFilterContextReset.map((item) => item.ID_Hangmuc);
-      console.log("checklistIDs",checklistIDs.length)
 
       // Lọc filteredByKhuvuc để chỉ giữ lại các mục có ID_Hangmuc tồn tại trong checklistIDs
       const finalFilteredData = HangMucDefault.filter((item) =>
         checklistIDs.includes(item.ID_Hangmuc)
       );
-      console.log("finalFilteredData",finalFilteredData)
       const validKhuvucIDs = finalFilteredData.map((item) => item.ID_Khuvuc);
 
       // Lọc danh sách hạng mục dựa trên ID_Khuvuc có trong validKhuvucIDs
@@ -734,6 +734,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
 
       setHangMuc(finalFilteredData);
       setDataKhuvuc(filteredHangMuc);
+      setDataFilterHandler(finalFilteredData)
     }
   };
   const toggleTodo = async (item) => {
@@ -756,6 +757,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
       ID_KhoiCV: ID_KhoiCV,
       ID_Calv: ID_Calv,
       ID_Khuvuc: dataSelect[0].ID_Khuvuc,
+      dataFilterHandler : dataFilterHandler
     });
     setDataSelect([]);
   };

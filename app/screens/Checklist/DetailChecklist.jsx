@@ -409,79 +409,79 @@ const DetailChecklist = ({ route, navigation }) => {
   };
 
   // call api submit data checklsit
-  // const handleSubmit = async () => {
-  //   try {
-  //     const networkState = await Network.getNetworkStateAsync();
-  //     setIsConnected(networkState.isConnected);
-
-  //     if (networkState.isConnected) {
-  //       setLoadingSubmit(true);
-  //       setActiveAll(false);
-  //       saveConnect(false);
-
-  //       if (
-  //         defaultActionDataChecklist.length === 0 &&
-  //         dataChecklistFaild.length === 0
-  //       ) {
-  //         // Hiển thị thông báo cho người dùng
-  //         Alert.alert("PMC Thông báo", "Không có checklist để kiểm tra!", [
-  //           { text: "OK", onPress: () => console.log("OK Pressed") },
-  //         ]);
-  //         setLoadingSubmit(false);
-  //         // Kết thúc hàm sớm nếu mảng rỗng
-  //         return;
-  //       }
-  //       // Kiểm tra dữ liệu và xử lý tùy thuộc vào trạng thái của `defaultActionDataChecklist` và `dataChecklistFaild`
-  //       if (
-  //         defaultActionDataChecklist.length === 0 &&
-  //         dataChecklistFaild.length > 0
-  //       ) {
-  //         // Xử lý API cho dataChecklistFaild
-  //         await handleDataChecklistFaild();
-  //       } else if (
-  //         defaultActionDataChecklist.length > 0 &&
-  //         dataChecklistFaild.length == 0
-  //       ) {
-  //         // Xử lý API cho defaultActionDataChecklist
-  //         await handleDefaultActionDataChecklist();
-  //       }
-
-  //       if (
-  //         defaultActionDataChecklist.length > 0 &&
-  //         dataChecklistFaild.length > 0
-  //       ) {
-  //         await hadlChecklistAll();
-  //       }
-  //     } else {
-  //       await AsyncStorage.setItem("checkNetwork", "1");
-  //       Alert.alert(
-  //         "Không có kết nối mạng",
-  //         "Vui lòng kiểm tra kết nối mạng của bạn."
-  //       );
-  //       saveConnect(true);
-  //     }
-  //   } catch (error) {
-  //     // Cập nhật sau khi hoàn thành xử lý API} catch (error) {
-  //     console.error("Lỗi khi kiểm tra kết nối mạng:", error);
-  //     setLoadingSubmit(false);
-  //   }
-  // };
   const handleSubmit = async () => {
     try {
       const networkState = await Network.getNetworkStateAsync();
       setIsConnected(networkState.isConnected);
+
+      if (networkState.isConnected) {
+        setLoadingSubmit(true);
+        setActiveAll(false);
+        saveConnect(false);
+
+        if (
+          defaultActionDataChecklist.length === 0 &&
+          dataChecklistFaild.length === 0
+        ) {
+          // Hiển thị thông báo cho người dùng
+          Alert.alert("PMC Thông báo", "Không có checklist để kiểm tra!", [
+            { text: "OK", onPress: () => console.log("OK Pressed") },
+          ]);
+          setLoadingSubmit(false);
+          // Kết thúc hàm sớm nếu mảng rỗng
+          return;
+        }
+        // Kiểm tra dữ liệu và xử lý tùy thuộc vào trạng thái của `defaultActionDataChecklist` và `dataChecklistFaild`
+        if (
+          defaultActionDataChecklist.length === 0 &&
+          dataChecklistFaild.length > 0
+        ) {
+          // Xử lý API cho dataChecklistFaild
+          await handleDataChecklistFaild();
+        } else if (
+          defaultActionDataChecklist.length > 0 &&
+          dataChecklistFaild.length == 0
+        ) {
+          // Xử lý API cho defaultActionDataChecklist
+          await handleDefaultActionDataChecklist();
+        }
+
+        if (
+          defaultActionDataChecklist.length > 0 &&
+          dataChecklistFaild.length > 0
+        ) {
+          await hadlChecklistAll();
+        }
+      } else {
         await AsyncStorage.setItem("checkNetwork", "1");
         Alert.alert(
           "Không có kết nối mạng",
           "Vui lòng kiểm tra kết nối mạng của bạn."
         );
         saveConnect(true);
+      }
     } catch (error) {
       // Cập nhật sau khi hoàn thành xử lý API} catch (error) {
       console.error("Lỗi khi kiểm tra kết nối mạng:", error);
       setLoadingSubmit(false);
     }
   };
+  // const handleSubmit = async () => {
+  //   try {
+  //     const networkState = await Network.getNetworkStateAsync();
+  //     setIsConnected(networkState.isConnected);
+  //       await AsyncStorage.setItem("checkNetwork", "1");
+  //       Alert.alert(
+  //         "Không có kết nối mạng",
+  //         "Vui lòng kiểm tra kết nối mạng của bạn."
+  //       );
+  //       saveConnect(true);
+  //   } catch (error) {
+  //     // Cập nhật sau khi hoàn thành xử lý API} catch (error) {
+  //     console.error("Lỗi khi kiểm tra kết nối mạng:", error);
+  //     setLoadingSubmit(false);
+  //   }
+  // };
   // api faild tb_checklistchitiet
   const handleDataChecklistFaild = async () => {
     try {
@@ -1283,8 +1283,8 @@ const DetailChecklist = ({ route, navigation }) => {
                       source={{
                         uri: Hangmuc?.FileTieuChuan,
                       }}
-                      onLoadStart={() => setLoading(true)} 
-                      onLoadEnd={() => setLoading(false)} 
+                      onLoadStart={() => setLoading(true)}
+                      onLoadEnd={() => setLoading(false)}
                     />
                   </View>
                 )}

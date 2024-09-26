@@ -72,6 +72,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
 
   const [defaultActionDataChecklist, setDataChecklistDefault] = useState([]);
   const [dataChecklistFaild, setDataChecklistFaild] = useState([]);
+  const [dataFilterHandler, setDataFilterHandler] = useState([]);
 
   const init_checklist = async () => {
     setIsLoadingDetail(true);
@@ -206,7 +207,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
       );
 
       if (resDataHangmuc.length >= 1) {
-        navigation.navigate("Chi tiết Checklist", {
+        navigation.navigate("Chi tiết Checklist lại", {
           ID_ChecklistC: ID_ChecklistC,
           ID_KhoiCV: ID_KhoiCV,
           hangMuc: hangMuc,
@@ -218,6 +219,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
           ID_ChecklistC: ID_ChecklistC,
           ID_KhoiCV: ID_KhoiCV,
           ID_Khuvuc: resDataKhuvuc[0].ID_Khuvuc,
+          dataFilterHandler : dataFilterHandler
         });
       } else if (resDataKhuvuc.length === 0 && resDataHangmuc.length === 0) {
         Alert.alert(
@@ -639,16 +641,48 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
       ...dataChecklistFaild.map((item) => item.ID_Checklist),
     ]);
 
-    // Filter out items in dataChecklistFilterContext that are present in idsToRemove
     const dataChecklistFilterContextReset = dataChecklistFilterContext.filter(
       (item) => !idsToRemove.has(item.ID_Checklist)
     );
 
-    // Update state with the filtered context
-    setDataChecklistFilterContext(dataChecklistFilterContextReset);
+    const dataChecklist = dataChecklistFilterContextReset?.filter(
+      (item) => item.ID_Hangmuc == ID_Hangmuc
+    );
 
+    setDataChecklistFilterContext(dataChecklistFilterContextReset);
     setDataChecklistDefault([]);
     setDataChecklistFaild([]);
+    
+    if (HangMucDefault && dataChecklistFilterContextReset) {
+      // Lấy danh sách ID_Hangmuc từ dataChecklists
+      const checklistIDs = dataChecklistFilterContextReset.map((item) => item.ID_Hangmuc);
+
+      // Lọc filteredByKhuvuc để chỉ giữ lại các mục có ID_Hangmuc tồn tại trong checklistIDs
+      const finalFilteredData = HangMucDefault.filter((item) =>
+        checklistIDs.includes(item.ID_Hangmuc)
+      );
+      const validKhuvucIDs = finalFilteredData.map((item) => item.ID_Khuvuc);
+
+      // Lọc danh sách hạng mục dựa trên ID_Khuvuc có trong validKhuvucIDs
+      const filteredHangMuc = ent_khuvuc
+        .filter((item) => validKhuvucIDs.includes(item.ID_Khuvuc))
+        .map((khuvuc) => {
+          // Đếm số lượng hạng mục còn lại trong từng khu vực
+          const hangMucCount = finalFilteredData.filter(
+            (hangmuc) => hangmuc.ID_Khuvuc === khuvuc.ID_Khuvuc
+          ).length;
+
+          // Gắn số lượng hạng mục vào từng khu vực
+          return {
+            ...khuvuc,
+            hangMucCount,
+          };
+        });
+
+      setHangMuc(finalFilteredData);
+      setDataKhuvuc(filteredHangMuc);
+      setDataFilterHandler(finalFilteredData)
+    }
   };
 
   const toggleTodo = async (item) => {
@@ -670,6 +704,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
       ID_ChecklistC: ID_ChecklistC,
       ID_KhoiCV: ID_KhoiCV,
       ID_Khuvuc: dataSelect[0].ID_Khuvuc,
+      dataFilterHandler : dataFilterHandler
     });
     setDataSelect([]);
   };
