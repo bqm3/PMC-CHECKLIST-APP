@@ -466,22 +466,7 @@ const DetailChecklist = ({ route, navigation }) => {
       setLoadingSubmit(false);
     }
   };
-  // const handleSubmit = async () => {
-  //   try {
-  //     const networkState = await Network.getNetworkStateAsync();
-  //     setIsConnected(networkState.isConnected);
-  //       await AsyncStorage.setItem("checkNetwork", "1");
-  //       Alert.alert(
-  //         "Không có kết nối mạng",
-  //         "Vui lòng kiểm tra kết nối mạng của bạn."
-  //       );
-  //       saveConnect(true);
-  //   } catch (error) {
-  //     // Cập nhật sau khi hoàn thành xử lý API} catch (error) {
-  //     console.error("Lỗi khi kiểm tra kết nối mạng:", error);
-  //     setLoadingSubmit(false);
-  //   }
-  // };
+
   // api faild tb_checklistchitiet
   const handleDataChecklistFaild = async () => {
     try {
@@ -976,9 +961,7 @@ const DetailChecklist = ({ route, navigation }) => {
     if (number == 0) return `0`;
     return number;
   };
-  //   console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxx")
-  // //  console.log(Hangmuc)
-  //  console.log(hangMuc)
+  
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <KeyboardAvoidingView
