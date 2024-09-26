@@ -50,6 +50,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Checkbox from "../../components/Active/Checkbox";
 import ConnectContext from "../../context/ConnectContext";
 import WebView from "react-native-webview";
+import axiosClient from "../../api/axiosClient";
 
 const DetailChecklist = ({ route, navigation }) => {
   const { ID_ChecklistC, ID_KhoiCV, ID_Hangmuc, hangMuc, Hangmuc } =
@@ -260,6 +261,7 @@ const DetailChecklist = ({ route, navigation }) => {
 
   // click item checklist
   const handleItemClick = (value, status, key, itemData) => {
+    console.log(value,status,key)
     const updatedDataChecklist = dataChecklistFilter?.map((item, i) => {
       if (item.ID_Checklist == itemData.ID_Checklist) {
         return {
@@ -297,6 +299,7 @@ const DetailChecklist = ({ route, navigation }) => {
         it.GhichuChitiet === ""
       );
     });
+    console.log("it.valueCheck",it.valueCheck)
     if (it.valueCheck === null) {
       if (
         !mergedArrOption.some(
@@ -317,12 +320,14 @@ const DetailChecklist = ({ route, navigation }) => {
       }
 
       if (status === "option") {
+        console.log("run 0")
         const indexDefault = mergedArrClick.findIndex(
           (item) => item.ID_Checklist === it.ID_Checklist
         );
 
         // Xóa phần tử nếu có trong mergedArrClick
         if (indexDefault !== -1) {
+          console.log("run 1")
           mergedArrClick.splice(indexDefault, 1);
         }
 
@@ -330,11 +335,11 @@ const DetailChecklist = ({ route, navigation }) => {
         const indexOption = mergedArrOption.findIndex(
           (existingItem) => existingItem.ID_Checklist === it.ID_Checklist
         );
-
+        console.log("run 2")
         // Kiểm tra nếu phần tử đã tồn tại trong mergedArrOption
         if (indexOption !== -1) {
+          console.log("run 3")
           const existingItem = mergedArrOption[indexOption];
-
           // Kiểm tra nếu dữ liệu của 'it' khác so với dữ liệu hiện tại
           if (JSON.stringify(existingItem) !== JSON.stringify(it)) {
             // Nếu khác, thay thế phần tử cũ bằng phần tử mới
@@ -342,11 +347,11 @@ const DetailChecklist = ({ route, navigation }) => {
           }
         } else {
           // Nếu phần tử chưa tồn tại, thêm 'it' mới vào
+          console.log("run 4")
           mergedArrOption.push(it);
         }
       }
     }
-
     setDataChecklistFaild([...mergedArrOption]);
     setDataChecklistDefault(mergedArrClick);
     setNewActionDataChecklist([...mergedArrOption, ...mergedArrClick]);
@@ -473,6 +478,7 @@ const DetailChecklist = ({ route, navigation }) => {
       setLoadingSubmit(true);
       // Create a new FormData instance
       const formData = new FormData();
+      console.log("GhichuChitiet",dataChecklistFaild[0].GhichuChitiet)
 
       // Iterate over all items in dataChecklistFaild
       dataChecklistFaild.forEach((item, index) => {
@@ -507,33 +513,33 @@ const DetailChecklist = ({ route, navigation }) => {
       });
 
       // Send the entire FormData in a single request
-      await axios
-        .post(BASE_URL + `/tb_checklistchitiet/create`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${authToken}`,
-          },
-        })
-        .then((res) => {
-          postHandleSubmit();
-          setLoadingSubmit(false);
-          Alert.alert("PMC Thông báo", "Checklist thành công", [
-            {
-              text: "Hủy",
-              onPress: () => console.log("Cancel Pressed"),
-              style: "cancel",
-            },
-            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-          ]);
-        })
-        .catch((err) => {
-          setLoadingSubmit(false);
-          Alert.alert(
-            "PMC Thông báo",
-            "Checklist thất bại. Vui lòng kiểm tra lại hình ảnh hoặc ghi chú!!!",
-            [{ text: "Xác nhận", onPress: () => console.log("OK Pressed") }]
-          );
-        });
+      // await axiosClient
+      //   .post(BASE_URL + `/tb_checklistchitiet/create`, formData, {
+      //     headers: {
+      //       "Content-Type": "multipart/form-data",
+      //       Authorization: `Bearer ${authToken}`,
+      //     },
+      //   })
+      //   .then((res) => {
+      //     postHandleSubmit();
+      //     setLoadingSubmit(false);
+      //     Alert.alert("PMC Thông báo", "Checklist thành công", [
+      //       {
+      //         text: "Hủy",
+      //         onPress: () => console.log("Cancel Pressed"),
+      //         style: "cancel",
+      //       },
+      //       { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+      //     ]);
+      //   })
+      //   .catch((err) => {
+      //     setLoadingSubmit(false);
+      //     Alert.alert(
+      //       "PMC Thông báo",
+      //       "Checklist thất bại. Vui lòng kiểm tra lại hình ảnh hoặc ghi chú!!!",
+      //       [{ text: "Xác nhận", onPress: () => console.log("OK Pressed") }]
+      //     );
+      //   });
     } catch (error) {
       setLoadingSubmit(false);
       if (error.response) {
@@ -562,7 +568,7 @@ const DetailChecklist = ({ route, navigation }) => {
     );
     const Gioht = defaultActionDataChecklist.map((item) => item.Gioht);
 
-    const requestDone = axios.post(
+    const requestDone = axiosClient.post(
       BASE_URL + "/tb_checklistchitietdone/create",
       {
         Description: descriptions,
@@ -659,7 +665,7 @@ const DetailChecklist = ({ route, navigation }) => {
       );
 
       // Tạo các yêu cầu API
-      const requestFaild = axios.post(
+      const requestFaild = axiosClient.post(
         `${BASE_URL}/tb_checklistchitiet/create`,
         formData,
         {
@@ -670,7 +676,7 @@ const DetailChecklist = ({ route, navigation }) => {
         }
       );
 
-      const requestDone = axios.post(
+      const requestDone = axiosClient.post(
         `${BASE_URL}/tb_checklistchitietdone/create`,
         {
           Description: descriptions,
