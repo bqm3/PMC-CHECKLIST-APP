@@ -1098,7 +1098,7 @@ const DetailChecklist = ({ route, navigation }) => {
                         style={{
                           margin: 12,
                           flex: 1,
-                          marginBottom: 100,
+                          marginBottom: 80,
                         }}
                         data={dataChecklistFilter}
                         renderItem={({ item, index, separators }) =>
@@ -1161,7 +1161,7 @@ const DetailChecklist = ({ route, navigation }) => {
                 <View
                   style={{
                     position: "absolute",
-                    bottom: 20,
+                    bottom: 15,
                     flexDirection: "row",
                     justifyContent: "space-around",
                     alignItems: "center",
