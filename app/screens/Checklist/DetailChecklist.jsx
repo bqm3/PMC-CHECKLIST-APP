@@ -1161,7 +1161,7 @@ const DetailChecklist = ({ route, navigation }) => {
                 <View
                   style={{
                     position: "absolute",
-                    bottom: 40,
+                    bottom: 20,
                     flexDirection: "row",
                     justifyContent: "space-around",
                     alignItems: "center",
