@@ -38,7 +38,8 @@ import ConnectContext from "../../context/ConnectContext";
 import axiosClient from "../../api/axiosClient";
 
 const ThucHienKhuvuc = ({ route, navigation }) => {
-  const { ID_ChecklistC, ID_KhoiCV, ID_Calv, ID_Hangmucs ,ID_Hangmuc} = route.params;
+  const { ID_ChecklistC, ID_KhoiCV, ID_Calv, ID_Hangmucs, ID_Hangmuc } =
+    route.params;
 
   const {
     setDataChecklists,
@@ -49,8 +50,11 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
     dataChecklists,
     HangMucDefault,
   } = useContext(DataContext);
-  const { setDataChecklistFilterContext, dataChecklistFilterContext , localtionContext} =
-    useContext(ChecklistContext);
+  const {
+    setDataChecklistFilterContext,
+    dataChecklistFilterContext,
+    localtionContext,
+  } = useContext(ChecklistContext);
 
   const dispath = useDispatch();
   const { ent_khuvuc, ent_checklist_detail, ent_toanha } = useSelector(
@@ -62,7 +66,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
   const { user, authToken } = useSelector((state) => state.authReducer);
 
   const [opacity, setOpacity] = useState(1);
-  const [submit, setSubmit] = useState(true);
+  const [submit, setSubmit] = useState(false);
   const [isLoadingDetail, setIsLoadingDetail] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [isScan, setIsScan] = useState(false);
@@ -293,59 +297,62 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
     }
   };
 
-  const handleSubmitChecklist = async () => {
-    try {
-      const networkState = await Network.getNetworkStateAsync();
-      if (networkState.isConnected) {
-        setLoadingSubmit(true);
-        if (
-          defaultActionDataChecklist.length === 0 &&
-          dataChecklistFaild.length === 0
-        ) {
-          await AsyncStorage.removeItem("checkNetwork");
-          await AsyncStorage.removeItem("dataChecklist");
-          // Hiển thị thông báo cho người dùng
-          Alert.alert("PMC Thông báo", "Không có checklist để kiểm tra!", [
-            { text: "OK", onPress: () => console.log("OK Pressed") },
-          ]);
-          setLoadingSubmit(false);
-          setSubmit(false);
-          saveConnect(false);
-        }
-        // Kiểm tra dữ liệu và xử lý tùy thuộc vào trạng thái của `defaultActionDataChecklist` và `dataChecklistFaild`
-        if (
-          defaultActionDataChecklist.length === 0 &&
-          dataChecklistFaild.length > 0
-        ) {
-          // Xử lý API cho dataChecklistFaild
-          await handleDataChecklistFaild();
-        } else if (
-          defaultActionDataChecklist.length > 0 &&
-          dataChecklistFaild.length == 0
-        ) {
-          // Xử lý API cho defaultActionDataChecklist
-          await handleDefaultActionDataChecklist();
-        }
+  // const handleSubmitChecklist = async () => {
+  //   try {
+  //     const networkState = await Network.getNetworkStateAsync();
+  //     if (networkState.isConnected) {
+  //       setLoadingSubmit(true);
+  //       if (
+  //         defaultActionDataChecklist.length === 0 &&
+  //         dataChecklistFaild.length === 0
+  //       ) {
+  //         await AsyncStorage.removeItem("checkNetwork");
+  //         await AsyncStorage.removeItem("dataChecklist");
+  //         // Hiển thị thông báo cho người dùng
+  //         Alert.alert("PMC Thông báo", "Không có checklist để kiểm tra!", [
+  //           { text: "OK", onPress: () => console.log("OK Pressed") },
+  //         ]);
+  //         setLoadingSubmit(false);
+  //         setSubmit(false);
+  //         saveConnect(false);
+  //       }
+  //       // Kiểm tra dữ liệu và xử lý tùy thuộc vào trạng thái của `defaultActionDataChecklist` và `dataChecklistFaild`
+  //       if (
+  //         defaultActionDataChecklist.length === 0 &&
+  //         dataChecklistFaild.length > 0
+  //       ) {
+  //         // Xử lý API cho dataChecklistFaild
+  //         await handleDataChecklistFaild();
+  //       } else if (
+  //         defaultActionDataChecklist.length > 0 &&
+  //         dataChecklistFaild.length == 0
+  //       ) {
+  //         // Xử lý API cho defaultActionDataChecklist
+  //         await handleDefaultActionDataChecklist();
+  //       }
 
-        if (
-          defaultActionDataChecklist.length > 0 &&
-          dataChecklistFaild.length > 0
-        ) {
-          await hadlChecklistAll();
-        }
-      } else {
-        Alert.alert(
-          "Không có kết nối mạng",
-          "Vui lòng kiểm tra kết nối mạng của bạn."
-        );
-        await AsyncStorage.setItem("checkNetwork", "1");
-      }
-    } catch (error) {
-      // Cập nhật sau khi hoàn thành xử lý API} catch (error) {
-      console.error("Lỗi khi kiểm tra kết nối mạng:", error);
-    }
-  };
-
+  //       if (
+  //         defaultActionDataChecklist.length > 0 &&
+  //         dataChecklistFaild.length > 0
+  //       ) {
+  //         await hadlChecklistAll();
+  //       }
+  //     } else {
+  //       Alert.alert(
+  //         "Không có kết nối mạng",
+  //         "Vui lòng kiểm tra kết nối mạng của bạn."
+  //       );
+  //       await AsyncStorage.setItem("checkNetwork", "1");
+  //     }
+  //   } catch (error) {
+  //     // Cập nhật sau khi hoàn thành xử lý API} catch (error) {
+  //     console.error("Lỗi khi kiểm tra kết nối mạng:", error);
+  //   }
+  // };
+    const handleSubmitChecklist = async () => {
+      console.clear();
+      postHandleSubmit();
+  }
   // api faild tb_checklistchitiet
   const handleDataChecklistFaild = async () => {
     try {
@@ -658,28 +665,77 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
     }
   };
 
+  // const postHandleSubmit = () => {
+  //   const idsToRemove = new Set([
+  //     ...defaultActionDataChecklist.map((item) => item.ID_Checklist),
+  //     ...dataChecklistFaild.map((item) => item.ID_Checklist),
+  //   ]);
+
+  //   // Filter out items in dataChecklistFilterContext that are present in idsToRemove
+  //   const dataChecklistFilterContextReset = dataChecklistFilterContext.filter(
+  //     (item) => !idsToRemove.has(item.ID_Checklist)
+  //   );
+
+  //   // Update state with the filtered context
+  //  const dataChecklist = dataChecklistFilterContextReset?.filter(
+  //     (item) => item.ID_Hangmuc == ID_Hangmuc
+  //   );
+
+  //   // Update state with the filtered context
+  //   setDataChecklistFilterContext(dataChecklistFilterContextReset);
+  //   setDataChecklistDefault([]);
+  //   setDataChecklistFaild([]);
+  // };
   const postHandleSubmit = () => {
     const idsToRemove = new Set([
       ...defaultActionDataChecklist.map((item) => item.ID_Checklist),
       ...dataChecklistFaild.map((item) => item.ID_Checklist),
     ]);
 
-    // Filter out items in dataChecklistFilterContext that are present in idsToRemove
     const dataChecklistFilterContextReset = dataChecklistFilterContext.filter(
       (item) => !idsToRemove.has(item.ID_Checklist)
     );
 
-    // Update state with the filtered context
-   const dataChecklist = dataChecklistFilterContextReset?.filter(
+    const dataChecklist = dataChecklistFilterContextReset?.filter(
       (item) => item.ID_Hangmuc == ID_Hangmuc
     );
 
-    // Update state with the filtered context
     setDataChecklistFilterContext(dataChecklistFilterContextReset);
     setDataChecklistDefault([]);
     setDataChecklistFaild([]);
-  };
+    
+    if (HangMucDefault && dataChecklistFilterContextReset) {
+      // Lấy danh sách ID_Hangmuc từ dataChecklists
+      const checklistIDs = dataChecklistFilterContextReset.map((item) => item.ID_Hangmuc);
+      console.log("checklistIDs",checklistIDs.length)
 
+      // Lọc filteredByKhuvuc để chỉ giữ lại các mục có ID_Hangmuc tồn tại trong checklistIDs
+      const finalFilteredData = HangMucDefault.filter((item) =>
+        checklistIDs.includes(item.ID_Hangmuc)
+      );
+      console.log("finalFilteredData",finalFilteredData)
+      const validKhuvucIDs = finalFilteredData.map((item) => item.ID_Khuvuc);
+
+      // Lọc danh sách hạng mục dựa trên ID_Khuvuc có trong validKhuvucIDs
+      const filteredHangMuc = ent_khuvuc
+        .filter((item) => validKhuvucIDs.includes(item.ID_Khuvuc))
+        .map((khuvuc) => {
+          // Đếm số lượng hạng mục còn lại trong từng khu vực
+          const hangMucCount = finalFilteredData.filter(
+            (hangmuc) => hangmuc.ID_Khuvuc === khuvuc.ID_Khuvuc
+          ).length;
+
+          // Gắn số lượng hạng mục vào từng khu vực
+          return {
+            ...khuvuc,
+            hangMucCount,
+          };
+        });
+
+      setHangMuc(finalFilteredData);
+      setDataKhuvuc(filteredHangMuc);
+    }
+  };
   const toggleTodo = async (item) => {
     const isExistIndex = dataSelect.find(
       (existingItem) => existingItem === item
@@ -738,7 +794,16 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
             {item?.Tenkhuvuc} - {item?.ent_toanha?.Toanha}
           </Text>
         </View>
-        <View style={{ width: 30, height: 30, borderRadius: 50, backgroundColor: dataSelect[0] === item ? "white" : "gray", justifyContent: 'center', alignItems: 'center' }}>
+        <View
+          style={{
+            width: 30,
+            height: 30,
+            borderRadius: 50,
+            backgroundColor: dataSelect[0] === item ? "white" : "gray",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
           <Text
             style={{
               fontSize: adjust(16),

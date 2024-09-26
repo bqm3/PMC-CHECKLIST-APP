@@ -61,7 +61,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
   const { user, authToken } = useSelector((state) => state.authReducer);
 
   const [opacity, setOpacity] = useState(1);
-  const [submit, setSubmit] = useState(true);
+  const [submit, setSubmit] = useState(false);
   const [isLoadingDetail, setIsLoadingDetail] = useState(true);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [isScan, setIsScan] = useState(false);
@@ -802,7 +802,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
                           allowFontScaling={false}
                           style={[styles.text, { fontSize: adjust(18) }]}
                         >
-                          Số lượng: {decimalNumber(data?.length)} khu vực
+                          Số lượng: {decimalNumber(dataKhuvuc?.length)} khu vực
                         </Text>
                       </View>
                       {submit === true && (
