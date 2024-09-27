@@ -35,9 +35,11 @@ import adjust from "../../adjust";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Network from "expo-network";
 import ConnectContext from "../../context/ConnectContext";
+import axiosClient from "../../api/axiosClient";
 
 const ThucHienKhuvuc = ({ route, navigation }) => {
-  const { ID_ChecklistC, ID_KhoiCV, ID_Calv, ID_Hangmucs } = route.params;
+  const { ID_ChecklistC, ID_KhoiCV, ID_Calv, ID_Hangmucs, ID_Hangmuc } =
+    route.params;
 
   const {
     setDataChecklists,
@@ -48,8 +50,11 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
     dataChecklists,
     HangMucDefault,
   } = useContext(DataContext);
-  const { setDataChecklistFilterContext, dataChecklistFilterContext } =
-    useContext(ChecklistContext);
+  const {
+    setDataChecklistFilterContext,
+    dataChecklistFilterContext,
+    localtionContext,
+  } = useContext(ChecklistContext);
 
   const dispath = useDispatch();
   const { ent_khuvuc, ent_checklist_detail, ent_toanha } = useSelector(
@@ -61,7 +66,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
   const { user, authToken } = useSelector((state) => state.authReducer);
 
   const [opacity, setOpacity] = useState(1);
-  const [submit, setSubmit] = useState(true);
+  const [submit, setSubmit] = useState(false);
   const [isLoadingDetail, setIsLoadingDetail] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [isScan, setIsScan] = useState(false);
@@ -71,11 +76,11 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
 
   const [defaultActionDataChecklist, setDataChecklistDefault] = useState([]);
   const [dataChecklistFaild, setDataChecklistFaild] = useState([]);
+  const [dataFilterHandler, setDataFilterHandler] = useState([]);
 
   const init_checklist = async () => {
     await dispath(ent_checklist_mul_hm(ID_Hangmucs, ID_Calv, ID_ChecklistC));
   };
-
   useEffect(() => {
     const ID_HangmucsArray = Array.isArray(ID_Hangmucs)
       ? ID_Hangmucs
@@ -231,7 +236,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
           ID_KhoiCV: ID_KhoiCV,
           ID_Calv: ID_Calv,
           hangMuc: hangMuc,
-          Hangmuc: resDataHangmuc[0].Hangmuc,
+          Hangmuc: resDataHangmuc[0],
           ID_Hangmuc: resDataHangmuc[0].ID_Hangmuc,
         });
       } else if (resDataKhuvuc.length >= 1) {
@@ -240,6 +245,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
           ID_KhoiCV: ID_KhoiCV,
           ID_Calv: ID_Calv,
           ID_Khuvuc: resDataKhuvuc[0].ID_Khuvuc,
+          dataFilterHandler : dataFilterHandler
         });
       } else if (resDataKhuvuc.length === 0 && resDataHangmuc.length === 0) {
         Alert.alert(
@@ -345,7 +351,10 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
       console.error("Lỗi khi kiểm tra kết nối mạng:", error);
     }
   };
-
+  //   const handleSubmitChecklist = async () => {
+  //     console.clear();
+  //     postHandleSubmit();
+  // }
   // api faild tb_checklistchitiet
   const handleDataChecklistFaild = async () => {
     try {
@@ -359,8 +368,11 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
         formData.append("ID_ChecklistC", ID_ChecklistC);
         formData.append("ID_Checklist", item.ID_Checklist);
         formData.append("Ketqua", item.valueCheck || "");
-        formData.append("Gioht", item.gioht);
+        formData.append("Gioht", item.Gioht);
         formData.append("Ghichu", item.GhichuChitiet || "");
+        formData.append("Vido", localtionContext?.coords?.latitude || "");
+        formData.append("Kinhdo", localtionContext?.coords?.longitude || "");
+        formData.append("Docao", localtionContext?.coords?.altitude || "");
 
         // If there is an image, append it to formData
         if (item.Anh) {
@@ -444,10 +456,13 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
       BASE_URL + "/tb_checklistchitietdone/create",
       {
         Description: descriptions,
-        Gioht: defaultActionDataChecklist[0].gioht,
+        Gioht: defaultActionDataChecklist[0].Gioht,
         ID_Checklists: ID_Checklists,
         ID_ChecklistC: ID_ChecklistC,
         checklistLength: defaultActionDataChecklist.length,
+        Vido: localtionContext?.coords?.latitude || "",
+        Kinhdo: localtionContext?.coords?.longitude || "",
+        Docao: localtionContext?.coords?.altitude || "",
       },
       {
         headers: {
@@ -458,7 +473,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
     );
     try {
       // Gộp cả hai mảng promise và đợi cho tất cả các promise hoàn thành
-      await Promise.all(requestDone);
+      await Promise.all([requestDone]);
       postHandleSubmit();
       setLoadingSubmit(false);
       await AsyncStorage.removeItem("checkNetwork");
@@ -505,8 +520,11 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
         formData.append("ID_ChecklistC", ID_ChecklistC);
         formData.append("ID_Checklist", item.ID_Checklist);
         formData.append("Ketqua", item.valueCheck || "");
-        formData.append("Gioht", item.gioht);
+        formData.append("Gioht", item.Gioht);
         formData.append("Ghichu", item.GhichuChitiet || "");
+        formData.append("Vido", localtionContext?.coords?.latitude || "");
+        formData.append("Kinhdo", localtionContext?.coords?.longitude || "");
+        formData.append("Docao", localtionContext?.coords?.altitude || "");
 
         // Nếu có hình ảnh, thêm vào FormData
         if (item.Anh) {
@@ -553,10 +571,13 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
         `${BASE_URL}/tb_checklistchitietdone/create`,
         {
           Description: descriptions,
-          Gioht: defaultActionDataChecklist[0].gioht,
+          Gioht: defaultActionDataChecklist[0].Gioht,
           ID_Checklists: ID_Checklists,
           ID_ChecklistC: ID_ChecklistC,
           checklistLength: defaultActionDataChecklist.length,
+          Vido: localtionContext?.coords?.latitude || "",
+          Kinhdo: localtionContext?.coords?.longitude || "",
+          Docao: localtionContext?.coords?.altitude || "",
         },
         {
           headers: {
@@ -646,28 +667,76 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
     }
   };
 
+  // const postHandleSubmit = () => {
+  //   const idsToRemove = new Set([
+  //     ...defaultActionDataChecklist.map((item) => item.ID_Checklist),
+  //     ...dataChecklistFaild.map((item) => item.ID_Checklist),
+  //   ]);
+
+  //   // Filter out items in dataChecklistFilterContext that are present in idsToRemove
+  //   const dataChecklistFilterContextReset = dataChecklistFilterContext.filter(
+  //     (item) => !idsToRemove.has(item.ID_Checklist)
+  //   );
+
+  //   // Update state with the filtered context
+  //  const dataChecklist = dataChecklistFilterContextReset?.filter(
+  //     (item) => item.ID_Hangmuc == ID_Hangmuc
+  //   );
+
+  //   // Update state with the filtered context
+  //   setDataChecklistFilterContext(dataChecklistFilterContextReset);
+  //   setDataChecklistDefault([]);
+  //   setDataChecklistFaild([]);
+  // };
   const postHandleSubmit = () => {
     const idsToRemove = new Set([
       ...defaultActionDataChecklist.map((item) => item.ID_Checklist),
       ...dataChecklistFaild.map((item) => item.ID_Checklist),
     ]);
 
-    // Filter out items in dataChecklistFilterContext that are present in idsToRemove
     const dataChecklistFilterContextReset = dataChecklistFilterContext.filter(
       (item) => !idsToRemove.has(item.ID_Checklist)
     );
 
-    // Update state with the filtered context
-   const dataChecklist = dataChecklistFilterContextReset?.filter(
+    const dataChecklist = dataChecklistFilterContextReset?.filter(
       (item) => item.ID_Hangmuc == ID_Hangmuc
     );
 
-    // Update state with the filtered context
     setDataChecklistFilterContext(dataChecklistFilterContextReset);
     setDataChecklistDefault([]);
     setDataChecklistFaild([]);
-  };
+    
+    if (HangMucDefault && dataChecklistFilterContextReset) {
+      // Lấy danh sách ID_Hangmuc từ dataChecklists
+      const checklistIDs = dataChecklistFilterContextReset.map((item) => item.ID_Hangmuc);
 
+      // Lọc filteredByKhuvuc để chỉ giữ lại các mục có ID_Hangmuc tồn tại trong checklistIDs
+      const finalFilteredData = HangMucDefault.filter((item) =>
+        checklistIDs.includes(item.ID_Hangmuc)
+      );
+      const validKhuvucIDs = finalFilteredData.map((item) => item.ID_Khuvuc);
+
+      // Lọc danh sách hạng mục dựa trên ID_Khuvuc có trong validKhuvucIDs
+      const filteredHangMuc = ent_khuvuc
+        .filter((item) => validKhuvucIDs.includes(item.ID_Khuvuc))
+        .map((khuvuc) => {
+          // Đếm số lượng hạng mục còn lại trong từng khu vực
+          const hangMucCount = finalFilteredData.filter(
+            (hangmuc) => hangmuc.ID_Khuvuc === khuvuc.ID_Khuvuc
+          ).length;
+
+          // Gắn số lượng hạng mục vào từng khu vực
+          return {
+            ...khuvuc,
+            hangMucCount,
+          };
+        });
+
+      setHangMuc(finalFilteredData);
+      setDataKhuvuc(filteredHangMuc);
+      setDataFilterHandler(finalFilteredData)
+    }
+  };
   const toggleTodo = async (item) => {
     const isExistIndex = dataSelect.find(
       (existingItem) => existingItem === item
@@ -688,6 +757,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
       ID_KhoiCV: ID_KhoiCV,
       ID_Calv: ID_Calv,
       ID_Khuvuc: dataSelect[0].ID_Khuvuc,
+      dataFilterHandler : dataFilterHandler
     });
     setDataSelect([]);
   };
@@ -726,7 +796,16 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
             {item?.Tenkhuvuc} - {item?.ent_toanha?.Toanha}
           </Text>
         </View>
-        <View style={{ width: 30, height: 30, borderRadius: 50, backgroundColor: dataSelect[0] === item ? "white" : "gray", justifyContent: 'center', alignItems: 'center' }}>
+        <View
+          style={{
+            width: 30,
+            height: 30,
+            borderRadius: 50,
+            backgroundColor: dataSelect[0] === item ? "white" : "gray",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
           <Text
             style={{
               fontSize: adjust(16),

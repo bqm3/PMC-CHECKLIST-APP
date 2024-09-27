@@ -51,7 +51,7 @@ export const tb_checklist_get_lai = (id) => {
               GhichuChitiet: "",
               ID_ChecklistC: ID_ChecklistC,
               Anh: null,
-              gioht: moment().format("LTS"),
+              Gioht: moment().format("LTS"),
             };
           });
           dispatch({

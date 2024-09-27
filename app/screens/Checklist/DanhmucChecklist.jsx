@@ -161,10 +161,6 @@ const DanhmucChecklist = ({ navigation }) => {
     setListChecklist(ent_checklist);
   }, [ent_checklist]);
 
-  const init_tang = async () => {
-    await dispath(ent_tang_get());
-  };
-
   const init_khoicv = async () => {
     await dispath(ent_khoicv_get());
   };
@@ -184,7 +180,6 @@ const DanhmucChecklist = ({ navigation }) => {
   useEffect(() => {
     init_checklist();
     init_khuvuc();
-    init_tang();
     init_khoicv();
     init_toanha();
     init_hangmuc();

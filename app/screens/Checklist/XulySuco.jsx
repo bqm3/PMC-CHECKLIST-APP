@@ -14,6 +14,7 @@ import {
   TouchableWithoutFeedbackBase,
   TouchableHighlight,
   Alert,
+  BackHandler,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Provider, useDispatch, useSelector } from "react-redux";
@@ -29,7 +30,9 @@ import ModalChangeTinhTrangSuCo from "../../components/Modal/ModalChangeTinhTran
 import axios from "axios";
 import { BASE_URL } from "../../constants/config";
 import moment from "moment";
-
+import axiosClient from "../../api/axiosClient";
+import { formatDate } from "../../utils/util";
+import * as ImagePicker from "expo-image-picker";
 const XulySuco = ({ navigation }) => {
   const dispath = useDispatch();
 
@@ -42,7 +45,16 @@ const XulySuco = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [opacity, setOpacity] = useState(1);
   const [loadingStatus, setLoadingStatus] = useState(false);
+  const [modalHeight, setModalHeight] = useState(350);
+  const [images, setImages] = useState([]);
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+  const hangmuc = newActionClick[0]?.ent_hangmuc?.Hangmuc;
 
+  const [dataInput, setDataInput] = useState({
+    ID_Hangmuc: null,
+    Noidungghichu: "",
+    Duongdancacanh: [],
+  });
   const [changeStatus, setChangeStatus] = useState({
     status1: false,
     status2: false,
@@ -85,15 +97,31 @@ const XulySuco = ({ navigation }) => {
       return updatedStatus;
     });
     setSaveStatus(
-      key === "status1"
+      key === "status1" && val == true
         ? 0
-        : key === "status2"
+        : key === "status2" && val == true
         ? 1
-        : key === "status3"
+        : key === "status3" && val == true
         ? 2
         : null
     );
   };
+  useEffect(() => {
+    const backAction = () => {
+      if (isBottomSheetOpen) {
+        handleCloseTinhTrang();
+        return true;
+      }
+      return false;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, [isBottomSheetOpen, opacity]);
 
   useEffect(() => {
     setLoading(true);
@@ -126,16 +154,131 @@ const XulySuco = ({ navigation }) => {
     setOpacity(0.2);
   };
 
-  const hanldeDetailSuco = (data) => {
-    navigation.navigate("Chi tiết sự cố", {
-      data: data,
-    });
+  // const hanldeDetailSuco = (data) => {
+  //   navigation.navigate("Chi tiết sự cố", {
+  //     data: data,
+  //   });
+  // };
+  const hanldeDetailSuco = async (data) => {
+    try {
+      await axios
+        .get(
+          BASE_URL + `/tb_sucongoai/getDetail/${newActionClick[0].ID_Suco}`,
+          {
+            headers: {
+              Accept: "application/json",
+              Authorization: "Bearer " + authToken,
+            },
+            timeout: 10000, // 10 giây
+          }
+        )
+        .then((response) => {
+          navigation.navigate("Chi tiết sự cố", {
+            data: response.data.data,
+          });
+        });
+    } catch (error) {
+      if (error.code === "ECONNABORTED") {
+        Alert.alert("PMC Thông báo", "Request bị timeout, vui lòng thử lại!", [
+          {
+            text: "Xác nhận",
+            onPress: () => {
+              console.log("OK Pressed");
+            },
+          },
+        ]);
+      } else {
+        Alert.alert("PMC Thông báo", "Có lỗi xảy ra!", [
+          {
+            text: "Xác nhận",
+            onPress: () => {
+              console.log("OK Pressed");
+            },
+          },
+        ]);
+      }
+    }
   };
 
-  const handleCloseTinhTrang = async (data) => {
+  const handleCloseTinhTrang = async () => {
     setModalVisible(false);
     setOpacity(1);
+    setIsBottomSheetOpen(false);
   };
+
+  const handleChangeText = (key, value) => {
+    setDataInput((data) => ({
+      ...data,
+      [key]: value,
+    }));
+  };
+
+  const resetDataInput = () => {
+    setDataInput({
+      ID_Hangmuc: null,
+      Noidungsuco: "",
+      Duongdancacanh: [],
+    });
+    setChangeStatus({
+      status1: false,
+      status2: false,
+      status3: false,
+    });
+    setImages([]);
+  };
+
+  const handleRemoveImage = (item) => {
+    setImages(images.filter((image) => image !== item));
+  };
+
+  const pickImage = async () => {
+    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+
+    if (permissionResult.granted === false) {
+      alert(
+        "Bạn đã từ chối cho phép được sử dụng camera. Vào cài đặt và mở lại!"
+      );
+      return;
+    }
+
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      aspect: [4, 3],
+      quality: 0.5, // Adjust image quality (0 to 1)
+    });
+
+    if (!result.canceled) {
+      setImages((prevImages) => {
+        const updatedImages = [...prevImages, result.assets[0].uri].filter(
+          (uri) => uri
+        ); // Filter out undefined or null
+        return updatedImages;
+      });
+    }
+
+    // if (result.canceled == true) {
+    //   console.log("RUN");
+    //   setImages(...prevImages,[]);
+    // }
+  };
+  //result {"assets": null, "canceled": true}
+
+  useEffect(() => {
+    let height = 300;
+    if (hangmuc === undefined) {
+      if (changeStatus.status2) {
+        height = 450;
+      } else if (changeStatus.status3) {
+        height = 600;
+      } else {
+        height = 450;
+      }
+    } else if (changeStatus.status3) {
+      height = 500;
+    }
+
+    setModalHeight(height);
+  }, [hangmuc, changeStatus]);
 
   const handleSubmitStatus = async () => {
     if (saveStatus == null) {
@@ -152,7 +295,11 @@ const XulySuco = ({ navigation }) => {
       await axios
         .put(
           BASE_URL + `/tb_sucongoai/status/${newActionClick[0].ID_Suco}`,
-          { Tinhtrangxuly: saveStatus, ngayXuLy: ngayXuLy.date },
+          {
+            Tinhtrangxuly: saveStatus,
+            ngayXuLy: formatDate(ngayXuLy.date),
+            ID_Hangmuc: dataInput.ID_Hangmuc,
+          },
           {
             headers: {
               Accept: "application/json",
@@ -170,11 +317,19 @@ const XulySuco = ({ navigation }) => {
           setSaveStatus(null);
           handleCloseTinhTrang();
           init_sucongoai();
+          resetDataInput();
+          setNewActionClick([]);
           Alert.alert("PMC Thông báo", "Cập nhật trạng thái thành công", [
-            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+            {
+              text: "Xác nhận",
+              onPress: () => {
+                console.log("OK Pressed");
+              },
+            },
           ]);
         })
         .catch((error) => {
+          resetDataInput();
           setLoadingStatus(false);
           if (error.response) {
             // Lỗi từ phía server (có response từ server)
@@ -209,6 +364,129 @@ const XulySuco = ({ navigation }) => {
                 style: "cancel",
               },
               { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+            ]);
+          }
+        });
+    }
+  };
+  const handleSubmitStatusImage = async () => {
+    let formData = new FormData();
+    images.map((item, index) => {
+      const file = {
+        uri: Platform.OS === "android" ? item : item.replace("file://", ""),
+        name:
+          Math.floor(Math.random() * Math.floor(99999999999999)) +
+          index +
+          ".jpeg",
+        type: "image/jpeg",
+      };
+
+      formData.append(`Images`, file);
+    });
+    formData.append("Tinhtrangxuly", saveStatus);
+    formData.append("Ghichu", dataInput.Noidungghichu);
+    formData.append("ngayXuLy", formatDate(ngayXuLy.date));
+    formData.append("ID_Hangmuc", dataInput.ID_Hangmuc);
+    if (saveStatus == null) {
+      Alert.alert("PMC Thông báo", "Phải chọn trạng thái", [
+        {
+          text: "Hủy",
+          onPress: () => {
+            console.log("Cancel Pressed");
+          },
+          style: "cancel",
+        },
+        { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+      ]);
+    } else {
+      setLoadingStatus(true);
+      await axios
+        .put(
+          BASE_URL + `/tb_sucongoai/status/${newActionClick[0].ID_Suco}`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: "Bearer " + authToken,
+            },
+          }
+        )
+        .then(() => {
+          setLoadingStatus(false);
+          resetDataInput();
+          setChangeStatus({
+            status1: false,
+            status2: false,
+            status3: false,
+          });
+          setSaveStatus(null);
+          handleCloseTinhTrang();
+          init_sucongoai();
+          setNewActionClick([]);
+          Alert.alert("PMC Thông báo", "Cập nhật trạng thái thành công", [
+            {
+              text: "Xác nhận",
+              onPress: () => {
+                console.log("OK Pressed");
+              },
+            },
+          ]);
+        })
+        .catch((error) => {
+          setLoadingStatus(false);
+          resetDataInput();
+          if (error.response) {
+            Alert.alert("PMC Thông báo", error.response.data.message, [
+              {
+                text: "Hủy",
+                onPress: () => {
+                  console.log("Cancel Pressed");
+                },
+                style: "cancel",
+              },
+              {
+                text: "Xác nhận",
+                onPress: () => {
+                  console.log("OK Pressed");
+                },
+              },
+            ]);
+          } else if (error.request) {
+            Alert.alert(
+              "PMC Thông báo",
+              "Không nhận được phản hồi từ máy chủ",
+              [
+                {
+                  text: "Hủy",
+                  onPress: () => {
+                    console.log("Cancel Pressed");
+                  },
+                  style: "cancel",
+                },
+                {
+                  text: "Xác nhận",
+                  onPress: () => {
+                    console.log("OK Pressed");
+                  },
+                },
+              ]
+            );
+          } else {
+            // Lỗi khi cấu hình request
+            Alert.alert("PMC Thông báo", "Lỗi khi gửi yêu cầu", [
+              {
+                text: "Hủy",
+                onPress: () => {
+                  console.log("Cancel Pressed");
+                },
+                style: "cancel",
+              },
+              {
+                text: "Xác nhận",
+                onPress: () => {
+                  console.log("OK Pressed");
+                },
+              },
             ]);
           }
         });
@@ -269,30 +547,52 @@ const XulySuco = ({ navigation }) => {
                 animationType="slide"
                 transparent={true}
                 visible={modalVisible}
+                // onRequestClose={() => {
+                //   setModalVisible(!modalVisible);
+                // }}
                 onRequestClose={() => {
-                  setModalVisible(!modalVisible);
+                  handleCloseTinhTrang();
                 }}
               >
-                <View style={styles.centeredView}>
-                  <View
-                    style={[
-                      styles.modalView,
-                      { width: "80%", height: "auto", minHeight: 350 },
-                    ]}
-                  >
-                    <View style={styles.contentContainer}>
-                      <ModalChangeTinhTrangSuCo
-                        handleChangeStatus={handleChangeStatus}
-                        changeStatus={changeStatus}
-                        handleCloseTinhTrang={handleCloseTinhTrang}
-                        handleSubmitStatus={handleSubmitStatus}
-                        loadingStatus={loadingStatus}
-                        handleChangeDate={handleChangeDate}
-                        ngayXuLy={ngayXuLy}
-                      />
+                <KeyboardAvoidingView
+                  behavior={Platform.OS === "ios" ? "padding" : "height"}
+                  style={{ flex: 1 }}
+                  keyboardVerticalOffset={
+                    Platform.OS === "ios" && modalVisible ? 0 : 0
+                  }
+                >
+                  <View style={styles.centeredView}>
+                    <View
+                      style={[
+                        styles.modalView,
+                        { width: "80%", height: modalHeight, minHeight: 350 },
+                      ]}
+                    >
+                      <View style={styles.contentContainer}>
+                        <ModalChangeTinhTrangSuCo
+                          handleChangeStatus={handleChangeStatus}
+                          changeStatus={changeStatus}
+                          handleCloseTinhTrang={handleCloseTinhTrang}
+                          handleSubmitStatus={handleSubmitStatus}
+                          loadingStatus={loadingStatus}
+                          handleChangeDate={handleChangeDate}
+                          ngayXuLy={ngayXuLy}
+                          handleSubmitStatusImage={handleSubmitStatusImage}
+                          images={images}
+                          handleRemoveImage={handleRemoveImage}
+                          pickImage={pickImage}
+                          dataInput={dataInput}
+                          handleChangeText={handleChangeText}
+                          resetDataInput={resetDataInput}
+                          setDataInput={setDataInput}
+                          modalHeight={modalHeight}
+                          setModalHeight={setModalHeight}
+                          newActionClick={newActionClick}
+                        />
+                      </View>
                     </View>
                   </View>
-                </View>
+                </KeyboardAvoidingView>
               </Modal>
               {newActionClick?.length > 0 && (
                 <View
@@ -314,7 +614,10 @@ const XulySuco = ({ navigation }) => {
                         styles.button,
                         { backgroundColor: COLORS.bg_red },
                       ]}
-                      onPress={() => handleChangeTinhTrang(newActionClick[0])}
+                      onPress={() => {
+                        handleChangeTinhTrang(newActionClick[0]),
+                          setSaveStatus();
+                      }}
                     >
                       <Feather name="repeat" size={26} color="white" />
                     </TouchableOpacity>

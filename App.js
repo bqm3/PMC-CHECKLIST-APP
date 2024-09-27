@@ -9,6 +9,7 @@ import { ConnectProvider } from "./app/context/ConnectContext";
 import { UserProvider } from "./app/context/UserContext";
 import { DataProvider } from "./app/context/DataContext";
 import { ChecklistProvider } from "./app/context/ChecklistContext";
+import { ChecklistLaiProvider } from "./app/context/ChecklistLaiContext";
 import CheckNavigation from "./app/navigation/CheckNavigation";
 import { DataTable, DefaultTheme ,PaperProvider } from "react-native-paper";
 require("moment/locale/vi");
@@ -31,10 +32,12 @@ export default function App() {
             <UserProvider>
               <DataProvider>
                 <ChecklistProvider>
+                  <ChecklistLaiProvider>
                   <NavigationContainer>
                     <StatusBar />
-                    <CheckNavigation />
+                    <CheckNavigation/>                   
                   </NavigationContainer>
+                  </ChecklistLaiProvider>
                 </ChecklistProvider>
               </DataProvider>
             </UserProvider>

@@ -38,6 +38,8 @@ import VerticalSelect from "../../components/Vertical/VerticalSelect";
 import ButtonSubmit from "../../components/Button/ButtonSubmit";
 import axios from "axios";
 import { BASE_URL } from "../../constants/config";
+import { axiosClient } from "../../api/axiosClient";
+import { nowDate } from "../../utils/util"
 
 const ThuchienSucongoai = ({ navigation }) => {
   const dispath = useDispatch();
@@ -125,7 +127,7 @@ const ThuchienSucongoai = ({ navigation }) => {
       quality: 0.5, // Adjust image quality (0 to 1)
     });
 
-    if (!result.cancelled) {
+    if (!result.canceled) {
       setImages((prevImages) => {
         const updatedImages = [...prevImages, result.assets[0].uri].filter(
           (uri) => uri
@@ -146,6 +148,9 @@ const ThuchienSucongoai = ({ navigation }) => {
   const init_khuvuc = async () => {
     await dispath(ent_khuvuc_get());
   };
+  const init_sucongoai = async () => {
+    await dispath(tb_sucongoai_get());
+  };
 
   useEffect(() => {
     init_toanha();
@@ -161,14 +166,13 @@ const ThuchienSucongoai = ({ navigation }) => {
       setDataKhuvuc(filterData);
     }
 
-    if (ent_hangmuc && dataCheckKhuvuc.ID_Khuvuc ) {
+    if (ent_hangmuc && dataCheckKhuvuc.ID_Khuvuc) {
       const filterData = ent_hangmuc.filter(
         (item) => item.ID_Khuvuc === dataCheckKhuvuc.ID_Khuvuc
       );
       setDataHangmuc(filterData);
     }
-  }, [ent_khuvuc,ent_hangmuc, dataCheckKhuvuc]);
-
+  }, [ent_khuvuc, ent_hangmuc, dataCheckKhuvuc]);
 
   const resetDataInput = () => {
     setDataInput({
@@ -211,27 +215,48 @@ const ThuchienSucongoai = ({ navigation }) => {
         formData.append("Noidungsuco", dataInput.Noidungsuco);
         formData.append("ID_User", user.ID_User);
         formData.append("Tinhtrangxuly", 0);
-
-        const response = await axios.post(
-          BASE_URL + "/tb_sucongoai/create",
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              Authorization: "Bearer " + authToken,
+        if( dataInput.Ngaysuco == null || dataInput.Giosuco == null){
+          Alert.alert("PMC Thông báo", "Vui lòng nhập đầy đủ thông tin", [
+            {
+              text: "Hủy",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel",
             },
-          }
-        );
-        resetDataInput();
-        setLoadingSubmit(false);
-        Alert.alert("PMC Thông báo", response.data.message, [
-          {
-            text: "Hủy",
-            onPress: () => console.log("Cancel Pressed"),
-            style: "cancel",
-          },
-          { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-        ]);
+            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+          ]);
+          setLoadingSubmit(false);
+          resetDataInput();
+        } else if (dataInput.Ngaysuco > nowDate()) {
+          Alert.alert("PMC Thông báo", "Ngày không hợp lệ", [
+            {
+              text: "Hủy",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel",
+            },
+            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+          ]);
+        } else {
+          const response = await axios.post(
+            BASE_URL + "/tb_sucongoai/create",
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+                Authorization: "Bearer " + authToken,
+              },
+            }
+          );
+          resetDataInput();
+          setLoadingSubmit(false);
+          Alert.alert("PMC Thông báo", response.data.message, [
+            {
+              text: "Hủy",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel",
+            },
+            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+          ]);
+        }
       } else {
         const data = {
           ID_Hangmuc: dataInput.ID_Hangmuc,
@@ -241,28 +266,44 @@ const ThuchienSucongoai = ({ navigation }) => {
           ID_User: user.ID_User,
           Tinhtrangxuly: 0,
         };
-
-        const response = await axios.post(
-          BASE_URL + "/tb_sucongoai/create",
-          data,
-          {
+        if (data.Ngaysuco == null || data.Giosuco == null) {
+          Alert.alert("PMC Thông báo", "Vui lòng nhập đầy đủ thông tin", [
+            {
+              text: "Hủy",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel",
+            },
+            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+          ]);
+          setLoadingSubmit(false);
+          resetDataInput();
+        } else if (data.Ngaysuco > nowDate()){
+          Alert.alert("PMC Thông báo", "Ngày không hợp lệ", [
+            {
+              text: "Hủy",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel",
+            },
+            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+          ]);
+        } else {
+          const response = axios.post(BASE_URL + "/tb_sucongoai/create", data, {
             headers: {
               Accept: "application/json",
               Authorization: "Bearer " + authToken,
             },
-          }
-        );
-
-        setLoadingSubmit(false);
-        resetDataInput();
-        Alert.alert("PMC Thông báo", response.data.message, [
-          {
-            text: "Hủy",
-            onPress: () => console.log("Cancel Pressed"),
-            style: "cancel",
-          },
-          { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-        ]);
+          });
+          setLoadingSubmit(false);
+          resetDataInput();
+          Alert.alert("PMC Thông báo", "Gửi sự cố thành công!", [
+            {
+              text: "Hủy",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel",
+            },
+            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+          ]);
+        }
       }
     } catch (error) {
       setLoadingSubmit(false);
@@ -287,6 +328,7 @@ const ThuchienSucongoai = ({ navigation }) => {
           { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
         ]);
       } else {
+        console.log(error);
         // Lỗi khi cấu hình request
         Alert.alert("PMC Thông báo", "Lỗi khi gửi yêu cầu", [
           {

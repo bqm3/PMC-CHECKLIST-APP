@@ -16,9 +16,12 @@ import {
   DetailChecklist,
   Profile,
   DanhmucChecklist,
-  DanhmucTracuu,
+  DanhmucTracuuVsThongke,
   ChecklistLaiScreen,
   ThuchienKhuvucLai,
+  DetailCheckListCa,
+  ThucHienHangmucLai,
+  DetailChecklistLai,
 } from "../screens/Checklist";
 import { COLORS } from "../constants/theme";
 import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
@@ -83,6 +86,41 @@ const HomeStack = ({ navigation }) => {
           headerRight: () => <Back navigation={navigation} title={"Profile"} />,
         })}
       />
+
+      <Stack.Screen
+        name="Chi tiết checklist ca"
+        component={DetailCheckListCa}
+        lazy={false}
+        options={({ navigation, route }) => ({
+          headerShown: true,
+
+          headerTitle: () => (
+            <Text
+              allowFontScaling={false}
+              style={{
+                fontSize: adjust(20),
+                fontWeight: "700",
+                color: "white",
+              }}
+            >
+              Chi tiết checklist ca
+            </Text>
+          ),
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              {Platform.OS === "ios" && (
+                <Ionicons name="chevron-back" size={adjust(28)} color="white" />
+              )}
+            </TouchableOpacity>
+          ),
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: COLORS.bg_button,
+          },
+          headerBackTitleVisible: false,
+        })}
+      />
+
       <Stack.Screen
         name="Profile"
         component={Profile}
@@ -235,6 +273,39 @@ const HomeStack = ({ navigation }) => {
               }}
             >
               Hạng mục theo khu vực
+            </Text>
+          ),
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              {Platform.OS === "ios" && (
+                <Ionicons name="chevron-back" size={adjust(28)} color="white" />
+              )}
+            </TouchableOpacity>
+          ),
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: COLORS.bg_button,
+          },
+          headerBackTitleVisible: false,
+        })}
+      />
+      <Stack.Screen
+        name="Thực hiện hạng mục lại"
+        component={ThucHienHangmucLai}
+        lazy={false}
+        options={({ navigation, route }) => ({
+          headerShown: true,
+
+          headerTitle: () => (
+            <Text
+              allowFontScaling={false}
+              style={{
+                fontSize: adjust(20),
+                fontWeight: "700",
+                color: "white",
+              }}
+            >
+              Hạng mục theo khu vực lại
             </Text>
           ),
           headerLeft: () => (
@@ -704,7 +775,7 @@ const HomeStack = ({ navigation }) => {
 
       <Stack.Screen
         name="Tra cứu"
-        component={DanhmucTracuu}
+        component={DanhmucTracuuVsThongke}
         lazy={false}
         options={({ navigation, route }) => ({
           headerShown: true,
@@ -752,6 +823,38 @@ const HomeStack = ({ navigation }) => {
               }}
             >
               Chi tiết Checklist
+            </Text>
+          ),
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              {Platform.OS === "ios" && (
+                <Ionicons name="chevron-back" size={adjust(28)} color="white" />
+              )}
+            </TouchableOpacity>
+          ),
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: COLORS.bg_button,
+          },
+          headerBackTitleVisible: false,
+        })}
+      />
+      <Stack.Screen
+        name="Chi tiết Checklist lại"
+        component={DetailChecklistLai}
+        lazy={false}
+        options={({ route, navigation }) => ({
+          headerShown: true,
+          headerTitle: () => (
+            <Text
+              allowFontScaling={false}
+              style={{
+                fontSize: adjust(20),
+                fontWeight: "700",
+                color: "white",
+              }}
+            >
+              Chi tiết Checklist lại
             </Text>
           ),
           headerLeft: () => (

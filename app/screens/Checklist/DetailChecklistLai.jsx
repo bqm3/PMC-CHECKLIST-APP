@@ -43,18 +43,17 @@ import axios, { isCancel } from "axios";
 import { BASE_URL } from "../../constants/config";
 import QRCodeScreen from "../QRCodeScreen";
 import DataContext from "../../context/DataContext";
-import ChecklistContext from "../../context/ChecklistContext";
+import ChecklistLaiContext from "../../context/ChecklistLaiContext";
 import * as Network from "expo-network";
 import adjust from "../../adjust";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Checkbox from "../../components/Active/Checkbox";
 import ConnectContext from "../../context/ConnectContext";
 import WebView from "react-native-webview";
-import axiosClient from "../../api/axiosClient";
 
-const DetailChecklist = ({ route, navigation }) => {
-  const { ID_ChecklistC, ID_KhoiCV, ID_Hangmuc, hangMuc, Hangmuc } =
-    route.params;
+const DetailChecklistLai = ({ route, navigation }) => {
+  const { ID_ChecklistC, ID_Hangmuc, hangMuc, Hangmuc } = route.params;
+  console.log(Hangmuc);
   const dispath = useDispatch();
   const { isLoadingDetail } = useSelector((state) => state.entReducer);
   const { setHangMuc, HangMucDefault, setHangMucDefault } =
@@ -65,7 +64,7 @@ const DetailChecklist = ({ route, navigation }) => {
     dataChecklistFilterContext,
     setDataChecklistFilterContext,
     setLocationContext,
-  } = useContext(ChecklistContext);
+  } = useContext(ChecklistLaiContext);
   const [isConnected, setIsConnected] = useState(false);
 
   const { user, authToken } = useSelector((state) => state.authReducer);
@@ -246,6 +245,7 @@ const DetailChecklist = ({ route, navigation }) => {
         }
       });
 
+      // console.log("updateDataChecklist 2", revertDataChecklist.length);
       setDataChecklistFilter(revertDataChecklist);
       setDataChecklistDefault([]);
       const data2Map = new Map(
@@ -322,7 +322,6 @@ const DetailChecklist = ({ route, navigation }) => {
         it.GhichuChitiet === ""
       );
     });
-
     if (it.valueCheck === null) {
       if (
         !mergedArrOption.some(
@@ -356,9 +355,11 @@ const DetailChecklist = ({ route, navigation }) => {
         const indexOption = mergedArrOption.findIndex(
           (existingItem) => existingItem.ID_Checklist === it.ID_Checklist
         );
+
         // Kiểm tra nếu phần tử đã tồn tại trong mergedArrOption
         if (indexOption !== -1) {
           const existingItem = mergedArrOption[indexOption];
+
           // Kiểm tra nếu dữ liệu của 'it' khác so với dữ liệu hiện tại
           if (JSON.stringify(existingItem) !== JSON.stringify(it)) {
             // Nếu khác, thay thế phần tử cũ bằng phần tử mới
@@ -370,6 +371,7 @@ const DetailChecklist = ({ route, navigation }) => {
         }
       }
     }
+
     setDataChecklistFaild([...mergedArrOption]);
     setDataChecklistDefault(mergedArrClick);
     setNewActionDataChecklist([...mergedArrOption, ...mergedArrClick]);
@@ -508,6 +510,8 @@ const DetailChecklist = ({ route, navigation }) => {
         formData.append("Vido", location?.coords?.latitude || "");
         formData.append("Kinhdo", location?.coords?.longitude || "");
         formData.append("Docao", location?.coords?.altitude || "");
+
+        // If there is an image, append it to formData
         if (item.Anh) {
           const file = {
             uri:
@@ -526,6 +530,7 @@ const DetailChecklist = ({ route, navigation }) => {
           // formData.append(`Images_${index}`, {});
         }
       });
+
       // Send the entire FormData in a single request
       await axios
         .post(BASE_URL + `/tb_checklistchitiet/create`, formData, {
@@ -981,7 +986,9 @@ const DetailChecklist = ({ route, navigation }) => {
     if (number == 0) return `0`;
     return number;
   };
-
+  //   console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxx")
+  // //  console.log(Hangmuc)
+  //  console.log(hangMuc)
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <KeyboardAvoidingView
@@ -1299,7 +1306,7 @@ const DetailChecklist = ({ route, navigation }) => {
   );
 };
 
-export default DetailChecklist;
+export default DetailChecklistLai;
 
 const styles = StyleSheet.create({
   container: {

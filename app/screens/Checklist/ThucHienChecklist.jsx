@@ -15,6 +15,7 @@ import {
   TouchableHighlight,
   TouchableWithoutFeedback,
   TouchableNativeFeedback,
+  BackHandler
 } from "react-native";
 import React, {
   useRef,
@@ -389,6 +390,7 @@ const ThucHienChecklist = ({ navigation }) => {
   const handleClosePopUp = () => {
     setOpacity(1);
     setModalVisible(false);
+    console.log(opacity)
   };
 
   const handleOpenPopUp = () => {
@@ -495,7 +497,24 @@ const ThucHienChecklist = ({ navigation }) => {
         onPress: () => handleCloseChecklist(item?.ID_ChecklistC),
       },
     ]);
-  };
+  };  
+
+  useEffect(() => {
+    const backAction = () => {
+      if (modalVisible) {
+        handleClosePopUp();
+        return true;
+      }
+      return false; 
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, [modalVisible]);
 
   return (
     <>
@@ -602,10 +621,11 @@ const ThucHienChecklist = ({ navigation }) => {
                 animationType="slide"
                 transparent={true}
                 visible={modalVisible}
-                onRequestClose={() => {
-                  //Alert.alert("Modal has been closed.");
-                  setModalVisible(!modalVisible);
-                }}
+                // onRequestClose={() => {
+                //   //Alert.alert("Modal has been closed.");
+                //   setModalVisible(!modalVisible);
+                // }}
+                onRequestClose={handleClosePopUp}
               >
                 <View style={styles.centeredView}>
                   <View

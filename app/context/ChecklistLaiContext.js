@@ -1,12 +1,7 @@
 import React, { createContext, useState, useEffect } from "react";
-import { useColorScheme } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Provider, useDispatch, useSelector } from "react-redux";
-import { ent_khuvuc_get, ent_hangmuc_get } from "../redux/actions/entActions";
+const ChecklistLaiContext = createContext();
 
-const ChecklistContext = createContext();
-
-export const ChecklistProvider = ({ children }) => {
+export const ChecklistLaiProvider = ({ children }) => {
   const [dataChecklist1, setDataChecklist1] = useState([]);
   const [dataChecklistFilterContext, setDataChecklistFilterContext] = useState(
     []
@@ -17,7 +12,7 @@ export const ChecklistProvider = ({ children }) => {
   const [dataChecklistFaild1, setDataChecklistFaild1] = useState([]);
   const [localtionContext, setLocationContext] = useState([]);
   return (
-    <ChecklistContext.Provider
+    <ChecklistLaiContext.Provider
       value={{
         dataChecklist1,
         setDataChecklist1,
@@ -34,8 +29,8 @@ export const ChecklistProvider = ({ children }) => {
       }}
     >
       {children}
-    </ChecklistContext.Provider>
+    </ChecklistLaiContext.Provider>
   );
 };
 
-export default ChecklistContext;
+export default ChecklistLaiContext;
