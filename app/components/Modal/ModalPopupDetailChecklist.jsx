@@ -60,7 +60,7 @@ const ModalPopupDetailChecklist = ({
   const objData = {
     Anh: image,
     GhichuChitiet: ghichu,
-    valueCheck: "",
+    valueCheck: null,
   };
 
   const setData = () => {

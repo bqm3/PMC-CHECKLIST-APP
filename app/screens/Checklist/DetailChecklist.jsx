@@ -270,7 +270,7 @@ const DetailChecklist = ({ route, navigation }) => {
             ...item,
             Anh: value?.Anh ? value?.Anh : null,
             GhichuChitiet: value?.GhichuChitiet ? value?.GhichuChitiet : "",
-            valueCheck: value?.valueCheck ? value?.valueCheck : "",
+            valueCheck: value?.valueCheck ? value?.valueCheck : null,
             Gioht: moment().format("LTS"),
           };
         }
@@ -280,7 +280,7 @@ const DetailChecklist = ({ route, navigation }) => {
         ...itemData,
         Anh: value?.Anh ? value?.Anh : null,
         GhichuChitiet: value?.GhichuChitiet ? value?.GhichuChitiet : "",
-        valueCheck: value?.valueCheck ? value?.valueCheck : "",
+        valueCheck: value?.valueCheck ? value?.valueCheck : null,
         Gioht: moment().format("LTS"),
       };
     } else {
