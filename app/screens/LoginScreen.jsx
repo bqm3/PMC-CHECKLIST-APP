@@ -40,7 +40,7 @@ import DataLicense from "../components/PrivacyPolicy";
 import Checkbox from "../components/Active/Checkbox";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import adjust from "../adjust";
-import { BASE_URL_NOTI } from "../constants/config";
+import { BASE_URL, BASE_URL_NOTI } from "../constants/config";
 import {
   ALERT_TYPE,
   Dialog,
@@ -48,6 +48,13 @@ import {
   Toast,
 } from "react-native-alert-notification";
 import axios from "axios";
+
+const alertTypeMap = {
+  SUCCESS: ALERT_TYPE.SUCCESS,
+  WARNING: ALERT_TYPE.WARNING,
+  DANGER: ALERT_TYPE.DANGER,
+  INFO: ALERT_TYPE.INFO,
+};
 
 const LoginScreen = ({ navigation }) => {
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
@@ -86,17 +93,28 @@ const LoginScreen = ({ navigation }) => {
   };
 
   useEffect(() => {
-    const response = axios.get(BASE_URL_NOTI);
-    try {
-      console.log("response",response)
-    } catch (error) {}
-    Toast.show({
-      type: ALERT_TYPE.SUCCESS, // Loại thông báo
-      title: "S.M.A.C",
-      textBody: "Test",
-      autoClose: 10000,
-      alertContainerStyle: { backgroundColor: "white" }, // Màu nền thông báo
-    });
+    
+   const handleNoti = async () => {
+    await axios.get(BASE_URL + '/noti')
+    .then((res) => {
+      const data = res.data.data
+      if(data.key == 0){
+        console.log('done')
+      }else {
+        const alertType = alertTypeMap[data.type] || ALERT_TYPE.INFO; 
+        Toast.show({
+          type: alertType, 
+          title: data?.textTitle,
+          textBody: data?.textBody,
+          autoClose: data?.time,
+        });
+      }
+    })
+    .catch((err)=> {
+      console.log('err', err)
+    })
+   }
+   handleNoti()
   }, []);
 
   useEffect(() => {
