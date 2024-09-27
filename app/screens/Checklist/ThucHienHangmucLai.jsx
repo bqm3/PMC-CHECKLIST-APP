@@ -203,7 +203,7 @@ const ThucHienHangmucLai = ({ route, navigation }) => {
                   </Text>
                 </View>
 
-                {isLoadingDetail === false && hangMuc?.length > 0 && (
+                {isLoadingDetail === false && hangMuc?.length > 0 ? (
                   <FlatList
                     style={{ margin: 12, flex: 1, marginBottom: 100 }}
                     data={hangMuc}
@@ -215,7 +215,7 @@ const ThucHienHangmucLai = ({ route, navigation }) => {
                       `${item?.ID_Checklist}_${index}`
                     }
                   />
-                )}
+                ) : (navigation.goBack())}
 
                 {isLoadingDetail && (
                   <View
