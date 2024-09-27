@@ -52,9 +52,8 @@ import ConnectContext from "../../context/ConnectContext";
 import WebView from "react-native-webview";
 
 const DetailChecklistLai = ({ route, navigation }) => {
-  const { ID_ChecklistC, ID_Hangmuc, hangMuc, Hangmuc } =
-    route.params;
-  console.log(Hangmuc)
+  const { ID_ChecklistC, ID_Hangmuc, hangMuc, Hangmuc } = route.params;
+  console.log(Hangmuc);
   const dispath = useDispatch();
   const { isLoadingDetail } = useSelector((state) => state.entReducer);
   const { setHangMuc, HangMucDefault, setHangMucDefault } =
@@ -262,22 +261,46 @@ const DetailChecklistLai = ({ route, navigation }) => {
 
   // click item checklist
   const handleItemClick = (value, status, key, itemData) => {
-    const updatedDataChecklist = dataChecklistFilter?.map((item, i) => {
-      if (item.ID_Checklist == itemData.ID_Checklist) {
-        return {
-          ...item,
-          [key]: value ? value : null,
-          Gioht: moment().format("LTS"),
-        };
-      }
-      return item;
-    });
+    let updatedDataChecklist = [];
+    let newItem = [];
+    if (status == "close") {
+      updatedDataChecklist = dataChecklistFilter?.map((item, i) => {
+        if (item.ID_Checklist == itemData.ID_Checklist) {
+          return {
+            ...item,
+            Anh: value?.Anh ? value?.Anh : null,
+            GhichuChitiet: value?.GhichuChitiet ? value?.GhichuChitiet : "",
+            valueCheck: value?.valueCheck ? value?.valueCheck : "",
+            Gioht: moment().format("LTS"),
+          };
+        }
+        return item;
+      });
+      newItem = {
+        ...itemData,
+        Anh: value?.Anh ? value?.Anh : null,
+        GhichuChitiet: value?.GhichuChitiet ? value?.GhichuChitiet : "",
+        valueCheck: value?.valueCheck ? value?.valueCheck : "",
+        Gioht: moment().format("LTS"),
+      };
+    } else {
+      updatedDataChecklist = dataChecklistFilter?.map((item, i) => {
+        if (item.ID_Checklist == itemData.ID_Checklist) {
+          return {
+            ...item,
+            [key]: value ? value : null,
+            Gioht: moment().format("LTS"),
+          };
+        }
+        return item;
+      });
 
-    const newItem = {
-      ...itemData,
-      [key]: value ? value : null,
-      Gioht: moment().format("LTS"),
-    };
+      newItem = {
+        ...itemData,
+        [key]: value ? value : null,
+        Gioht: moment().format("LTS"),
+      };
+    }
 
     handleSetData(status, updatedDataChecklist, newItem);
   };
@@ -318,7 +341,7 @@ const DetailChecklistLai = ({ route, navigation }) => {
         }
       }
 
-      if (status === "option") {
+      if (status === "option" || status === "close") {
         const indexDefault = mergedArrClick.findIndex(
           (item) => item.ID_Checklist === it.ID_Checklist
         );

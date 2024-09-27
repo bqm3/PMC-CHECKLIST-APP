@@ -57,7 +57,20 @@ const ModalPopupDetailChecklist = ({
     }
   };
 
-  console.log("defaultChecklist", defaultChecklist);
+  const objData = {
+    Anh: image,
+    GhichuChitiet: ghichu,
+    valueCheck: "",
+  };
+
+  const setData = () => {
+    dataItem.valueCheck = defaultChecklist || chiso;
+    dataItem.Anh = image ? image : null;
+    dataItem.GhichuChitiet = ghichu ? ghichu : "";
+    objData.Anh = image ? image : null;
+    objData.GhichuChitiet = ghichu ? ghichu : "";
+    objData.valueCheck = defaultChecklist || chiso;
+  };
 
   useEffect(() => {
     setImage(dataItem?.Anh);
@@ -251,29 +264,14 @@ const ModalPopupDetailChecklist = ({
                 <View style={{ marginTop: 10 }}>
                   <Button
                     onPress={() => {
-                      dataItem.valueCheck = chiso;
-                      dataItem.GhichuChitiet = ghichu;
-                      dataItem?.isCheck == 1
-                        ? handleItemClick(chiso, "option", "valueCheck", dataItem)
-                        : handleItemClick(
-                            defaultChecklist,
-                            "option",
-                            "valueCheck",
-                            dataItem
-                          );
-                      handleItemClick(image, "option", "Anh", dataItem);
-                      handleItemClick(
-                        ghichu,
-                        "option",
-                        "GhichuChitiet",
-                        dataItem
-                      );
+                      setData();
+                      handleItemClick(objData, "close", objData, dataItem);
                       handlePopupClear();
                     }}
                     backgroundColor={COLORS.bg_button}
                     border={COLORS.bg_button}
                     color={"white"}
-                    text={"Hoàn thành 1"}
+                    text={"Hoàn thành"}
                     width={"100%"}
                   />
                 </View>
@@ -300,22 +298,8 @@ const ModalPopupDetailChecklist = ({
               <View style={{ marginTop: 10 }}>
                 <Button
                   onPress={() => {
-                    dataItem.valueCheck = chiso;
-                    dataItem?.isCheck == 1
-                      ? handleItemClick(chiso, "option", "valueCheck", dataItem)
-                      : handleItemClick(
-                          defaultChecklist,
-                          "option",
-                          "valueCheck",
-                          dataItem
-                        );
-                    handleItemClick(image, "option", "Anh", dataItem);
-                    handleItemClick(
-                      ghichu,
-                      "option",
-                      "GhichuChitiet",
-                      dataItem
-                    );
+                    setData();
+                    handleItemClick(objData, "close", objData, dataItem);
                     handlePopupClear();
                   }}
                   backgroundColor={COLORS.bg_button}
@@ -329,19 +313,13 @@ const ModalPopupDetailChecklist = ({
             <View style={{ marginTop: 10 }}>
               <Button
                 onPress={() => {
-                  step === 1 ? handlePopupClear() : setStep(1);
-                  dataItem.valueCheck = chiso;
-                  dataItem?.isCheck == 1
-                    ? handleItemClick(chiso, "option", "valueCheck", dataItem)
-                    : handleItemClick(
-                        defaultChecklist,
-                        "option",
-                        "valueCheck",
-                        dataItem
-                      );
-                  handleItemClick(image, "option", "Anh", dataItem);
-                  handleItemClick(ghichu, "option", "GhichuChitiet", dataItem);
-                  handlePopupClear();
+                  step === 1
+                    ? handlePopupClear()
+                    : (setStep(1),
+                      setData(),
+                      handleItemClick(objData, "close", objData, dataItem));
+                  // handleItemClick(image, "option", "Anh", dataItem);
+                  // handleItemClick(ghichu, "option", "GhichuChitiet", dataItem);
                 }}
                 backgroundColor={
                   step === 1 ? COLORS.bg_button : COLORS.bg_white

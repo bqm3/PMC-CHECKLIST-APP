@@ -1,9 +1,11 @@
 //import liraries
-import React, {   createContext,
+import React, {
+  createContext,
   useContext,
   useState,
   useEffect,
-  useRef, } from "react";
+  useRef,
+} from "react";
 import {
   View,
   Text,
@@ -11,7 +13,7 @@ import {
   FlatList,
   ImageBackground,
   Image,
-  Platform
+  Platform,
 } from "react-native";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import {
@@ -20,11 +22,11 @@ import {
   ent_khuvuc_get,
   ent_tang_get,
   ent_toanha_get,
-  ent_khoicv_get
+  ent_khoicv_get,
 } from "../../redux/actions/entActions";
-import { Alert, Linking } from 'react-native';
-import * as Device from 'expo-device';
-import Constants from 'expo-constants';
+import { Alert, Linking } from "react-native";
+import * as Device from "expo-device";
+import Constants from "expo-constants";
 import axios from "axios";
 import * as Notifications from "expo-notifications";
 import { BASE_URL } from "../../constants/config";
@@ -44,26 +46,27 @@ const handleRegistrationError = (message) => {
 };
 
 async function registerForPushNotificationsAsync() {
-  if (Platform.OS === 'android') {
-    Notifications.setNotificationChannelAsync('default', {
-      name: 'default',
+  if (Platform.OS === "android") {
+    Notifications.setNotificationChannelAsync("default", {
+      name: "default",
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 250, 250, 250],
-      lightColor: '#FF231F7C',
+      lightColor: "#FF231F7C",
     });
   }
 
   if (Device.isDevice) {
-    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    const { status: existingStatus } =
+      await Notifications.getPermissionsAsync();
     let finalStatus = existingStatus;
 
-    if (existingStatus !== 'granted') {
+    if (existingStatus !== "granted") {
       const { status } = await Notifications.requestPermissionsAsync();
       finalStatus = status;
     }
 
     // Only show the settings alert if finalStatus is not granted
-    if (finalStatus !== 'granted') {
+    if (finalStatus !== "granted") {
       Alert.alert(
         "Thông báo",
         "Bạn đã từ chối nhận thông báo. Hãy bật thông báo trong Cài đặt để tiếp tục.",
@@ -79,10 +82,11 @@ async function registerForPushNotificationsAsync() {
     }
 
     const projectId =
-      Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
+      Constants?.expoConfig?.extra?.eas?.projectId ??
+      Constants?.easConfig?.projectId;
 
     if (!projectId) {
-      handleRegistrationError('Không tìm thấy thông tin máy');
+      handleRegistrationError("Không tìm thấy thông tin máy");
       return;
     }
 
@@ -97,10 +101,9 @@ async function registerForPushNotificationsAsync() {
       handleRegistrationError(`${e}`);
     }
   } else {
-    handleRegistrationError('Phải sử dụng thiết bị thật');
+    handleRegistrationError("Phải sử dụng thiết bị thật");
   }
 }
-
 
 const dataDanhMuc = [
   {
@@ -125,7 +128,7 @@ const dataDanhMuc = [
   },
 ];
 
-const dataGDKST = [
+const dataGD = [
   {
     id: 1,
     path: "Thông báo sự cố",
@@ -138,19 +141,37 @@ const dataGDKST = [
   },
 ];
 
+const dataKST = [
+  {
+    id: 1,
+    path: "Thực hiện Checklist",
+    icon: require("../../../assets/icons/o-01.png"),
+  },
+  {
+    id: 2,
+    path: "Tra cứu",
+    icon: require("../../../assets/icons/o-02.png"),
+  },
+  {
+    id: 3,
+    path: "Xử lý sự cố",
+    icon: require("../../../assets/icons/o-04.png"),
+  },
+  {
+    id: 4,
+    path: "Thông báo sự cố",
+    icon: require("../../../assets/icons/o-04.png"),
+  },
+];
+
 // create a component
 const HomeScreen = ({ navigation }) => {
   const dispath = useDispatch();
   const { user, authToken } = useSelector((state) => state.authReducer);
-  
- 
-  const [expoPushToken, setExpoPushToken] = useState('');
-  const [notification, setNotification] = useState(
-    undefined
-  );
+  const [expoPushToken, setExpoPushToken] = useState("");
+  const [notification, setNotification] = useState(undefined);
   const notificationListener = useRef();
   const responseListener = useRef();
-  console.log('expoPushToken',expoPushToken)
   const renderItem = ({ item, index }) => (
     <ItemHome ID_Chucvu={user?.ID_Chucvu} item={item} index={index} />
   );
@@ -175,9 +196,9 @@ const HomeScreen = ({ navigation }) => {
     await dispath(ent_tang_get());
   };
 
-  const int_calv = async() => {
-    await dispath(ent_calv_get())
-  }
+  const int_calv = async () => {
+    await dispath(ent_calv_get());
+  };
 
   useEffect(() => {
     int_khuvuc();
@@ -185,47 +206,50 @@ const HomeScreen = ({ navigation }) => {
     init_toanha();
     init_khoicv();
     init_tang();
-    int_calv()
+    int_calv();
   }, []);
 
   useEffect(() => {
     registerForPushNotificationsAsync()
-      .then(token => setExpoPushToken(token ?? ''))
+      .then((token) => setExpoPushToken(token ?? ""))
       .catch((error) => setExpoPushToken(`${error}`));
 
-    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-      setNotification(notification);
-    });
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        setNotification(notification);
+      });
 
-    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-      console.log(response);
-    });
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(response);
+      });
 
     return () => {
       notificationListener.current &&
-        Notifications.removeNotificationSubscription(notificationListener.current);
+        Notifications.removeNotificationSubscription(
+          notificationListener.current
+        );
       responseListener.current &&
         Notifications.removeNotificationSubscription(responseListener.current);
     };
   }, []);
 
   useEffect(() => {
-    
     const dataRes = async () => {
       await axios
         .post(
-         BASE_URL+ '/ent_user/device-token',
+          BASE_URL + "/ent_user/device-token",
           {
             deviceToken: expoPushToken,
           },
           {
             headers: {
-              Authorization: 'Bearer ' + authToken,
+              Authorization: "Bearer " + authToken,
             },
-          },
+          }
         )
-        .then((response) => console.log('response'))
-        .catch((err)=> console.log('err device',err));
+        .then((response) => console.log("response"))
+        .catch((err) => console.log("err device", err));
     };
     dataRes();
   }, [authToken]);
@@ -292,7 +316,13 @@ const HomeScreen = ({ navigation }) => {
               paddingHorizontal: 20,
             }}
             numColumns={2}
-            data={(user.ID_Chucvu == 4 || user.ID_Chucvu == 3) ? dataDanhMuc : dataGDKST}
+            data={
+              user.ID_Chucvu === 4
+                ? dataDanhMuc
+                : user.ID_Chucvu === 2
+                ? dataGD
+                : dataKST
+            }
             renderItem={renderItem}
             ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
             contentContainerStyle={{ gap: 10 }}

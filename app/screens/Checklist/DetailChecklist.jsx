@@ -261,23 +261,46 @@ const DetailChecklist = ({ route, navigation }) => {
 
   // click item checklist
   const handleItemClick = (value, status, key, itemData) => {
-    console.log(value,status,key)
-    const updatedDataChecklist = dataChecklistFilter?.map((item, i) => {
-      if (item.ID_Checklist == itemData.ID_Checklist) {
-        return {
-          ...item,
-          [key]: value ? value : null,
-          Gioht: moment().format("LTS"),
-        };
-      }
-      return item;
-    });
+    let updatedDataChecklist = [];
+    let newItem = [];
+    if (status == "close") {
+      updatedDataChecklist = dataChecklistFilter?.map((item, i) => {
+        if (item.ID_Checklist == itemData.ID_Checklist) {
+          return {
+            ...item,
+            Anh: value?.Anh ? value?.Anh : null,
+            GhichuChitiet: value?.GhichuChitiet ? value?.GhichuChitiet : "",
+            valueCheck: value?.valueCheck ? value?.valueCheck : "",
+            Gioht: moment().format("LTS"),
+          };
+        }
+        return item;
+      });
+      newItem = {
+        ...itemData,
+        Anh: value?.Anh ? value?.Anh : null,
+        GhichuChitiet: value?.GhichuChitiet ? value?.GhichuChitiet : "",
+        valueCheck: value?.valueCheck ? value?.valueCheck : "",
+        Gioht: moment().format("LTS"),
+      };
+    } else {
+      updatedDataChecklist = dataChecklistFilter?.map((item, i) => {
+        if (item.ID_Checklist == itemData.ID_Checklist) {
+          return {
+            ...item,
+            [key]: value ? value : null,
+            Gioht: moment().format("LTS"),
+          };
+        }
+        return item;
+      });
 
-    const newItem = {
-      ...itemData,
-      [key]: value ? value : null,
-      Gioht: moment().format("LTS"),
-    };
+      newItem = {
+        ...itemData,
+        [key]: value ? value : null,
+        Gioht: moment().format("LTS"),
+      };
+    }
 
     handleSetData(status, updatedDataChecklist, newItem);
   };
@@ -299,7 +322,7 @@ const DetailChecklist = ({ route, navigation }) => {
         it.GhichuChitiet === ""
       );
     });
-    console.log("it.valueCheck",it.valueCheck)
+
     if (it.valueCheck === null) {
       if (
         !mergedArrOption.some(
@@ -319,15 +342,13 @@ const DetailChecklist = ({ route, navigation }) => {
         }
       }
 
-      if (status === "option") {
-        console.log("run 0")
+      if (status === "option" || status === "close") {
         const indexDefault = mergedArrClick.findIndex(
           (item) => item.ID_Checklist === it.ID_Checklist
         );
 
         // Xóa phần tử nếu có trong mergedArrClick
         if (indexDefault !== -1) {
-          console.log("run 1")
           mergedArrClick.splice(indexDefault, 1);
         }
 
@@ -335,10 +356,8 @@ const DetailChecklist = ({ route, navigation }) => {
         const indexOption = mergedArrOption.findIndex(
           (existingItem) => existingItem.ID_Checklist === it.ID_Checklist
         );
-        console.log("run 2")
         // Kiểm tra nếu phần tử đã tồn tại trong mergedArrOption
         if (indexOption !== -1) {
-          console.log("run 3")
           const existingItem = mergedArrOption[indexOption];
           // Kiểm tra nếu dữ liệu của 'it' khác so với dữ liệu hiện tại
           if (JSON.stringify(existingItem) !== JSON.stringify(it)) {
@@ -347,7 +366,6 @@ const DetailChecklist = ({ route, navigation }) => {
           }
         } else {
           // Nếu phần tử chưa tồn tại, thêm 'it' mới vào
-          console.log("run 4")
           mergedArrOption.push(it);
         }
       }
@@ -478,7 +496,6 @@ const DetailChecklist = ({ route, navigation }) => {
       setLoadingSubmit(true);
       // Create a new FormData instance
       const formData = new FormData();
-      console.log("GhichuChitiet",dataChecklistFaild[0].GhichuChitiet)
 
       // Iterate over all items in dataChecklistFaild
       dataChecklistFaild.forEach((item, index) => {
@@ -491,8 +508,6 @@ const DetailChecklist = ({ route, navigation }) => {
         formData.append("Vido", location?.coords?.latitude || "");
         formData.append("Kinhdo", location?.coords?.longitude || "");
         formData.append("Docao", location?.coords?.altitude || "");
-
-        // If there is an image, append it to formData
         if (item.Anh) {
           const file = {
             uri:
@@ -511,35 +526,34 @@ const DetailChecklist = ({ route, navigation }) => {
           // formData.append(`Images_${index}`, {});
         }
       });
-
       // Send the entire FormData in a single request
-      // await axiosClient
-      //   .post(BASE_URL + `/tb_checklistchitiet/create`, formData, {
-      //     headers: {
-      //       "Content-Type": "multipart/form-data",
-      //       Authorization: `Bearer ${authToken}`,
-      //     },
-      //   })
-      //   .then((res) => {
-      //     postHandleSubmit();
-      //     setLoadingSubmit(false);
-      //     Alert.alert("PMC Thông báo", "Checklist thành công", [
-      //       {
-      //         text: "Hủy",
-      //         onPress: () => console.log("Cancel Pressed"),
-      //         style: "cancel",
-      //       },
-      //       { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-      //     ]);
-      //   })
-      //   .catch((err) => {
-      //     setLoadingSubmit(false);
-      //     Alert.alert(
-      //       "PMC Thông báo",
-      //       "Checklist thất bại. Vui lòng kiểm tra lại hình ảnh hoặc ghi chú!!!",
-      //       [{ text: "Xác nhận", onPress: () => console.log("OK Pressed") }]
-      //     );
-      //   });
+      await axios
+        .post(BASE_URL + `/tb_checklistchitiet/create`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${authToken}`,
+          },
+        })
+        .then((res) => {
+          postHandleSubmit();
+          setLoadingSubmit(false);
+          Alert.alert("PMC Thông báo", "Checklist thành công", [
+            {
+              text: "Hủy",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel",
+            },
+            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+          ]);
+        })
+        .catch((err) => {
+          setLoadingSubmit(false);
+          Alert.alert(
+            "PMC Thông báo",
+            "Checklist thất bại. Vui lòng kiểm tra lại hình ảnh hoặc ghi chú!!!",
+            [{ text: "Xác nhận", onPress: () => console.log("OK Pressed") }]
+          );
+        });
     } catch (error) {
       setLoadingSubmit(false);
       if (error.response) {
@@ -568,7 +582,7 @@ const DetailChecklist = ({ route, navigation }) => {
     );
     const Gioht = defaultActionDataChecklist.map((item) => item.Gioht);
 
-    const requestDone = axiosClient.post(
+    const requestDone = axios.post(
       BASE_URL + "/tb_checklistchitietdone/create",
       {
         Description: descriptions,
@@ -665,7 +679,7 @@ const DetailChecklist = ({ route, navigation }) => {
       );
 
       // Tạo các yêu cầu API
-      const requestFaild = axiosClient.post(
+      const requestFaild = axios.post(
         `${BASE_URL}/tb_checklistchitiet/create`,
         formData,
         {
@@ -676,7 +690,7 @@ const DetailChecklist = ({ route, navigation }) => {
         }
       );
 
-      const requestDone = axiosClient.post(
+      const requestDone = axios.post(
         `${BASE_URL}/tb_checklistchitietdone/create`,
         {
           Description: descriptions,
@@ -967,7 +981,7 @@ const DetailChecklist = ({ route, navigation }) => {
     if (number == 0) return `0`;
     return number;
   };
-  
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <KeyboardAvoidingView
