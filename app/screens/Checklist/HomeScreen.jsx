@@ -356,6 +356,7 @@ const HomeScreen = ({ navigation }) => {
             Giám đốc Tòa nhà toàn quyền sử dụng.
           </Text>
         </View>
+       
       </View>
     </ImageBackground>
   );
