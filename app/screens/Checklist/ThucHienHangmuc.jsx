@@ -295,29 +295,29 @@ const ThucHienHangmuc = ({ route, navigation }) => {
                   </View>
                 </View>
 
-                {isLoadingDetail === false &&
-                  hangMuc &&
-                  hangMuc?.length > 0 && (
-                    <>
-                      <FlatList
-                        style={{
-                          margin: 12,
-                          flex: 1,
-                          marginBottom: 100,
-                        }}
-                        data={hangMuc}
-                        renderItem={({ item, index, separators }) =>
-                          renderItem(item, index)
-                        }
-                        ItemSeparatorComponent={() => (
-                          <View style={{ height: 16 }} />
-                        )}
-                        keyExtractor={(item, index) =>
-                          `${item?.ID_Checklist}_${index}`
-                        }
-                      />
-                    </>
-                  )}
+                {isLoadingDetail === false && hangMuc && hangMuc?.length > 0 ? (
+                  <>
+                    <FlatList
+                      style={{
+                        margin: 12,
+                        flex: 1,
+                        marginBottom: 100,
+                      }}
+                      data={hangMuc}
+                      renderItem={({ item, index, separators }) =>
+                        renderItem(item, index)
+                      }
+                      ItemSeparatorComponent={() => (
+                        <View style={{ height: 16 }} />
+                      )}
+                      keyExtractor={(item, index) =>
+                        `${item?.ID_Checklist}_${index}`
+                      }
+                    />
+                  </>
+                ) : (
+                  navigation.goBack()
+                )}
 
                 {isLoadingDetail === true && hangMuc?.length == 0 && (
                   <View

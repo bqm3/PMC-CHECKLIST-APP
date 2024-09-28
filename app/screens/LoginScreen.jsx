@@ -14,6 +14,7 @@ import {
   ScrollView,
   Linking,
 } from "react-native";
+import Constants from "expo-constants";
 import React, {
   useEffect,
   useState,
@@ -407,6 +408,7 @@ const LoginScreen = ({ navigation }) => {
                     </TouchableOpacity>
                   </View>
                 </ScrollView>
+                <Text style={{color: 'white', fontWeight: '500', width: '100%', textAlign: 'right', padding: 4}}>Phiên bản: {Constants?.expoConfig?.version}</Text>
               </ImageBackground>
 
               <BottomSheetModal
