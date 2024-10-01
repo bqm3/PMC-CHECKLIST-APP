@@ -1,9 +1,8 @@
 {
   "expo": {
     "name": "PMC Checklist",
-    "displayName": "PMC Checklist",
     "slug": "PMC-CHECKLIST-APP",
-    "version": "2.0.0",
+    "version": "2.0.3",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
