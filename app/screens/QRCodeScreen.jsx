@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, StyleSheet, Button, Linking, Alert } from "react-native";
-import { Camera } from "expo-camera";
+import { Text, View, StyleSheet } from "react-native";
+import { CameraView, Camera } from "expo-camera";
 import { COLORS } from "../constants/theme";
-import CustomButton from "../components/Button/Button";
+import Button from "../components/Button/Button";
 
 export default function QRCodeScreen({
   setModalVisibleQr,
@@ -10,68 +10,45 @@ export default function QRCodeScreen({
   handlePushDataFilterQr,
   setIsScan,
 }) {
-  const [hasPermission, setHasPermission] = useState(null);
+  // const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
 
-  useEffect(() => {
-    const getCameraPermissions = async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
-      if (status === "granted") {
-        setHasPermission(true);
-      } else if (status === "denied") {
-        Alert.alert(
-          'Permission Required',
-          'Camera access is required to take photos. Please enable it in settings.',
-          [
-            {
-              text: 'Cancel',
-              style: 'cancel',
-              onPress: () => setHasPermission(false),
-            },
-            {
-              text: 'Open Settings',
-              onPress: () => Linking.openSettings(),
-            },
-          ],
-          { cancelable: false }
-        );
-      } else {
-        setHasPermission(false);
-      }
-    };
+  // useEffect(() => {
+  //   const getCameraPermissions = async () => {
+  //     const { status } = await Camera.requestCameraPermissionsAsync();
+  //     setHasPermission(status === "granted");
+  //   };
 
-    getCameraPermissions();
-  }, []);
+  //   getCameraPermissions();
+  // }, []);
 
   const handleBarCodeScanned = ({ type, data }) => {
     setIsScan(true);
     setScanned(true);
-    if (type && data) {
+    if ((type, data)) {
       handlePushDataFilterQr(data);
     }
   };
 
-  if (hasPermission === null) {
-    return <Text allowFontScaling={false}>Requesting for camera permission</Text>;
-  }
-
-  if (hasPermission === false) {
-    return (
-      <View style={styles.noAccessContainer}>
-        <Text allowFontScaling={false} style={styles.noAccessText}>
-          No access to camera
-        </Text>
-        <Button title="Open Settings" onPress={() => Linking.openSettings()} />
-      </View>
-    );
-  }
+  // if (hasPermission === null) {
+  //   return <Text allowFontScaling={false}>Requesting for camera permission</Text>;
+  // }
+  // if (hasPermission === false) {
+  //   return <Text allowFontScaling={false}>No access to camera</Text>;
+  // }
 
   return (
     <View style={styles.container}>
-      <Camera
-        onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-        style={[StyleSheet.absoluteFillObject, { borderRadius: 12 }]}
-      />
+      <View style={{ width: "100%", height: "100%" }}>
+        <CameraView
+          onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
+          barcodeScannerSettings={{
+            barcodeTypes: ["qr", "pdf417"],
+          }}
+          style={[StyleSheet.absoluteFillObject, { borderRadius: 12 }]}
+        />
+      </View>
+      {/* {scanned && ( */}
       <View
         style={{
           position: "absolute",
@@ -82,7 +59,7 @@ export default function QRCodeScreen({
           width: "100%",
         }}
       >
-        <CustomButton
+        <Button
           text={"Đóng"}
           backgroundColor={"white"}
           color={"black"}
@@ -91,13 +68,14 @@ export default function QRCodeScreen({
             setOpacity(1);
           }}
         />
-        <CustomButton
+        <Button
           text={"Quét lại"}
           backgroundColor={COLORS.bg_button}
           color={"white"}
           onPress={() => setScanned(false)}
         />
       </View>
+      {/* )} */}
     </View>
   );
 }
@@ -110,16 +88,5 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-  },
-  noAccessContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 16,
-  },
-  noAccessText: {
-    fontSize: 18,
-    marginBottom: 16,
-    textAlign: "center",
   },
 });

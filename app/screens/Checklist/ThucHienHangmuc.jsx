@@ -25,6 +25,8 @@ import Button from "../../components/Button/Button";
 import QRCodeScreen from "../QRCodeScreen";
 import DataContext from "../../context/DataContext";
 import adjust from "../../adjust";
+import { Camera } from "expo-camera";
+import { Linking } from "react-native";
 
 const ThucHienHangmuc = ({ route, navigation }) => {
   const { ID_ChecklistC, ID_KhoiCV, ID_Khuvuc, dataFilterHandler } =
@@ -245,6 +247,37 @@ const ThucHienHangmuc = ({ route, navigation }) => {
     return number;
   };
 
+  const handleOpenQrCode = async () => {
+    const { status } = await Camera.requestCameraPermissionsAsync();
+    if (status === "granted") {
+      setModalVisibleQr(true);
+      setOpacity(0.2);
+    } else if (status === "denied") {
+      Alert.alert(
+        "Permission Required",
+        "Camera access is required to take photos. Please enable it in settings.",
+        [
+          {
+            text: "Cancel",
+            style: "cancel",
+            onPress: () => {
+              setModalVisibleQr(false);
+              setOpacity(1);
+            },
+          },
+          {
+            text: "Open Settings",
+            onPress: () => Linking.openSettings(),
+          },
+        ],
+        { cancelable: false }
+      );
+    } else {
+      setModalVisibleQr(false);
+      setOpacity(1);
+    }
+  };
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <KeyboardAvoidingView
@@ -376,10 +409,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
                       text={"Scan QR Code"}
                       backgroundColor={"white"}
                       color={"black"}
-                      onPress={() => {
-                        setModalVisibleQr(true);
-                        setOpacity(0.2);
-                      }}
+                      onPress={() => handleOpenQrCode()}
                     />
                   )}
 

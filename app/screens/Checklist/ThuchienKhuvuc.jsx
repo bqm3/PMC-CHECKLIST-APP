@@ -13,16 +13,14 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Image,
+  Linking,
 } from "react-native";
+import { Camera } from "expo-camera";
 import React, { useState, useEffect, useContext } from "react";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import {
-  ent_khuvuc_get,
-  ent_toanha_get,
-  ent_checklist_mul_hm,
-} from "../../redux/actions/entActions";
+import { ent_checklist_mul_hm } from "../../redux/actions/entActions";
 import { COLORS, SIZES } from "../../constants/theme";
 import Button from "../../components/Button/Button";
 import axios from "axios";
@@ -60,7 +58,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
   const { ent_khuvuc, ent_checklist_detail, ent_toanha } = useSelector(
     (state) => state.entReducer
   );
-
+  const [hasPermission, setHasPermission] = useState(null);
   const { isConnect, saveConnect } = useContext(ConnectContext);
 
   const { user, authToken } = useSelector((state) => state.authReducer);
@@ -245,7 +243,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
           ID_KhoiCV: ID_KhoiCV,
           ID_Calv: ID_Calv,
           ID_Khuvuc: resDataKhuvuc[0].ID_Khuvuc,
-          dataFilterHandler : dataFilterHandler
+          dataFilterHandler: dataFilterHandler,
         });
       } else if (resDataKhuvuc.length === 0 && resDataHangmuc.length === 0) {
         Alert.alert(
@@ -705,10 +703,12 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
     setDataChecklistFilterContext(dataChecklistFilterContextReset);
     setDataChecklistDefault([]);
     setDataChecklistFaild([]);
-    
+
     if (HangMucDefault && dataChecklistFilterContextReset) {
       // Lấy danh sách ID_Hangmuc từ dataChecklists
-      const checklistIDs = dataChecklistFilterContextReset.map((item) => item.ID_Hangmuc);
+      const checklistIDs = dataChecklistFilterContextReset.map(
+        (item) => item.ID_Hangmuc
+      );
 
       // Lọc filteredByKhuvuc để chỉ giữ lại các mục có ID_Hangmuc tồn tại trong checklistIDs
       const finalFilteredData = HangMucDefault.filter((item) =>
@@ -734,7 +734,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
 
       setHangMuc(finalFilteredData);
       setDataKhuvuc(filteredHangMuc);
-      setDataFilterHandler(finalFilteredData)
+      setDataFilterHandler(finalFilteredData);
     }
   };
   const toggleTodo = async (item) => {
@@ -757,7 +757,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
       ID_KhoiCV: ID_KhoiCV,
       ID_Calv: ID_Calv,
       ID_Khuvuc: dataSelect[0].ID_Khuvuc,
-      dataFilterHandler : dataFilterHandler
+      dataFilterHandler: dataFilterHandler,
     });
     setDataSelect([]);
   };
@@ -825,6 +825,37 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
     if (number < 10 && number >= 1) return `0${number}`;
     if (number == 0) return `0`;
     return number;
+  };
+
+  const handleOpenQrCode = async () => {
+    const { status } = await Camera.requestCameraPermissionsAsync();
+    if (status === "granted") {
+      setModalVisibleQr(true);
+      setOpacity(0.2);
+    } else if (status === "denied") {
+      Alert.alert(
+        "Permission Required",
+        "Camera access is required to take photos. Please enable it in settings.",
+        [
+          {
+            text: "Cancel",
+            style: "cancel",
+            onPress: () => {
+              setModalVisibleQr(false);
+              setOpacity(1);
+            },
+          },
+          {
+            text: "Open Settings",
+            onPress: () => Linking.openSettings(),
+          },
+        ],
+        { cancelable: false }
+      );
+    } else {
+      setModalVisibleQr(false);
+      setOpacity(1);
+    }
   };
 
   return (
@@ -969,10 +1000,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
                     text={"Scan QR Code"}
                     backgroundColor={"white"}
                     color={"black"}
-                    onPress={() => {
-                      setModalVisibleQr(true);
-                      setOpacity(0.2);
-                    }}
+                    onPress={() => handleOpenQrCode()}
                   />
 
                   {dataSelect[0] && (

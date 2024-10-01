@@ -13,6 +13,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Image,
+  Linking,
 } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
 import { Provider, useDispatch, useSelector } from "react-redux";
@@ -35,6 +36,7 @@ import adjust from "../../adjust";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as Network from "expo-network";
 import ConnectContext from "../../context/ConnectContext";
+import { Camera } from "expo-camera";
 
 const ThucHienKhuvucLai = ({ route, navigation }) => {
   const { ID_ChecklistC, ID_KhoiCV, ID_ThietLapCa, ID_Hangmucs } = route.params;
@@ -791,6 +793,37 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
     );
   }
 
+  const handleOpenQrCode = async () => {
+    const { status } = await Camera.requestCameraPermissionsAsync();
+    if (status === "granted") {
+      setModalVisibleQr(true);
+      setOpacity(0.2);
+    } else if (status === "denied") {
+      Alert.alert(
+        "Permission Required",
+        "Camera access is required to take photos. Please enable it in settings.",
+        [
+          {
+            text: "Cancel",
+            style: "cancel",
+            onPress: () => {
+              setModalVisibleQr(false);
+              setOpacity(1);
+            },
+          },
+          {
+            text: "Open Settings",
+            onPress: () => Linking.openSettings(),
+          },
+        ],
+        { cancelable: false }
+      );
+    } else {
+      setModalVisibleQr(false);
+      setOpacity(1);
+    }
+  };
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <KeyboardAvoidingView
@@ -931,10 +964,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
                     text={"Scan QR Code"}
                     backgroundColor={"white"}
                     color={"black"}
-                    onPress={() => {
-                      setModalVisibleQr(true);
-                      setOpacity(0.2);
-                    }}
+                    onPress={() => handleOpenQrCode()}
                   />
 
                   {dataSelect[0] && (

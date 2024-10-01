@@ -13,6 +13,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Image,
+  Linking,
 } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -23,6 +24,7 @@ import Button from "../../components/Button/Button";
 import QRCodeScreen from "../QRCodeScreen";
 import DataContext from "../../context/DataContext";
 import adjust from "../../adjust";
+import { Camera } from "expo-camera";
 
 const ThucHienHangmucLai = ({ route, navigation }) => {
   const { ID_ChecklistC, ID_KhoiCV, ID_Khuvuc, dataFilterHandler } =
@@ -35,7 +37,6 @@ const ThucHienHangmucLai = ({ route, navigation }) => {
   const [isScan, setIsScan] = useState(false);
   const [modalVisibleQr, setModalVisibleQr] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-  const [tieuChuan, setTieuChuan] = useState();
   const [dataSelect, setDataSelect] = useState([]);
 
   useEffect(() => {
@@ -183,6 +184,37 @@ const ThucHienHangmucLai = ({ route, navigation }) => {
     </TouchableOpacity>
   );
 
+  const handleOpenQrCode = async () => {
+    const { status } = await Camera.requestCameraPermissionsAsync();
+    if (status === "granted") {
+      setModalVisibleQr(true);
+      setOpacity(0.2);
+    } else if (status === "denied") {
+      Alert.alert(
+        "Permission Required",
+        "Camera access is required to take photos. Please enable it in settings.",
+        [
+          {
+            text: "Cancel",
+            style: "cancel",
+            onPress: () => {
+              setModalVisibleQr(false);
+              setOpacity(1);
+            },
+          },
+          {
+            text: "Open Settings",
+            onPress: () => Linking.openSettings(),
+          },
+        ],
+        { cancelable: false }
+      );
+    } else {
+      setModalVisibleQr(false);
+      setOpacity(1);
+    }
+  };
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <KeyboardAvoidingView
@@ -269,10 +301,7 @@ const ThucHienHangmucLai = ({ route, navigation }) => {
                       text={"Scan QR Code"}
                       backgroundColor={"white"}
                       color={"black"}
-                      onPress={() => {
-                        setModalVisibleQr(true);
-                        setOpacity(0.2);
-                      }}
+                      onPress={() => handleOpenQrCode()}
                     />
                   )}
                   {dataSelect[0] && (
