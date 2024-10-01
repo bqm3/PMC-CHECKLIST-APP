@@ -43,7 +43,7 @@
       <true/>
     </dict>
     <key>NSCameraUsageDescription</key>
-    <string>Allow $(PRODUCT_NAME) to access your camera</string>
+    <string>$(PRODUCT_NAME) needs access to your camera to capture images during the checklist process, document areas with incidents, and scan QR codes for asset verification</string>
     <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
     <string>$(PRODUCT_NAME) uses your location to help find nearby buildings and assist with on-site activity management. Your location data will only be used while using the app</string>
     <key>NSLocationAlwaysUsageDescription</key>

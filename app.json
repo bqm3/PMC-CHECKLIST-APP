@@ -54,7 +54,7 @@
         "policy": "sdkVersion"
       },
       "infoPlist": {
-        "NSCameraUsageDescription": "The app needs access to your camera so you can take and upload profile pictures or scan QR codes.",
+        "NSCameraUsageDescription": "The app needs access to your camera to capture images during the checklist process, document areas with incidents, and scan QR codes for asset verification.",
         "NSMicrophoneUsageDescription": "The app needs access to your microphone so you can record and upload audio recordings.",
         "NSLocationWhenInUseUsageDescription": "The app needs access to your location to provide suggestions about nearby places and improve your experience."
       }
