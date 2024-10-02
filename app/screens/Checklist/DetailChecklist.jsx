@@ -25,7 +25,7 @@ import React, {
   useContext,
 } from "react";
 import { Provider, useDispatch, useSelector } from "react-redux";
-import {
+import BottomSheet, {
   BottomSheetModal,
   BottomSheetView,
   BottomSheetModalProvider,
@@ -50,6 +50,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Checkbox from "../../components/Active/Checkbox";
 import ConnectContext from "../../context/ConnectContext";
 import WebView from "react-native-webview";
+import { useHeaderHeight } from "@react-navigation/elements";
 import axiosClient from "../../api/axiosClient";
 
 const DetailChecklist = ({ route, navigation }) => {
@@ -89,6 +90,8 @@ const DetailChecklist = ({ route, navigation }) => {
   const [show, setShow] = useState(false);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+
+  const headerHeight = useHeaderHeight();
 
   useEffect(() => {
     (async () => {
@@ -843,7 +846,7 @@ const DetailChecklist = ({ route, navigation }) => {
     setDataItem(item);
     setModalVisible(true);
     setIndex(index);
-    bottomSheetModalRef.current?.present();
+    bottomSheetModalRef?.current?.present();
   }, []);
 
   const handlePopupActiveTieuChuan = useCallback((item, index) => {
@@ -859,7 +862,7 @@ const DetailChecklist = ({ route, navigation }) => {
     setDataItem(null);
     setModalVisible(false);
     setIndex(null);
-    bottomSheetModalRef.current?.close();
+    bottomSheetModalRef?.current?.close();
   }, []);
 
   const handleBackAnroid = async () => {
@@ -867,7 +870,7 @@ const DetailChecklist = ({ route, navigation }) => {
     setDataItem(null);
     setModalVisible(false);
     setIndex(null);
-    bottomSheetModalRef.current?.close();
+    bottomSheetModalRef?.current?.close();
     setIsBottomSheetOpen(false);
   };
 
@@ -984,316 +987,318 @@ const DetailChecklist = ({ route, navigation }) => {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : null}
-        style={{ flex: 1 }}
-      >
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-          <BottomSheetModalProvider>
-            <ImageBackground
-              source={require("../../../assets/bg.png")}
-              resizeMode="cover"
-              style={{ flex: 1 }}
+       <KeyboardAvoidingView
+          keyboardVerticalOffset={headerHeight}
+          behavior={Platform.OS === "ios" ? "padding" : null}
+          style={{ flex: 1, backgroundColor: 'red' }}
+        >
+      <BottomSheetModalProvider>
+       
+          {/* <TouchableWithoutFeedback
+            onPress={Keyboard.dismiss}
+            accessible={false}
+          > */}
+          <ImageBackground
+            source={require("../../../assets/bg.png")}
+            resizeMode="cover"
+            style={{ flex: 1 }}
+          >
+            <View
+              style={{
+                flex: 1,
+                opacity: opacity,
+              }}
             >
-              <View
-                style={{
-                  flex: 1,
-                  opacity: opacity,
-                }}
-              >
-                <View style={{ margin: 12 }}>
+              <View style={{ margin: 12 }}>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignContent: "center",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                  }}
+                >
                   <View
                     style={{
                       flexDirection: "row",
-                      alignContent: "center",
                       alignItems: "center",
-                      justifyContent: "space-between",
+                      width: "100%",
+                      gap: 8,
                     }}
                   >
                     <View
                       style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        width: "100%",
+                        flexDirection: "column",
                         gap: 8,
                       }}
                     >
+                      <Text
+                        allowFontScaling={false}
+                        style={[styles.text, { fontSize: 17 }]}
+                      >
+                        Hạng mục: {Hangmuc?.Hangmuc}
+                      </Text>
+                      <Text allowFontScaling={false} style={styles.text}>
+                        Số lượng: {decimalNumber(dataChecklistFilter?.length)}{" "}
+                        Checklist
+                      </Text>
                       <View
                         style={{
-                          flexDirection: "column",
-                          gap: 8,
+                          flexDirection: "row",
+                          alignItems: "center",
+                          width: "100%",
+                          justifyContent: "space-between",
                         }}
                       >
-                        <Text
-                          allowFontScaling={false}
-                          style={[styles.text, { fontSize: 17 }]}
-                        >
-                          Hạng mục: {Hangmuc?.Hangmuc}
-                        </Text>
                         <Text allowFontScaling={false} style={styles.text}>
-                          Số lượng: {decimalNumber(dataChecklistFilter?.length)}{" "}
-                          Checklist
+                          Đang checklist:{" "}
+                          {decimalNumber(newActionDataChecklist?.length)}
                         </Text>
-                        <View
-                          style={{
-                            flexDirection: "row",
-                            alignItems: "center",
-                            width: "100%",
-                            justifyContent: "space-between",
-                          }}
-                        >
-                          <Text allowFontScaling={false} style={styles.text}>
-                            Đang checklist:{" "}
-                            {decimalNumber(newActionDataChecklist?.length)}
-                          </Text>
-                          {Hangmuc?.FileTieuChuan !== null &&
-                            Hangmuc?.FileTieuChuan !== undefined && (
-                              <View>
-                                <TouchableOpacity
-                                  onPress={() => setShow(true)}
-                                  style={{
-                                    flexDirection: "row",
-                                    alignItems: "center",
-                                  }}
-                                >
-                                  <Ionicons
-                                    name="bookmark"
-                                    size={24}
-                                    color="white"
-                                  />
-                                  <Text style={styles.text}>Tiêu chuẩn </Text>
-                                </TouchableOpacity>
-                              </View>
-                            )}
-                        </View>
+                        {Hangmuc?.FileTieuChuan !== null &&
+                          Hangmuc?.FileTieuChuan !== undefined && (
+                            <View>
+                              <TouchableOpacity
+                                onPress={() => setShow(true)}
+                                style={{
+                                  flexDirection: "row",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <Ionicons
+                                  name="bookmark"
+                                  size={24}
+                                  color="white"
+                                />
+                                <Text style={styles.text}>Tiêu chuẩn </Text>
+                              </TouchableOpacity>
+                            </View>
+                          )}
                       </View>
                     </View>
                   </View>
                 </View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginLeft: 12,
-                  }}
-                >
-                  <Checkbox
-                    isCheck={activeAll}
-                    onPress={() => handleCheckAll(!activeAll)}
-                    size={30}
-                  />
-                  <Text
-                    allowFontScaling={false}
-                    style={[
-                      styles.text,
-                      { paddingHorizontal: 12, fontSize: adjust(18) },
-                    ]}
-                  >
-                    Chọn tất cả
-                  </Text>
-                </View>
-
-                {isLoadingDetail === false &&
-                  dataChecklistFilter &&
-                  dataChecklistFilter?.length > 0 && (
-                    <>
-                      <FlatList
-                        style={{
-                          margin: 12,
-                          flex: 1,
-                          marginBottom: 80,
-                        }}
-                        data={dataChecklistFilter}
-                        renderItem={({ item, index, separators }) =>
-                          renderItem(item, index)
-                        }
-                        ItemSeparatorComponent={() => (
-                          <View style={{ height: 16 }} />
-                        )}
-                        keyExtractor={(item, index) =>
-                          `${item?.ID_Checklist}_${index}`
-                        }
-                      />
-                    </>
-                  )}
-
-                {isLoadingDetail === true &&
-                  dataChecklistFilter?.length == 0 && (
-                    <View
-                      style={{
-                        flex: 1,
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <ActivityIndicator
-                        style={{
-                          marginRight: 4,
-                        }}
-                        size="large"
-                        color={COLORS.bg_white}
-                      ></ActivityIndicator>
-                    </View>
-                  )}
-
-                {isLoadingDetail === false &&
-                  dataChecklistFilter?.length == 0 && (
-                    <View
-                      style={{
-                        flex: 1,
-                        justifyContent: "center",
-                        alignItems: "center",
-                        marginBottom: 80,
-                      }}
-                    >
-                      <Image
-                        source={require("../../../assets/icons/delete_bg.png")}
-                        resizeMode="contain"
-                        style={{ height: 120, width: 120 }}
-                      />
-                      <Text
-                        allowFontScaling={false}
-                        style={[styles.danhmuc, { padding: 10 }]}
-                      >
-                        {isScan
-                          ? "Không thấy checklist cho hạng mục này"
-                          : "Không còn checklist cho hạng mục này !"}
-                      </Text>
-                    </View>
-                  )}
-                <View
-                  style={{
-                    position: "absolute",
-                    bottom: 15,
-                    flexDirection: "row",
-                    justifyContent: "space-around",
-                    alignItems: "center",
-                    width: "100%",
-                  }}
-                >
-                  <Button
-                    text={"Hoàn Thành"}
-                    isLoading={loadingSubmit}
-                    backgroundColor={COLORS.bg_button}
-                    color={"white"}
-                    onPress={() => handleSubmit()}
-                  />
-                </View>
               </View>
-            </ImageBackground>
-
-            <BottomSheetModal
-              ref={bottomSheetModalRef}
-              index={0}
-              snapPoints={snapPoints}
-              onChange={handleSheetChanges}
-            >
-              <View style={styles.contentContainer}>
-                <ModalPopupDetailChecklist
-                  handlePopupClear={handlePopupClear}
-                  dataItem={dataItem}
-                  handleItemClick={handleItemClick}
-                  index={index}
-                  // handleChange={handleChange}
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  marginLeft: 12,
+                }}
+              >
+                <Checkbox
+                  isCheck={activeAll}
+                  onPress={() => handleCheckAll(!activeAll)}
+                  size={30}
                 />
-              </View>
-            </BottomSheetModal>
-
-            {/* Modal show tieu chuan  */}
-            <Modal
-              animationType="slide"
-              transparent={true}
-              visible={modalVisibleTieuChuan}
-              onRequestClose={() => {
-                setModalVisibleTieuChuan(!modalVisibleTieuChuan);
-              }}
-            >
-              <View style={[styles.centeredView, { height: "100%" }]}>
-                <View
+                <Text
+                  allowFontScaling={false}
                   style={[
-                    styles.modalView,
-                    {
-                      width: "60%",
-                      height: "auto",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      alignContent: "center",
-                    },
+                    styles.text,
+                    { paddingHorizontal: 12, fontSize: adjust(18) },
                   ]}
                 >
-                  <ScrollView>
+                  Chọn tất cả
+                </Text>
+              </View>
+
+              {isLoadingDetail === false &&
+                dataChecklistFilter &&
+                dataChecklistFilter?.length > 0 && (
+                  <>
+                    <FlatList
+                      style={{
+                        margin: 12,
+                        flex: 1,
+                        marginBottom: 80,
+                      }}
+                      data={dataChecklistFilter}
+                      renderItem={({ item, index, separators }) =>
+                        renderItem(item, index)
+                      }
+                      ItemSeparatorComponent={() => (
+                        <View style={{ height: 16 }} />
+                      )}
+                      keyExtractor={(item, index) =>
+                        `${item?.ID_Checklist}_${index}`
+                      }
+                    />
+                  </>
+                )}
+
+              {isLoadingDetail === true && dataChecklistFilter?.length == 0 && (
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <ActivityIndicator
+                    style={{
+                      marginRight: 4,
+                    }}
+                    size="large"
+                    color={COLORS.bg_white}
+                  ></ActivityIndicator>
+                </View>
+              )}
+
+              {isLoadingDetail === false &&
+                dataChecklistFilter?.length == 0 && (
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      marginBottom: 80,
+                    }}
+                  >
+                    <Image
+                      source={require("../../../assets/icons/delete_bg.png")}
+                      resizeMode="contain"
+                      style={{ height: 120, width: 120 }}
+                    />
                     <Text
                       allowFontScaling={false}
-                      style={{ paddingBottom: 30 }}
+                      style={[styles.danhmuc, { padding: 10 }]}
                     >
-                      {tieuchuan}{" "}
+                      {isScan
+                        ? "Không thấy checklist cho hạng mục này"
+                        : "Không còn checklist cho hạng mục này !"}
                     </Text>
-                  </ScrollView>
-                  <Button
-                    text={"Đóng"}
-                    backgroundColor={COLORS.bg_button}
-                    color={"white"}
-                    onPress={() => {
-                      setModalVisibleTieuChuan(false);
-                      setOpacity(1);
-                    }}
-                  />
-                </View>
-              </View>
-            </Modal>
-
-            <Modal
-              animationType={"slide"}
-              transparent={false}
-              visible={show}
-              onRequestClose={() => {
-                console.log("Modal has been closed.");
-              }}
-            >
-              <TouchableOpacity onPress={() => setShow(false)}>
-                <Ionicons
-                  name="close"
-                  size={40}
-                  color="black"
-                  style={{
-                    marginTop: 10,
-                    textAlign: "right",
-                    paddingRight: 10,
-                  }}
-                />
-              </TouchableOpacity>
-              {Hangmuc?.FileTieuChuan !== null &&
-                Hangmuc?.FileTieuChuan !== undefined && (
-                  <View style={{ flex: 1 }}>
-                    {loading && (
-                      <ActivityIndicator
-                        size="large"
-                        color="#0000ff"
-                        style={{
-                          position: "absolute",
-                          top: "50%",
-                          left: "50%",
-                          zIndex: 1,
-                        }}
-                      />
-                    )}
-                    <WebView
-                      customStyle={{
-                        readerContainerNavigateArrow: true,
-                        readerContainerNavigate: true,
-                      }}
-                      style={{ flex: 1 }}
-                      source={{
-                        uri: Hangmuc?.FileTieuChuan,
-                      }}
-                      onLoadStart={() => setLoading(true)}
-                      onLoadEnd={() => setLoading(false)}
-                    />
                   </View>
                 )}
-            </Modal>
-          </BottomSheetModalProvider>
-        </TouchableWithoutFeedback>
+              <View
+                style={{
+                  position: "absolute",
+                  bottom: 15,
+                  flexDirection: "row",
+                  justifyContent: "space-around",
+                  alignItems: "center",
+                  width: "100%",
+                }}
+              >
+                <Button
+                  text={"Hoàn Thành"}
+                  isLoading={loadingSubmit}
+                  backgroundColor={COLORS.bg_button}
+                  color={"white"}
+                  onPress={() => handleSubmit()}
+                />
+              </View>
+            </View>
+          </ImageBackground>
+
+          <BottomSheetModal
+            ref={bottomSheetModalRef}
+            index={0}
+            snapPoints={snapPoints}
+            onChange={handleSheetChanges}
+          >
+            <View style={styles.contentContainer}>
+              <ModalPopupDetailChecklist
+                handlePopupClear={handlePopupClear}
+                dataItem={dataItem}
+                handleItemClick={handleItemClick}
+                index={index}
+                // handleChange={handleChange}
+              />
+            </View>
+          </BottomSheetModal>
+
+          {/* Modal show tieu chuan  */}
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisibleTieuChuan}
+            onRequestClose={() => {
+              setModalVisibleTieuChuan(!modalVisibleTieuChuan);
+            }}
+          >
+            <View style={[styles.centeredView, { height: "100%" }]}>
+              <View
+                style={[
+                  styles.modalView,
+                  {
+                    width: "60%",
+                    height: "auto",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    alignContent: "center",
+                  },
+                ]}
+              >
+                <ScrollView>
+                  <Text allowFontScaling={false} style={{ paddingBottom: 30 }}>
+                    {tieuchuan}{" "}
+                  </Text>
+                </ScrollView>
+                <Button
+                  text={"Đóng"}
+                  backgroundColor={COLORS.bg_button}
+                  color={"white"}
+                  onPress={() => {
+                    setModalVisibleTieuChuan(false);
+                    setOpacity(1);
+                  }}
+                />
+              </View>
+            </View>
+          </Modal>
+
+          <Modal
+            animationType={"slide"}
+            transparent={false}
+            visible={show}
+            onRequestClose={() => {
+              console.log("Modal has been closed.");
+            }}
+          >
+            <TouchableOpacity onPress={() => setShow(false)}>
+              <Ionicons
+                name="close"
+                size={40}
+                color="black"
+                style={{
+                  marginTop: 10,
+                  textAlign: "right",
+                  paddingRight: 10,
+                }}
+              />
+            </TouchableOpacity>
+            {Hangmuc?.FileTieuChuan !== null &&
+              Hangmuc?.FileTieuChuan !== undefined && (
+                <View style={{ flex: 1 }}>
+                  {loading && (
+                    <ActivityIndicator
+                      size="large"
+                      color="#0000ff"
+                      style={{
+                        position: "absolute",
+                        top: "50%",
+                        left: "50%",
+                        zIndex: 1,
+                      }}
+                    />
+                  )}
+                  <WebView
+                    customStyle={{
+                      readerContainerNavigateArrow: true,
+                      readerContainerNavigate: true,
+                    }}
+                    style={{ flex: 1 }}
+                    source={{
+                      uri: Hangmuc?.FileTieuChuan,
+                    }}
+                    onLoadStart={() => setLoading(true)}
+                    onLoadEnd={() => setLoading(false)}
+                  />
+                </View>
+              )}
+          </Modal>
+          {/* </TouchableWithoutFeedback> */}
+    
+      </BottomSheetModalProvider>
       </KeyboardAvoidingView>
     </GestureHandlerRootView>
   );
