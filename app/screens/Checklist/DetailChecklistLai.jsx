@@ -50,6 +50,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Checkbox from "../../components/Active/Checkbox";
 import ConnectContext from "../../context/ConnectContext";
 import WebView from "react-native-webview";
+import { useHeaderHeight } from "@react-navigation/elements";
 
 const DetailChecklistLai = ({ route, navigation }) => {
   const { ID_ChecklistC, ID_Hangmuc, hangMuc, Hangmuc } = route.params;
@@ -88,6 +89,7 @@ const DetailChecklistLai = ({ route, navigation }) => {
   const [show, setShow] = useState(false);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const headerHeight = useHeaderHeight();
 
   useEffect(() => {
     (async () => {
@@ -991,17 +993,17 @@ const DetailChecklistLai = ({ route, navigation }) => {
   //  console.log(hangMuc)
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : null}
-        style={{ flex: 1 }}
-      >
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-          <BottomSheetModalProvider>
-            <ImageBackground
-              source={require("../../../assets/bg.png")}
-              resizeMode="cover"
-              style={{ flex: 1 }}
-            >
+       <KeyboardAvoidingView
+          keyboardVerticalOffset={headerHeight}
+          behavior={Platform.OS === "ios" ? "padding" : null}
+          style={{ flex: 1, backgroundColor: 'red' }}
+        >
+      <BottomSheetModalProvider>
+          <ImageBackground
+            source={require("../../../assets/bg.png")}
+            resizeMode="cover"
+            style={{ flex: 1 }}
+          >
               <View
                 style={{
                   flex: 1,
@@ -1300,7 +1302,7 @@ const DetailChecklistLai = ({ route, navigation }) => {
                 )}
             </Modal>
           </BottomSheetModalProvider>
-        </TouchableWithoutFeedback>
+        {/* </TouchableWithoutFeedback> */}
       </KeyboardAvoidingView>
     </GestureHandlerRootView>
   );

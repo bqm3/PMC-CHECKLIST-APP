@@ -10,6 +10,8 @@ import {
   Platform,
   FlatList,
   Image,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import {
   ent_khuvuc_get,
@@ -139,6 +141,7 @@ const ModalChangeTinhTrangSuCo = ({
         behavior={Platform.OS === "ios" ? "padding" : null}
         style={{ flex: 1 }}
       >
+             <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <View
           style={{
             margin: 10,
@@ -564,6 +567,7 @@ const ModalChangeTinhTrangSuCo = ({
             />
           </View>
         </View>
+        </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
     </GestureHandlerRootView>
   );
