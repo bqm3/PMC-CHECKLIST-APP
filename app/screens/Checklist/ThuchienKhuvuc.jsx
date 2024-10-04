@@ -359,7 +359,16 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
       setLoadingSubmit(true);
       // Create a new FormData instance
       const formData = new FormData();
+      const isCheckValueCheck = dataChecklistFaild.some(
+        (item) => item.valueCheck == null || item.valueCheck == ""
+      );
 
+      if (isCheckValueCheck) {
+        setLoadingSubmit(false);
+        Alert.alert("PMC Thông báo", "Chưa có dữ liệu checklist", [
+          { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+        ]);
+      } else {
       // Iterate over all items in dataChecklistFaild
       dataChecklistFaild.forEach((item, index) => {
         // Extract and append checklist details to formData
@@ -422,7 +431,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
             "Checklist thất bại. Vui lòng kiểm tra lại hình ảnh hoặc ghi chú!!!",
             [{ text: "Xác nhận", onPress: () => console.log("OK Pressed") }]
           );
-        });
+        })};
     } catch (error) {
       setLoadingSubmit(false);
       if (error.response) {
@@ -512,6 +521,16 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
 
       // Tạo một đối tượng FormData để chứa dữ liệu của dataChecklistFaild
       const formData = new FormData();
+      const isCheckValueCheck = dataChecklistFaild.some(
+        (item) => item.valueCheck == null || item.valueCheck == ""
+      );
+
+      if (isCheckValueCheck) {
+        setLoadingSubmit(false);
+        Alert.alert("PMC Thông báo", "Chưa có dữ liệu checklist", [
+          { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+        ]);
+      } else {
 
       // Lặp qua từng phần tử trong dataChecklistFaild để thêm vào FormData
       dataChecklistFaild.forEach((item, index) => {
@@ -647,7 +666,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
               ]
             );
           }
-        });
+        })};
     } catch (error) {
       setLoadingSubmit(false);
       Alert.alert(

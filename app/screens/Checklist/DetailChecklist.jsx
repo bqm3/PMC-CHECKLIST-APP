@@ -655,7 +655,16 @@ const DetailChecklist = ({ route, navigation }) => {
       setLoadingSubmit(true);
       // Tạo một đối tượng FormData để chứa dữ liệu của dataChecklistFaild
       const formData = new FormData();
+      const isCheckValueCheck = dataChecklistFaild.some(
+        (item) => item.valueCheck == null || item.valueCheck == ""
+      );
 
+      if (isCheckValueCheck) {
+        setLoadingSubmit(false);
+        Alert.alert("PMC Thông báo", "Chưa có dữ liệu checklist", [
+          { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+        ]);
+      } else {
       // Lặp qua từng phần tử trong dataChecklistFaild để thêm vào FormData
       dataChecklistFaild.forEach((item, index) => {
         formData.append("ID_ChecklistC", ID_ChecklistC);
@@ -785,7 +794,7 @@ const DetailChecklist = ({ route, navigation }) => {
               ]
             );
           }
-        });
+        })};
     } catch (error) {
       setLoadingSubmit(false);
       Alert.alert(
