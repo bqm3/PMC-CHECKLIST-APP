@@ -327,12 +327,17 @@ const DetailChecklist = ({ route, navigation }) => {
     });
 
     if (it.valueCheck === null) {
-      if (
-        !mergedArrOption.some(
-          (existingItem) => existingItem.ID_Checklist === it.ID_Checklist
-        )
-      ) {
+      const existingItem = mergedArrOption.find(
+        (item) => item.ID_Checklist === it.ID_Checklist
+      );
+
+      if (!existingItem) {
         mergedArrOption.push(it);
+      } else {
+        if (JSON.stringify(existingItem) !== JSON.stringify(it)) {
+          const index = mergedArrOption.indexOf(existingItem);
+          mergedArrOption[index] = it;
+        }
       }
     } else {
       if (status === "click") {
@@ -499,64 +504,72 @@ const DetailChecklist = ({ route, navigation }) => {
       setLoadingSubmit(true);
       // Create a new FormData instance
       const formData = new FormData();
+      const isCheckValueCheck = dataChecklistFaild.some(
+        (item) => item.valueCheck == null || item.valueCheck == ""
+      );
 
-      // Iterate over all items in dataChecklistFaild
-      dataChecklistFaild.forEach((item, index) => {
-        // Extract and append checklist details to formData
-        formData.append("ID_ChecklistC", ID_ChecklistC);
-        formData.append("ID_Checklist", item.ID_Checklist);
-        formData.append("Ketqua", item.valueCheck || "");
-        formData.append("Gioht", item.Gioht);
-        formData.append("Ghichu", item.GhichuChitiet || "");
-        formData.append("Vido", location?.coords?.latitude || "");
-        formData.append("Kinhdo", location?.coords?.longitude || "");
-        formData.append("Docao", location?.coords?.altitude || "");
-        if (item.Anh) {
-          const file = {
-            uri:
-              Platform.OS === "android"
-                ? item.Anh.uri
-                : item.Anh.uri.replace("file://", ""),
-            name:
-              item.Anh.fileName ||
-              `${Math.floor(Math.random() * 999999999)}.jpg`,
-            type: "image/jpeg",
-          };
-          formData.append(`Images_${index}`, file);
-          formData.append("Anh", file.name);
-        } else {
-          // formData.append("Anh", "");
-          // formData.append(`Images_${index}`, {});
-        }
-      });
-      // Send the entire FormData in a single request
-      await axios
-        .post(BASE_URL + `/tb_checklistchitiet/create`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${authToken}`,
-          },
-        })
-        .then((res) => {
-          postHandleSubmit();
-          setLoadingSubmit(false);
-          Alert.alert("PMC Thông báo", "Checklist thành công", [
-            {
-              text: "Hủy",
-              onPress: () => console.log("Cancel Pressed"),
-              style: "cancel",
-            },
-            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-          ]);
-        })
-        .catch((err) => {
-          setLoadingSubmit(false);
-          Alert.alert(
-            "PMC Thông báo",
-            "Checklist thất bại. Vui lòng kiểm tra lại hình ảnh hoặc ghi chú!!!",
-            [{ text: "Xác nhận", onPress: () => console.log("OK Pressed") }]
-          );
+      if (isCheckValueCheck) {
+        setLoadingSubmit(false);
+        Alert.alert("PMC Thông báo", "Chưa có dữ liệu checklist", [
+          { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+        ]);
+      } else {
+        // Iterate over all items in dataChecklistFaild
+        dataChecklistFaild.forEach((item, index) => {
+          // Extract and append checklist details to formData
+          formData.append("ID_ChecklistC", ID_ChecklistC);
+          formData.append("ID_Checklist", item.ID_Checklist);
+          formData.append("Ketqua", item.valueCheck || "");
+          formData.append("Gioht", item.Gioht);
+          formData.append("Ghichu", item.GhichuChitiet || "");
+          formData.append("Vido", location?.coords?.latitude || "");
+          formData.append("Kinhdo", location?.coords?.longitude || "");
+          formData.append("Docao", location?.coords?.altitude || "");
+          if (item.Anh) {
+            const file = {
+              uri:
+                Platform.OS === "android"
+                  ? item.Anh.uri
+                  : item.Anh.uri.replace("file://", ""),
+              name:
+                item.Anh.fileName ||
+                `${Math.floor(Math.random() * 999999999)}.jpg`,
+              type: "image/jpeg",
+            };
+            formData.append(`Images_${index}`, file);
+            formData.append("Anh", file.name);
+          }
         });
+
+        // Send the entire FormData in a single request
+        await axios
+          .post(BASE_URL + `/tb_checklistchitiet/create`, formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${authToken}`,
+            },
+          })
+          .then((res) => {
+            postHandleSubmit();
+            setLoadingSubmit(false);
+            Alert.alert("PMC Thông báo", "Checklist thành công", [
+              {
+                text: "Hủy",
+                onPress: () => console.log("Cancel Pressed"),
+                style: "cancel",
+              },
+              { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+            ]);
+          })
+          .catch((err) => {
+            setLoadingSubmit(false);
+            Alert.alert(
+              "PMC Thông báo",
+              "Checklist thất bại. Vui lòng kiểm tra lại hình ảnh hoặc ghi chú!!!",
+              [{ text: "Xác nhận", onPress: () => console.log("OK Pressed") }]
+            );
+          });
+      }
     } catch (error) {
       setLoadingSubmit(false);
       if (error.response) {
@@ -987,13 +1000,12 @@ const DetailChecklist = ({ route, navigation }) => {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-       <KeyboardAvoidingView
-          keyboardVerticalOffset={headerHeight}
-          behavior={Platform.OS === "ios" ? "padding" : null}
-          style={{ flex: 1, backgroundColor: 'red' }}
-        >
-      <BottomSheetModalProvider>
-       
+      <KeyboardAvoidingView
+        keyboardVerticalOffset={headerHeight}
+        behavior={Platform.OS === "ios" ? "padding" : null}
+        style={{ flex: 1, backgroundColor: "red" }}
+      >
+        <BottomSheetModalProvider>
           {/* <TouchableWithoutFeedback
             onPress={Keyboard.dismiss}
             accessible={false}
@@ -1297,8 +1309,7 @@ const DetailChecklist = ({ route, navigation }) => {
               )}
           </Modal>
           {/* </TouchableWithoutFeedback> */}
-    
-      </BottomSheetModalProvider>
+        </BottomSheetModalProvider>
       </KeyboardAvoidingView>
     </GestureHandlerRootView>
   );
