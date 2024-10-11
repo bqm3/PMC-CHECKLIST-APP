@@ -216,9 +216,20 @@ const DetailChecklist = ({ route, navigation }) => {
           item.Anh === null
       );
 
+      const DetaildataChecklistFaild = dataChecklistFaild?.map((item) => {
+        if (item.valueCheck == null) {
+          return {
+            ...item,
+            valueCheck: item.Giatridinhdanh, 
+          };
+        }
+        return item; 
+      });
+
       setDataChecklistFilter(updateDataChecklist);
       setNewActionDataChecklist(dataChecklistAction);
       setDataChecklistDefault(dataChecklistDefault);
+      setDataChecklistFaild(DetaildataChecklistFaild);
 
       const data2Map = new Map(
         updateDataChecklist.map((item) => [item.ID_Checklist, item])
