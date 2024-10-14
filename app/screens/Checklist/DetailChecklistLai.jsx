@@ -457,38 +457,44 @@ const DetailChecklistLai = ({ route, navigation }) => {
         setActiveAll(false);
         saveConnect(false);
 
-        if (
-          defaultActionDataChecklist.length === 0 &&
-          dataChecklistFaild.length === 0
-        ) {
-          // Hiển thị thông báo cho người dùng
-          Alert.alert("PMC Thông báo", "Không có checklist để kiểm tra!", [
-            { text: "OK", onPress: () => console.log("OK Pressed") },
+        if(location == null){
+          Alert.alert("PMC Thông báo", "Chưa lấy được thông tin vị trí vui lòng thực hiện lại!", [
+            { text: "OK", onPress: () => setLoadingSubmit(false) },
           ]);
-          setLoadingSubmit(false);
-          // Kết thúc hàm sớm nếu mảng rỗng
-          return;
-        }
-        // Kiểm tra dữ liệu và xử lý tùy thuộc vào trạng thái của `defaultActionDataChecklist` và `dataChecklistFaild`
-        if (
-          defaultActionDataChecklist.length === 0 &&
-          dataChecklistFaild.length > 0
-        ) {
-          // Xử lý API cho dataChecklistFaild
-          await handleDataChecklistFaild();
-        } else if (
-          defaultActionDataChecklist.length > 0 &&
-          dataChecklistFaild.length == 0
-        ) {
-          // Xử lý API cho defaultActionDataChecklist
-          await handleDefaultActionDataChecklist();
-        }
-
-        if (
-          defaultActionDataChecklist.length > 0 &&
-          dataChecklistFaild.length > 0
-        ) {
-          await hadlChecklistAll();
+        } else {
+          if (
+            defaultActionDataChecklist.length === 0 &&
+            dataChecklistFaild.length === 0
+          ) {
+            // Hiển thị thông báo cho người dùng
+            Alert.alert("PMC Thông báo", "Không có checklist để kiểm tra!", [
+              { text: "OK", onPress: () => console.log("OK Pressed") },
+            ]);
+            setLoadingSubmit(false);
+            // Kết thúc hàm sớm nếu mảng rỗng
+            return;
+          }
+          // Kiểm tra dữ liệu và xử lý tùy thuộc vào trạng thái của `defaultActionDataChecklist` và `dataChecklistFaild`
+          if (
+            defaultActionDataChecklist.length === 0 &&
+            dataChecklistFaild.length > 0
+          ) {
+            // Xử lý API cho dataChecklistFaild
+            await handleDataChecklistFaild();
+          } else if (
+            defaultActionDataChecklist.length > 0 &&
+            dataChecklistFaild.length == 0
+          ) {
+            // Xử lý API cho defaultActionDataChecklist
+            await handleDefaultActionDataChecklist();
+          }
+  
+          if (
+            defaultActionDataChecklist.length > 0 &&
+            dataChecklistFaild.length > 0
+          ) {
+            await hadlChecklistAll();
+          }
         }
       } else {
         await AsyncStorage.setItem("checkNetwork", "1");
