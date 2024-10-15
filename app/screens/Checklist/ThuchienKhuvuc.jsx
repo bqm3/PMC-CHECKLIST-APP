@@ -300,6 +300,16 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
   };
 
   const handleSubmitChecklist = async () => {
+    const groupedByID_Hangmuc = defaultActionDataChecklist.reduce((acc, item) => {
+      if (!acc[item.ID_Hangmuc]) {
+        acc[item.ID_Hangmuc] = [];
+      }
+      acc[item.ID_Hangmuc].push(item);
+      return acc;
+    }, {});
+    
+    const resultArray = Object.values(groupedByID_Hangmuc);
+
     try {
       const networkState = await Network.getNetworkStateAsync();
       if (networkState.isConnected) {
@@ -330,14 +340,14 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
           dataChecklistFaild.length == 0
         ) {
           // Xử lý API cho defaultActionDataChecklist
-          await handleDefaultActionDataChecklist();
+          await handleDefaultActionDataChecklist(resultArray);
         }
 
         if (
           defaultActionDataChecklist.length > 0 &&
           dataChecklistFaild.length > 0
         ) {
-          await hadlChecklistAll();
+          await hadlChecklistAll(resultArray);
         }
       } else {
         Alert.alert(
@@ -349,12 +359,10 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
     } catch (error) {
       // Cập nhật sau khi hoàn thành xử lý API} catch (error) {
       console.error("Lỗi khi kiểm tra kết nối mạng:", error);
+      setLoadingSubmit(false);
     }
   };
-  //   const handleSubmitChecklist = async () => {
-  //     console.clear();
-  //     postHandleSubmit();
-  // }
+
   // api faild tb_checklistchitiet
   const handleDataChecklistFaild = async () => {
     try {
@@ -379,9 +387,12 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
           formData.append("Ketqua", item.valueCheck || "");
           formData.append("Gioht", item.Gioht);
           formData.append("Ghichu", item.GhichuChitiet || "");
-          formData.append("Vido", localtionContext?.coords?.latitude || "");
-          formData.append("Kinhdo", localtionContext?.coords?.longitude || "");
-          formData.append("Docao", localtionContext?.coords?.altitude || "");
+          // formData.append("Vido", localtionContext?.coords?.latitude || "");
+          // formData.append("Kinhdo", localtionContext?.coords?.longitude || "");
+          // formData.append("Docao", localtionContext?.coords?.altitude || "");
+          formData.append("Vido", item.Vido || "");
+          formData.append("Kinhdo", item.Kinhdo || "");
+          formData.append("Docao", item.Docao || "");
 
           // If there is an image, append it to formData
           if (item.Anh) {
@@ -451,46 +462,50 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
     }
   };
 
-  const handleDefaultActionDataChecklist = async () => {
+  const handleDefaultActionDataChecklist = async (defaultActionDataChecklist) => {
     setLoadingSubmit(true);
-    // Xử lý API cho defaultActionDataChecklist
-    const descriptions = defaultActionDataChecklist
-      .map((item) => item.ID_Checklist)
-      .join(",");
-
-    const ID_Checklists = defaultActionDataChecklist.map(
-      (item) => item.ID_Checklist
-    );
-
-    const requestDone = axios.post(
-      BASE_URL + "/tb_checklistchitietdone/create",
-      {
-        Description: descriptions,
-        Gioht: defaultActionDataChecklist[0].Gioht,
-        ID_Checklists: ID_Checklists,
-        ID_ChecklistC: ID_ChecklistC,
-        checklistLength: defaultActionDataChecklist.length,
-        Vido: localtionContext?.coords?.latitude || "",
-        Kinhdo: localtionContext?.coords?.longitude || "",
-        Docao: localtionContext?.coords?.altitude || "",
-      },
-      {
-        headers: {
-          Accept: "application/json",
-          Authorization: "Bearer " + authToken,
-        },
-      }
-    );
     try {
-      // Gộp cả hai mảng promise và đợi cho tất cả các promise hoàn thành
-      await Promise.all([requestDone]);
+      for (const ItemDefaultActionDataChecklist of defaultActionDataChecklist) {
+        const descriptions = ItemDefaultActionDataChecklist
+          .map((item) => item.ID_Checklist)
+          .join(",");
+        const ID_Checklists = ItemDefaultActionDataChecklist.map(
+          (item) => item.ID_Checklist
+        );
+
+        const requestDone = axios.post(
+          BASE_URL + "/tb_checklistchitietdone/create",
+          {
+            Description: descriptions,
+            Gioht: ItemDefaultActionDataChecklist[0].Gioht,
+            ID_Checklists: ID_Checklists,
+            ID_ChecklistC: ID_ChecklistC,
+            checklistLength: ItemDefaultActionDataChecklist.length,
+            Vido: ItemDefaultActionDataChecklist[0]?.Vido || "",
+            Kinhdo: ItemDefaultActionDataChecklist[0]?.Kinhdo || "",
+            Docao: ItemDefaultActionDataChecklist[0]?.Docao || "",
+          },
+          {
+            headers: {
+              Accept: "application/json",
+              Authorization: "Bearer " + authToken,
+            },
+          }
+        );
+  
+       
+        await requestDone;
+      }
+  
+      // Xử lý sau khi tất cả các yêu cầu hoàn thành
       postHandleSubmit();
       setLoadingSubmit(false);
       await AsyncStorage.removeItem("checkNetwork");
       await AsyncStorage.removeItem("dataChecklist");
       setSubmit(false);
       saveConnect(false);
-      // Hiển thị cảnh báo sau khi tất cả các yêu cầu hoàn thành
+
+     
       Alert.alert("PMC Thông báo", "Checklist thành công", [
         {
           text: "Hủy",
@@ -499,8 +514,6 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
         },
         { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
       ]);
-
-      // Thiết lập lại dữ liệu và cờ loading
     } catch (error) {
       setLoadingSubmit(false);
       if (error.response) {
@@ -518,7 +531,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
   };
 
   // api all
-  const hadlChecklistAll = async () => {
+  const hadlChecklistAll = async (defaultActionDataChecklist) => {
     try {
       setLoadingSubmit(true);
 
@@ -541,10 +554,12 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
           formData.append("Ketqua", item.valueCheck || "");
           formData.append("Gioht", item.Gioht);
           formData.append("Ghichu", item.GhichuChitiet || "");
-          formData.append("Vido", localtionContext?.coords?.latitude || "");
-          formData.append("Kinhdo", localtionContext?.coords?.longitude || "");
-          formData.append("Docao", localtionContext?.coords?.altitude || "");
-
+          // formData.append("Vido", localtionContext?.coords?.latitude || "");
+          // formData.append("Kinhdo", localtionContext?.coords?.longitude || "");
+          // formData.append("Docao", localtionContext?.coords?.altitude || "");
+          formData.append("Vido", item?.Vido || "");
+          formData.append("Kinhdo", item?.Kinhdo || "");
+          formData.append("Docao", item?.Docao || "");
           // Nếu có hình ảnh, thêm vào FormData
           if (item.Anh) {
             const file = {
@@ -566,13 +581,13 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
         });
 
         // Chuẩn bị dữ liệu cho yêu cầu thứ hai
-        const descriptions = defaultActionDataChecklist
-          .map((item) => item.ID_Checklist)
-          .join(",");
+        // const descriptions = defaultActionDataChecklist
+        //   .map((item) => item.ID_Checklist)
+        //   .join(",");
 
-        const ID_Checklists = defaultActionDataChecklist.map(
-          (item) => item.ID_Checklist
-        );
+        // const ID_Checklists = defaultActionDataChecklist.map(
+        //   (item) => item.ID_Checklist
+        // );
 
         // Tạo các yêu cầu API
         const requestFaild = axios.post(
@@ -586,23 +601,57 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
           }
         );
 
-        const requestDone = axios.post(
-          `${BASE_URL}/tb_checklistchitietdone/create`,
-          {
-            Description: descriptions,
-            Gioht: defaultActionDataChecklist[0].Gioht,
-            ID_Checklists: ID_Checklists,
-            ID_ChecklistC: ID_ChecklistC,
-            checklistLength: defaultActionDataChecklist.length,
-            Vido: localtionContext?.coords?.latitude || "",
-            Kinhdo: localtionContext?.coords?.longitude || "",
-            Docao: localtionContext?.coords?.altitude || "",
-          },
-          {
-            headers: {
-              Accept: "application/json",
-              Authorization: `Bearer ${authToken}`,
-            },
+        // const requestDone = axios.post(
+        //   `${BASE_URL}/tb_checklistchitietdone/create`,
+        //   {
+        //     Description: descriptions,
+        //     Gioht: defaultActionDataChecklist[0].Gioht,
+        //     ID_Checklists: ID_Checklists,
+        //     ID_ChecklistC: ID_ChecklistC,
+        //     checklistLength: defaultActionDataChecklist.length,
+        //     // Vido: localtionContext?.coords?.latitude || "",
+        //     // Kinhdo: localtionContext?.coords?.longitude || "",
+        //     // Docao: localtionContext?.coords?.altitude || "",
+        //     Vido: defaultActionDataChecklist[0].Vido || "",
+        //     Kinhdo: defaultActionDataChecklist[0].Kinhdo || "",
+        //     Docao: defaultActionDataChecklist[0].Docao || "",
+        //   },
+        //   {
+        //     headers: {
+        //       Accept: "application/json",
+        //       Authorization: `Bearer ${authToken}`,
+        //     },
+        //   }
+        // );
+
+        const requestDone = defaultActionDataChecklist.map(
+          async (ItemDefaultActionDataChecklist) => {
+            const descriptions = ItemDefaultActionDataChecklist.map(
+              (item) => item.ID_Checklist
+            ).join(",");
+            const ID_Checklists = ItemDefaultActionDataChecklist.map(
+              (item) => item.ID_Checklist
+            );
+            // Thực hiện yêu cầu API
+            return axios.post(
+              BASE_URL + "/tb_checklistchitietdone/create",
+              {
+                Description: descriptions,
+                Gioht: ItemDefaultActionDataChecklist[0].Gioht,
+                ID_Checklists: ID_Checklists,
+                ID_ChecklistC: ID_ChecklistC,
+                checklistLength: ItemDefaultActionDataChecklist.length,
+                Vido: ItemDefaultActionDataChecklist[0]?.Vido || "",
+                Kinhdo: ItemDefaultActionDataChecklist[0]?.Kinhdo || "",
+                Docao: ItemDefaultActionDataChecklist[0]?.Docao || "",
+              },
+              {
+                headers: {
+                  Accept: "application/json",
+                  Authorization: "Bearer " + authToken,
+                },
+              }
+            );
           }
         );
 

@@ -231,8 +231,17 @@ const DetailChecklist = ({ route, navigation }) => {
       setDataChecklistDefault(dataChecklistDefault);
       setDataChecklistFaild(DetaildataChecklistFaild);
 
+      const updateLocation = updateDataChecklist.map((item) => {
+        return {
+          ...item,
+          Vido: location?.coords?.latitude || "",
+          Kinhdo: location?.coords?.longitude || "",
+          Docao: location?.coords?.altitude || "",
+        };
+      });
+
       const data2Map = new Map(
-        updateDataChecklist.map((item) => [item.ID_Checklist, item])
+        updateLocation.map((item) => [item.ID_Checklist, item])
       );
 
       const updatedData1 = dataChecklistFilterContext.map((item) =>
@@ -262,8 +271,18 @@ const DetailChecklist = ({ route, navigation }) => {
 
       setDataChecklistFilter(revertDataChecklist);
       setDataChecklistDefault([]);
+
+      const updateLocation = revertDataChecklist.map((item) => {
+        return {
+          ...item,
+          Vido:  location?.coords?.latitude || "",
+          Kinhdo:  location?.coords?.longitude || "",
+          Docao: location?.coords?.altitude || "",
+        };
+      });
+
       const data2Map = new Map(
-        revertDataChecklist.map((item) => [item.ID_Checklist, item])
+        updateLocation.map((item) => [item.ID_Checklist, item])
       );
 
       const updatedData1 = dataChecklistFilterContext.map((item) =>
@@ -394,8 +413,17 @@ const DetailChecklist = ({ route, navigation }) => {
     setNewActionDataChecklist([...mergedArrOption, ...mergedArrClick]);
     setDataChecklistFilter(dataChecklist);
 
+    const updateLocation = dataChecklist.map((item) => {
+      return {
+        ...item,
+        Vido: item.Vido || location?.coords?.latitude || "",
+        Kinhdo: item.Kinhdo || location?.coords?.longitude || "",
+        Docao: item.Docao || location?.coords?.altitude || "",
+      };
+    });
+
     const data2Map = new Map(
-      dataChecklist.map((item) => [item.ID_Checklist, item])
+      updateLocation.map((item) => [item.ID_Checklist, item])
     );
 
     const updatedData = dataChecklistFilterContext.map((item) =>
@@ -440,9 +468,17 @@ const DetailChecklist = ({ route, navigation }) => {
     setDataChecklistDefault(updatedDataChecklistDefault);
     setDataChecklistFaild(updatedDataChecklistFaild);
 
+    const updateLocation = updatedDataChecklist.map((item) => {
+      return {
+        ...item,
+        Vido: item.Vido || location?.coords?.latitude || "",
+        Kinhdo: item.Kinhdo || location?.coords?.longitude || "",
+        Docao: item.Docao || location?.coords?.altitude || "",
+      };
+    });
     // Cập nhật dataChecklistFilterContext nếu cần
     const data2Map = new Map(
-      updatedDataChecklist.map((item) => [item.ID_Checklist, item])
+      updateLocation.map((item) => [item.ID_Checklist, item])
     );
     const updatedData1 = dataChecklistFilterContext.map((item) =>
       data2Map.has(item.ID_Checklist) ? data2Map.get(item.ID_Checklist) : item
@@ -461,10 +497,12 @@ const DetailChecklist = ({ route, navigation }) => {
         setActiveAll(false);
         saveConnect(false);
 
-        if(location == null){
-          Alert.alert("PMC Thông báo", "Chưa lấy được thông tin vị trí vui lòng thực hiện lại!", [
-            { text: "OK", onPress: () => setLoadingSubmit(false) },
-          ]);
+        if (location == null) {
+          Alert.alert(
+            "PMC Thông báo",
+            "Chưa lấy được thông tin vị trí vui lòng thực hiện lại!",
+            [{ text: "OK", onPress: () => setLoadingSubmit(false) }]
+          );
         } else {
           if (
             defaultActionDataChecklist.length === 0 &&
@@ -682,136 +720,143 @@ const DetailChecklist = ({ route, navigation }) => {
           { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
         ]);
       } else {
-      // Lặp qua từng phần tử trong dataChecklistFaild để thêm vào FormData
-      dataChecklistFaild.forEach((item, index) => {
-        formData.append("ID_ChecklistC", ID_ChecklistC);
-        formData.append("ID_Checklist", item.ID_Checklist);
-        formData.append("Ketqua", item.valueCheck || "");
-        formData.append("Gioht", item.Gioht);
-        formData.append("Ghichu", item.GhichuChitiet || "");
-        formData.append("Vido", location?.coords?.latitude || "");
-        formData.append("Kinhdo", location?.coords?.longitude || "");
-        formData.append("Docao", location?.coords?.altitude || "");
+        // Lặp qua từng phần tử trong dataChecklistFaild để thêm vào FormData
+        dataChecklistFaild.forEach((item, index) => {
+          formData.append("ID_ChecklistC", ID_ChecklistC);
+          formData.append("ID_Checklist", item.ID_Checklist);
+          formData.append("Ketqua", item.valueCheck || "");
+          formData.append("Gioht", item.Gioht);
+          formData.append("Ghichu", item.GhichuChitiet || "");
+          formData.append("Vido", location?.coords?.latitude || "");
+          formData.append("Kinhdo", location?.coords?.longitude || "");
+          formData.append("Docao", location?.coords?.altitude || "");
 
-        // Nếu có hình ảnh, thêm vào FormData
-        if (item.Anh) {
-          const file = {
-            uri:
-              Platform.OS === "android"
-                ? item.Anh.uri
-                : item.Anh.uri.replace("file://", ""),
-            name:
-              item.Anh.fileName ||
-              `${Math.floor(Math.random() * 999999999)}.jpg`,
-            type: "image/jpeg",
-          };
-          formData.append(`Images_${index}`, file);
-          formData.append("Anh", file.name);
-        } else {
-        }
-      });
+          // Nếu có hình ảnh, thêm vào FormData
+          if (item.Anh) {
+            const file = {
+              uri:
+                Platform.OS === "android"
+                  ? item.Anh.uri
+                  : item.Anh.uri.replace("file://", ""),
+              name:
+                item.Anh.fileName ||
+                `${Math.floor(Math.random() * 999999999)}.jpg`,
+              type: "image/jpeg",
+            };
+            formData.append(`Images_${index}`, file);
+            formData.append("Anh", file.name);
+          } else {
+          }
+        });
 
-      // Chuẩn bị dữ liệu cho yêu cầu thứ hai
-      const descriptions = defaultActionDataChecklist
-        .map((item) => item.ID_Checklist)
-        .join(",");
+        // Chuẩn bị dữ liệu cho yêu cầu thứ hai
+        const descriptions = defaultActionDataChecklist
+          .map((item) => item.ID_Checklist)
+          .join(",");
 
-      const ID_Checklists = defaultActionDataChecklist.map(
-        (item) => item.ID_Checklist
-      );
+        const ID_Checklists = defaultActionDataChecklist.map(
+          (item) => item.ID_Checklist
+        );
 
-      // Tạo các yêu cầu API
-      const requestFaild = axios.post(
-        `${BASE_URL}/tb_checklistchitiet/create`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${authToken}`,
+        // Tạo các yêu cầu API
+        const requestFaild = axios.post(
+          `${BASE_URL}/tb_checklistchitiet/create`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${authToken}`,
+            },
+          }
+        );
+
+        const requestDone = axios.post(
+          `${BASE_URL}/tb_checklistchitietdone/create`,
+          {
+            Description: descriptions,
+            ID_Checklists: ID_Checklists,
+            ID_ChecklistC: ID_ChecklistC,
+            Gioht: defaultActionDataChecklist[0].Gioht,
+            checklistLength: defaultActionDataChecklist.length,
+            Vido: location?.coords?.latitude || "",
+            Kinhdo: location?.coords?.longitude || "",
+            Docao: location?.coords?.altitude || "",
           },
-        }
-      );
+          {
+            headers: {
+              Accept: "application/json",
+              Authorization: `Bearer ${authToken}`,
+            },
+          }
+        );
+        // Gọi cả hai API cùng lúc
+        axios
+          .all([requestFaild, requestDone])
+          .then(
+            axios.spread((faildResponse, doneResponse) => {
+              postHandleSubmit();
+              setLoadingSubmit(false);
 
-      const requestDone = axios.post(
-        `${BASE_URL}/tb_checklistchitietdone/create`,
-        {
-          Description: descriptions,
-          ID_Checklists: ID_Checklists,
-          ID_ChecklistC: ID_ChecklistC,
-          Gioht: defaultActionDataChecklist[0].Gioht,
-          checklistLength: defaultActionDataChecklist.length,
-          Vido: location?.coords?.latitude || "",
-          Kinhdo: location?.coords?.longitude || "",
-          Docao: location?.coords?.altitude || "",
-        },
-        {
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${authToken}`,
-          },
-        }
-      );
-      // Gọi cả hai API cùng lúc
-      axios
-        .all([requestFaild, requestDone])
-        .then(
-          axios.spread((faildResponse, doneResponse) => {
-            postHandleSubmit();
+              // Hiển thị thông báo thành công
+              Alert.alert("PMC Thông báo", "Checklist thành công", [
+                {
+                  text: "Hủy",
+                  onPress: () => console.log("Cancel Pressed"),
+                  style: "cancel",
+                },
+                { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+              ]);
+            })
+          )
+          .catch((error) => {
             setLoadingSubmit(false);
 
-            // Hiển thị thông báo thành công
-            Alert.alert("PMC Thông báo", "Checklist thành công", [
-              {
-                text: "Hủy",
-                onPress: () => console.log("Cancel Pressed"),
-                style: "cancel",
-              },
-              { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-            ]);
-          })
-        )
-        .catch((error) => {
-          setLoadingSubmit(false);
-
-          if (error.response) {
-            // Xử lý lỗi từ server
-            Alert.alert("PMC Thông báo", error.response.data.message, [
-              {
-                text: "Hủy",
-                onPress: () => console.log("Cancel Pressed"),
-                style: "cancel",
-              },
-              { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-            ]);
-          } else if (error.request) {
-            // Xử lý lỗi yêu cầu (không nhận được phản hồi từ server)
-            Alert.alert(
-              "PMC Thông báo",
-              "Network error. Please try again later.",
-              [
+            if (error.response) {
+              // Xử lý lỗi từ server
+              Alert.alert("PMC Thông báo", error.response.data.message, [
                 {
                   text: "Hủy",
                   onPress: () => console.log("Cancel Pressed"),
                   style: "cancel",
                 },
                 { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-              ]
-            );
-          } else {
-            Alert.alert(
-              "PMC Thông báo",
-              "An error occurred. Please try again later.",
-              [
-                {
-                  text: "Hủy",
-                  onPress: () => console.log("Cancel Pressed"),
-                  style: "cancel",
-                },
-                { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-              ]
-            );
-          }
-        })};
+              ]);
+            } else if (error.request) {
+              // Xử lý lỗi yêu cầu (không nhận được phản hồi từ server)
+              Alert.alert(
+                "PMC Thông báo",
+                "Network error. Please try again later.",
+                [
+                  {
+                    text: "Hủy",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel",
+                  },
+                  {
+                    text: "Xác nhận",
+                    onPress: () => console.log("OK Pressed"),
+                  },
+                ]
+              );
+            } else {
+              Alert.alert(
+                "PMC Thông báo",
+                "An error occurred. Please try again later.",
+                [
+                  {
+                    text: "Hủy",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel",
+                  },
+                  {
+                    text: "Xác nhận",
+                    onPress: () => console.log("OK Pressed"),
+                  },
+                ]
+              );
+            }
+          });
+      }
     } catch (error) {
       setLoadingSubmit(false);
       Alert.alert(

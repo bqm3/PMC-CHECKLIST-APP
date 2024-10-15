@@ -112,7 +112,6 @@ const ThucHienHangmucLai = ({ route, navigation }) => {
   };
 
   const toggleTodo = (item) => {
-    console.log(JSON.stringify(item, null, 2));
     const isExistIndex = dataSelect.find(
       (existingItem) => existingItem === item
     );

@@ -54,7 +54,6 @@ import { useHeaderHeight } from "@react-navigation/elements";
 
 const DetailChecklistLai = ({ route, navigation }) => {
   const { ID_ChecklistC, ID_Hangmuc, hangMuc, Hangmuc } = route.params;
-  console.log(Hangmuc);
   const dispath = useDispatch();
   const { isLoadingDetail } = useSelector((state) => state.entReducer);
   const { setHangMuc, HangMucDefault, setHangMucDefault } =
@@ -229,8 +228,17 @@ const DetailChecklistLai = ({ route, navigation }) => {
       setDataChecklistDefault(dataChecklistDefault);
       setDataChecklistFaild(DetaildataChecklistFaild);
 
+      const updateLocation = updateDataChecklist.map((item) => {
+        return {
+          ...item,
+          Vido: location?.coords?.latitude || "",
+          Kinhdo: location?.coords?.longitude || "",
+          Docao: location?.coords?.altitude || "",
+        };
+      });
+
       const data2Map = new Map(
-        updateDataChecklist.map((item) => [item.ID_Checklist, item])
+        updateLocation.map((item) => [item.ID_Checklist, item])
       );
 
       const updatedData1 = dataChecklistFilterContext.map((item) =>
@@ -261,8 +269,17 @@ const DetailChecklistLai = ({ route, navigation }) => {
       // console.log("updateDataChecklist 2", revertDataChecklist.length);
       setDataChecklistFilter(revertDataChecklist);
       setDataChecklistDefault([]);
+      const updateLocation = revertDataChecklist.map((item) => {
+        return {
+          ...item,
+          Vido:  location?.coords?.latitude || "",
+          Kinhdo:  location?.coords?.longitude || "",
+          Docao: location?.coords?.altitude || "",
+        };
+      });
+
       const data2Map = new Map(
-        revertDataChecklist.map((item) => [item.ID_Checklist, item])
+        updateLocation.map((item) => [item.ID_Checklist, item])
       );
 
       const updatedData1 = dataChecklistFilterContext.map((item) =>
@@ -390,8 +407,17 @@ const DetailChecklistLai = ({ route, navigation }) => {
     setNewActionDataChecklist([...mergedArrOption, ...mergedArrClick]);
     setDataChecklistFilter(dataChecklist);
 
+    const updateLocation = dataChecklist.map((item) => {
+      return {
+        ...item,
+        Vido: item.Vido || location?.coords?.latitude || "",
+        Kinhdo: item.Kinhdo || location?.coords?.longitude || "",
+        Docao: item.Docao || location?.coords?.altitude || "",
+      };
+    });
+
     const data2Map = new Map(
-      dataChecklist.map((item) => [item.ID_Checklist, item])
+      updateLocation.map((item) => [item.ID_Checklist, item])
     );
 
     const updatedData = dataChecklistFilterContext.map((item) =>
@@ -436,9 +462,18 @@ const DetailChecklistLai = ({ route, navigation }) => {
     setDataChecklistDefault(updatedDataChecklistDefault);
     setDataChecklistFaild(updatedDataChecklistFaild);
 
+    const updateLocation = updatedDataChecklist.map((item) => {
+      return {
+        ...item,
+        Vido: item.Vido || location?.coords?.latitude || "",
+        Kinhdo: item.Kinhdo || location?.coords?.longitude || "",
+        Docao: item.Docao || location?.coords?.altitude || "",
+      };
+    });
+
     // Cập nhật dataChecklistFilterContext nếu cần
     const data2Map = new Map(
-      updatedDataChecklist.map((item) => [item.ID_Checklist, item])
+      updateLocation.map((item) => [item.ID_Checklist, item])
     );
     const updatedData1 = dataChecklistFilterContext.map((item) =>
       data2Map.has(item.ID_Checklist) ? data2Map.get(item.ID_Checklist) : item
@@ -1025,9 +1060,7 @@ const DetailChecklistLai = ({ route, navigation }) => {
     if (number == 0) return `0`;
     return number;
   };
-  //   console.log("xxxxxxxxxxxxxxxxxxxxxxxxxxx")
-  // //  console.log(Hangmuc)
-  //  console.log(hangMuc)
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
        <KeyboardAvoidingView
