@@ -327,7 +327,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
           defaultActionDataChecklist.length > 0 &&
           dataChecklistFaild.length > 0
         ) {
-          await hadlChecklistAll(resultArray);
+          await handleChecklistAll(resultArray);
         }
       } else {
         Alert.alert(
@@ -504,7 +504,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
   };
 
   // api all
-  const hadlChecklistAll = async (defaultActionDataChecklist) => {
+  const handleChecklistAll = async (defaultActionDataChecklist) => {
     try {
       setLoadingSubmit(true);
 
@@ -1019,7 +1019,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
                   <View
                     style={{
                       position: "absolute",
-                      bottom: 20,
+                      bottom: 30,
                       flexDirection: "row",
                       justifyContent: "space-around",
                       alignItems: "center",
@@ -1027,7 +1027,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
                     }}
                   >
                     <Button
-                      text={"Scan QR Code"}
+                      text={"Quét Qrcode"}
                       backgroundColor={"white"}
                       color={"black"}
                       onPress={() => handleOpenQrCode()}

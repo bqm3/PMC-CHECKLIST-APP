@@ -15,7 +15,7 @@ import {
   TouchableHighlight,
   TouchableWithoutFeedback,
   TouchableNativeFeedback,
-  BackHandler
+  BackHandler,
 } from "react-native";
 import React, {
   useRef,
@@ -128,10 +128,27 @@ const ThucHienChecklist = ({ navigation }) => {
     await dispath(tb_checklistc_get({ page: 0, limit: 30 }));
   };
 
+  const loadData = async () => {
+    await AsyncStorage.removeItem("dataChecklist");
+    await AsyncStorage.removeItem("checkNetwork");
+  };
+
   useEffect(() => {
     init_ca();
     int_checklistc();
   }, []);
+  
+  useFocusEffect(
+    useCallback(() => {
+      // This will run every time the screen is focused
+      loadData();
+
+      // Optionally return a cleanup function if needed
+      return () => {
+        // Cleanup logic if necessary
+      };
+    }, []) // Dependencies for focus effect, keep it empty if you want it to run on every focus
+  );
 
   const toggleTodo = async (item, index) => {
     // setIsCheckbox(true);
@@ -390,7 +407,7 @@ const ThucHienChecklist = ({ navigation }) => {
   const handleClosePopUp = () => {
     setOpacity(1);
     setModalVisible(false);
-    console.log(opacity)
+    console.log(opacity);
   };
 
   const handleOpenPopUp = () => {
@@ -497,7 +514,7 @@ const ThucHienChecklist = ({ navigation }) => {
         onPress: () => handleCloseChecklist(item?.ID_ChecklistC),
       },
     ]);
-  };  
+  };
 
   useEffect(() => {
     const backAction = () => {
@@ -505,7 +522,7 @@ const ThucHienChecklist = ({ navigation }) => {
         handleClosePopUp();
         return true;
       }
-      return false; 
+      return false;
     };
 
     const backHandler = BackHandler.addEventListener(

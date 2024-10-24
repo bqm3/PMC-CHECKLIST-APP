@@ -14,7 +14,6 @@ import {
   ScrollView,
   Linking,
 } from "react-native";
-import Constants from "expo-constants";
 import React, {
   useEffect,
   useState,
@@ -30,7 +29,6 @@ import { login } from "../redux/actions/authActions";
 import { COLORS, SIZES } from "../constants/theme";
 import Title from "../components/Title";
 import ButtonSubmit from "../components/Button/ButtonSubmit";
-import LoginContext from "../context/LoginContext";
 import {
   BottomSheetModal,
   BottomSheetView,
@@ -39,7 +37,8 @@ import {
 } from "@gorhom/bottom-sheet";
 import DataLicense from "../components/PrivacyPolicy";
 import Checkbox from "../components/Active/Checkbox";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as FileSystem from "expo-file-system";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import adjust from "../adjust";
 import { BASE_URL, BASE_URL_NOTI } from "../constants/config";
 import {
@@ -99,7 +98,7 @@ const LoginScreen = ({ navigation }) => {
     await axios.get(BASE_URL + '/noti')
     .then((res) => {
       const data = res.data.data
-      if(data.key == 0){
+      if(`${data.key}` == "2.0.5"){
         console.log('done')
       }else {
         const alertType = alertTypeMap[data.type] || ALERT_TYPE.INFO; 
@@ -258,6 +257,23 @@ const LoginScreen = ({ navigation }) => {
     })();
   }, [statusLocation]);
 
+  useEffect(() => {
+    clearCacheDirectory();
+  }, []);
+
+  const clearCacheDirectory = async () => {
+    try {
+      const cacheDir = FileSystem.cacheDirectory;
+      const files = await FileSystem.readDirectoryAsync(cacheDir);
+      for (const file of files) {
+        await FileSystem.deleteAsync(`${cacheDir}${file}`, { idempotent: true });
+      }
+      console.log("Đã xóa cache khi ứng dụng đóng.");
+    } catch (error) {
+      console.error("Lỗi khi xóa cache:", error);
+    }
+  };
+
   return (
     <>
       <GestureHandlerRootView style={{ flex: 1 }}>
@@ -382,6 +398,7 @@ const LoginScreen = ({ navigation }) => {
                         isLoading={isLoading}
                         onPress={handleSubmit}
                       />
+                       <Text style={{color: 'white', fontWeight: '500', width: '100%', textAlign: 'right', padding: 4}}>Phiên bản: 2.0.5</Text>
                     </View>
                   </View>
                   <View
@@ -408,7 +425,7 @@ const LoginScreen = ({ navigation }) => {
                     </TouchableOpacity>
                   </View>
                 </ScrollView>
-                <Text style={{color: 'white', fontWeight: '500', width: '100%', textAlign: 'right', padding: 4}}>Phiên bản: {Constants?.expoConfig?.version}</Text>
+               
               </ImageBackground>
 
               <BottomSheetModal

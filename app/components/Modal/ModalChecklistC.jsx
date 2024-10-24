@@ -132,7 +132,7 @@ const ModalChecklistC = ({
                             height: 50,
                           }}
                         >
-                          <Text allowFontScaling={false} style={styles.text}>
+                          <Text allowFontScaling={false} style={styles.text} numberOfLines={1}>
                             {selectedItem?.Tenca} -{" "}
                             {selectedItem?.ent_khoicv?.KhoiCV}
                           </Text>
@@ -195,7 +195,7 @@ export default ModalChecklistC;
 
 const styles = StyleSheet.create({
   text: {
-    fontSize: 15,
+    fontSize: 14,
     color: "black",
     fontWeight: "600",
     paddingHorizontal: 8,

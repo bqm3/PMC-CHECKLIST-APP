@@ -58,7 +58,6 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
   const { ent_khuvuc, ent_checklist_detail, ent_toanha } = useSelector(
     (state) => state.entReducer
   );
-  const [hasPermission, setHasPermission] = useState(null);
   const { isConnect, saveConnect } = useContext(ConnectContext);
 
   const { user, authToken } = useSelector((state) => state.authReducer);
@@ -75,13 +74,13 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
   const [defaultActionDataChecklist, setDataChecklistDefault] = useState([]);
   const [dataChecklistFaild, setDataChecklistFaild] = useState([]);
   const [dataFilterHandler, setDataFilterHandler] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
 
   const init_checklist = async () => {
+    setIsLoadingDetail(true);
     await dispath(ent_checklist_mul_hm(ID_Hangmucs, ID_Calv, ID_ChecklistC));
+    setIsLoadingDetail(false)
   };
   useEffect(() => {
-    setIsLoading(true)
     const ID_HangmucsArray = Array.isArray(ID_Hangmucs)
       ? ID_Hangmucs
       : ID_Hangmucs.split(",").map(Number);
@@ -95,8 +94,8 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
       );
       // Cập nhật dữ liệu sau khi lọc
       setDataKhuvuc(matchingEntKhuvuc);
+    } else {
     }
-    setIsLoading(false)
   }, [ID_Hangmucs, ent_khuvuc]);
 
   useEffect(() => {
@@ -162,19 +161,10 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
     init_checklist();
   }, []);
 
-  const saveData = async (data) => {
-    try {
-      await AsyncStorage.setItem("dataChecklist", JSON.stringify(data));
-      await AsyncStorage.setItem("checkNetwork", "1");
-    } catch (e) {
-      console.log("Failed to save data", e);
-    }
-  };
-
   // Tải lại dữ liệu khi vào lại trang
   const loadData = async () => {
     const savedData = await AsyncStorage.getItem("dataChecklist");
-    if (savedData !== "[]" && saveData !== null) {
+    if (savedData !== null) {
       setDataChecklists(JSON.parse(savedData));
       setDataChecklistFilterContext(JSON.parse(savedData));
     } else {
@@ -186,12 +176,6 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
   useEffect(() => {
     loadData();
   }, [ID_Hangmucs, ent_checklist_detail]);
-
-  useEffect(() => {
-    return () => {
-      saveData(dataChecklistFilterContext);
-    };
-  }, [dataChecklistFilterContext]);
 
   useEffect(() => {
     const dataChecklistAction = dataChecklistFilterContext?.filter(
@@ -387,9 +371,6 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
           formData.append("Ketqua", item.valueCheck || "");
           formData.append("Gioht", item.Gioht);
           formData.append("Ghichu", item.GhichuChitiet || "");
-          // formData.append("Vido", localtionContext?.coords?.latitude || "");
-          // formData.append("Kinhdo", localtionContext?.coords?.longitude || "");
-          // formData.append("Docao", localtionContext?.coords?.altitude || "");
           formData.append("Vido", item.Vido || "");
           formData.append("Kinhdo", item.Kinhdo || "");
           formData.append("Docao", item.Docao || "");
@@ -481,9 +462,9 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
             ID_Checklists: ID_Checklists,
             ID_ChecklistC: ID_ChecklistC,
             checklistLength: ItemDefaultActionDataChecklist.length,
-            Vido: ItemDefaultActionDataChecklist[0]?.Vido || "",
-            Kinhdo: ItemDefaultActionDataChecklist[0]?.Kinhdo || "",
-            Docao: ItemDefaultActionDataChecklist[0]?.Docao || "",
+            Vido: ItemDefaultActionDataChecklist[0]?.Vido || null,
+            Kinhdo: ItemDefaultActionDataChecklist[0]?.Kinhdo || null,
+            Docao: ItemDefaultActionDataChecklist[0]?.Docao || null,
           },
           {
             headers: {
@@ -554,9 +535,6 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
           formData.append("Ketqua", item.valueCheck || "");
           formData.append("Gioht", item.Gioht);
           formData.append("Ghichu", item.GhichuChitiet || "");
-          // formData.append("Vido", localtionContext?.coords?.latitude || "");
-          // formData.append("Kinhdo", localtionContext?.coords?.longitude || "");
-          // formData.append("Docao", localtionContext?.coords?.altitude || "");
           formData.append("Vido", item?.Vido || "");
           formData.append("Kinhdo", item?.Kinhdo || "");
           formData.append("Docao", item?.Docao || "");
@@ -579,16 +557,6 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
             // formData.append(`Images_${index}`, {});
           }
         });
-
-        // Chuẩn bị dữ liệu cho yêu cầu thứ hai
-        // const descriptions = defaultActionDataChecklist
-        //   .map((item) => item.ID_Checklist)
-        //   .join(",");
-
-        // const ID_Checklists = defaultActionDataChecklist.map(
-        //   (item) => item.ID_Checklist
-        // );
-
         // Tạo các yêu cầu API
         const requestFaild = axios.post(
           `${BASE_URL}/tb_checklistchitiet/create`,
@@ -600,29 +568,6 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
             },
           }
         );
-
-        // const requestDone = axios.post(
-        //   `${BASE_URL}/tb_checklistchitietdone/create`,
-        //   {
-        //     Description: descriptions,
-        //     Gioht: defaultActionDataChecklist[0].Gioht,
-        //     ID_Checklists: ID_Checklists,
-        //     ID_ChecklistC: ID_ChecklistC,
-        //     checklistLength: defaultActionDataChecklist.length,
-        //     // Vido: localtionContext?.coords?.latitude || "",
-        //     // Kinhdo: localtionContext?.coords?.longitude || "",
-        //     // Docao: localtionContext?.coords?.altitude || "",
-        //     Vido: defaultActionDataChecklist[0].Vido || "",
-        //     Kinhdo: defaultActionDataChecklist[0].Kinhdo || "",
-        //     Docao: defaultActionDataChecklist[0].Docao || "",
-        //   },
-        //   {
-        //     headers: {
-        //       Accept: "application/json",
-        //       Authorization: `Bearer ${authToken}`,
-        //     },
-        //   }
-        // );
 
         const requestDone = defaultActionDataChecklist.map(
           async (ItemDefaultActionDataChecklist) => {
@@ -641,9 +586,9 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
                 ID_Checklists: ID_Checklists,
                 ID_ChecklistC: ID_ChecklistC,
                 checklistLength: ItemDefaultActionDataChecklist.length,
-                Vido: ItemDefaultActionDataChecklist[0]?.Vido || "",
-                Kinhdo: ItemDefaultActionDataChecklist[0]?.Kinhdo || "",
-                Docao: ItemDefaultActionDataChecklist[0]?.Docao || "",
+                Vido: ItemDefaultActionDataChecklist[0]?.Vido || null,
+                Kinhdo: ItemDefaultActionDataChecklist[0]?.Kinhdo || null,
+                Docao: ItemDefaultActionDataChecklist[0]?.Docao || null,
               },
               {
                 headers: {
@@ -814,6 +759,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
       setDataFilterHandler(finalFilteredData);
     }
   };
+
   const toggleTodo = async (item) => {
     const isExistIndex = dataSelect.find(
       (existingItem) => existingItem === item
@@ -948,163 +894,149 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
               resizeMode="cover"
               style={{ flex: 1 }}
             >
-              {isLoading === true ? (
-                <View
-                  style={{
-                    flex: 1,
-                    justifyContent: "center",
-                    alignItems: "center",
-                    marginBottom: 40,
-                  }}
-                >
-                  <ActivityIndicator size="large" color={"white"} />
-                </View>
-              ) : (
-                <View
-                  style={{
-                    flex: 1,
-                    opacity: opacity,
-                  }}
-                >
-                  <View style={{ margin: 12 }}>
+              <View
+                style={{
+                  flex: 1,
+                  opacity: opacity,
+                }}
+              >
+                <View style={{ margin: 12 }}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignContent: "center",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
                     <View
+                      // onPress={() => handleFilterData(true, 0.5)}
                       style={{
                         flexDirection: "row",
-                        alignContent: "center",
                         alignItems: "center",
-                        justifyContent: "space-between",
+                        gap: 8,
                       }}
                     >
                       <View
-                        // onPress={() => handleFilterData(true, 0.5)}
                         style={{
-                          flexDirection: "row",
-                          alignItems: "center",
+                          flexDirection: "cloumn",
                           gap: 8,
                         }}
                       >
-                        <View
-                          style={{
-                            flexDirection: "cloumn",
-                            gap: 8,
-                          }}
+                        {isLoadingDetail == false && <Text
+                          allowFontScaling={false}
+                          style={[styles.text, { fontSize: adjust(18) }]}
                         >
-                          <Text
-                            allowFontScaling={false}
-                            style={[styles.text, { fontSize: adjust(18) }]}
-                          >
-                            Số lượng: {decimalNumber(dataKhuvuc?.length)} khu
-                            vực
-                          </Text>
-                        </View>
-                        {submit === true && (
-                          <Button
-                            text={"Hoàn thành tất cả"}
-                            isLoading={loadingSubmit}
-                            backgroundColor={COLORS.bg_button}
-                            color={"white"}
-                            onPress={() => handleSubmitChecklist()}
-                          />
-                        )}
+                          Số lượng: {decimalNumber(dataKhuvuc?.length)} khu vực
+                        </Text>}
                       </View>
-                    </View>
-                  </View>
-
-                  {isLoadingDetail === false &&
-                    dataKhuvuc &&
-                    dataKhuvuc?.length > 0 && (
-                      <>
-                        <FlatList
-                          style={{
-                            margin: 12,
-                            flex: 1,
-                            marginBottom: 100,
-                          }}
-                          data={dataKhuvuc}
-                          renderItem={({ item, index, separators }) =>
-                            renderItem(item, index)
-                          }
-                          ItemSeparatorComponent={() => (
-                            <View style={{ height: 16 }} />
-                          )}
-                          keyExtractor={(item, index) =>
-                            `${item?.ID_Checklist}_${index}`
-                          }
+                      {submit === true && (
+                        <Button
+                          text={"Hoàn thành tất cả"}
+                          isLoading={loadingSubmit}
+                          backgroundColor={COLORS.bg_button}
+                          color={"white"}
+                          onPress={() => handleSubmitChecklist()}
                         />
-                      </>
-                    )}
-
-                  {isLoadingDetail === true && ent_khuvuc?.length == 0 && (
-                    <View
-                      style={{
-                        flex: 1,
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <ActivityIndicator
-                        style={{
-                          marginRight: 4,
-                        }}
-                        size="large"
-                        color={COLORS.bg_white}
-                      ></ActivityIndicator>
+                      )} 
                     </View>
-                  )}
-
-                  {isLoadingDetail === false && ent_khuvuc?.length == 0 && (
-                    <View
-                      style={{
-                        flex: 1,
-                        justifyContent: "center",
-                        alignItems: "center",
-                        marginBottom: 80,
-                      }}
-                    >
-                      <Image
-                        source={require("../../../assets/icons/delete_bg.png")}
-                        resizeMode="contain"
-                        style={{ height: 120, width: 120 }}
-                      />
-                      <Text
-                        allowFontScaling={false}
-                        style={[styles.danhmuc, { padding: 10 }]}
-                      >
-                        {isScan
-                          ? "Không thấy khu vực này"
-                          : "Không có khu vực trong ca làm việc này !"}
-                      </Text>
-                    </View>
-                  )}
-                  <View
-                    style={{
-                      position: "absolute",
-                      bottom: 20,
-                      flexDirection: "row",
-                      justifyContent: "space-around",
-                      alignItems: "center",
-                      width: "100%",
-                    }}
-                  >
-                    <Button
-                      text={"Scan QR Code"}
-                      backgroundColor={"white"}
-                      color={"black"}
-                      onPress={() => handleOpenQrCode()}
-                    />
-
-                    {dataSelect[0] && (
-                      <Button
-                        text={"Vào khu vực"}
-                        isLoading={loadingSubmit}
-                        backgroundColor={COLORS.bg_button}
-                        color={"white"}
-                        onPress={() => handleSubmit()}
-                      />
-                    )}
                   </View>
                 </View>
-              )}
+
+                {isLoadingDetail === false &&
+                  dataKhuvuc &&
+                  dataKhuvuc?.length > 0 && (
+                    <>
+                      <FlatList
+                        style={{
+                          margin: 12,
+                          flex: 1,
+                          marginBottom: 100,
+                        }}
+                        data={dataKhuvuc}
+                        renderItem={({ item, index, separators }) =>
+                          renderItem(item, index)
+                        }
+                        ItemSeparatorComponent={() => (
+                          <View style={{ height: 16 }} />
+                        )}
+                        keyExtractor={(item, index) =>
+                          `${item?.ID_Checklist}_${index}`
+                        }
+                      />
+                    </>
+                  )}
+
+                {isLoadingDetail === true && (
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <ActivityIndicator
+                      style={{
+                        marginRight: 4,
+                      }}
+                      size="large"
+                      color={COLORS.bg_white}
+                    ></ActivityIndicator>
+                  </View>
+                )}
+
+                {isLoadingDetail === false && ent_khuvuc?.length == 0 && (
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      marginBottom: 80,
+                    }}
+                  >
+                    <Image
+                      source={require("../../../assets/icons/delete_bg.png")}
+                      resizeMode="contain"
+                      style={{ height: 120, width: 120 }}
+                    />
+                    <Text
+                      allowFontScaling={false}
+                      style={[styles.danhmuc, { padding: 10 }]}
+                    >
+                      {isScan
+                        ? "Không thấy khu vực này"
+                        : "Không có khu vực trong ca làm việc này !"}
+                    </Text>
+                  </View>
+                )}
+                <View
+                  style={{
+                    position: "absolute",
+                    bottom: 30,
+                    flexDirection: "row",
+                    justifyContent: "space-around",
+                    alignItems: "center",
+                    width: "100%",
+                  }}
+                >
+                  <Button
+                    text={"Quét Qrcode"}
+                    backgroundColor={"white"}
+                    color={"black"}
+                    onPress={() => handleOpenQrCode()}
+                  />
+
+                  {dataSelect[0] && (
+                    <Button
+                      text={"Vào khu vực"}
+                      isLoading={loadingSubmit}
+                      backgroundColor={COLORS.bg_button}
+                      color={"white"}
+                      onPress={() => handleSubmit()}
+                    />
+                  )}
+                </View>
+              </View>
             </ImageBackground>
 
             <Modal

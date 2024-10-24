@@ -3,7 +3,7 @@ import React from 'react';
 import {COLORS, SIZES} from '../../constants/theme';
 import adjust from '../../adjust';
 
-const Button = ({onPress, text, backgroundColor, color, border, width, isLoading}) => {
+const Button = ({onPress, text, backgroundColor, color, border, width, isLoading, disabled}) => {
   return (
     <TouchableOpacity
       disabled={isLoading}

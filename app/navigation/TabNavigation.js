@@ -79,7 +79,7 @@ const HomeStack = ({ navigation }) => {
                 color: "white",
               }}
             >
-              CHECKLIST
+              PMC Checklist
             </Text>
           ),
           headerTitleAlign: "center",

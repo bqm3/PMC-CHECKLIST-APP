@@ -41,7 +41,6 @@ import ModalPopupDetailChecklist from "../../components/Modal/ModalPopupDetailCh
 import moment from "moment";
 import axios, { isCancel } from "axios";
 import { BASE_URL } from "../../constants/config";
-import QRCodeScreen from "../QRCodeScreen";
 import DataContext from "../../context/DataContext";
 import ChecklistContext from "../../context/ChecklistContext";
 import * as Network from "expo-network";
@@ -65,7 +64,6 @@ const DetailChecklist = ({ route, navigation }) => {
   const {
     dataChecklistFilterContext,
     setDataChecklistFilterContext,
-    setLocationContext,
   } = useContext(ChecklistContext);
   const [isConnected, setIsConnected] = useState(false);
 
@@ -97,7 +95,6 @@ const DetailChecklist = ({ route, navigation }) => {
     (async () => {
       let location = await Location.getCurrentPositionAsync({});
       setLocation(location);
-      setLocationContext(location);
     })();
   }, [dataChecklistFaild, defaultActionDataChecklist]);
 
@@ -220,10 +217,10 @@ const DetailChecklist = ({ route, navigation }) => {
         if (item.valueCheck == null) {
           return {
             ...item,
-            valueCheck: item.Giatridinhdanh, 
+            valueCheck: item.Giatridinhdanh,
           };
         }
-        return item; 
+        return item;
       });
 
       setDataChecklistFilter(updateDataChecklist);
@@ -231,17 +228,8 @@ const DetailChecklist = ({ route, navigation }) => {
       setDataChecklistDefault(dataChecklistDefault);
       setDataChecklistFaild(DetaildataChecklistFaild);
 
-      const updateLocation = updateDataChecklist.map((item) => {
-        return {
-          ...item,
-          Vido: location?.coords?.latitude || "",
-          Kinhdo: location?.coords?.longitude || "",
-          Docao: location?.coords?.altitude || "",
-        };
-      });
-
       const data2Map = new Map(
-        updateLocation.map((item) => [item.ID_Checklist, item])
+        updateDataChecklist.map((item) => [item.ID_Checklist, item])
       );
 
       const updatedData1 = dataChecklistFilterContext.map((item) =>
@@ -272,17 +260,8 @@ const DetailChecklist = ({ route, navigation }) => {
       setDataChecklistFilter(revertDataChecklist);
       setDataChecklistDefault([]);
 
-      const updateLocation = revertDataChecklist.map((item) => {
-        return {
-          ...item,
-          Vido:  location?.coords?.latitude || "",
-          Kinhdo:  location?.coords?.longitude || "",
-          Docao: location?.coords?.altitude || "",
-        };
-      });
-
       const data2Map = new Map(
-        updateLocation.map((item) => [item.ID_Checklist, item])
+        revertDataChecklist.map((item) => [item.ID_Checklist, item])
       );
 
       const updatedData1 = dataChecklistFilterContext.map((item) =>
@@ -357,6 +336,30 @@ const DetailChecklist = ({ route, navigation }) => {
     });
 
     if (it.valueCheck === null) {
+      if(it.Anh !== null || it.Ghichu !== "" || it.valueCheck !== it.Giatridinhdanh){
+        const indexDefault = mergedArrClick.findIndex(
+          (item) => item.ID_Checklist === it.ID_Checklist
+        );
+
+        // Xóa phần tử nếu có trong mergedArrClick
+        if (indexDefault !== -1) {
+          mergedArrClick.splice(indexDefault, 1);
+        }
+
+        const existingItem = mergedArrOption.find(
+          (item) => item.ID_Checklist === it.ID_Checklist
+        );
+        if (!existingItem) {
+          mergedArrOption.push(it);
+        } else {
+          if (JSON.stringify(existingItem) !== JSON.stringify(it)) {
+            const index = mergedArrOption.indexOf(existingItem);
+            mergedArrOption[index] = it;
+          }
+        }
+      }
+      else {
+      }
       const existingItem = mergedArrOption.find(
         (item) => item.ID_Checklist === it.ID_Checklist
       );
@@ -371,13 +374,37 @@ const DetailChecklist = ({ route, navigation }) => {
       }
     } else {
       if (status === "click") {
-        if (
-          !mergedArrClick.some(
-            (existingItem) => existingItem.ID_Checklist === it.ID_Checklist
-          )
-        ) {
-          mergedArrClick.push(it);
+        if(it.Anh !== null || it.Ghichu !== "" || it.valueCheck !== it.Giatridinhdanh){
+          const indexDefault = mergedArrClick.findIndex(
+            (item) => item.ID_Checklist === it.ID_Checklist
+          );
+  
+          // Xóa phần tử nếu có trong mergedArrClick
+          if (indexDefault !== -1) {
+            mergedArrClick.splice(indexDefault, 1);
+          }
+  
+          const existingItem = mergedArrOption.find(
+            (item) => item.ID_Checklist === it.ID_Checklist
+          );
+          if (!existingItem) {
+            mergedArrOption.push(it);
+          } else {
+            if (JSON.stringify(existingItem) !== JSON.stringify(it)) {
+              const index = mergedArrOption.indexOf(existingItem);
+              mergedArrOption[index] = it;
+            }
+          }
+        }else {
+          if (
+            !mergedArrClick.some(
+              (existingItem) => existingItem.ID_Checklist === it.ID_Checklist
+            )
+          ) {
+            mergedArrClick.push(it);
+          }
         }
+      
       }
 
       if (status === "option" || status === "close") {
@@ -413,17 +440,8 @@ const DetailChecklist = ({ route, navigation }) => {
     setNewActionDataChecklist([...mergedArrOption, ...mergedArrClick]);
     setDataChecklistFilter(dataChecklist);
 
-    const updateLocation = dataChecklist.map((item) => {
-      return {
-        ...item,
-        Vido: item.Vido || location?.coords?.latitude || "",
-        Kinhdo: item.Kinhdo || location?.coords?.longitude || "",
-        Docao: item.Docao || location?.coords?.altitude || "",
-      };
-    });
-
     const data2Map = new Map(
-      updateLocation.map((item) => [item.ID_Checklist, item])
+      dataChecklist.map((item) => [item.ID_Checklist, item])
     );
 
     const updatedData = dataChecklistFilterContext.map((item) =>
@@ -468,17 +486,9 @@ const DetailChecklist = ({ route, navigation }) => {
     setDataChecklistDefault(updatedDataChecklistDefault);
     setDataChecklistFaild(updatedDataChecklistFaild);
 
-    const updateLocation = updatedDataChecklist.map((item) => {
-      return {
-        ...item,
-        Vido: item.Vido || location?.coords?.latitude || "",
-        Kinhdo: item.Kinhdo || location?.coords?.longitude || "",
-        Docao: item.Docao || location?.coords?.altitude || "",
-      };
-    });
     // Cập nhật dataChecklistFilterContext nếu cần
     const data2Map = new Map(
-      updateLocation.map((item) => [item.ID_Checklist, item])
+      updatedDataChecklist.map((item) => [item.ID_Checklist, item])
     );
     const updatedData1 = dataChecklistFilterContext.map((item) =>
       data2Map.has(item.ID_Checklist) ? data2Map.get(item.ID_Checklist) : item
@@ -491,77 +501,139 @@ const DetailChecklist = ({ route, navigation }) => {
     try {
       const networkState = await Network.getNetworkStateAsync();
       setIsConnected(networkState.isConnected);
-
-      if (networkState.isConnected) {
-        setLoadingSubmit(true);
-        setActiveAll(false);
-        saveConnect(false);
-
-        if (location == null) {
-          Alert.alert(
-            "PMC Thông báo",
-            "Chưa lấy được thông tin vị trí vui lòng thực hiện lại!",
-            [{ text: "OK", onPress: () => setLoadingSubmit(false) }]
-          );
-        } else {
+      saveConnect(true);
+  
+      if (location == null) {
+        Alert.alert(
+          "PMC Thông báo",
+          "Vui lòng đợi để xác định vị trí. Hãy xác thực lại trong vòng 1-2 giây!",
+          [{ text: "OK", onPress: () => setLoadingSubmit(false) }]
+        );
+        return;
+      } else {
+        if (networkState.isConnected) {
+          setLoadingSubmit(true);
+          setActiveAll(false);
+          saveConnect(false);
+  
           if (
             defaultActionDataChecklist.length === 0 &&
             dataChecklistFaild.length === 0
           ) {
-            // Hiển thị thông báo cho người dùng
             Alert.alert("PMC Thông báo", "Không có checklist để kiểm tra!", [
               { text: "OK", onPress: () => console.log("OK Pressed") },
             ]);
             setLoadingSubmit(false);
-            // Kết thúc hàm sớm nếu mảng rỗng
             return;
           }
-          // Kiểm tra dữ liệu và xử lý tùy thuộc vào trạng thái của `defaultActionDataChecklist` và `dataChecklistFaild`
+  
           if (
             defaultActionDataChecklist.length === 0 &&
             dataChecklistFaild.length > 0
           ) {
-            // Xử lý API cho dataChecklistFaild
-            await handleDataChecklistFaild();
+            const newDataChecklistFaild = dataChecklistFaild.map((item) => {
+              return {
+                ...item,
+                Vido: location?.coords?.latitude || "",
+                Kinhdo: location?.coords?.longitude || "",
+                Docao: location?.coords?.altitude || "",
+              };
+            });
+            await handleDataChecklistFaild(newDataChecklistFaild);
           } else if (
             defaultActionDataChecklist.length > 0 &&
             dataChecklistFaild.length == 0
           ) {
-            // Xử lý API cho defaultActionDataChecklist
-            await handleDefaultActionDataChecklist();
+            const newDataChecklistDefault = defaultActionDataChecklist.map((item) => {
+              return {
+                ...item,
+                Vido: location?.coords?.latitude || "",
+                Kinhdo: location?.coords?.longitude || "",
+                Docao: location?.coords?.altitude || "",
+              };
+            });
+            await handleDefaultActionDataChecklist(newDataChecklistDefault);
           }
   
           if (
             defaultActionDataChecklist.length > 0 &&
             dataChecklistFaild.length > 0
           ) {
-            await hadlChecklistAll();
+            const newDataChecklistDefault = defaultActionDataChecklist.map((item) => {
+              return {
+                ...item,
+                Vido: location?.coords?.latitude || "",
+                Kinhdo: location?.coords?.longitude || "",
+                Docao: location?.coords?.altitude || "",
+              };
+            });
+            const newDataChecklistFaild = dataChecklistFaild.map((item) => {
+              return {
+                ...item,
+                Vido: location?.coords?.latitude || "",
+                Kinhdo: location?.coords?.longitude || "",
+                Docao: location?.coords?.altitude || "",
+              };
+            });
+            await handleChecklistAll(newDataChecklistDefault, newDataChecklistFaild);
           }
+  
+        } else {
+          // Mất kết nối mạng
+          await AsyncStorage.setItem("checkNetwork", "1");
+          Alert.alert(
+            "Không có kết nối mạng",
+            "Vui lòng kiểm tra kết nối mạng của bạn."
+          );
+          saveConnect(true);
+  
+          // Kết hợp dữ liệu từ newDataChecklistDefault và newDataChecklistFaild
+          const combinedData = [...defaultActionDataChecklist, ...dataChecklistFaild];
+  
+          // Cập nhật location cho dataChecklistFilterContext
+          const updateLocation = combinedData.map((item) => {
+            return {
+              ...item,
+              Vido: location?.coords?.latitude || "",
+              Kinhdo: location?.coords?.longitude || "",
+              Docao: location?.coords?.altitude || "",
+            };
+          });
+  
+          // Tạo map từ updateLocation với ID_Checklist làm key
+          const data2Map = new Map(
+            updateLocation.map((item) => [item.ID_Checklist, item])
+          );
+  
+          // Cập nhật dataChecklistFilterContext với các item có cùng ID_Checklist
+          const updatedData1 = dataChecklistFilterContext.map((item) =>
+            data2Map.has(item.ID_Checklist)
+              ? { ...data2Map.get(item.ID_Checklist), ...item }
+              : item
+          );
+  
+          // Lưu lại kết quả cập nhật
+          setDataChecklistFilterContext(updatedData1);
         }
-      } else {
-        await AsyncStorage.setItem("checkNetwork", "1");
-        Alert.alert(
-          "Không có kết nối mạng",
-          "Vui lòng kiểm tra kết nối mạng của bạn."
-        );
-        saveConnect(true);
       }
     } catch (error) {
-      // Cập nhật sau khi hoàn thành xử lý API} catch (error) {
       console.error("Lỗi khi kiểm tra kết nối mạng:", error);
       setLoadingSubmit(false);
     }
   };
+  
 
   // api faild tb_checklistchitiet
-  const handleDataChecklistFaild = async () => {
+  const handleDataChecklistFaild = async (arrData) => {
     try {
+      console.log('arrData',arrData)
       setLoadingSubmit(true);
       // Create a new FormData instance
       const formData = new FormData();
-      const isCheckValueCheck = dataChecklistFaild.some(
+      const isCheckValueCheck = arrData.some(
         (item) => item.valueCheck == null || item.valueCheck == ""
       );
+      console.log('isCheckValueCheck', isCheckValueCheck)
 
       if (isCheckValueCheck) {
         setLoadingSubmit(false);
@@ -570,16 +642,16 @@ const DetailChecklist = ({ route, navigation }) => {
         ]);
       } else {
         // Iterate over all items in dataChecklistFaild
-        dataChecklistFaild.forEach((item, index) => {
+        arrData.forEach((item, index) => {
           // Extract and append checklist details to formData
           formData.append("ID_ChecklistC", ID_ChecklistC);
           formData.append("ID_Checklist", item.ID_Checklist);
           formData.append("Ketqua", item.valueCheck || "");
           formData.append("Gioht", item.Gioht);
           formData.append("Ghichu", item.GhichuChitiet || "");
-          formData.append("Vido", location?.coords?.latitude || "");
-          formData.append("Kinhdo", location?.coords?.longitude || "");
-          formData.append("Docao", location?.coords?.altitude || "");
+          formData.append("Vido", item.Vido || "");
+          formData.append("Kinhdo", item.Kinhdo || "");
+          formData.append("Docao", item.Docao || "");
           if (item.Anh) {
             const file = {
               uri:
@@ -642,16 +714,16 @@ const DetailChecklist = ({ route, navigation }) => {
   };
 
   // api faild tb_checklistchitietdone
-  const handleDefaultActionDataChecklist = async () => {
+  const handleDefaultActionDataChecklist = async (arrData) => {
     // Xử lý API cho defaultActionDataChecklist
-    const descriptions = defaultActionDataChecklist
+    const descriptions = arrData
       .map((item) => item.ID_Checklist)
       .join(",");
 
-    const ID_Checklists = defaultActionDataChecklist.map(
+    const ID_Checklists = arrData.map(
       (item) => item.ID_Checklist
     );
-    const Gioht = defaultActionDataChecklist.map((item) => item.Gioht);
+    const Gioht = arrData.map((item) => item.Gioht);
 
     const requestDone = axios.post(
       BASE_URL + "/tb_checklistchitietdone/create",
@@ -660,7 +732,7 @@ const DetailChecklist = ({ route, navigation }) => {
         ID_Checklists: ID_Checklists,
         ID_ChecklistC: ID_ChecklistC,
         Gioht: Gioht[0],
-        checklistLength: defaultActionDataChecklist.length,
+        checklistLength: arrData.length,
         Vido: location?.coords?.latitude || "",
         Kinhdo: location?.coords?.longitude || "",
         Docao: location?.coords?.altitude || "",
@@ -705,14 +777,17 @@ const DetailChecklist = ({ route, navigation }) => {
   };
 
   // api all
-  const hadlChecklistAll = async () => {
+  const handleChecklistAll = async (dataDefault, dataFaild) => {
     try {
       setLoadingSubmit(true);
       // Tạo một đối tượng FormData để chứa dữ liệu của dataChecklistFaild
       const formData = new FormData();
-      const isCheckValueCheck = dataChecklistFaild.some(
+      const isCheckValueCheck = dataFaild.some(
         (item) => item.valueCheck == null || item.valueCheck == ""
       );
+      console.log('isCheckValueCheck 2', isCheckValueCheck)
+      console.log('dataFaild 2', dataFaild)
+      console.log('dataDefault 2', dataDefault)
 
       if (isCheckValueCheck) {
         setLoadingSubmit(false);
@@ -721,15 +796,15 @@ const DetailChecklist = ({ route, navigation }) => {
         ]);
       } else {
         // Lặp qua từng phần tử trong dataChecklistFaild để thêm vào FormData
-        dataChecklistFaild.forEach((item, index) => {
+        dataFaild.forEach((item, index) => {
           formData.append("ID_ChecklistC", ID_ChecklistC);
           formData.append("ID_Checklist", item.ID_Checklist);
           formData.append("Ketqua", item.valueCheck || "");
           formData.append("Gioht", item.Gioht);
           formData.append("Ghichu", item.GhichuChitiet || "");
-          formData.append("Vido", location?.coords?.latitude || "");
-          formData.append("Kinhdo", location?.coords?.longitude || "");
-          formData.append("Docao", location?.coords?.altitude || "");
+          formData.append("Vido", item.Vido || "");
+          formData.append("Kinhdo", item.Kinhdo || "");
+          formData.append("Docao", item.Docao || "");
 
           // Nếu có hình ảnh, thêm vào FormData
           if (item.Anh) {
@@ -750,11 +825,11 @@ const DetailChecklist = ({ route, navigation }) => {
         });
 
         // Chuẩn bị dữ liệu cho yêu cầu thứ hai
-        const descriptions = defaultActionDataChecklist
+        const descriptions = dataDefault
           .map((item) => item.ID_Checklist)
           .join(",");
 
-        const ID_Checklists = defaultActionDataChecklist.map(
+        const ID_Checklists = dataDefault.map(
           (item) => item.ID_Checklist
         );
 
@@ -776,11 +851,11 @@ const DetailChecklist = ({ route, navigation }) => {
             Description: descriptions,
             ID_Checklists: ID_Checklists,
             ID_ChecklistC: ID_ChecklistC,
-            Gioht: defaultActionDataChecklist[0].Gioht,
-            checklistLength: defaultActionDataChecklist.length,
-            Vido: location?.coords?.latitude || "",
-            Kinhdo: location?.coords?.longitude || "",
-            Docao: location?.coords?.altitude || "",
+            Gioht: dataDefault[0].Gioht,
+            checklistLength: dataDefault.length,
+            Vido: dataDefault[0].Vido || "",
+            Kinhdo: dataDefault[0].Kinhdo || "",
+            Docao: dataDefault[0].Docao || "",
           },
           {
             headers: {
@@ -902,9 +977,7 @@ const DetailChecklist = ({ route, navigation }) => {
     );
 
     setDataChecklistFilter(dataChecklist);
-    // Update state with the filtered context
     setDataChecklistFilterContext(dataChecklistFilterContextReset);
-    // Optionally, reset newActionDataChecklist, defaultActionDataChecklist, and dataChecklistFaild if needed
     setNewActionDataChecklist([]);
     setDataChecklistDefault([]);
     setDataChecklistFaild([]);
@@ -1074,13 +1147,9 @@ const DetailChecklist = ({ route, navigation }) => {
       <KeyboardAvoidingView
         keyboardVerticalOffset={headerHeight}
         behavior={Platform.OS === "ios" ? "padding" : null}
-        style={{ flex: 1, backgroundColor: "red" }}
+        style={{ flex: 1 }}
       >
         <BottomSheetModalProvider>
-          {/* <TouchableWithoutFeedback
-            onPress={Keyboard.dismiss}
-            accessible={false}
-          > */}
           <ImageBackground
             source={require("../../../assets/bg.png")}
             resizeMode="cover"
@@ -1254,7 +1323,7 @@ const DetailChecklist = ({ route, navigation }) => {
               <View
                 style={{
                   position: "absolute",
-                  bottom: 15,
+                  bottom: 20,
                   flexDirection: "row",
                   justifyContent: "space-around",
                   alignItems: "center",
@@ -1262,9 +1331,10 @@ const DetailChecklist = ({ route, navigation }) => {
                 }}
               >
                 <Button
-                  text={"Hoàn Thành"}
-                  isLoading={loadingSubmit}
-                  backgroundColor={COLORS.bg_button}
+
+                  text={(loadingSubmit || !location) ? "Đang tải dữ liệu" :"Hoàn Thành"}
+                  isLoading={loadingSubmit || !location}
+                  backgroundColor={(loadingSubmit || !location) ? 'gray' :  COLORS.bg_button}
                   color={"white"}
                   onPress={() => handleSubmit()}
                 />
