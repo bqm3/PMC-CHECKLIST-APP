@@ -53,6 +53,7 @@ import ItemCaChecklist from "../../components/Item/ItemCaChecklist";
 import DataContext from "../../context/DataContext";
 import adjust from "../../adjust";
 import { useFocusEffect } from "@react-navigation/native";
+import * as Network from "expo-network";
 
 const ThucHienChecklist = ({ navigation }) => {
   const ref = useRef(null);
@@ -76,6 +77,7 @@ const ThucHienChecklist = ({ navigation }) => {
   const [newActionCheckList, setNewActionCheckList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
 
   const [dataInput, setDataInput] = useState({
     dateDay: dateDay,
@@ -137,7 +139,7 @@ const ThucHienChecklist = ({ navigation }) => {
     init_ca();
     int_checklistc();
   }, []);
-  
+
   useFocusEffect(
     useCallback(() => {
       // This will run every time the screen is focused
@@ -453,15 +455,24 @@ const ThucHienChecklist = ({ navigation }) => {
     });
   };
 
-  const handleChecklistDetail = (id1, id2, id3, id4) => {
-    navigation.navigate("Thực hiện khu vực", {
-      ID_ChecklistC: id1,
-      ID_KhoiCV: id2,
-      ID_ThietLapCa: id3,
-      ID_Hangmucs: id4,
-    });
+  const handleChecklistDetail = async (id1, id2, id3, id4) => {
+    const networkState = await Network.getNetworkStateAsync();
+    setIsConnected(networkState.isConnected);
+    if (networkState.isConnected) {
+      navigation.navigate("Thực hiện khu vực", {
+        ID_ChecklistC: id1,
+        ID_KhoiCV: id2,
+        ID_ThietLapCa: id3,
+        ID_Hangmucs: id4,
+      });
 
-    setNewActionCheckList([]);
+      setNewActionCheckList([]);
+    } else {
+      Alert.alert(
+        "Không có kết nối mạng",
+        "Vui lòng kiểm tra kết nối mạng của bạn."
+      );
+    }
   };
 
   const handleCloseChecklist = async (ID_ChecklistC) => {
@@ -722,7 +733,15 @@ const ThucHienChecklist = ({ navigation }) => {
                           handleChecklistClose(newActionCheckList[0])
                         }
                       >
-                        <Feather name="lock" size={26} color="white" />
+                        {/* <Feather name="lock" size={26} color="white" /> */}
+                        <Image
+                          source={require("../../../assets/icons/ic_lock.png")}
+                          style={{
+                            
+                            tintColor: "white",
+                              resizeMode: 'contain'
+                          }}
+                        />
                       </TouchableOpacity>
                       <TouchableOpacity
                         style={[styles.button]}
@@ -735,14 +754,28 @@ const ThucHienChecklist = ({ navigation }) => {
                           )
                         }
                       >
-                        <Feather name="unlock" size={26} color="white" />
+                        {/* <Feather name="unlock" size={26} color="white" /> */}
+                        <Image
+                          source={require("../../../assets/icons/ic_unlock.png")}
+                          style={{
+                            tintColor: "white",
+                              resizeMode: 'contain'
+                          }}
+                        />
                       </TouchableOpacity>
 
                       <TouchableOpacity
                         style={styles.button}
                         onPress={() => handleToggleModal()}
                       >
-                        <Feather name="camera" size={26} color="white" />
+                        {/* <Feather name="camera" size={26} color="white" /> */}
+                        <Image
+                          source={require("../../../assets/icons/ic_camera.png")}
+                          style={{
+                            tintColor: "white",
+                              resizeMode: 'contain'
+                          }}
+                        />
                       </TouchableOpacity>
                     </>
                   )}

@@ -47,7 +47,17 @@ const Back = ({ navigation, title }) => {
         title ? navigation.navigate("Profile") : navigation.goBack()
       }
     >
-      <FontAwesome5 name="user-alt" size={adjust(28)} color="white" />
+      {/* <FontAwesome5 name="user-alt" size={adjust(28)} color="white" /> */}
+    
+      <Image
+        source={require("../../assets/icons/ic_person.png")}
+        style={{
+          width: adjust(40) ,  
+          height: adjust(40) , 
+          tintColor: "white",    
+        }}
+      />
+    
     </TouchableOpacity>
   );
 };
@@ -344,21 +354,7 @@ const HomeStack = ({ navigation }) => {
           headerLeft: () => (
             <TouchableOpacity
               onPress={() => {
-                Alert.alert(
-                  "PMC",
-                  "Thoát khỏi khu vực sẽ mất hết checklist đã kiểm tra. Vui lòng xác nhận",
-                  [
-                    {
-                      text: "Hủy",
-                      onPress: () => console.log("Hủy Pressed"),
-                      style: "cancel",
-                    },
-                    {
-                      text: "Xác nhận",
-                      onPress: () => navigation.goBack(),
-                    },
-                  ]
-                );
+                navigation.goBack()
               }}
             >
               {Platform.OS === "ios" && (

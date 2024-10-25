@@ -61,10 +61,8 @@ const DetailChecklist = ({ route, navigation }) => {
     useContext(DataContext);
 
   const { isConnect, saveConnect } = useContext(ConnectContext);
-  const {
-    dataChecklistFilterContext,
-    setDataChecklistFilterContext,
-  } = useContext(ChecklistContext);
+  const { dataChecklistFilterContext, setDataChecklistFilterContext } =
+    useContext(ChecklistContext);
   const [isConnected, setIsConnected] = useState(false);
 
   const { user, authToken } = useSelector((state) => state.authReducer);
@@ -336,7 +334,11 @@ const DetailChecklist = ({ route, navigation }) => {
     });
 
     if (it.valueCheck === null) {
-      if(it.Anh !== null || it.Ghichu !== "" || it.valueCheck !== it.Giatridinhdanh){
+      if (
+        it.Anh !== null ||
+        it.GhichuChitiet !== "" ||
+        it.valueCheck !== it.Giatridinhdanh
+      ) {
         const indexDefault = mergedArrClick.findIndex(
           (item) => item.ID_Checklist === it.ID_Checklist
         );
@@ -357,8 +359,7 @@ const DetailChecklist = ({ route, navigation }) => {
             mergedArrOption[index] = it;
           }
         }
-      }
-      else {
+      } else {
       }
       const existingItem = mergedArrOption.find(
         (item) => item.ID_Checklist === it.ID_Checklist
@@ -374,16 +375,20 @@ const DetailChecklist = ({ route, navigation }) => {
       }
     } else {
       if (status === "click") {
-        if(it.Anh !== null || it.Ghichu !== "" || it.valueCheck !== it.Giatridinhdanh){
+        if (
+          it.Anh !== null ||
+          it.GhichuChitiet !== "" ||
+          it.valueCheck !== it.Giatridinhdanh
+        ) {
           const indexDefault = mergedArrClick.findIndex(
             (item) => item.ID_Checklist === it.ID_Checklist
           );
-  
+
           // Xóa phần tử nếu có trong mergedArrClick
           if (indexDefault !== -1) {
             mergedArrClick.splice(indexDefault, 1);
           }
-  
+
           const existingItem = mergedArrOption.find(
             (item) => item.ID_Checklist === it.ID_Checklist
           );
@@ -395,7 +400,7 @@ const DetailChecklist = ({ route, navigation }) => {
               mergedArrOption[index] = it;
             }
           }
-        }else {
+        } else {
           if (
             !mergedArrClick.some(
               (existingItem) => existingItem.ID_Checklist === it.ID_Checklist
@@ -404,7 +409,6 @@ const DetailChecklist = ({ route, navigation }) => {
             mergedArrClick.push(it);
           }
         }
-      
       }
 
       if (status === "option" || status === "close") {
@@ -502,7 +506,6 @@ const DetailChecklist = ({ route, navigation }) => {
       const networkState = await Network.getNetworkStateAsync();
       setIsConnected(networkState.isConnected);
       saveConnect(true);
-  
       if (location == null) {
         Alert.alert(
           "PMC Thông báo",
@@ -515,7 +518,7 @@ const DetailChecklist = ({ route, navigation }) => {
           setLoadingSubmit(true);
           setActiveAll(false);
           saveConnect(false);
-  
+
           if (
             defaultActionDataChecklist.length === 0 &&
             dataChecklistFaild.length === 0
@@ -526,7 +529,7 @@ const DetailChecklist = ({ route, navigation }) => {
             setLoadingSubmit(false);
             return;
           }
-  
+
           if (
             defaultActionDataChecklist.length === 0 &&
             dataChecklistFaild.length > 0
@@ -544,29 +547,33 @@ const DetailChecklist = ({ route, navigation }) => {
             defaultActionDataChecklist.length > 0 &&
             dataChecklistFaild.length == 0
           ) {
-            const newDataChecklistDefault = defaultActionDataChecklist.map((item) => {
-              return {
-                ...item,
-                Vido: location?.coords?.latitude || "",
-                Kinhdo: location?.coords?.longitude || "",
-                Docao: location?.coords?.altitude || "",
-              };
-            });
+            const newDataChecklistDefault = defaultActionDataChecklist.map(
+              (item) => {
+                return {
+                  ...item,
+                  Vido: location?.coords?.latitude || "",
+                  Kinhdo: location?.coords?.longitude || "",
+                  Docao: location?.coords?.altitude || "",
+                };
+              }
+            );
             await handleDefaultActionDataChecklist(newDataChecklistDefault);
           }
-  
+
           if (
             defaultActionDataChecklist.length > 0 &&
             dataChecklistFaild.length > 0
           ) {
-            const newDataChecklistDefault = defaultActionDataChecklist.map((item) => {
-              return {
-                ...item,
-                Vido: location?.coords?.latitude || "",
-                Kinhdo: location?.coords?.longitude || "",
-                Docao: location?.coords?.altitude || "",
-              };
-            });
+            const newDataChecklistDefault = defaultActionDataChecklist.map(
+              (item) => {
+                return {
+                  ...item,
+                  Vido: location?.coords?.latitude || "",
+                  Kinhdo: location?.coords?.longitude || "",
+                  Docao: location?.coords?.altitude || "",
+                };
+              }
+            );
             const newDataChecklistFaild = dataChecklistFaild.map((item) => {
               return {
                 ...item,
@@ -575,9 +582,11 @@ const DetailChecklist = ({ route, navigation }) => {
                 Docao: location?.coords?.altitude || "",
               };
             });
-            await handleChecklistAll(newDataChecklistDefault, newDataChecklistFaild);
+            await handleChecklistAll(
+              newDataChecklistDefault,
+              newDataChecklistFaild
+            );
           }
-  
         } else {
           // Mất kết nối mạng
           await AsyncStorage.setItem("checkNetwork", "1");
@@ -586,10 +595,13 @@ const DetailChecklist = ({ route, navigation }) => {
             "Vui lòng kiểm tra kết nối mạng của bạn."
           );
           saveConnect(true);
-  
+
           // Kết hợp dữ liệu từ newDataChecklistDefault và newDataChecklistFaild
-          const combinedData = [...defaultActionDataChecklist, ...dataChecklistFaild];
-  
+          const combinedData = [
+            ...defaultActionDataChecklist,
+            ...dataChecklistFaild,
+          ];
+
           // Cập nhật location cho dataChecklistFilterContext
           const updateLocation = combinedData.map((item) => {
             return {
@@ -599,19 +611,19 @@ const DetailChecklist = ({ route, navigation }) => {
               Docao: location?.coords?.altitude || "",
             };
           });
-  
+
           // Tạo map từ updateLocation với ID_Checklist làm key
           const data2Map = new Map(
             updateLocation.map((item) => [item.ID_Checklist, item])
           );
-  
+
           // Cập nhật dataChecklistFilterContext với các item có cùng ID_Checklist
           const updatedData1 = dataChecklistFilterContext.map((item) =>
             data2Map.has(item.ID_Checklist)
               ? { ...data2Map.get(item.ID_Checklist), ...item }
               : item
           );
-  
+
           // Lưu lại kết quả cập nhật
           setDataChecklistFilterContext(updatedData1);
         }
@@ -621,19 +633,18 @@ const DetailChecklist = ({ route, navigation }) => {
       setLoadingSubmit(false);
     }
   };
-  
 
   // api faild tb_checklistchitiet
   const handleDataChecklistFaild = async (arrData) => {
     try {
-      console.log('arrData',arrData)
+      console.log("arrData", arrData);
       setLoadingSubmit(true);
       // Create a new FormData instance
       const formData = new FormData();
       const isCheckValueCheck = arrData.some(
         (item) => item.valueCheck == null || item.valueCheck == ""
       );
-      console.log('isCheckValueCheck', isCheckValueCheck)
+      console.log("isCheckValueCheck", isCheckValueCheck);
 
       if (isCheckValueCheck) {
         setLoadingSubmit(false);
@@ -716,13 +727,9 @@ const DetailChecklist = ({ route, navigation }) => {
   // api faild tb_checklistchitietdone
   const handleDefaultActionDataChecklist = async (arrData) => {
     // Xử lý API cho defaultActionDataChecklist
-    const descriptions = arrData
-      .map((item) => item.ID_Checklist)
-      .join(",");
+    const descriptions = arrData.map((item) => item.ID_Checklist).join(",");
 
-    const ID_Checklists = arrData.map(
-      (item) => item.ID_Checklist
-    );
+    const ID_Checklists = arrData.map((item) => item.ID_Checklist);
     const Gioht = arrData.map((item) => item.Gioht);
 
     const requestDone = axios.post(
@@ -785,9 +792,6 @@ const DetailChecklist = ({ route, navigation }) => {
       const isCheckValueCheck = dataFaild.some(
         (item) => item.valueCheck == null || item.valueCheck == ""
       );
-      console.log('isCheckValueCheck 2', isCheckValueCheck)
-      console.log('dataFaild 2', dataFaild)
-      console.log('dataDefault 2', dataDefault)
 
       if (isCheckValueCheck) {
         setLoadingSubmit(false);
@@ -829,9 +833,7 @@ const DetailChecklist = ({ route, navigation }) => {
           .map((item) => item.ID_Checklist)
           .join(",");
 
-        const ID_Checklists = dataDefault.map(
-          (item) => item.ID_Checklist
-        );
+        const ID_Checklists = dataDefault.map((item) => item.ID_Checklist);
 
         // Tạo các yêu cầu API
         const requestFaild = axios.post(
@@ -1112,21 +1114,39 @@ const DetailChecklist = ({ route, navigation }) => {
               gap: 12,
             }}
           >
-            <TouchableOpacity
-              onPress={() => handlePopupActiveTieuChuan(item, index)}
-            >
-              <MaterialIcons name="read-more" size={adjust(30)} color="black" />
-            </TouchableOpacity>
-
+            {item.Tieuchuan !== "" && item.Tieuchuan !== null ? (
+              <TouchableOpacity
+                onPress={() => handlePopupActiveTieuChuan(item, index)}
+              >
+                <Image
+                  source={require("../../../assets/icons/ic_certificate.png")}
+                  style={{
+                    width: adjust(30),
+                    height: adjust(30),
+                    tintColor: "black",
+                  }}
+                />
+              </TouchableOpacity>
+            ) : (
+              <View
+                style={{
+                  width: adjust(30),
+                  height: adjust(30),
+                }}
+              />
+            )}
             <TouchableOpacity
               onPress={() => {
                 handlePopupActive(item, index), setIsBottomSheetOpen(true);
               }}
             >
-              <Entypo
-                name="dots-three-vertical"
-                size={adjust(30)}
-                color="black"
+              <Image
+                source={require("../../../assets/icons/ic_ellipsis.png")}
+                style={{
+                  tintColor: "black",
+                  resizeMode: "contain",
+                  transform: [{ rotate: "90deg" }],
+                }}
               />
             </TouchableOpacity>
           </View>
@@ -1207,19 +1227,24 @@ const DetailChecklist = ({ route, navigation }) => {
                           {decimalNumber(newActionDataChecklist?.length)}
                         </Text>
                         {Hangmuc?.FileTieuChuan !== null &&
-                          Hangmuc?.FileTieuChuan !== undefined && (
+                          Hangmuc?.FileTieuChuan !== undefined &&
+                          Hangmuc?.FileTieuChuan !== "" && (
                             <View>
                               <TouchableOpacity
-                                onPress={() => setShow(true)}
+                                onPress={() => {
+                                  setShow(true);
+                                }}
                                 style={{
                                   flexDirection: "row",
                                   alignItems: "center",
                                 }}
                               >
-                                <Ionicons
-                                  name="bookmark"
-                                  size={24}
-                                  color="white"
+                                <Image
+                                  source={require("../../../assets/icons/ic_bookmark.png")}
+                                  style={{
+                                    tintColor: "white",
+                                    resizeMode: "contain",
+                                  }}
                                 />
                                 <Text style={styles.text}>Tiêu chuẩn </Text>
                               </TouchableOpacity>
@@ -1331,10 +1356,15 @@ const DetailChecklist = ({ route, navigation }) => {
                 }}
               >
                 <Button
-
-                  text={(loadingSubmit || !location) ? "Đang tải dữ liệu" :"Hoàn Thành"}
+                  text={
+                    loadingSubmit || !location
+                      ? "Đang tải dữ liệu"
+                      : "Hoàn Thành"
+                  }
                   isLoading={loadingSubmit || !location}
-                  backgroundColor={(loadingSubmit || !location) ? 'gray' :  COLORS.bg_button}
+                  backgroundColor={
+                    loadingSubmit || !location ? "gray" : COLORS.bg_button
+                  }
                   color={"white"}
                   onPress={() => handleSubmit()}
                 />
@@ -1408,14 +1438,15 @@ const DetailChecklist = ({ route, navigation }) => {
             }}
           >
             <TouchableOpacity onPress={() => setShow(false)}>
-              <Ionicons
-                name="close"
-                size={40}
-                color="black"
+              <Image
+                source={require("../../../assets/icons/ic_close.png")}
                 style={{
+                  width: adjust(40),
+                  height: adjust(40),
                   marginTop: 10,
                   textAlign: "right",
                   paddingRight: 10,
+                  alignSelf: "flex-end",
                 }}
               />
             </TouchableOpacity>

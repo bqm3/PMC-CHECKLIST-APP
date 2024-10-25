@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, View, TouchableOpacity, StyleSheet } from "react-native";
+import { Text, View, TouchableOpacity, StyleSheet,Image } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 import { COLORS } from "../../constants/theme";
 import adjust from "../../adjust";
@@ -18,11 +18,20 @@ const Checkbox = ({ isCheck, onPress, color, size }) => {
       onPress={onPress}
     >
       {isCheck && (
-        <Entypo
-          name="check"
-          size={adjust(size ? size * 0.9 : 20)}
-          color={color ? color : "white"}
+        <Image
+          source={require("../../../assets/icons/ic_checkbox.png")}
+          style={{
+            width: adjust(size ? size * 0.9 : 20),
+            height: adjust(size ? size * 0.9 : 20),
+            tintColor: color ? color : "white", 
+          }}
+          resizeMode="contain"
         />
+        // <Entypo
+        //   name="check"
+        //   size={adjust(size ? size * 0.9 : 20)}
+        //   color={color ? color : "black"}
+        // />
       )}
     </TouchableOpacity>
   );

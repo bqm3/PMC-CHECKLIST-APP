@@ -232,9 +232,16 @@ const ThucHienHangmuc = ({ route, navigation }) => {
               {item?.MaQrCode}
             </Text>
           </View>
-          <TouchableOpacity onPress={() => handlePopupActive(item, index)}>
-            <MaterialIcons name="read-more" size={adjust(30)} color="black" />
-          </TouchableOpacity>
+          {item.Tieuchuankt !== "" && item.Tieuchuankt !== null && (
+            <TouchableOpacity onPress={() => handlePopupActive(item, index)}>
+              <Image
+                source={require("../../../assets/icons/ic_certificate.png")}
+                style={{
+                  tintColor: "black",
+                }}
+              />
+            </TouchableOpacity>
+          )}
         </View>
       </TouchableOpacity>
     );

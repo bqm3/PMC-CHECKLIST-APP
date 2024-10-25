@@ -42,16 +42,16 @@ import { COLORS, SIZES } from "../../constants/theme";
 import { tb_checklistc_get } from "../../redux/actions/tbActions";
 import DataContext from "../../context/DataContext";
 import adjust from "../../adjust";
+import * as Network from "expo-network";
 
 const ThucHienChecklist = ({ navigation }) => {
   const ref = useRef(null);
   const dispath = useDispatch();
-  const { ent_calv, ent_hangmuc } = useSelector(
-    (state) => state.entReducer
-  );
+  const { ent_calv, ent_hangmuc } = useSelector((state) => state.entReducer);
   const { tb_checklistc } = useSelector((state) => state.tbReducer);
   const { user, authToken } = useSelector((state) => state.authReducer);
   const { setDataHangmuc, stepKhuvuc } = useContext(DataContext);
+  const [isConnected, setIsConnected] = useState(false);
 
   const [data, setData] = useState([]);
 
@@ -114,15 +114,24 @@ const ThucHienChecklist = ({ navigation }) => {
     }
   };
 
-  const handleChecklistDetail = (id1, id2, id3, id4) => {
-    navigation.navigate("Thực hiện khu vực lại", {
-      ID_ChecklistC: id1,
-      ID_KhoiCV: id2,
-      ID_ThietLapCa: id3,
-      ID_Hangmucs: id4,
-    });
+  const handleChecklistDetail = async (id1, id2, id3, id4) => {
+    const networkState = await Network.getNetworkStateAsync();
+    setIsConnected(networkState.isConnected);
+    if (networkState.isConnected) {
+      navigation.navigate("Thực hiện khu vực lại", {
+        ID_ChecklistC: id1,
+        ID_KhoiCV: id2,
+        ID_ThietLapCa: id3,
+        ID_Hangmucs: id4,
+      });
 
-    setNewActionCheckList([]);
+      setNewActionCheckList([]);
+    } else {
+      Alert.alert(
+        "Không có kết nối mạng",
+        "Vui lòng kiểm tra kết nối mạng của bạn."
+      );
+    }
   };
 
   const _renderItem = ({ item, index }) => {

@@ -176,9 +176,16 @@ const ThucHienHangmucLai = ({ route, navigation }) => {
             {item?.MaQrCode}
           </Text>
         </View>
-        <TouchableOpacity onPress={() => setModalVisible(true)}>
-          <MaterialIcons name="read-more" size={adjust(30)} color="black" />
-        </TouchableOpacity>
+        {item.Tieuchuankt !== "" && item.Tieuchuankt !== null && (
+          <TouchableOpacity onPress={() => handlePopupActive(item, index)}>
+            <Image
+              source={require("../../../assets/icons/ic_certificate.png")}
+              style={{
+                tintColor: "black",
+              }}
+            />
+          </TouchableOpacity>
+        )}
       </View>
     </TouchableOpacity>
   );
@@ -246,7 +253,9 @@ const ThucHienHangmucLai = ({ route, navigation }) => {
                       `${item?.ID_Checklist}_${index}`
                     }
                   />
-                ) : (navigation.goBack())}
+                ) : (
+                  navigation.goBack()
+                )}
 
                 {isLoadingDetail && (
                   <View

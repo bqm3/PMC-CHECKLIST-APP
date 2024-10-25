@@ -87,6 +87,35 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
     );
     setIsLoadingDetail(false);
   };
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('beforeRemove', (e) => {
+      const filteredItems = dataChecklistFilterContext.filter(item => item.valueCheck !== null);
+      if (filteredItems.length === 0) {
+        return;
+      }
+      
+      e.preventDefault();
+      Alert.alert(
+        "PMC",
+        "Thoát khỏi khu vực sẽ mất hết checklist đã kiểm tra. Vui lòng xác nhận",
+        [
+          {
+            text: "Hủy",
+            onPress: () => console.log("Hủy Pressed"),
+            style: "cancel",
+          },
+          {
+            text: "Xác nhận",
+            onPress: () => navigation.dispatch(e.data.action), 
+          },
+        ]
+      );
+    });
+  
+    return unsubscribe;
+  }, [navigation, dataChecklistFilterContext]); 
+
   useEffect(() => {
     setIsLoading(true)
     const ID_HangmucsArray = Array.isArray(ID_Hangmucs)
@@ -973,6 +1002,31 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
                         />
                       </>
                     )}
+
+                  {isLoadingDetail === false && dataKhuvuc.length == 0 && (
+                    <View
+                    style={{
+                      flex: 1,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      marginBottom: 80,
+                    }}
+                  >
+                    <Image
+                      source={require("../../../assets/icons/delete_bg.png")}
+                      resizeMode="contain"
+                      style={{ height: 120, width: 120 }}
+                    />
+                    <Text
+                      allowFontScaling={false}
+                      style={[styles.danhmuc, { padding: 10 }]}
+                    >
+                      {isScan
+                        ? "Không thấy khu vực này"
+                        : "Không có khu vực trong ca làm việc này !"}
+                    </Text>
+                  </View>
+                  )}
 
                   {isLoadingDetail === true && ent_khuvuc?.length == 0 && (
                     <View

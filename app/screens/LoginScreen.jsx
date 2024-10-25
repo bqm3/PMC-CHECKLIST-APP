@@ -378,7 +378,7 @@ const LoginScreen = ({ navigation }) => {
                           isCheck={isChecked}
                           onPress={handleToggle}
                         />
-                        <TouchableOpacity onPress={handlePresentModalPress}>
+                        <TouchableOpacity>
                           <Text
                             allowFontScaling={false}
                             style={[
