@@ -89,12 +89,14 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
   };
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('beforeRemove', (e) => {
-      const filteredItems = dataChecklistFilterContext.filter(item => item.valueCheck !== null);
+    const unsubscribe = navigation.addListener("beforeRemove", (e) => {
+      const filteredItems = dataChecklistFilterContext.filter(
+        (item) => item.valueCheck !== null
+      );
       if (filteredItems.length === 0) {
         return;
       }
-      
+
       e.preventDefault();
       Alert.alert(
         "PMC",
@@ -107,17 +109,17 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
           },
           {
             text: "Xác nhận",
-            onPress: () => navigation.dispatch(e.data.action), 
+            onPress: () => navigation.dispatch(e.data.action),
           },
         ]
       );
     });
-  
+
     return unsubscribe;
-  }, [navigation, dataChecklistFilterContext]); 
+  }, [navigation, dataChecklistFilterContext]);
 
   useEffect(() => {
-    setIsLoading(true)
+    setIsLoading(true);
     const ID_HangmucsArray = Array.isArray(ID_Hangmucs)
       ? ID_Hangmucs
       : ID_Hangmucs.split(",").map(Number);
@@ -132,7 +134,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
       // Cập nhật dữ liệu sau khi lọc
       setDataKhuvuc(matchingEntKhuvuc);
     }
-    setIsLoading(false)
+    setIsLoading(false);
   }, [ID_Hangmucs, ent_khuvuc]);
 
   useEffect(() => {
@@ -260,7 +262,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
       } else if (resDataKhuvuc.length === 0 && resDataHangmuc.length === 0) {
         Alert.alert(
           "PMC Thông báo",
-          "Không tìm thấy khu vực, hạng mục có mã Qr phù hợp",
+          `Khu vực hoặc hạng mục có qrcode: "${cleanedValue}" không thuộc ca làm việc này`,
           [
             {
               text: "Hủy",
@@ -310,14 +312,17 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
   };
 
   const handleSubmitChecklist = async () => {
-    const groupedByID_Hangmuc = defaultActionDataChecklist.reduce((acc, item) => {
-      if (!acc[item.ID_Hangmuc]) {
-        acc[item.ID_Hangmuc] = [];
-      }
-      acc[item.ID_Hangmuc].push(item);
-      return acc;
-    }, {});
-    
+    const groupedByID_Hangmuc = defaultActionDataChecklist.reduce(
+      (acc, item) => {
+        if (!acc[item.ID_Hangmuc]) {
+          acc[item.ID_Hangmuc] = [];
+        }
+        acc[item.ID_Hangmuc].push(item);
+        return acc;
+      },
+      {}
+    );
+
     const resultArray = Object.values(groupedByID_Hangmuc);
 
     try {
@@ -466,13 +471,15 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
     }
   };
 
-  const handleDefaultActionDataChecklist = async (defaultActionDataChecklist) => {
+  const handleDefaultActionDataChecklist = async (
+    defaultActionDataChecklist
+  ) => {
     setLoadingSubmit(true);
     try {
       for (const ItemDefaultActionDataChecklist of defaultActionDataChecklist) {
-        const descriptions = ItemDefaultActionDataChecklist
-          .map((item) => item.ID_Checklist)
-          .join(",");
+        const descriptions = ItemDefaultActionDataChecklist.map(
+          (item) => item.ID_Checklist
+        ).join(",");
         const ID_Checklists = ItemDefaultActionDataChecklist.map(
           (item) => item.ID_Checklist
         );
@@ -1005,27 +1012,27 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
 
                   {isLoadingDetail === false && dataKhuvuc.length == 0 && (
                     <View
-                    style={{
-                      flex: 1,
-                      justifyContent: "center",
-                      alignItems: "center",
-                      marginBottom: 80,
-                    }}
-                  >
-                    <Image
-                      source={require("../../../assets/icons/delete_bg.png")}
-                      resizeMode="contain"
-                      style={{ height: 120, width: 120 }}
-                    />
-                    <Text
-                      allowFontScaling={false}
-                      style={[styles.danhmuc, { padding: 10 }]}
+                      style={{
+                        flex: 1,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        marginBottom: 80,
+                      }}
                     >
-                      {isScan
-                        ? "Không thấy khu vực này"
-                        : "Không có khu vực trong ca làm việc này !"}
-                    </Text>
-                  </View>
+                      <Image
+                        source={require("../../../assets/icons/delete_bg.png")}
+                        resizeMode="contain"
+                        style={{ height: 120, width: 120 }}
+                      />
+                      <Text
+                        allowFontScaling={false}
+                        style={[styles.danhmuc, { padding: 10 }]}
+                      >
+                        {isScan
+                          ? "Không thấy khu vực này"
+                          : "Không có khu vực trong ca làm việc này !"}
+                      </Text>
+                    </View>
                   )}
 
                   {isLoadingDetail === true && ent_khuvuc?.length == 0 && (

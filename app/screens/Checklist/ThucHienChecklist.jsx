@@ -327,6 +327,7 @@ const ThucHienChecklist = ({ navigation }) => {
       ]);
     } else {
       let data = {
+        Tenca: dataInput.Calv.Tenca,
         ID_Calv: dataInput.Calv.ID_Calv,
         ID_User: user.ID_User,
         ID_Duan: user.ID_Duan,

@@ -78,16 +78,18 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
   const init_checklist = async () => {
     setIsLoadingDetail(true);
     await dispath(ent_checklist_mul_hm(ID_Hangmucs, ID_Calv, ID_ChecklistC));
-    setIsLoadingDetail(false)
+    setIsLoadingDetail(false);
   };
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('beforeRemove', (e) => {
-      const filteredItems = dataChecklistFilterContext.filter(item => item.valueCheck !== null);
+    const unsubscribe = navigation.addListener("beforeRemove", (e) => {
+      const filteredItems = dataChecklistFilterContext.filter(
+        (item) => item.valueCheck !== null
+      );
       if (filteredItems.length === 0) {
         return;
       }
-      
+
       e.preventDefault();
       Alert.alert(
         "PMC",
@@ -100,15 +102,14 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
           },
           {
             text: "Xác nhận",
-            onPress: () => navigation.dispatch(e.data.action), 
+            onPress: () => navigation.dispatch(e.data.action),
           },
         ]
       );
     });
-  
+
     return unsubscribe;
-  }, [navigation, dataChecklistFilterContext]); 
-  
+  }, [navigation, dataChecklistFilterContext]);
 
   useEffect(() => {
     const ID_HangmucsArray = Array.isArray(ID_Hangmucs)
@@ -264,7 +265,8 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
       } else if (resDataKhuvuc.length === 0 && resDataHangmuc.length === 0) {
         Alert.alert(
           "PMC Thông báo",
-          "Không tìm thấy khu vực, hạng mục có mã Qr phù hợp",
+          // `Khu vực hoặc hạng mục có qrcode: "${cleanedValue}" không thuộc ca làm việc này`,
+          `Khu vực hoặc hạng mục có qrcode: "${cleanedValue}" không thuộc ca làm việc này`,
           [
             {
               text: "Hủy",
@@ -314,14 +316,17 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
   };
 
   const handleSubmitChecklist = async () => {
-    const groupedByID_Hangmuc = defaultActionDataChecklist.reduce((acc, item) => {
-      if (!acc[item.ID_Hangmuc]) {
-        acc[item.ID_Hangmuc] = [];
-      }
-      acc[item.ID_Hangmuc].push(item);
-      return acc;
-    }, {});
-    
+    const groupedByID_Hangmuc = defaultActionDataChecklist.reduce(
+      (acc, item) => {
+        if (!acc[item.ID_Hangmuc]) {
+          acc[item.ID_Hangmuc] = [];
+        }
+        acc[item.ID_Hangmuc].push(item);
+        return acc;
+      },
+      {}
+    );
+
     const resultArray = Object.values(groupedByID_Hangmuc);
 
     try {
@@ -473,13 +478,15 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
     }
   };
 
-  const handleDefaultActionDataChecklist = async (defaultActionDataChecklist) => {
+  const handleDefaultActionDataChecklist = async (
+    defaultActionDataChecklist
+  ) => {
     setLoadingSubmit(true);
     try {
       for (const ItemDefaultActionDataChecklist of defaultActionDataChecklist) {
-        const descriptions = ItemDefaultActionDataChecklist
-          .map((item) => item.ID_Checklist)
-          .join(",");
+        const descriptions = ItemDefaultActionDataChecklist.map(
+          (item) => item.ID_Checklist
+        ).join(",");
         const ID_Checklists = ItemDefaultActionDataChecklist.map(
           (item) => item.ID_Checklist
         );
@@ -503,11 +510,10 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
             },
           }
         );
-  
-       
+
         await requestDone;
       }
-  
+
       // Xử lý sau khi tất cả các yêu cầu hoàn thành
       postHandleSubmit();
       setLoadingSubmit(false);
@@ -516,7 +522,6 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
       setSubmit(false);
       saveConnect(false);
 
-     
       Alert.alert("PMC Thông báo", "Checklist thành công", [
         {
           text: "Hủy",
@@ -953,12 +958,15 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
                           gap: 8,
                         }}
                       >
-                        {isLoadingDetail == false && <Text
-                          allowFontScaling={false}
-                          style={[styles.text, { fontSize: adjust(18) }]}
-                        >
-                          Số lượng: {decimalNumber(dataKhuvuc?.length)} khu vực
-                        </Text>}
+                        {isLoadingDetail == false && (
+                          <Text
+                            allowFontScaling={false}
+                            style={[styles.text, { fontSize: adjust(18) }]}
+                          >
+                            Số lượng: {decimalNumber(dataKhuvuc?.length)} khu
+                            vực
+                          </Text>
+                        )}
                       </View>
                       {submit === true && (
                         <Button
@@ -968,7 +976,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
                           color={"white"}
                           onPress={() => handleSubmitChecklist()}
                         />
-                      )} 
+                      )}
                     </View>
                   </View>
                 </View>
@@ -997,8 +1005,8 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
                     </>
                   )}
 
-                  {isLoadingDetail === false && dataKhuvuc.length == 0 && (
-                    <View
+                {isLoadingDetail === false && dataKhuvuc.length == 0 && (
+                  <View
                     style={{
                       flex: 1,
                       justifyContent: "center",
@@ -1020,7 +1028,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
                         : "Không có khu vực trong ca làm việc này !"}
                     </Text>
                   </View>
-                  )}
+                )}
 
                 {isLoadingDetail === true && (
                   <View

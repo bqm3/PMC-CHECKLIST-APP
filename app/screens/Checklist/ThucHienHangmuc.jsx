@@ -103,7 +103,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
       } else if (resData.length === 0) {
         Alert.alert(
           "PMC Thông báo",
-          "Không tìm thấy hạng mục có mã Qr phù hợp",
+          `Hạng mục có QrCode: "${cleanedValue}" không thuộc khu vực này`,
           [
             {
               text: "Hủy",
