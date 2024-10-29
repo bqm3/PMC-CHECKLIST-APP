@@ -5,44 +5,47 @@ import { Provider, useDispatch, useSelector } from "react-redux";
 import { store } from "./app/redux/store";
 import { ThemeProvider } from "./app/context/ThemeContext";
 import { LoginProvider } from "./app/context/LoginContext";
+import { LocationProvider } from "./app/context/LocationContext";
 import { ConnectProvider } from "./app/context/ConnectContext";
 import { UserProvider } from "./app/context/UserContext";
 import { DataProvider } from "./app/context/DataContext";
 import { ChecklistProvider } from "./app/context/ChecklistContext";
 import { ChecklistLaiProvider } from "./app/context/ChecklistLaiContext";
 import CheckNavigation from "./app/navigation/CheckNavigation";
-import { DataTable, DefaultTheme ,PaperProvider } from "react-native-paper";
+import { DataTable, DefaultTheme, PaperProvider } from "react-native-paper";
 require("moment/locale/vi");
 
 const customTheme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    text: 'black', // Change this to your desired text color
+    text: "black", // Change this to your desired text color
   },
 };
 
 export default function App() {
   return (
-    <Provider store={store} > 
+    <Provider store={store}>
       <PaperProvider theme={customTheme}>
         <LoginProvider>
-          <ConnectProvider>
-          <ThemeProvider>
-            <UserProvider>
-              <DataProvider>
-                <ChecklistProvider>
-                  <ChecklistLaiProvider>
-                  <NavigationContainer>
-                    <StatusBar />
-                    <CheckNavigation/>                   
-                  </NavigationContainer>
-                  </ChecklistLaiProvider>
-                </ChecklistProvider>
-              </DataProvider>
-            </UserProvider>
-          </ThemeProvider>
-          </ConnectProvider>
+          <LocationProvider>
+            <ConnectProvider>
+              <ThemeProvider>
+                <UserProvider>
+                  <DataProvider>
+                    <ChecklistProvider>
+                      <ChecklistLaiProvider>
+                        <NavigationContainer>
+                          <StatusBar />
+                          <CheckNavigation />
+                        </NavigationContainer>
+                      </ChecklistLaiProvider>
+                    </ChecklistProvider>
+                  </DataProvider>
+                </UserProvider>
+              </ThemeProvider>
+            </ConnectProvider>
+          </LocationProvider>
         </LoginProvider>
       </PaperProvider>
     </Provider>

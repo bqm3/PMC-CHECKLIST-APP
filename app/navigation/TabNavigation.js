@@ -37,6 +37,7 @@ import Sucongoai from "../screens/Checklist/Sucongoai";
 import ThuchienSucongoai from "../screens/Checklist/ThuchienSucongoai";
 import DetailSucongoai from "../screens/Checklist/DetailSucongoai";
 import XulySuco from "../screens/Checklist/XulySuco";
+import YourComponent from "../screens/TestScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -339,6 +340,7 @@ const HomeStack = ({ navigation }) => {
         lazy={false}
         options={({ navigation, route }) => ({
           headerShown: true,
+          gestureEnabled: false,
           headerTitle: () => (
             <Text
               allowFontScaling={false}

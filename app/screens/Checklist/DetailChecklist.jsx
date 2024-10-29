@@ -33,7 +33,6 @@ import BottomSheet, {
 } from "@gorhom/bottom-sheet";
 import * as Location from "expo-location";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { Entypo, MaterialIcons, AntDesign, Ionicons } from "@expo/vector-icons";
 import { COLORS, SIZES } from "../../constants/theme";
 import ActiveChecklist from "../../components/Active/ActiveCheckList";
 import Button from "../../components/Button/Button";
@@ -51,6 +50,30 @@ import ConnectContext from "../../context/ConnectContext";
 import WebView from "react-native-webview";
 import { useHeaderHeight } from "@react-navigation/elements";
 import axiosClient from "../../api/axiosClient";
+
+// const requestPermissions = async () => {
+//   const { status: foregroundStatus } = await Location.requestForegroundPermissionsAsync();
+//   if (foregroundStatus === 'granted') {
+//     const { status: backgroundStatus } = await Location.requestBackgroundPermissionsAsync();
+//     if (backgroundStatus === 'granted') {
+//       await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
+//         accuracy: Location.Accuracy.Balanced,
+//       });
+//     }
+//   }
+// };
+
+// TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data: { locations }, error }) => {
+//   if (error) {
+//     console.error(error);
+//     return;
+//   }
+
+//   // Xử lý vị trí mới
+//   const location = locations[0];
+//   console.log('New location:', location);
+//   // Bạn có thể lưu vị trí vào state hoặc gửi đến server ở đây
+// });
 
 const DetailChecklist = ({ route, navigation }) => {
   const { ID_ChecklistC, ID_KhoiCV, ID_Hangmuc, hangMuc, Hangmuc } =
@@ -82,18 +105,56 @@ const DetailChecklist = ({ route, navigation }) => {
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [isScan, setIsScan] = useState(false);
   const [activeAll, setActiveAll] = useState(false);
-  const [location, setLocation] = useState(null);
+  const [location, setLocation] = useState(123);
   const [show, setShow] = useState(false);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
   const headerHeight = useHeaderHeight();
-
   useEffect(() => {
-    (async () => {
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
-    })();
+    // (async () => {
+    //   const { status } = await Location.requestForegroundPermissionsAsync();
+    //   if (status !== "granted") {
+    //     console.log("Permission to access location was denied");
+    //   } else {
+    //     const locationSubscription = await Location.watchPositionAsync(
+    //       {
+    //         accuracy: Location.Accuracy.BestForNavigation,
+    //         timeInterval: 1000,
+    //         distanceInterval: 1,
+    //       },
+    //       (location) => {
+    //         setLocation(location);
+    //         console.log(
+    //           "New location update: " +
+    //             location.coords.latitude +
+    //             ", " +
+    //             location.coords.longitude
+    //         );
+    //         console.log("location: " + location.coords.altitude);
+    //       }
+    //     );
+    //   }
+    //   return () => locationSubscription.remove();
+    // })();
+    const watchLocation = async () => {
+      const subscription = await Location.watchPositionAsync(
+        {
+          accuracy: Location.Accuracy.Best, // Độ chính xác tốt hơn
+          timeInterval: 5000, // Cập nhật mỗi 10 giây
+        },
+        (location) => {
+          console.log("New location update: " + location.coords.latitude + ", " + location.coords.longitude);
+          setLocation(location);
+        }
+      );
+  
+      return () => {
+        subscription.remove(); // Dọn dẹp khi component unmount
+      };
+    };
+  
+    watchLocation();
   }, [dataChecklistFaild, defaultActionDataChecklist]);
 
   useEffect(() => {
