@@ -54,6 +54,9 @@ import DataContext from "../../context/DataContext";
 import adjust from "../../adjust";
 import { useFocusEffect } from "@react-navigation/native";
 import * as Network from "expo-network";
+import CustomAlertModal from "../../components/CustomAlertModal";
+import RenderHTML from 'react-native-render-html';
+import { flatMap } from "lodash";
 
 const ThucHienChecklist = ({ navigation }) => {
   const ref = useRef(null);
@@ -78,6 +81,8 @@ const ThucHienChecklist = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
+  const [isModalVisible, setISModalVisible] = useState(false);
+  const [message, setMessage] = useState("");
 
   const [dataInput, setDataInput] = useState({
     dateDay: dateDay,
@@ -363,14 +368,16 @@ const ThucHienChecklist = ({ navigation }) => {
         setLoadingSubmit(false);
         if (error.response) {
           // Lỗi từ phía server (có response từ server)
-          Alert.alert("PMC Thông báo", error.response.data.message, [
-            {
-              text: "Hủy",
-              onPress: () => console.log("Cancel Pressed"),
-              style: "cancel",
-            },
-            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-          ]);
+          // Alert.alert("PMC Thông báo", error.response.data.message, [
+          //   {
+          //     text: "Hủy",
+          //     onPress: () => console.log("Cancel Pressed"),
+          //     style: "cancel",
+          //   },
+          //   { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+          // ]);
+          setISModalVisible(true);
+          setMessage(error.response.data.message)
         } else if (error.request) {
           // Lỗi không nhận được phản hồi từ server
           console.log(error.request);
@@ -656,6 +663,16 @@ const ThucHienChecklist = ({ navigation }) => {
                 // }}
                 onRequestClose={handleClosePopUp}
               >
+                <CustomAlertModal
+                  isVisible={isModalVisible}
+                  title="PMC Thông báo"
+                  message={<RenderHTML contentWidth={300} source={{ html: message }} />} // Sử dụng RenderHTML
+                  onConfirm={() => {
+                    console.log("Confirmed");
+                    setISModalVisible(false);
+                  }}
+                  showCancelButton={false}
+                />
                 <View style={styles.centeredView}>
                   <View
                     style={[
@@ -738,9 +755,8 @@ const ThucHienChecklist = ({ navigation }) => {
                         <Image
                           source={require("../../../assets/icons/ic_lock.png")}
                           style={{
-                            
                             tintColor: "white",
-                              resizeMode: 'contain'
+                            resizeMode: "contain",
                           }}
                         />
                       </TouchableOpacity>
@@ -760,7 +776,7 @@ const ThucHienChecklist = ({ navigation }) => {
                           source={require("../../../assets/icons/ic_unlock.png")}
                           style={{
                             tintColor: "white",
-                              resizeMode: 'contain'
+                            resizeMode: "contain",
                           }}
                         />
                       </TouchableOpacity>
@@ -774,7 +790,7 @@ const ThucHienChecklist = ({ navigation }) => {
                           source={require("../../../assets/icons/ic_camera.png")}
                           style={{
                             tintColor: "white",
-                              resizeMode: 'contain'
+                            resizeMode: "contain",
                           }}
                         />
                       </TouchableOpacity>
