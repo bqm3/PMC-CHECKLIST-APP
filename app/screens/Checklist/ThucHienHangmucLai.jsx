@@ -27,7 +27,7 @@ import adjust from "../../adjust";
 import { Camera } from "expo-camera";
 
 const ThucHienHangmucLai = ({ route, navigation }) => {
-  const { ID_ChecklistC, ID_KhoiCV, ID_Khuvuc, dataFilterHandler } =
+  const { ID_ChecklistC, ID_KhoiCV, ID_Khuvuc, dataFilterHandler, Tenkv } =
     route.params;
   const { dataChecklists, setHangMuc, hangMuc, HangMucDefault } =
     useContext(DataContext);
@@ -100,7 +100,7 @@ const ThucHienHangmucLai = ({ route, navigation }) => {
       } else {
         Alert.alert(
           "PMC Thông báo",
-          `Hạng mục có QrCode: "${cleanedValue}" không thuộc khu vực này`
+          `Hạng mục có QrCode: "${cleanedValue}" không thuộc khu vực "${Tenkv}"`,
         );
         setIsScan(false);
         setModalVisibleQr(false);

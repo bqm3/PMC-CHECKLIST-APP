@@ -29,7 +29,7 @@ import { Camera } from "expo-camera";
 import { Linking } from "react-native";
 
 const ThucHienHangmuc = ({ route, navigation }) => {
-  const { ID_ChecklistC, ID_KhoiCV, ID_Khuvuc, dataFilterHandler } =
+  const { ID_ChecklistC, ID_KhoiCV, ID_Khuvuc, dataFilterHandler, Tenkv } =
     route.params;
   const { dataChecklists, setHangMuc, hangMuc, HangMucDefault } =
     useContext(DataContext);
@@ -103,7 +103,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
       } else if (resData.length === 0) {
         Alert.alert(
           "PMC Thông báo",
-          `Hạng mục có QrCode: "${cleanedValue}" không thuộc khu vực này`,
+          `Hạng mục có QrCode: "${cleanedValue}" không thuộc khu vực "${Tenkv}"`,
           [
             {
               text: "Hủy",

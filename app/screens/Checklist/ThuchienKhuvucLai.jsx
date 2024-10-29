@@ -794,6 +794,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
       ID_KhoiCV: ID_KhoiCV,
       ID_Khuvuc: dataSelect[0].ID_Khuvuc,
       dataFilterHandler: dataFilterHandler,
+      Tenkv: `${dataSelect[0]?.Tenkhuvuc} - ${dataSelect[0]?.ent_toanha?.Toanha}`,
     });
     setDataSelect([]);
   };
