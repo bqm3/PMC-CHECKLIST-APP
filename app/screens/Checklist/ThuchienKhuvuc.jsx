@@ -331,6 +331,8 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
 
     try {
       const networkState = await Network.getNetworkStateAsync();
+      console.log('defaultActionDataChecklist',defaultActionDataChecklist)
+      console.log('dataChecklistFaild',dataChecklistFaild)
       if (networkState.isConnected) {
         setLoadingSubmit(true);
         if (
@@ -353,7 +355,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
           dataChecklistFaild.length > 0
         ) {
           // Xử lý API cho dataChecklistFaild
-          await handleDataChecklistFaild();
+          await handleDataChecklistFaild(dataChecklistFaild);
         } else if (
           defaultActionDataChecklist.length > 0 &&
           dataChecklistFaild.length == 0
@@ -383,7 +385,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
   };
 
   // api faild tb_checklistchitiet
-  const handleDataChecklistFaild = async () => {
+  const handleDataChecklistFaild = async (dataChecklistFaild) => {
     try {
       setLoadingSubmit(true);
       // Create a new FormData instance
@@ -464,6 +466,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
           });
       }
     } catch (error) {
+      console.log("Error: 2" + error)
       setLoadingSubmit(false);
       if (error.response) {
         // Handle error response from the server
@@ -572,9 +575,9 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
           formData.append("Ketqua", item.valueCheck || "");
           formData.append("Gioht", item.Gioht);
           formData.append("Ghichu", item.GhichuChitiet || "");
-          formData.append("Vido", item?.Vido || "");
-          formData.append("Kinhdo", item?.Kinhdo || "");
-          formData.append("Docao", item?.Docao || "");
+          formData.append("Vido", item?.Vido || null);
+          formData.append("Kinhdo", item?.Kinhdo || null);
+          formData.append("Docao", item?.Docao || null);
           formData.append("isScan", item.isScan || null);
 
           // Nếu có hình ảnh, thêm vào FormData
@@ -662,6 +665,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
             })
           )
           .catch((error) => {
+            console.log("Error: 1" + error)
             setLoadingSubmit(false);
 
             if (error.response) {
@@ -711,6 +715,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
           });
       }
     } catch (error) {
+      console.log('error',error)
       setLoadingSubmit(false);
       Alert.alert(
         "PMC Thông báo",

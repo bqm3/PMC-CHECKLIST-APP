@@ -187,17 +187,20 @@ const DetailChecklist = ({ route, navigation }) => {
               ...item,
               valueCheck: item.Giatridinhdanh,
               Gioht: moment().format("LTS"),
+              isScan: isScan,
             };
           } else if (item.valueCheck == item.Giatridinhdanh) {
             return {
               ...item,
               valueCheck: item.Giatridinhdanh,
               Gioht: moment().format("LTS"),
+              isScan: isScan,
             };
           } else {
             return {
               ...item,
               Gioht: moment().format("LTS"),
+              isScan: isScan,
             };
           }
         } else if (
@@ -210,23 +213,27 @@ const DetailChecklist = ({ route, navigation }) => {
               ...item,
               valueCheck: item.Giatridinhdanh,
               Gioht: moment().format("LTS"),
+              isScan: isScan,
             };
           } else if (item.valueCheck == item.Giatridinhdanh) {
             return {
               ...item,
               valueCheck: item.Giatridinhdanh,
               Gioht: moment().format("LTS"),
+              isScan: isScan,
             };
           } else {
             return {
               ...item,
               Gioht: moment().format("LTS"),
+              isScan: isScan,
             };
           }
         } else {
           return {
             ...item,
             Gioht: moment().format("LTS"),
+            isScan: isScan,
           };
         }
       });
@@ -247,6 +254,7 @@ const DetailChecklist = ({ route, navigation }) => {
           return {
             ...item,
             valueCheck: item.Giatridinhdanh,
+            isScan: isScan
           };
         }
         return item;
@@ -278,6 +286,7 @@ const DetailChecklist = ({ route, navigation }) => {
             ...item,
             valueCheck: null,
             Gioht: moment().format("LTS"),
+            isScan: isScan,
           };
         } else {
           return {
@@ -313,6 +322,7 @@ const DetailChecklist = ({ route, navigation }) => {
             GhichuChitiet: value?.GhichuChitiet ? value?.GhichuChitiet : "",
             valueCheck: value?.valueCheck ? value?.valueCheck : null,
             Gioht: moment().format("LTS"),
+            isScan: isScan,
           };
         }
         return item;
@@ -323,6 +333,7 @@ const DetailChecklist = ({ route, navigation }) => {
         GhichuChitiet: value?.GhichuChitiet ? value?.GhichuChitiet : "",
         valueCheck: value?.valueCheck ? value?.valueCheck : null,
         Gioht: moment().format("LTS"),
+        isScan: isScan,
       };
     } else {
       updatedDataChecklist = dataChecklistFilter?.map((item, i) => {
@@ -331,6 +342,7 @@ const DetailChecklist = ({ route, navigation }) => {
             ...item,
             [key]: value ? value : null,
             Gioht: moment().format("LTS"),
+            isScan: isScan,
           };
         }
         return item;
@@ -340,6 +352,7 @@ const DetailChecklist = ({ route, navigation }) => {
         ...itemData,
         [key]: value ? value : null,
         Gioht: moment().format("LTS"),
+        isScan: isScan,
       };
     }
 
@@ -493,6 +506,7 @@ const DetailChecklist = ({ route, navigation }) => {
           ...item,
           valueCheck: null, // Xóa giá trị của item này
           Gioht: moment().format("LTS"),
+          isScan: null,
           Anh: null,
           Ghichu: "",
         };
@@ -673,14 +687,12 @@ const DetailChecklist = ({ route, navigation }) => {
   // api tb_checklistchitiet
   const handleDataChecklistFaild = async (arrData) => {
     try {
-      console.log("arrData", arrData);
       setLoadingSubmit(true);
       // Create a new FormData instance
       const formData = new FormData();
       const isCheckValueCheck = arrData.some(
         (item) => item.valueCheck == null || item.valueCheck == ""
       );
-      console.log("isCheckValueCheck", isCheckValueCheck);
 
       if (isCheckValueCheck) {
         setLoadingSubmit(false);
