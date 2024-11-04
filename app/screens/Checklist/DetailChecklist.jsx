@@ -50,6 +50,7 @@ import ConnectContext from "../../context/ConnectContext";
 import WebView from "react-native-webview";
 import { useHeaderHeight } from "@react-navigation/elements";
 import axiosClient from "../../api/axiosClient";
+import ModalBottomSheet from "../../components/Modal/ModalBottomSheet";
 
 const DetailChecklist = ({ route, navigation }) => {
   const { ID_ChecklistC, ID_KhoiCV, ID_Hangmuc, hangMuc, Hangmuc, isScan } =
@@ -78,6 +79,7 @@ const DetailChecklist = ({ route, navigation }) => {
   const [opacity, setOpacity] = useState(1);
   const [index, setIndex] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [visibleBottom, setVisibleBottom] = useState(false);
   const [modalVisibleTieuChuan, setModalVisibleTieuChuan] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [activeAll, setActiveAll] = useState(false);
@@ -1078,6 +1080,25 @@ const DetailChecklist = ({ route, navigation }) => {
     setIsBottomSheetOpen(false);
   };
 
+  const handleBottom = useCallback((item, index) => {
+    setVisibleBottom(true);
+    setDataItem(item);
+    setIndex(index);
+
+    if (visibleBottom == false) {
+      setOpacity(0.2);
+    } else {
+      setOpacity(1);
+    }
+  }, []);
+
+  const handleClearBottom = useCallback((item, index) => {
+    setOpacity(1);
+    setDataItem(null);
+    setIndex(null);
+    setVisibleBottom(false);
+  }, []);
+
   // view item flatlist
   const renderItem = (item, index) => {
     return (
@@ -1182,7 +1203,11 @@ const DetailChecklist = ({ route, navigation }) => {
             )}
             <TouchableOpacity
               onPress={() => {
-                handlePopupActive(item, index), setIsBottomSheetOpen(true);
+                if (user.isError == 1) {
+                  handleBottom(item, index);
+                } else {
+                  handlePopupActive(item, index), setIsBottomSheetOpen(true);
+                }
               }}
             >
               <Image
@@ -1249,12 +1274,27 @@ const DetailChecklist = ({ route, navigation }) => {
                         gap: 8,
                       }}
                     >
-                      <Text
-                        allowFontScaling={false}
-                        style={[styles.text, { fontSize: 17 }]}
+                      <View
+                        style={{ flexDirection: "row", alignItems: "center" }}
                       >
-                        Hạng mục: {Hangmuc?.Hangmuc}
-                      </Text>
+                        <Text
+                          allowFontScaling={false}
+                          style={[styles.text, { fontSize: 17 }]}
+                        >
+                          Hạng mục: {Hangmuc?.Hangmuc}
+                        </Text>
+                        {Hangmuc.Important === 1 && (
+                          <Image
+                            source={require("../../../assets/icons/ic_star.png")}
+                            style={{
+                              width: 20,
+                              height: 20,
+                              marginLeft: 5,
+                              tintColor: "white",
+                            }}
+                          />
+                        )}
+                      </View>
                       <Text allowFontScaling={false} style={styles.text}>
                         Số lượng: {decimalNumber(dataChecklistFilter?.length)}{" "}
                         Checklist
@@ -1428,9 +1468,26 @@ const DetailChecklist = ({ route, navigation }) => {
                 handleItemClick={handleItemClick}
                 index={index}
                 // handleChange={handleChange}
+                handleClearBottom={handleClearBottom}
+                user={user}
               />
             </View>
           </BottomSheetModal>
+
+          <ModalBottomSheet
+            visible={visibleBottom}
+            setVisible={setVisibleBottom}
+            setOpacity={setOpacity}
+          >
+            <ModalPopupDetailChecklist
+              handlePopupClear={handlePopupClear}
+              dataItem={dataItem}
+              handleItemClick={handleItemClick}
+              index={index}
+              handleClearBottom={handleClearBottom}
+              user={user}
+            />
+          </ModalBottomSheet>
 
           {/* Modal show tieu chuan  */}
           <Modal

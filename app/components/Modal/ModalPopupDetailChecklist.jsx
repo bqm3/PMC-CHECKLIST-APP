@@ -27,6 +27,8 @@ const ModalPopupDetailChecklist = ({
   dataItem,
   index,
   handleItemClick,
+  handleClearBottom,
+  user,
 }) => {
   const ref = useRef(null);
   const [step, setStep] = useState(1);
@@ -40,17 +42,27 @@ const ModalPopupDetailChecklist = ({
   const pickImage = async () => {
     // Ask the user for the permission to access the camera
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
-    
+
     if (permissionResult.granted === false) {
       alert("You've refused to allow this appp to access your camera!");
       return;
     }
 
-    const result = await ImagePicker.launchCameraAsync();
-    if (!result.canceled) {
-      dataItem.Anh = result?.assets[0];
-      handleItemClick(result?.assets[0], "option", "Anh", dataItem);
-      setImage(result?.assets[0]);
+    try {
+      // Cấu hình các tùy chọn cho ImagePicker
+      const result = await ImagePicker.launchCameraAsync({
+        quality: 0.5, // Giảm chất lượng ảnh (giá trị từ 0.0 đến 1.0, 0.5 là giảm 50% chất lượng)
+        base64: false, // Không cần mã hóa ảnh thành base64, nếu không cần thiết
+        exif: false, // Bỏ thông tin Exif nếu không cần
+      });
+
+      if (!result.canceled) {
+        dataItem.Anh = result?.assets[0];
+        handleItemClick(result?.assets[0], "option", "Anh", dataItem);
+        setImage(result?.assets[0]);
+      }
+    } catch (error) {
+      console.error("Lỗi khi chụp ảnh: ", error);
     }
   };
 
@@ -75,10 +87,14 @@ const ModalPopupDetailChecklist = ({
     setChiso(dataItem?.valueCheck);
   }, [dataItem]);
 
+  const close = () => {
+    user.isError !== 1 ? handlePopupClear() : handleClearBottom();
+  };
+
   return (
     <GestureHandlerRootView style={{ height: "auto" }}>
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <ScrollView
+        <View
           style={{ width: SIZES.width, paddingHorizontal: 20, height: "auto" }}
         >
           {step === 1 &&
@@ -168,7 +184,7 @@ const ModalPopupDetailChecklist = ({
           {step === 2 && (
             <>
               <View>
-              <View>
+                <View>
                   <Text allowFontScaling={false} style={styles.text}>
                     Ghi chú
                   </Text>
@@ -198,25 +214,25 @@ const ModalPopupDetailChecklist = ({
                   }}
                 >
                   <View>
-                  <Text allowFontScaling={false} style={styles.text}>
-                    Chụp ảnh
-                  </Text>
-                  <TouchableOpacity
-                    style={{
-                      backgroundColor: "white",
-                      padding: SIZES.padding,
-                      borderRadius: SIZES.borderRadius,
-                      borderColor: COLORS.bg_button,
-                      borderWidth: 1,
-                      width: 80,
-                      alignItems: "center",
-                      justifyContent: "center",
-                      height: 80,
-                    }}
-                    onPress={pickImage}
-                  >
-                    <Entypo name="camera" size={24} color="black" />
-                  </TouchableOpacity>
+                    <Text allowFontScaling={false} style={styles.text}>
+                      Chụp ảnh
+                    </Text>
+                    <TouchableOpacity
+                      style={{
+                        backgroundColor: "white",
+                        padding: SIZES.padding,
+                        borderRadius: SIZES.borderRadius,
+                        borderColor: COLORS.bg_button,
+                        borderWidth: 1,
+                        width: 80,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        height: 80,
+                      }}
+                      onPress={pickImage}
+                    >
+                      <Entypo name="camera" size={24} color="black" />
+                    </TouchableOpacity>
                   </View>
                   <View
                     style={{
@@ -258,14 +274,13 @@ const ModalPopupDetailChecklist = ({
                     )}
                   </View>
                 </View>
-              
               </View>
               <View style={{ marginTop: 10 }}>
                 <Button
                   onPress={() => {
                     setData();
                     handleItemClick(objData, "close", objData, dataItem);
-                    handlePopupClear();
+                    close();
                   }}
                   backgroundColor={COLORS.bg_button}
                   border={COLORS.bg_button}
@@ -299,7 +314,7 @@ const ModalPopupDetailChecklist = ({
                 onPress={() => {
                   setData();
                   handleItemClick(objData, "close", objData, dataItem);
-                  handlePopupClear();
+                  close();
                 }}
                 backgroundColor={COLORS.bg_button}
                 border={COLORS.bg_button}
@@ -313,7 +328,7 @@ const ModalPopupDetailChecklist = ({
             <Button
               onPress={() => {
                 step === 1
-                  ? handlePopupClear()
+                  ? close()
                   : (setStep(1),
                     setData(),
                     handleItemClick(objData, "close", objData, dataItem));
@@ -327,7 +342,7 @@ const ModalPopupDetailChecklist = ({
               width={"100%"}
             />
           </View>
-        </ScrollView>
+        </View>
       </TouchableWithoutFeedback>
     </GestureHandlerRootView>
   );

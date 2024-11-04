@@ -149,11 +149,11 @@ const ThucHienHangmucLai = ({ route, navigation }) => {
         style={{
           flexDirection: "row",
           alignItems: "center",
-          gap: 10,
+          width: "100%",
           justifyContent: "space-between",
         }}
       >
-        <View style={{ width: "85%" }}>
+        <View style={{ width: "80%" }}>
           <Text
             allowFontScaling={false}
             style={{
@@ -176,16 +176,26 @@ const ThucHienHangmucLai = ({ route, navigation }) => {
             {item?.MaQrCode}
           </Text>
         </View>
-        {item.Tieuchuankt !== "" && item.Tieuchuankt !== null && (
-          <TouchableOpacity onPress={() => handlePopupActive(item, index)}>
-            <Image
-              source={require("../../../assets/icons/ic_certificate.png")}
-              style={{
-                tintColor: "black",
-              }}
-            />
-          </TouchableOpacity>
-        )}
+        <View style={{ flexDirection: "row", alignItems: "center" ,gap:10, marginRight: adjust(10)}}>
+            {item.Important === 1 && (
+                <Image
+                  source={require("../../../assets/icons/ic_star.png")}
+                  style={{
+                    tintColor:  dataSelect[0] === item ? "white" : COLORS.bg_button,
+                  }}
+                />
+            )}
+            {item.Tieuchuankt !== "" && item.Tieuchuankt !== null && (
+              <TouchableOpacity onPress={() => handlePopupActive(item, index)}>
+                <Image
+                  source={require("../../../assets/icons/ic_certificate.png")}
+                  style={{
+                    tintColor: dataSelect[0] === item ? "white" : "black",
+                  }}
+                />
+              </TouchableOpacity>
+            )}
+          </View>
       </View>
     </TouchableOpacity>
   );

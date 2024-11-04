@@ -29,6 +29,7 @@ import moment from "moment";
 import ModalThongke from "../../components/Modal/ModalThongke";
 import DanhmucThongKe from "./DanhmucThongKe";
 import axiosClient from "../../api/axiosClient";
+import ModalBottomSheet from "../../components/Modal/ModalBottomSheet";
 
 const numberOfItemsPerPageList = [20, 30, 50];
 
@@ -65,6 +66,7 @@ const DanhmucThongkeContent = ({ setOpacity, opacity ,navigation}) => {
   const [dataTraCuu, setDataTraCuu] = useState([]);
   const [data, setData] = useState([]);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+  const [visibleBottom, setVisibleBottom] = useState(false);
 
   const [filters, setFilters] = useState({
     fromDate: startOfMonth,
@@ -143,6 +145,7 @@ const DanhmucThongkeContent = ({ setOpacity, opacity ,navigation}) => {
         //setDataTraCuu(res?.data?.data);
         setData(res?.data?.data);
         handlePresentModalClose();
+        setVisibleBottom(false)
         setIsLoading(false);
       })
       .catch((error) => {
@@ -215,7 +218,11 @@ const DanhmucThongkeContent = ({ setOpacity, opacity ,navigation}) => {
   const handlePresentModalPress2 = useCallback(() => {
     setOpacity(0.2);
     setIsBottomSheetOpen(true);
-    bottomSheetModalRef?.current?.present();
+    if(user?.isError == 1){
+      setVisibleBottom(true)
+    } else {
+      bottomSheetModalRef?.current?.present();
+    }
   }, []);
   
   const handlePresentModalClose = useCallback(() => {
@@ -228,107 +235,6 @@ const DanhmucThongkeContent = ({ setOpacity, opacity ,navigation}) => {
     setPage(0);
   }, [numberOfItemsPerPage]);
 
-  // const _renderItem = ({ item, index }) => {
-  //   const isExistIndex = newActionCheckList?.find(
-  //     (existingItem) =>
-  //       existingItem?.ID_Checklistchitiet === item?.ID_Checklistchitiet
-  //   );
-
-  //   return (
-  //     <TouchableHighlight key={index} onPress={() => toggleTodo(item)}>
-  //       <DataTable.Row
-  //         style={{
-  //           gap: 20,
-  //           paddingVertical: 10,
-  //           backgroundColor: isExistIndex ? COLORS.bg_button : "white",
-  //         }}
-  //       >
-  //         <DataTable.Cell style={{ width: 120, justifyContent: "center" }}>
-  //           <Text
-  //             allowFontScaling={false}
-  //             style={{ color: isExistIndex ? "white" : "black" }}
-  //             numberOfLines={2}
-  //           >
-  //             {moment(item?.tb_checklistc?.Ngay).format("DD-MM-YYYY")}
-  //           </Text>
-  //         </DataTable.Cell>
-  //         <DataTable.Cell style={{ width: 200, justifyContent: "center" }}>
-  //           <Text
-  //             allowFontScaling={false}
-  //             style={{ color: isExistIndex ? "white" : "black" }}
-  //             numberOfLines={3}
-  //           >
-  //             {item?.ent_checklist?.Checklist}
-  //           </Text>
-  //         </DataTable.Cell>
-  //         {/* <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
-  //             <Text allowFontScaling={false}
-  //               style={{ color: isExistIndex ? "white" : "black" }}
-  //               numberOfLines={2}
-  //             >
-  //               {item?.ent_checklist?.ent_hangmuc?.ent_khuvuc?.ent_toanha?.Toanha}
-  //             </Text>
-  //           </DataTable.Cell> */}
-  //         <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
-  //           <Text
-  //             allowFontScaling={false}
-  //             style={{ color: isExistIndex ? "white" : "black" }}
-  //             numberOfLines={2}
-  //           >
-  //             {item?.ent_checklist?.ent_tang?.Tentang}
-  //           </Text>
-  //         </DataTable.Cell>
-  //         <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
-  //           <Text
-  //             allowFontScaling={false}
-  //             style={{ color: isExistIndex ? "white" : "black" }}
-  //             numberOfLines={2}
-  //           >
-  //             {item?.ent_checklist?.ent_khuvuc?.Tenkhuvuc}
-  //           </Text>
-  //         </DataTable.Cell>
-  //         <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
-  //           <Text
-  //             allowFontScaling={false}
-  //             style={{ color: isExistIndex ? "white" : "black" }}
-  //             numberOfLines={2}
-  //           >
-  //             {" "}
-  //             {item?.tb_checklistc?.ent_khoicv?.KhoiCV}
-  //           </Text>
-  //         </DataTable.Cell>
-  //         <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
-  //           <Text
-  //             allowFontScaling={false}
-  //             style={{ color: isExistIndex ? "white" : "black" }}
-  //             numberOfLines={2}
-  //           >
-  //             {item?.tb_checklistc?.ent_calv?.Tenca}
-  //           </Text>
-  //         </DataTable.Cell>
-  //         <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
-  //           <Text
-  //             allowFontScaling={false}
-  //             style={{ color: isExistIndex ? "white" : "black" }}
-  //             numberOfLines={2}
-  //           >
-  //             {item?.tb_checklistc?.ent_user?.Hoten}
-  //           </Text>
-  //         </DataTable.Cell>
-
-  //         <DataTable.Cell style={{ width: 100, justifyContent: "center" }}>
-  //           <Text
-  //             allowFontScaling={false}
-  //             style={{ color: isExistIndex ? "white" : "black" }}
-  //             numberOfLines={2}
-  //           >
-  //             {item?.Ketqua}
-  //           </Text>
-  //         </DataTable.Cell>
-  //       </DataTable.Row>
-  //     </TouchableHighlight>
-  //   );
-  // };
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <KeyboardAvoidingView
@@ -342,7 +248,32 @@ const DanhmucThongkeContent = ({ setOpacity, opacity ,navigation}) => {
               data={data}
               navigation = {navigation}
             />
+             <ModalBottomSheet
+            visible={visibleBottom}
+            setVisible={setVisibleBottom}
+            setOpacity={setOpacity}
+          >
+           <ModalThongke
+                handleChangeFilters={handleChangeFilters}
+                filters={filters}
+                toggleDatePicker={toggleDatePicker}
+                isDatePickerVisible={isDatePickerVisible}
+                setIsEnabled={setIsEnabled}
+                toggleSwitch={toggleSwitch}
+                isEnabled={isEnabled}
+                fetchData={fetchData}
+                handlePresentModalClose={handlePresentModalClose}
+                ent_khoicv={ent_khoicv}
+                ent_calv={ent_calv}
+                user={user}
+                handleKhoiSelection={handleKhoiSelection}
+                filteredCalv={filteredCalv}
+              />
+          </ModalBottomSheet>
           </View>
+
+       
+
           <BottomSheetModal
             ref={bottomSheetModalRef}
             index={0}

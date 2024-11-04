@@ -777,11 +777,11 @@ const ThucHienChecklist = ({ navigation }) => {
                         />
                       </TouchableOpacity>
 
-                      <TouchableOpacity
+                      {/* chưa dùng */}
+                      {/* <TouchableOpacity
                         style={styles.button}
                         onPress={() => handleToggleModal()}
                       >
-                        {/* <Feather name="camera" size={26} color="white" /> */}
                         <Image
                           source={require("../../../assets/icons/ic_camera.png")}
                           style={{
@@ -789,7 +789,7 @@ const ThucHienChecklist = ({ navigation }) => {
                             resizeMode: "contain",
                           }}
                         />
-                      </TouchableOpacity>
+                      </TouchableOpacity> */}
                     </>
                   )}
                 </View>

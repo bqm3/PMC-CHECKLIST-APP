@@ -88,8 +88,7 @@ const DetailCheckListCa = ({ route }) => {
   const toggleTodo = async (item) => {
     // setIsCheckbox(true);
     const isExistIndex = newActionCheckList.findIndex(
-      (existingItem) =>
-        existingItem.ID_Checklistchitiet === item.ID_Checklistchitiet
+      (existingItem) => existingItem.ID_Checklist === item.ID_Checklist
     );
 
     // Nếu item đã tồn tại, xóa item đó đi
@@ -117,8 +116,7 @@ const DetailCheckListCa = ({ route }) => {
 
   const _renderItem = ({ item, index }) => {
     const isExistIndex = newActionCheckList?.find(
-      (existingItem) =>
-        existingItem?.ID_Checklistchitiet === item?.ID_Checklistchitiet
+      (existingItem) => existingItem?.ID_Checklist === item?.ID_Checklist
     );
     return (
       <TouchableHighlight key={index} onPress={() => toggleTodo(item)}>
@@ -271,9 +269,9 @@ const DetailCheckListCa = ({ route }) => {
             style={[styles.backgroundImage]}
             resizeMode="cover"
           > */}
-            <Text style={{ fontSize: 16, fontWeight: "600", color: "white" }}>
-              Không có dữ liệu
-            </Text>
+          <Text style={{ fontSize: 16, fontWeight: "600", color: "white" }}>
+            Không có dữ liệu
+          </Text>
           {/* </ImageBackground> */}
         </View>
       )}
@@ -319,103 +317,97 @@ const DetailCheckListCa = ({ route }) => {
           setModalVisible(!modalVisible);
         }}
       >
-        <TouchableWithoutFeedback onPress={() => {}}>
-          <View style={styles.modalBackground}>
-            <View style={styles.centeredView}>
-              <View style={styles.modalView}>
-                <Text allowFontScaling={false} style={styles.modalText}>
-                  Thông tin Checklist
-                </Text>
+        <View style={styles.modalBackground}>
+          <View style={styles.centeredView}>
+            <View style={styles.modalView}>
+              <Text allowFontScaling={false} style={styles.modalText}>
+                Thông tin Checklist
+              </Text>
 
-                <ScrollView>
-                  {newActionCheckList[0]?.Anh !== null &&
-                    newActionCheckList[0]?.Anh !== "" && (
-                      <Image
-                        style={{
-                          width: SIZES.width * 0.8,
-                          height: SIZES.height * 0.5,
-                          objectFit: "cover",
-                        }}
-                        source={{
-                          uri: `https://drive.google.com/thumbnail?id=${newActionCheckList[0]?.Anh}`,
-                        }}
-                      />
-                    )}
+              <ScrollView showsVerticalScrollIndicator={false}>
+                {newActionCheckList[0]?.Anh !== null &&
+                  newActionCheckList[0]?.Anh !== "" && (
+                    <Image
+                      style={{
+                        width: SIZES.width * 0.8,
+                        height: SIZES.height * 0.5,
+                        objectFit: "cover",
+                      }}
+                      source={{
+                        uri: `https://drive.google.com/thumbnail?id=${newActionCheckList[0]?.Anh}`,
+                      }}
+                    />
+                  )}
 
-                  <View
-                    style={{
-                      flexDirection: "column",
-                      marginVertical: 15,
-                      gap: 4,
-                    }}
-                  >
-                    <Text allowFontScaling={false} style={styles.textModal}>
-                      Tầng:{" "}
-                      {newActionCheckList[0]?.ent_checklist?.ent_tang?.Tentang}
-                    </Text>
-                    <Text allowFontScaling={false} style={styles.textModal}>
-                      Khu vực:{" "}
-                      {
-                        newActionCheckList[0]?.ent_checklist?.ent_khuvuc
-                          ?.Tenkhuvuc
-                      }
-                    </Text>
-                    <Text allowFontScaling={false} style={styles.textModal}>
-                      Tòa nhà:{" "}
-                      {
-                        newActionCheckList[0]?.ent_checklist?.ent_khuvuc
-                          ?.ent_toanha?.Toanha
-                      }
-                    </Text>
-                    <Text allowFontScaling={false} style={styles.textModal}>
-                      Khối công việc:{" "}
-                      {newActionCheckList[0]?.tb_checklistc?.ent_khoicv?.KhoiCV}
-                    </Text>
-                    <Text allowFontScaling={false} style={styles.textModal}>
-                      Người checklist:{" "}
-                      {newActionCheckList[0]?.tb_checklistc?.ent_user?.Hoten}
-                    </Text>
+                <View
+                  style={{
+                    flexDirection: "column",
+                    marginVertical: 15,
+                    gap: 4,
+                  }}
+                >
+                  <Text allowFontScaling={false} style={styles.textModal}>
+                    Tầng:{" "}
+                    {newActionCheckList[0]?.ent_checklist?.ent_tang?.Tentang}
+                  </Text>
+                  <Text allowFontScaling={false} style={styles.textModal}>
+                    Hạng mục - Khu vực:{" "}
+                    {newActionCheckList[0]?.ent_checklist?.ent_hangmuc?.Hangmuc}{" "}
+                    -
+                    {
+                      newActionCheckList[0]?.ent_checklist?.ent_khuvuc
+                        ?.Tenkhuvuc
+                    }
+                  </Text>
+                  <Text allowFontScaling={false} style={styles.textModal}>
+                    Tòa nhà:{" "}
+                    {
+                      newActionCheckList[0]?.ent_checklist?.ent_khuvuc
+                        ?.ent_toanha?.Toanha
+                    }
+                  </Text>
+                  <Text allowFontScaling={false} style={styles.textModal}>
+                    Khối công việc:{" "}
+                    {newActionCheckList[0]?.tb_checklistc?.ent_khoicv?.KhoiCV}
+                  </Text>
+                  <Text allowFontScaling={false} style={styles.textModal}>
+                    Người checklist:{" "}
+                    {newActionCheckList[0]?.tb_checklistc?.ent_user?.Hoten}
+                  </Text>
 
-                    <Text allowFontScaling={false} style={styles.textModal}>
-                      Ca làm việc:{" "}
-                      {newActionCheckList[0]?.tb_checklistc?.ent_calv?.Tenca} (
-                      {
-                        newActionCheckList[0]?.tb_checklistc?.ent_calv
-                          ?.Giobatdau
-                      }{" "}
-                      -{" "}
-                      {
-                        newActionCheckList[0]?.tb_checklistc?.ent_calv
-                          ?.Gioketthuc
-                      }
-                      )
-                    </Text>
-                    <Text allowFontScaling={false} style={styles.textModal}>
-                      Giờ checklist: {newActionCheckList[0]?.Gioht}
-                    </Text>
-                    <Text allowFontScaling={false} style={styles.textModal}>
-                      Kết quả: {newActionCheckList[0]?.Ketqua}{" "}
-                      {newActionCheckList[0]?.ent_checklist?.isCheck == 0
-                        ? ""
-                        : `${newActionCheckList[0]?.ent_checklist?.Giatrinhan}`}
-                    </Text>
-                    <Text allowFontScaling={false} style={styles.textModal}>
-                      Ghi chú: {newActionCheckList[0]?.Ghichu}
-                    </Text>
-                  </View>
-                </ScrollView>
-              </View>
-              <TouchableOpacity
-                onPress={() => handleModalShow(false, 1)}
-                style={styles.buttonImage}
-              >
-                <Text allowFontScaling={false} style={styles.textImage}>
-                  Đóng
-                </Text>
-              </TouchableOpacity>
+                  <Text allowFontScaling={false} style={styles.textModal}>
+                    Ca làm việc:{" "}
+                    {newActionCheckList[0]?.tb_checklistc?.ent_calv?.Tenca} (
+                    {newActionCheckList[0]?.tb_checklistc?.ent_calv?.Giobatdau}{" "}
+                    -{" "}
+                    {newActionCheckList[0]?.tb_checklistc?.ent_calv?.Gioketthuc}
+                    )
+                  </Text>
+                  <Text allowFontScaling={false} style={styles.textModal}>
+                    Giờ checklist: {newActionCheckList[0]?.Gioht}
+                  </Text>
+                  <Text allowFontScaling={false} style={styles.textModal}>
+                    Kết quả: {newActionCheckList[0]?.Ketqua}{" "}
+                    {newActionCheckList[0]?.ent_checklist?.isCheck == 0
+                      ? ""
+                      : `${newActionCheckList[0]?.ent_checklist?.Giatrinhan}`}
+                  </Text>
+                  <Text allowFontScaling={false} style={styles.textModal}>
+                    Ghi chú: {newActionCheckList[0]?.Ghichu}
+                  </Text>
+                </View>
+              </ScrollView>
             </View>
+            <TouchableOpacity
+              onPress={() => handleModalShow(false, 1)}
+              style={styles.buttonImage}
+            >
+              <Text allowFontScaling={false} style={styles.textImage}>
+                Đóng
+              </Text>
+            </TouchableOpacity>
           </View>
-        </TouchableWithoutFeedback>
+        </View>
       </Modal>
     </ImageBackground>
   );

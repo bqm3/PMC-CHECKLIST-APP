@@ -21,6 +21,7 @@ import SelectDropdown from "react-native-select-dropdown";
 import moment from "moment";
 import Button from "../Button/Button";
 import ButtonSubmit from "../Button/ButtonSubmit";
+import adjust from "../../adjust";
 
 const ModalThongke = ({
   handleChangeFilters,
@@ -55,7 +56,7 @@ const ModalThongke = ({
   const ref = useRef(null);
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView style={{ height: adjust(400) }}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : null}
         style={{ flex: 1 }}

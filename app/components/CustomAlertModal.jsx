@@ -2,13 +2,11 @@
 import React from "react";
 import { View, Text, Button, StyleSheet } from "react-native";
 import Modal from "react-native-modal";
+import ButtonSubmit from "./Button/ButtonSubmit";
+import { COLORS } from "../constants/theme";
+import adjust from "../adjust";
 
-const CustomAlertModal = ({
-  isVisible,
-  title,
-  message,
-  onConfirm,
-}) => {
+const CustomAlertModal = ({ isVisible, title, message, onConfirm }) => {
   return (
     <Modal isVisible={isVisible}>
       <View style={styles.modalContent}>
@@ -21,7 +19,13 @@ const CustomAlertModal = ({
           )}
         </View>
         <View style={styles.buttonContainer}>
-          <Button title="Xác nhận" onPress={onConfirm} color="blue" />
+          <ButtonSubmit
+            text={"Xác nhận"}
+            width={adjust(120)}
+            backgroundColor={COLORS.bg_button}
+            color={"white"}
+            onPress={onConfirm}
+          />
         </View>
       </View>
     </Modal>
