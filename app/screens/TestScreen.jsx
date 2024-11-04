@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react';
 import { Text, View } from 'react-native';
 import * as Location from 'expo-location';
-import * as TaskManager from 'expo-task-manager';
 import { useLocation } from '../context/LocationContext';
 
 

@@ -81,7 +81,7 @@ const ThucHienChecklist = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
-  const [isModalVisible, setISModalVisible] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const [message, setMessage] = useState("");
 
   const [dataInput, setDataInput] = useState({
@@ -376,7 +376,7 @@ const ThucHienChecklist = ({ navigation }) => {
           //   },
           //   { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
           // ]);
-          setISModalVisible(true);
+          setIsModalVisible(true);
           setMessage(error.response.data.message)
         } else if (error.request) {
           // Lỗi không nhận được phản hồi từ server
@@ -667,11 +667,7 @@ const ThucHienChecklist = ({ navigation }) => {
                   isVisible={isModalVisible}
                   title="PMC Thông báo"
                   message={<RenderHTML contentWidth={300} source={{ html: message }} />} // Sử dụng RenderHTML
-                  onConfirm={() => {
-                    console.log("Confirmed");
-                    setISModalVisible(false);
-                  }}
-                  showCancelButton={false}
+                  onConfirm={() => setIsModalVisible(false)}
                 />
                 <View style={styles.centeredView}>
                   <View

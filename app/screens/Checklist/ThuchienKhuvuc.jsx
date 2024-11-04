@@ -409,6 +409,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
           formData.append("Vido", item.Vido || "");
           formData.append("Kinhdo", item.Kinhdo || "");
           formData.append("Docao", item.Docao || "");
+          formData.append("isScan", item.isScan || null);
 
           // If there is an image, append it to formData
           if (item.Anh) {
@@ -502,6 +503,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
             Vido: ItemDefaultActionDataChecklist[0]?.Vido || null,
             Kinhdo: ItemDefaultActionDataChecklist[0]?.Kinhdo || null,
             Docao: ItemDefaultActionDataChecklist[0]?.Docao || null,
+            isScan: ItemDefaultActionDataChecklist[0]?.isScan || null,
           },
           {
             headers: {
@@ -573,6 +575,8 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
           formData.append("Vido", item?.Vido || "");
           formData.append("Kinhdo", item?.Kinhdo || "");
           formData.append("Docao", item?.Docao || "");
+          formData.append("isScan", item.isScan || null);
+
           // Nếu có hình ảnh, thêm vào FormData
           if (item.Anh) {
             const file = {
@@ -624,6 +628,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
                 Vido: ItemDefaultActionDataChecklist[0]?.Vido || null,
                 Kinhdo: ItemDefaultActionDataChecklist[0]?.Kinhdo || null,
                 Docao: ItemDefaultActionDataChecklist[0]?.Docao || null,
+                isScan: ItemDefaultActionDataChecklist[0]?.isScan || null,
               },
               {
                 headers: {
@@ -722,27 +727,6 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
     }
   };
 
-  // const postHandleSubmit = () => {
-  //   const idsToRemove = new Set([
-  //     ...defaultActionDataChecklist.map((item) => item.ID_Checklist),
-  //     ...dataChecklistFaild.map((item) => item.ID_Checklist),
-  //   ]);
-
-  //   // Filter out items in dataChecklistFilterContext that are present in idsToRemove
-  //   const dataChecklistFilterContextReset = dataChecklistFilterContext.filter(
-  //     (item) => !idsToRemove.has(item.ID_Checklist)
-  //   );
-
-  //   // Update state with the filtered context
-  //  const dataChecklist = dataChecklistFilterContextReset?.filter(
-  //     (item) => item.ID_Hangmuc == ID_Hangmuc
-  //   );
-
-  //   // Update state with the filtered context
-  //   setDataChecklistFilterContext(dataChecklistFilterContextReset);
-  //   setDataChecklistDefault([]);
-  //   setDataChecklistFaild([]);
-  // };
   const postHandleSubmit = () => {
     const idsToRemove = new Set([
       ...defaultActionDataChecklist.map((item) => item.ID_Checklist),

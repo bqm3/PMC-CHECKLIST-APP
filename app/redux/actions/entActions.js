@@ -386,6 +386,7 @@ export const ent_checklist_mul_hm = (dataHangmuc, ID_Calv, ID_ChecklistC) => {
             GhichuChitiet: "",
             ID_ChecklistC: ID_ChecklistC,
             Anh: null,
+            isScan: null,
             Gioht: moment().format("LTS"),
           };
         });
@@ -443,6 +444,7 @@ export const ent_checklist_mul_hm_return = (dataHangmuc, ID_Calv, ID_ChecklistC)
             GhichuChitiet: "",
             ID_ChecklistC: ID_ChecklistC,
             Anh: null,
+            isScan: null,
             Gioht: moment().format("LTS"),
           };
         });

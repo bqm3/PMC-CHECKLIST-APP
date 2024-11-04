@@ -51,33 +51,10 @@ import WebView from "react-native-webview";
 import { useHeaderHeight } from "@react-navigation/elements";
 import axiosClient from "../../api/axiosClient";
 
-// const requestPermissions = async () => {
-//   const { status: foregroundStatus } = await Location.requestForegroundPermissionsAsync();
-//   if (foregroundStatus === 'granted') {
-//     const { status: backgroundStatus } = await Location.requestBackgroundPermissionsAsync();
-//     if (backgroundStatus === 'granted') {
-//       await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
-//         accuracy: Location.Accuracy.Balanced,
-//       });
-//     }
-//   }
-// };
-
-// TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data: { locations }, error }) => {
-//   if (error) {
-//     console.error(error);
-//     return;
-//   }
-
-//   // Xử lý vị trí mới
-//   const location = locations[0];
-//   console.log('New location:', location);
-//   // Bạn có thể lưu vị trí vào state hoặc gửi đến server ở đây
-// });
-
 const DetailChecklist = ({ route, navigation }) => {
-  const { ID_ChecklistC, ID_KhoiCV, ID_Hangmuc, hangMuc, Hangmuc } =
+  const { ID_ChecklistC, ID_KhoiCV, ID_Hangmuc, hangMuc, Hangmuc, isScan } =
     route.params;
+
   const dispath = useDispatch();
   const { isLoadingDetail } = useSelector((state) => state.entReducer);
   const { setHangMuc, HangMucDefault, setHangMucDefault } =
@@ -103,7 +80,6 @@ const DetailChecklist = ({ route, navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalVisibleTieuChuan, setModalVisibleTieuChuan] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
-  const [isScan, setIsScan] = useState(false);
   const [activeAll, setActiveAll] = useState(false);
   const [location, setLocation] = useState(123);
   const [show, setShow] = useState(false);
@@ -111,51 +87,43 @@ const DetailChecklist = ({ route, navigation }) => {
   const [loading, setLoading] = useState(true);
 
   const headerHeight = useHeaderHeight();
+
   useEffect(() => {
-    // (async () => {
-    //   const { status } = await Location.requestForegroundPermissionsAsync();
-    //   if (status !== "granted") {
-    //     console.log("Permission to access location was denied");
-    //   } else {
-    //     const locationSubscription = await Location.watchPositionAsync(
-    //       {
-    //         accuracy: Location.Accuracy.BestForNavigation,
-    //         timeInterval: 1000,
-    //         distanceInterval: 1,
-    //       },
-    //       (location) => {
-    //         setLocation(location);
-    //         console.log(
-    //           "New location update: " +
-    //             location.coords.latitude +
-    //             ", " +
-    //             location.coords.longitude
-    //         );
-    //         console.log("location: " + location.coords.altitude);
-    //       }
-    //     );
-    //   }
-    //   return () => locationSubscription.remove();
-    // })();
+    let locationSubscription;
+
     const watchLocation = async () => {
-      const subscription = await Location.watchPositionAsync(
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.log("Permission to access location was denied");
+        return;
+      }
+      locationSubscription = await Location.watchPositionAsync(
         {
-          accuracy: Location.Accuracy.Best, // Độ chính xác tốt hơn
-          timeInterval: 5000, // Cập nhật mỗi 10 giây
+          accuracy: Location.Accuracy.BestForNavigation,
+          timeInterval: 5000,
+          distanceInterval: 1,
         },
         (location) => {
-          console.log("New location update: " + location.coords.latitude + ", " + location.coords.longitude);
+          console.log(
+            "New location update: " +
+              location.coords.latitude +
+              ", " +
+              location.coords.longitude
+          );
           setLocation(location);
         }
       );
-  
-      return () => {
-        subscription.remove(); // Dọn dẹp khi component unmount
-      };
     };
-  
+
     watchLocation();
-  }, [dataChecklistFaild, defaultActionDataChecklist]);
+
+    return () => {
+      if (locationSubscription) {
+        locationSubscription.remove();
+        console.log("Stopped tracking location");
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const backAction = () => {
@@ -601,6 +569,7 @@ const DetailChecklist = ({ route, navigation }) => {
                 Vido: location?.coords?.latitude || "",
                 Kinhdo: location?.coords?.longitude || "",
                 Docao: location?.coords?.altitude || "",
+                isScan: isScan,
               };
             });
             await handleDataChecklistFaild(newDataChecklistFaild);
@@ -615,6 +584,7 @@ const DetailChecklist = ({ route, navigation }) => {
                   Vido: location?.coords?.latitude || "",
                   Kinhdo: location?.coords?.longitude || "",
                   Docao: location?.coords?.altitude || "",
+                  isScan: isScan,
                 };
               }
             );
@@ -632,6 +602,7 @@ const DetailChecklist = ({ route, navigation }) => {
                   Vido: location?.coords?.latitude || "",
                   Kinhdo: location?.coords?.longitude || "",
                   Docao: location?.coords?.altitude || "",
+                  isScan: isScan,
                 };
               }
             );
@@ -641,6 +612,7 @@ const DetailChecklist = ({ route, navigation }) => {
                 Vido: location?.coords?.latitude || "",
                 Kinhdo: location?.coords?.longitude || "",
                 Docao: location?.coords?.altitude || "",
+                isScan: isScan,
               };
             });
             await handleChecklistAll(
@@ -670,6 +642,7 @@ const DetailChecklist = ({ route, navigation }) => {
               Vido: location?.coords?.latitude || "",
               Kinhdo: location?.coords?.longitude || "",
               Docao: location?.coords?.altitude || "",
+              isScan: isScan,
             };
           });
 
@@ -695,7 +668,7 @@ const DetailChecklist = ({ route, navigation }) => {
     }
   };
 
-  // api faild tb_checklistchitiet
+  // api tb_checklistchitiet
   const handleDataChecklistFaild = async (arrData) => {
     try {
       console.log("arrData", arrData);
@@ -724,6 +697,7 @@ const DetailChecklist = ({ route, navigation }) => {
           formData.append("Vido", item.Vido || "");
           formData.append("Kinhdo", item.Kinhdo || "");
           formData.append("Docao", item.Docao || "");
+          formData.append("isScan", isScan || null);
           if (item.Anh) {
             const file = {
               uri:
@@ -785,7 +759,7 @@ const DetailChecklist = ({ route, navigation }) => {
     }
   };
 
-  // api faild tb_checklistchitietdone
+  // api tb_checklistchitietdone
   const handleDefaultActionDataChecklist = async (arrData) => {
     // Xử lý API cho defaultActionDataChecklist
     const descriptions = arrData.map((item) => item.ID_Checklist).join(",");
@@ -804,6 +778,7 @@ const DetailChecklist = ({ route, navigation }) => {
         Vido: location?.coords?.latitude || "",
         Kinhdo: location?.coords?.longitude || "",
         Docao: location?.coords?.altitude || "",
+        isScan: isScan,
       },
       {
         headers: {
@@ -870,6 +845,7 @@ const DetailChecklist = ({ route, navigation }) => {
           formData.append("Vido", item.Vido || "");
           formData.append("Kinhdo", item.Kinhdo || "");
           formData.append("Docao", item.Docao || "");
+          formData.append("isScan", isScan || null);
 
           // Nếu có hình ảnh, thêm vào FormData
           if (item.Anh) {
@@ -919,6 +895,7 @@ const DetailChecklist = ({ route, navigation }) => {
             Vido: dataDefault[0].Vido || "",
             Kinhdo: dataDefault[0].Kinhdo || "",
             Docao: dataDefault[0].Docao || "",
+            isScan: isScan || null,
           },
           {
             headers: {
@@ -1062,11 +1039,18 @@ const DetailChecklist = ({ route, navigation }) => {
 
   // click dots and show modal bottom sheet
   const handlePopupActive = useCallback((item, index) => {
-    setOpacity(0.2);
     setDataItem(item);
     setModalVisible(true);
     setIndex(index);
-    bottomSheetModalRef?.current?.present();
+
+    // Mở bottom sheet
+    if (bottomSheetModalRef?.current) {
+      bottomSheetModalRef.current.present();
+      setOpacity(0.2); // Chỉ thay đổi opacity khi bottom sheet mở thành công
+    } else {
+      // Nếu không mở được bottom sheet, đặt lại opacity là 1
+      setOpacity(1);
+    }
   }, []);
 
   const handlePopupActiveTieuChuan = useCallback((item, index) => {
@@ -1400,9 +1384,7 @@ const DetailChecklist = ({ route, navigation }) => {
                       allowFontScaling={false}
                       style={[styles.danhmuc, { padding: 10 }]}
                     >
-                      {isScan
-                        ? "Không thấy checklist cho hạng mục này"
-                        : "Không còn checklist cho hạng mục này !"}
+                      Không còn checklist cho hạng mục này
                     </Text>
                   </View>
                 )}
@@ -1502,46 +1484,51 @@ const DetailChecklist = ({ route, navigation }) => {
               <Image
                 source={require("../../../assets/icons/ic_close.png")}
                 style={{
-                  width: adjust(40),
-                  height: adjust(40),
-                  marginTop: 10,
+                  width: adjust(30),
+                  height: adjust(30),
+                  marginTop: 40,
                   textAlign: "right",
-                  paddingRight: 10,
+                  marginRight: 20,
+                  marginBottom: 10,
                   alignSelf: "flex-end",
                 }}
               />
             </TouchableOpacity>
-            {Hangmuc?.FileTieuChuan !== null &&
-              Hangmuc?.FileTieuChuan !== undefined && (
-                <View style={{ flex: 1 }}>
-                  {loading && (
-                    <ActivityIndicator
-                      size="large"
-                      color="#0000ff"
-                      style={{
-                        position: "absolute",
-                        top: "50%",
-                        left: "50%",
-                        zIndex: 1,
-                      }}
-                    />
-                  )}
-                  <WebView
-                    customStyle={{
-                      readerContainerNavigateArrow: true,
-                      readerContainerNavigate: true,
+            {Hangmuc?.FileTieuChuan && (
+              <View
+                style={{
+                  flex: 1,
+                }}
+              >
+                {loading && (
+                  <View
+                    style={{
+                      position: "absolute",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      backgroundColor: "rgba(255, 255, 255, 0.7)",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      zIndex: 1,
                     }}
-                    style={{ flex: 1 }}
-                    source={{
-                      uri: Hangmuc?.FileTieuChuan,
-                    }}
-                    onLoadStart={() => setLoading(true)}
-                    onLoadEnd={() => setLoading(false)}
-                  />
-                </View>
-              )}
+                  >
+                    <ActivityIndicator size="large" color="gray" />
+                  </View>
+                )}
+
+                <WebView
+                  style={{ flex: 1 }}
+                  source={{
+                    uri: Hangmuc.FileTieuChuan,
+                  }}
+                  onLoadStart={() => setLoading(true)}
+                  onLoadEnd={() => setLoading(false)}
+                />
+              </View>
+            )}
           </Modal>
-          {/* </TouchableWithoutFeedback> */}
         </BottomSheetModalProvider>
       </KeyboardAvoidingView>
     </GestureHandlerRootView>

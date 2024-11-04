@@ -38,7 +38,7 @@ import {
 import DataLicense from "../components/PrivacyPolicy";
 import Checkbox from "../components/Active/Checkbox";
 import * as FileSystem from "expo-file-system";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import adjust from "../adjust";
 import { BASE_URL, BASE_URL_NOTI } from "../constants/config";
 import {
@@ -55,6 +55,8 @@ const alertTypeMap = {
   DANGER: ALERT_TYPE.DANGER,
   INFO: ALERT_TYPE.INFO,
 };
+
+const version = "2.0.7";
 
 const LoginScreen = ({ navigation }) => {
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
@@ -93,28 +95,30 @@ const LoginScreen = ({ navigation }) => {
   };
 
   useEffect(() => {
-    
-   const handleNoti = async () => {
-    await axios.get(BASE_URL + '/noti')
-    .then((res) => {
-      const data = res.data.data
-      if(`${data.key}` == "2.0.5"){
-        console.log('done')
-      }else {
-        const alertType = alertTypeMap[data.type] || ALERT_TYPE.INFO; 
-        Toast.show({
-          type: alertType, 
-          title: data?.textTitle,
-          textBody: data?.textBody,
-          autoClose: data?.time,
+    const handleNoti = async () => {
+      await axios
+        .get(BASE_URL + `/noti?version=${version}&platform=${Platform.OS}`, {
+          headers: {
+            Accept: "application/json",
+          },
+        })
+        .then((res) => {
+          if (res.data.status == 1) {
+            const data = res.data.data;
+            const alertType = alertTypeMap[data.type] || ALERT_TYPE.INFO;
+            Toast.show({
+              type: alertType,
+              title: data?.textTitle,
+              textBody: data?.textBody,
+              autoClose: data?.time,
+            });
+          }
+        })
+        .catch((err) => {
+          console.log("err", err);
         });
-      }
-    })
-    .catch((err)=> {
-      console.log('err', err)
-    })
-   }
-   handleNoti()
+    };
+    handleNoti();
   }, []);
 
   useEffect(() => {
@@ -266,7 +270,9 @@ const LoginScreen = ({ navigation }) => {
       const cacheDir = FileSystem.cacheDirectory;
       const files = await FileSystem.readDirectoryAsync(cacheDir);
       for (const file of files) {
-        await FileSystem.deleteAsync(`${cacheDir}${file}`, { idempotent: true });
+        await FileSystem.deleteAsync(`${cacheDir}${file}`, {
+          idempotent: true,
+        });
       }
       console.log("Đã xóa cache khi ứng dụng đóng.");
     } catch (error) {
@@ -398,7 +404,17 @@ const LoginScreen = ({ navigation }) => {
                         isLoading={isLoading}
                         onPress={handleSubmit}
                       />
-                       <Text style={{color: 'white', fontWeight: '500', width: '100%', textAlign: 'right', padding: 4}}>Phiên bản: 2.0.5</Text>
+                      <Text
+                        style={{
+                          color: "white",
+                          fontWeight: "500",
+                          width: "100%",
+                          textAlign: "right",
+                          padding: 4,
+                        }}
+                      >
+                        Phiên bản: {version}
+                      </Text>
                     </View>
                   </View>
                   <View
@@ -425,7 +441,6 @@ const LoginScreen = ({ navigation }) => {
                     </TouchableOpacity>
                   </View>
                 </ScrollView>
-               
               </ImageBackground>
 
               <BottomSheetModal
