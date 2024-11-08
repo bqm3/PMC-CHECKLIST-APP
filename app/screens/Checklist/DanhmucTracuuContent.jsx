@@ -399,6 +399,8 @@ const DanhmucTracuuContent = ({ setOpacity, opacity }) => {
     );
   };
 
+  
+  
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <KeyboardAvoidingView

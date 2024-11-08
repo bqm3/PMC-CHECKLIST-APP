@@ -33,6 +33,7 @@ import moment from "moment";
 import axiosClient from "../../api/axiosClient";
 import { formatDate } from "../../utils/util";
 import * as ImagePicker from "expo-image-picker";
+
 const XulySuco = ({ navigation }) => {
   const dispath = useDispatch();
 
@@ -55,11 +56,13 @@ const XulySuco = ({ navigation }) => {
     Noidungghichu: "",
     Duongdancacanh: [],
   });
+
   const [changeStatus, setChangeStatus] = useState({
     status1: false,
     status2: false,
     status3: false,
   });
+
   const [ngayXuLy, setNgayXuLy] = useState({
     date: moment(new Date()).format("DD-MM-YYYY"),
     isCheck: false,
@@ -67,7 +70,7 @@ const XulySuco = ({ navigation }) => {
 
   const [saveStatus, setSaveStatus] = useState(null);
 
-  const init_sucongoai = async () => {
+   const init_sucongoai = async () => {
     await dispath(tb_sucongoai_get());
   };
 
@@ -77,6 +80,14 @@ const XulySuco = ({ navigation }) => {
       [key]: value,
     }));
   };
+  
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      init_sucongoai();
+    });
+
+    return unsubscribe;
+  }, [navigation]);
 
   useEffect(() => {
     setLoading(true);
@@ -106,6 +117,16 @@ const XulySuco = ({ navigation }) => {
         : null
     );
   };
+
+  useEffect(() => {
+    setLoading(true);
+    if (tb_sucongoai) {
+      setDataSuCoNgoai(tb_sucongoai);
+      setLoading(false);
+    }
+    setLoading(false);
+  }, [tb_sucongoai]);
+
   useEffect(() => {
     const backAction = () => {
       if (isBottomSheetOpen) {
@@ -122,15 +143,6 @@ const XulySuco = ({ navigation }) => {
 
     return () => backHandler.remove();
   }, [isBottomSheetOpen, opacity]);
-
-  useEffect(() => {
-    setLoading(true);
-    if (tb_sucongoai) {
-      setDataSuCoNgoai(tb_sucongoai);
-      setLoading(false);
-    }
-    setLoading(false);
-  }, [tb_sucongoai]);
 
   const toggleTodo = async (item, index) => {
     // setIsCheckbox(true);
@@ -154,14 +166,9 @@ const XulySuco = ({ navigation }) => {
     setOpacity(0.2);
   };
 
-  // const hanldeDetailSuco = (data) => {
-  //   navigation.navigate("Chi tiết sự cố", {
-  //     data: data,
-  //   });
-  // };
   const hanldeDetailSuco = async (data) => {
     try {
-      await axios
+      await axiosClient
         .get(
           BASE_URL + `/tb_sucongoai/getDetail/${newActionClick[0].ID_Suco}`,
           {
@@ -206,6 +213,46 @@ const XulySuco = ({ navigation }) => {
     setIsBottomSheetOpen(false);
   };
 
+  // useEffect(() => {
+  //   if (changeStatus?.status3) {
+  //     setModalHeight(550);
+  //   } else if(changeStatus.status2){
+  //     setModalHeight(350);
+  //   }
+  // }, [changeStatus]);
+
+  useEffect(() => {
+    let height = 300;
+    if (hangmuc === undefined) {
+      if (changeStatus.status2) {
+        height = 450;
+      } else if (changeStatus.status3) {
+        height = 600;
+      } else {
+        height = 450;
+      }
+    } else if (changeStatus.status3) {
+      height = 500;
+    }
+
+    setModalHeight(height);
+  }, [hangmuc, changeStatus]);
+
+  // const handleChangeHeight = (status,val) => {
+  //   if (status === "status3" && val == true) {
+  //     setModalHeight(modalHeight + 200);
+  //   } else if (status === "status3" && val == false){
+  //     setModalHeight(modalHeight - 200)
+  //   }
+  //   // else{
+  //   //   setModalHeight(modalHeight)
+  //   // }
+
+  //   if(status === "status2" && val == true){
+  //     setModalHeight(modalHeight + 200);
+  //   }
+  // };
+
   const handleChangeText = (key, value) => {
     setDataInput((data) => ({
       ...data,
@@ -215,7 +262,6 @@ const XulySuco = ({ navigation }) => {
 
   const resetDataInput = () => {
     setDataInput({
-      ID_Hangmuc: null,
       Noidungsuco: "",
       Duongdancacanh: [],
     });
@@ -255,30 +301,7 @@ const XulySuco = ({ navigation }) => {
         return updatedImages;
       });
     }
-
-    // if (result.canceled == true) {
-    //   console.log("RUN");
-    //   setImages(...prevImages,[]);
-    // }
   };
-  //result {"assets": null, "canceled": true}
-
-  useEffect(() => {
-    let height = 300;
-    if (hangmuc === undefined) {
-      if (changeStatus.status2) {
-        height = 450;
-      } else if (changeStatus.status3) {
-        height = 600;
-      } else {
-        height = 450;
-      }
-    } else if (changeStatus.status3) {
-      height = 500;
-    }
-
-    setModalHeight(height);
-  }, [hangmuc, changeStatus]);
 
   const handleSubmitStatus = async () => {
     if (saveStatus == null) {
@@ -510,6 +533,24 @@ const XulySuco = ({ navigation }) => {
               style={{ flex: 1, width: "100%" }}
             >
               <View style={[styles.container, { opacity: opacity }]}>
+                <View style={styles.header}>
+                  <View></View>
+                  <TouchableOpacity
+                    style={styles.action}
+                    onPress={() => navigation.navigate("Thực hiện sự cố ngoài")}
+                  >
+                    <AntDesign name="pluscircle" size={24} color="white" />
+                    <Text
+                      style={{
+                        fontSize: adjust(16),
+                        color: "white",
+                        fontWeight: "600",
+                      }}
+                    >
+                      Sự cố{" "}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
                 <View style={styles.content}>
                   {dataSuCoNgoai.length > 0 && loading === false && (
                     <FlatList
@@ -547,9 +588,6 @@ const XulySuco = ({ navigation }) => {
                 animationType="slide"
                 transparent={true}
                 visible={modalVisible}
-                // onRequestClose={() => {
-                //   setModalVisible(!modalVisible);
-                // }}
                 onRequestClose={() => {
                   handleCloseTinhTrang();
                 }}
@@ -559,13 +597,13 @@ const XulySuco = ({ navigation }) => {
                   style={{ flex: 1 }}
                   keyboardVerticalOffset={
                     Platform.OS === "ios" && modalVisible ? 0 : 0
-                  }
+                  } // Adjust the offset if needed
                 >
                   <View style={styles.centeredView}>
                     <View
                       style={[
                         styles.modalView,
-                        { width: "80%", height: modalHeight, minHeight: 350 },
+                        { width: "80%", minHeight: modalHeight },
                       ]}
                     >
                       <View style={styles.contentContainer}>
@@ -594,6 +632,7 @@ const XulySuco = ({ navigation }) => {
                   </View>
                 </KeyboardAvoidingView>
               </Modal>
+
               {newActionClick?.length > 0 && (
                 <View
                   style={{
@@ -614,10 +653,7 @@ const XulySuco = ({ navigation }) => {
                         styles.button,
                         { backgroundColor: COLORS.bg_red },
                       ]}
-                      onPress={() => {
-                        handleChangeTinhTrang(newActionClick[0]),
-                          setSaveStatus();
-                      }}
+                      onPress={() => handleChangeTinhTrang(newActionClick[0])}
                     >
                       <Feather name="repeat" size={26} color="white" />
                     </TouchableOpacity>
@@ -645,7 +681,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "column",
-    marginTop: 12,
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    margin: 12,
   },
   action: {
     flexDirection: "row",

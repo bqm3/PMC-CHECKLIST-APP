@@ -56,7 +56,7 @@ const alertTypeMap = {
   INFO: ALERT_TYPE.INFO,
 };
 
-const version = "2.0.7";
+const version = "2.0.8";
 
 const LoginScreen = ({ navigation }) => {
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);

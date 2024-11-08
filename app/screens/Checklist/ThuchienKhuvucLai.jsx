@@ -231,7 +231,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
 
   const handlePushDataFilterQr = async (value) => {
     const cleanedValue = value
-      .replace(/^http:\/\//, "")
+      
       .trim()
       .toLowerCase();
 

@@ -374,6 +374,7 @@ const DanhmucTracuu = () => {
     );
   };
 
+  
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <KeyboardAvoidingView
@@ -683,7 +684,7 @@ const DanhmucTracuu = () => {
                             objectFit:'cover',
                           }}
                           source={{
-                            uri: `https://drive.google.com/thumbnail?id=${newActionCheckList[0]?.Anh}`,
+                            uri: `https://lh3.googleusercontent.com/d/${newActionCheckList[0]?.Anh}=s1000?authuser=0`,
                           }}
                         />
                       )}

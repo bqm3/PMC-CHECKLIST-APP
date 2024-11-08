@@ -69,13 +69,7 @@ const DetailCheckListCa = ({ route }) => {
         setData(response.data.data);
       } catch (error) {
         if (error.response) {
-          console.log("Error Response Data:", error.response.data);
-          console.log("Error Status:", error.response.status);
-          console.log("Error Headers:", error.response.headers);
-        } else if (error.request) {
-          console.log("Error Request:", error.request);
-        } else {
-          console.log("Error Message:", error.message);
+        
         }
       } finally {
         setLoading(false);
@@ -192,7 +186,8 @@ const DetailCheckListCa = ({ route }) => {
       </ImageBackground>
     );
   }
-  console.log(modalVisible);
+ 
+  
   return (
     <ImageBackground
       source={require("../../../assets/bg.png")}
@@ -290,6 +285,7 @@ const DetailCheckListCa = ({ route }) => {
         {newActionCheckList?.length > 0 &&
           isShowChecklist &&
           (newActionCheckList[0]?.Anh !== null &&
+            newActionCheckList[0]?.Anh !== undefined &&
           newActionCheckList[0]?.Anh !== "" ? (
             <TouchableOpacity
               style={styles.button}
@@ -326,7 +322,8 @@ const DetailCheckListCa = ({ route }) => {
 
               <ScrollView showsVerticalScrollIndicator={false}>
                 {newActionCheckList[0]?.Anh !== null &&
-                  newActionCheckList[0]?.Anh !== "" && (
+                  newActionCheckList[0]?.Anh !== "" &&
+                  newActionCheckList[0]?.Anh !== undefined && (
                     <Image
                       style={{
                         width: SIZES.width * 0.8,

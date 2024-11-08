@@ -37,6 +37,8 @@ const ModalThongke = ({
   user,
   handleKhoiSelection,
   filteredCalv,
+  setOpacity,
+  setVisibleBottom,
 }) => {
   // const ModalThongke = ({
   //   handleChangeFilters = () => {},
@@ -385,6 +387,7 @@ const ModalThongke = ({
               color={COLORS.color_bg}
               onPress={() => {
                 handlePresentModalClose();
+                setVisibleBottom(false);
               }}
             />
           </View>

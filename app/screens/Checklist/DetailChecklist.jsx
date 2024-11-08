@@ -673,7 +673,6 @@ const DetailChecklist = ({ route, navigation }) => {
   // api tb_checklistchitiet
   const handleDataChecklistFaild = async (arrData) => {
     try {
-      console.log("arrData", arrData);
       setLoadingSubmit(true);
       // Create a new FormData instance
       const formData = new FormData();

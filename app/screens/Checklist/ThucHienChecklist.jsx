@@ -778,6 +778,9 @@ const ThucHienChecklist = ({ navigation }) => {
                       </TouchableOpacity>
 
                       {/* chưa dùng */}
+                      <View style={{height: 50, width: 50}}>
+
+                      </View>
                       {/* <TouchableOpacity
                         style={styles.button}
                         onPress={() => handleToggleModal()}

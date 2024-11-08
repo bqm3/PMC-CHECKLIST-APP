@@ -5,7 +5,7 @@ import {
   Platform,
   TouchableHighlight,
   View,
-  BackHandler
+  BackHandler,
 } from "react-native";
 import React, {
   useRef,
@@ -33,14 +33,14 @@ import ModalBottomSheet from "../../components/Modal/ModalBottomSheet";
 
 const numberOfItemsPerPageList = [20, 30, 50];
 
-const DanhmucThongkeContent = ({ setOpacity, opacity ,navigation}) => {
+const DanhmucThongkeContent = ({ setOpacity, opacity, navigation }) => {
   const dispath = useDispatch();
   const { user, authToken } = useSelector((state) => state.authReducer);
   const { ent_khoicv, ent_calv } = useSelector((state) => state.entReducer);
   const { tb_checklistc } = useSelector((state) => state.tbReducer);
   const [newActionCheckList, setNewActionCheckList] = useState([]);
   const bottomSheetModalRef = useRef(null);
-  const snapPoints2 = useMemo(() => ["90%"], []);
+  const snapPoints2 = useMemo(() => ["65%"], []);
   const [page, setPage] = React.useState(0);
   const [numberOfItemsPerPage, onItemsPerPageChange] = React.useState(
     numberOfItemsPerPageList[0]
@@ -87,7 +87,7 @@ const DanhmucThongkeContent = ({ setOpacity, opacity ,navigation}) => {
     setFilteredCalv(filtered);
   };
   const toggleTodo = async (item) => {
-    console.log(item)
+    console.log(item);
     // setIsCheckbox(true);
     // const isExistIndex = newActionCheckList.findIndex(
     //   (existingItem) =>
@@ -145,7 +145,7 @@ const DanhmucThongkeContent = ({ setOpacity, opacity ,navigation}) => {
         //setDataTraCuu(res?.data?.data);
         setData(res?.data?.data);
         handlePresentModalClose();
-        setVisibleBottom(false)
+        setVisibleBottom(false);
         setIsLoading(false);
       })
       .catch((error) => {
@@ -184,12 +184,12 @@ const DanhmucThongkeContent = ({ setOpacity, opacity ,navigation}) => {
       }
       return false;
     };
-  
+
     const backHandler = BackHandler.addEventListener(
-      'hardwareBackPress',
+      "hardwareBackPress",
       backAction
     );
-  
+
     return () => backHandler.remove();
   }, [isBottomSheetOpen]);
 
@@ -218,13 +218,13 @@ const DanhmucThongkeContent = ({ setOpacity, opacity ,navigation}) => {
   const handlePresentModalPress2 = useCallback(() => {
     setOpacity(0.2);
     setIsBottomSheetOpen(true);
-    if(user?.isError == 1){
-      setVisibleBottom(true)
+    if (user?.isError == 1) {
+      setVisibleBottom(true);
     } else {
       bottomSheetModalRef?.current?.present();
     }
   }, []);
-  
+
   const handlePresentModalClose = useCallback(() => {
     setOpacity(1);
     setIsBottomSheetOpen(false);
@@ -246,16 +246,18 @@ const DanhmucThongkeContent = ({ setOpacity, opacity ,navigation}) => {
             <DanhmucThongKe
               handlePresentModalPress2={handlePresentModalPress2}
               data={data}
-              navigation = {navigation}
+              navigation={navigation}
             />
-             <ModalBottomSheet
-            visible={visibleBottom}
-            setVisible={setVisibleBottom}
-            setOpacity={setOpacity}
-          >
-           <ModalThongke
+            <ModalBottomSheet
+              visible={visibleBottom}
+              setVisible={setVisibleBottom}
+              setOpacity={setOpacity}
+            >
+              <ModalThongke
                 handleChangeFilters={handleChangeFilters}
                 filters={filters}
+                setVisibleBottom={setVisibleBottom}
+                setOpacity={setOpacity}
                 toggleDatePicker={toggleDatePicker}
                 isDatePickerVisible={isDatePickerVisible}
                 setIsEnabled={setIsEnabled}
@@ -269,10 +271,8 @@ const DanhmucThongkeContent = ({ setOpacity, opacity ,navigation}) => {
                 handleKhoiSelection={handleKhoiSelection}
                 filteredCalv={filteredCalv}
               />
-          </ModalBottomSheet>
+            </ModalBottomSheet>
           </View>
-
-       
 
           <BottomSheetModal
             ref={bottomSheetModalRef}
@@ -280,13 +280,13 @@ const DanhmucThongkeContent = ({ setOpacity, opacity ,navigation}) => {
             snapPoints={snapPoints2}
             onChange={handleSheetChanges}
           >
-            <BottomSheetScrollView
-              style={styles.contentContainer}
-            >
+            <BottomSheetScrollView style={styles.contentContainer}>
               <ModalThongke
                 handleChangeFilters={handleChangeFilters}
                 filters={filters}
                 toggleDatePicker={toggleDatePicker}
+                setVisibleBottom={setVisibleBottom}
+                setOpacity={setOpacity}
                 isDatePickerVisible={isDatePickerVisible}
                 setIsEnabled={setIsEnabled}
                 toggleSwitch={toggleSwitch}

@@ -39,9 +39,6 @@ const Sucongoai = ({ navigation }) => {
 
   const { user, authToken } = useSelector((state) => state.authReducer);
   const { tb_sucongoai } = useSelector((state) => state.tbReducer);
-  const { ent_khuvuc, ent_khoicv, ent_toanha, ent_hangmuc } = useSelector(
-    (state) => state.entReducer
-  );
 
   const [dataSuCoNgoai, setDataSuCoNgoai] = useState([]);
   const [loading, setLoading] = useState(true);
