@@ -9,6 +9,7 @@ module.exports = (async () => {
         ...transformer,
         experimentalImportSupport: false,
         inlineRequires: true,
+        babelTransformerPath: require.resolve('react-native-svg-transformer'),
         minifierConfig: {
             keep_classnames: true, // FIX typeorm
             keep_fnames: true, // FIX typeorm

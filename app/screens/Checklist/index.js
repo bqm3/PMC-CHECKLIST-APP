@@ -16,6 +16,11 @@ import Sucongoai from "./Sucongoai"
 import DetailCheckListCa from "./DetailCheckListCa"
 import ThucHienHangmucLai from "./ThucHienHangmucLai"
 import DetailChecklistLai from "./DetailChecklistLai"
+import NotKhuVuc from "./NotKhuVuc"
+import NotHangMuc from "./NotHangMuc"
+import NotCheckList from "./NotCheckList"
+import ScanKhuVuc from "./ScanKhuVuc"
+import ScanHangMuc from "./ScanHangMuc"
 
 
 
@@ -36,5 +41,10 @@ module.exports = {
     DanhmucTracuuVsThongke,
     DetailCheckListCa,
     ThucHienHangmucLai,
-    DetailChecklistLai
+    DetailChecklistLai,
+    NotKhuVuc,
+    NotHangMuc,
+    NotCheckList,
+    ScanKhuVuc,
+    ScanHangMuc,
 }
