@@ -22,6 +22,11 @@ import {
   DetailCheckListCa,
   ThucHienHangmucLai,
   DetailChecklistLai,
+  NotKhuVuc,
+  NotHangMuc,
+  NotCheckList,
+  ScanKhuVuc,
+  ScanHangMuc,
 } from "../screens/Checklist";
 import { COLORS } from "../constants/theme";
 import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
@@ -49,16 +54,15 @@ const Back = ({ navigation, title }) => {
       }
     >
       {/* <FontAwesome5 name="user-alt" size={adjust(28)} color="white" /> */}
-    
+
       <Image
         source={require("../../assets/icons/ic_person.png")}
         style={{
-          width: adjust(40) ,  
-          height: adjust(40) , 
-          tintColor: "white",    
+          width: adjust(40),
+          height: adjust(40),
+          tintColor: "white",
         }}
       />
-    
     </TouchableOpacity>
   );
 };
@@ -115,6 +119,75 @@ const HomeStack = ({ navigation }) => {
               }}
             >
               Chi tiết checklist ca
+            </Text>
+          ),
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              {Platform.OS === "ios" && (
+                <Ionicons name="chevron-back" size={adjust(28)} color="white" />
+              )}
+            </TouchableOpacity>
+          ),
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: COLORS.bg_button,
+          },
+          headerBackTitleVisible: false,
+        })}
+      />
+
+
+    <Stack.Screen
+        name="Scan khu vực"
+        component={ScanKhuVuc}
+        lazy={false}
+        options={({ navigation, route }) => ({
+          headerShown: true,
+
+          headerTitle: () => (
+            <Text
+              allowFontScaling={false}
+              style={{
+                fontSize: adjust(20),
+                fontWeight: "700",
+                color: "white",
+              }}
+            >
+              Khu vực checklist
+            </Text>
+          ),
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              {Platform.OS === "ios" && (
+                <Ionicons name="chevron-back" size={adjust(28)} color="white" />
+              )}
+            </TouchableOpacity>
+          ),
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: COLORS.bg_button,
+          },
+          headerBackTitleVisible: false,
+        })}
+      />
+
+<Stack.Screen
+        name="Scan hạng mục"
+        component={ScanHangMuc}
+        lazy={false}
+        options={({ navigation, route }) => ({
+          headerShown: true,
+
+          headerTitle: () => (
+            <Text
+              allowFontScaling={false}
+              style={{
+                fontSize: adjust(20),
+                fontWeight: "700",
+                color: "white",
+              }}
+            >
+              Hạng mục không quét QrCode
             </Text>
           ),
           headerLeft: () => (
@@ -300,6 +373,41 @@ const HomeStack = ({ navigation }) => {
           headerBackTitleVisible: false,
         })}
       />
+
+      <Stack.Screen
+        name="Hạng mục chưa checklist"
+        component={NotHangMuc}
+        lazy={false}
+        options={({ navigation, route }) => ({
+          headerShown: true,
+
+          headerTitle: () => (
+            <Text
+              allowFontScaling={false}
+              style={{
+                fontSize: adjust(20),
+                fontWeight: "700",
+                color: "white",
+              }}
+            >
+              Hạng mục chưa checklist
+            </Text>
+          ),
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              {Platform.OS === "ios" && (
+                <Ionicons name="chevron-back" size={adjust(28)} color="white" />
+              )}
+            </TouchableOpacity>
+          ),
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: COLORS.bg_button,
+          },
+          headerBackTitleVisible: false,
+        })}
+      />
+
       <Stack.Screen
         name="Thực hiện hạng mục lại"
         component={ThucHienHangmucLai}
@@ -356,7 +464,45 @@ const HomeStack = ({ navigation }) => {
           headerLeft: () => (
             <TouchableOpacity
               onPress={() => {
-                navigation.goBack()
+                navigation.goBack();
+              }}
+            >
+              {Platform.OS === "ios" && (
+                <Ionicons name="chevron-back" size={28} color="white" />
+              )}
+            </TouchableOpacity>
+          ),
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: COLORS.bg_button, // Replace with your color
+          },
+          headerBackTitleVisible: false,
+        })}
+      />
+
+      <Stack.Screen
+        name="Khu vực chưa check list"
+        component={NotKhuVuc}
+        lazy={false}
+        options={({ navigation, route }) => ({
+          headerShown: true,
+          gestureEnabled: false,
+          headerTitle: () => (
+            <Text
+              allowFontScaling={false}
+              style={{
+                fontSize: 20, // Adjust font size as needed
+                fontWeight: "700",
+                color: "white",
+              }}
+            >
+              Khu vực chưa check list
+            </Text>
+          ),
+          headerLeft: () => (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.goBack();
               }}
             >
               {Platform.OS === "ios" && (
@@ -837,6 +983,40 @@ const HomeStack = ({ navigation }) => {
           headerBackTitleVisible: false,
         })}
       />
+
+      <Stack.Screen
+        name="Checklist chưa kiểm tra"
+        component={NotCheckList}
+        lazy={false}
+        options={({ route, navigation }) => ({
+          headerShown: true,
+          headerTitle: () => (
+            <Text
+              allowFontScaling={false}
+              style={{
+                fontSize: adjust(20),
+                fontWeight: "700",
+                color: "white",
+              }}
+            >
+              Checklist chưa kiểm tra
+            </Text>
+          ),
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              {Platform.OS === "ios" && (
+                <Ionicons name="chevron-back" size={adjust(28)} color="white" />
+              )}
+            </TouchableOpacity>
+          ),
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: COLORS.bg_button,
+          },
+          headerBackTitleVisible: false,
+        })}
+      />
+
       <Stack.Screen
         name="Chi tiết Checklist lại"
         component={DetailChecklistLai}

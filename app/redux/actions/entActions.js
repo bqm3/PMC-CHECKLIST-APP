@@ -353,7 +353,7 @@ export const ent_users_get = () => {
   };
 };
 
-export const ent_checklist_mul_hm = (dataHangmuc, ID_Calv, ID_ChecklistC) => {
+export const ent_checklist_mul_hm = (dataHangmuc, ID_Calv, ID_ChecklistC, ID_KhoiCV) => {
   
   return async (dispatch) => {
     dispatch({
@@ -369,7 +369,7 @@ export const ent_checklist_mul_hm = (dataHangmuc, ID_Calv, ID_ChecklistC) => {
       if (token !== null) {
         const response = await axios.put(
           `${BASE_URL}/ent_checklist/filter-mul/${ID_ChecklistC}/${ID_Calv}`,
-          { dataHangmuc: dataHangmuc },
+          { dataHangmuc: dataHangmuc, ID_KhoiCV: ID_KhoiCV },
           {
             headers: {
               Accept: "application/json",

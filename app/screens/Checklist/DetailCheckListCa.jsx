@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -47,8 +47,10 @@ const DetailCheckListCa = ({ route }) => {
   const { ID_ChecklistC } = route.params;
   const { user, authToken } = useSelector((state) => state.authReducer);
   const [data, setData] = useState([]);
+  const [dataChecklistCa, setDataChecklistCa] = useState([]);
   const [newActionCheckList, setNewActionCheckList] = useState([]);
   const [isShowChecklist, setIsShowChecklist] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(null);
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -67,9 +69,9 @@ const DetailCheckListCa = ({ route }) => {
           }
         );
         setData(response.data.data);
+        setDataChecklistCa(response.data.dataChecklistC);
       } catch (error) {
         if (error.response) {
-        
         }
       } finally {
         setLoading(false);
@@ -79,29 +81,51 @@ const DetailCheckListCa = ({ route }) => {
     fetchData();
   }, [ID_ChecklistC]);
 
-  const toggleTodo = async (item) => {
-    // setIsCheckbox(true);
+  const toggleTodo = async (item, index) => {
     const isExistIndex = newActionCheckList.findIndex(
       (existingItem) => existingItem.ID_Checklist === item.ID_Checklist
     );
 
-    // Nếu item đã tồn tại, xóa item đó đi
     if (isExistIndex !== -1) {
+      // Nếu item đã tồn tại, xóa item đó đi
       setNewActionCheckList((prevArray) =>
-        prevArray.filter((_, index) => index !== isExistIndex)
+        prevArray.filter((_, i) => i !== isExistIndex)
       );
     } else {
       // Nếu item chưa tồn tại, thêm vào mảng mới
       setNewActionCheckList([item]);
-      const filter =
+
+      const filter = !(
         item.Ketqua == item?.ent_checklist?.Giatridinhdanh &&
-        item?.Ghichu == "" &&
-        (item?.Anh == "" || item?.Anh === null)
-          ? false
-          : true;
+        item?.Ghichu === "" &&
+        (!item?.Anh || item?.Anh === "")
+      );
+
       setIsShowChecklist(filter);
     }
+    setSelectedIndex((prevIndex) => (prevIndex === index ? null : index));
   };
+
+  // const toggleTodo = useCallback((item, index) => {
+  //   setSelectedIndex((prevIndex) => {
+  //     // Nếu click vào item đã chọn, bỏ chọn nó
+  //     if (prevIndex === index) {
+  //       setNewActionCheckList([]);
+  //       setIsShowChecklist(false);
+  //       return null;
+  //     }
+      
+  //     // Nếu click vào item mới
+  //     setNewActionCheckList([item]);
+  //     const filter = !(
+  //       item.Ketqua === item?.ent_checklist?.Giatridinhdanh &&
+  //       item?.Ghichu === "" &&
+  //       (!item?.Anh || item?.Anh === "")
+  //     );
+  //     setIsShowChecklist(filter);
+  //     return index;
+  //   });
+  // }, []);
 
   const handleModalShow = (active, op) => {
     setModalVisible(active);
@@ -109,22 +133,23 @@ const DetailCheckListCa = ({ route }) => {
   };
 
   const _renderItem = ({ item, index }) => {
-    const isExistIndex = newActionCheckList?.find(
-      (existingItem) => existingItem?.ID_Checklist === item?.ID_Checklist
-    );
+    // const isExistIndex = newActionCheckList?.find(
+    //   (existingItem) => existingItem?.ID_Checklist === item?.ID_Checklist
+    // );
     return (
-      <TouchableHighlight key={index} onPress={() => toggleTodo(item)}>
+      <TouchableHighlight key={index} onPress={() => toggleTodo(item, index)}>
         <DataTable.Row
           style={{
             gap: 20,
             paddingVertical: 10,
-            backgroundColor: isExistIndex ? COLORS.bg_button : "white",
+            backgroundColor:
+              selectedIndex == index ? COLORS.bg_button : "white",
           }}
         >
           <DataTable.Cell style={{ width: 120, justifyContent: "center" }}>
             <Text
               allowFontScaling={false}
-              style={{ color: isExistIndex ? "white" : "black" }}
+              style={{ color: selectedIndex == index ? "white" : "black" }}
               numberOfLines={2}
             >
               {moment(item?.tb_checklistc?.Ngay).format("DD-MM-YYYY")}
@@ -133,7 +158,7 @@ const DetailCheckListCa = ({ route }) => {
           <DataTable.Cell style={{ width: 200, justifyContent: "center" }}>
             <Text
               allowFontScaling={false}
-              style={{ color: isExistIndex ? "white" : "black" }}
+              style={{ color: selectedIndex == index ? "white" : "black" }}
               numberOfLines={3}
             >
               {item?.ent_checklist?.Checklist}
@@ -142,7 +167,7 @@ const DetailCheckListCa = ({ route }) => {
           <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
             <Text
               allowFontScaling={false}
-              style={{ color: isExistIndex ? "white" : "black" }}
+              style={{ color: selectedIndex == index ? "white" : "black" }}
               numberOfLines={2}
             >
               {item?.Gioht}
@@ -151,17 +176,20 @@ const DetailCheckListCa = ({ route }) => {
           <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
             <Text
               allowFontScaling={false}
-              style={{ color: isExistIndex ? "white" : "black" }}
+              style={{ color: selectedIndex == index ? "white" : "black" }}
               numberOfLines={2}
             >
-              {item?.tb_checklistc?.ent_user?.Hoten}
+              {item?.tb_checklistc?.ent_user?.Hoten
+                ? item?.tb_checklistc?.ent_user?.Hoten
+                : dataChecklistCa?.ent_user?.Hoten}
+              {/* {item?.tb_checklistc?.ent_user?.Hoten} */}
             </Text>
           </DataTable.Cell>
 
           <DataTable.Cell style={{ width: 100, justifyContent: "center" }}>
             <Text
               allowFontScaling={false}
-              style={{ color: isExistIndex ? "white" : "black" }}
+              style={{ color: selectedIndex == index ? "white" : "black" }}
               numberOfLines={2}
             >
               {item?.Ketqua}
@@ -171,6 +199,68 @@ const DetailCheckListCa = ({ route }) => {
       </TouchableHighlight>
     );
   };
+
+  // const _renderItem = React.useCallback(({ item, index }) => {
+  //   const isSelected = selectedIndex === index;
+    
+  //   return (
+  //     <DataTable.Row
+  //       key={`${item?.ID_ChecklistC}_${index}`}
+  //       style={{
+  //         gap: 20,
+  //         paddingVertical: 10,
+  //         backgroundColor: isSelected ? COLORS.bg_button : "white",
+  //       }}
+  //       onPress={() => toggleTodo(item, index)}
+  //     >
+  //       <DataTable.Cell style={{ width: 120, justifyContent: "center" }}>
+  //         <Text
+  //           allowFontScaling={false}
+  //           style={{ color: isSelected ? "white" : "black" }}
+  //           numberOfLines={2}
+  //         >
+  //           {moment(item?.tb_checklistc?.Ngay).format("DD-MM-YYYY")}
+  //         </Text>
+  //       </DataTable.Cell>
+  //       <DataTable.Cell style={{ width: 200, justifyContent: "center" }}>
+  //         <Text
+  //           allowFontScaling={false}
+  //           style={{ color: isSelected ? "white" : "black" }}
+  //           numberOfLines={3}
+  //         >
+  //           {item?.ent_checklist?.Checklist}
+  //         </Text>
+  //       </DataTable.Cell>
+  //       <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
+  //         <Text
+  //           allowFontScaling={false}
+  //           style={{ color: isSelected ? "white" : "black" }}
+  //           numberOfLines={2}
+  //         >
+  //           {item?.Gioht}
+  //         </Text>
+  //       </DataTable.Cell>
+  //       <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
+  //         <Text
+  //           allowFontScaling={false}
+  //           style={{ color: isSelected ? "white" : "black" }}
+  //           numberOfLines={2}
+  //         >
+  //           {item?.tb_checklistc?.ent_user?.Hoten || dataChecklistCa?.ent_user?.Hoten}
+  //         </Text>
+  //       </DataTable.Cell>
+  //       <DataTable.Cell style={{ width: 100, justifyContent: "center" }}>
+  //         <Text
+  //           allowFontScaling={false}
+  //           style={{ color: isSelected ? "white" : "black" }}
+  //           numberOfLines={2}
+  //         >
+  //           {item?.Ketqua}
+  //         </Text>
+  //       </DataTable.Cell>
+  //     </DataTable.Row>
+  //   );
+  // }, [selectedIndex, dataChecklistCa]);
 
   if (loading) {
     return (
@@ -186,8 +276,7 @@ const DetailCheckListCa = ({ route }) => {
       </ImageBackground>
     );
   }
- 
-  
+
   return (
     <ImageBackground
       source={require("../../../assets/bg.png")}
@@ -285,7 +374,7 @@ const DetailCheckListCa = ({ route }) => {
         {newActionCheckList?.length > 0 &&
           isShowChecklist &&
           (newActionCheckList[0]?.Anh !== null &&
-            newActionCheckList[0]?.Anh !== undefined &&
+          newActionCheckList[0]?.Anh !== undefined &&
           newActionCheckList[0]?.Anh !== "" ? (
             <TouchableOpacity
               style={styles.button}
@@ -365,19 +454,33 @@ const DetailCheckListCa = ({ route }) => {
                   </Text>
                   <Text allowFontScaling={false} style={styles.textModal}>
                     Khối công việc:{" "}
-                    {newActionCheckList[0]?.tb_checklistc?.ent_khoicv?.KhoiCV}
+                    {newActionCheckList[0]?.tb_checklistc?.ent_khoicv?.KhoiCV
+                      ? newActionCheckList[0]?.tb_checklistc?.ent_khoicv?.KhoiCV
+                      : dataChecklistCa?.ent_khoicv?.KhoiCV}
                   </Text>
                   <Text allowFontScaling={false} style={styles.textModal}>
                     Người checklist:{" "}
-                    {newActionCheckList[0]?.tb_checklistc?.ent_user?.Hoten}
+                    {newActionCheckList[0]?.tb_checklistc?.ent_user?.Hoten
+                      ? newActionCheckList[0]?.tb_checklistc?.ent_user?.Hoten
+                      : dataChecklistCa?.ent_user?.Hoten}
+                    {/* {newActionCheckList[0]?.tb_checklistc?.ent_user?.Hoten} */}
                   </Text>
 
                   <Text allowFontScaling={false} style={styles.textModal}>
                     Ca làm việc:{" "}
-                    {newActionCheckList[0]?.tb_checklistc?.ent_calv?.Tenca} (
-                    {newActionCheckList[0]?.tb_checklistc?.ent_calv?.Giobatdau}{" "}
+                    {newActionCheckList[0]?.tb_checklistc?.ent_calv?.Tenca
+                      ? newActionCheckList[0]?.tb_checklistc?.ent_calv?.Tenca
+                      : dataChecklistCa?.ent_calv?.Tenca}
+                    (
+                    {newActionCheckList[0]?.tb_checklistc?.ent_calv?.Giobatdau
+                      ? newActionCheckList[0]?.tb_checklistc?.ent_calv
+                          ?.Giobatdau
+                      : dataChecklistCa?.ent_calv?.Giobatdau}{" "}
                     -{" "}
-                    {newActionCheckList[0]?.tb_checklistc?.ent_calv?.Gioketthuc}
+                    {newActionCheckList[0]?.tb_checklistc?.ent_calv?.Gioketthuc
+                      ? newActionCheckList[0]?.tb_checklistc?.ent_calv
+                          ?.Gioketthuc
+                      : dataChecklistCa?.ent_calv?.Gioketthuc}
                     )
                   </Text>
                   <Text allowFontScaling={false} style={styles.textModal}>
