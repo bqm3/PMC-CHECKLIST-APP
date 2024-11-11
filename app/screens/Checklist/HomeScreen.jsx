@@ -108,59 +108,89 @@ async function registerForPushNotificationsAsync() {
 const dataDanhMuc = [
   {
     id: 1,
+    status: null,
     path: "Thực hiện Checklist",
     icon: require("../../../assets/icons/o-01.png"),
   },
   {
     id: 2,
+    status: null,
     path: "Tra cứu",
     icon: require("../../../assets/icons/o-02.png"),
   },
+  
   {
     id: 3,
+    status: null,
     path: "Checklist Lại",
     icon: require("../../../assets/icons/o-01.png"),
   },
   {
     id: 4,
+    status: null,
     path: "Xử lý sự cố",
     icon: require("../../../assets/icons/o-04.png"),
+  },
+  {
+    id: 5,
+    status: 'new',
+    path: "Báo cáo chỉ số",
+    icon: require("../../../assets/icons/o-05.png"),
   },
 ];
 
 const dataGD = [
   {
     id: 1,
+    status: null,
     path: "Thông báo sự cố",
     icon: require("../../../assets/icons/o-04.png"),
   },
   {
     id: 2,
+    status: null,
     path: "Tra cứu",
     icon: require("../../../assets/icons/o-02.png"),
+  },
+  {
+    id: 5,
+    status: 'new',
+    path: "Báo cáo chỉ số",
+    icon: require("../../../assets/icons/o-05.png"),
   },
 ];
 
 const dataKST = [
   {
     id: 1,
+    status: null,
     path: "Thực hiện Checklist",
     icon: require("../../../assets/icons/o-01.png"),
   },
   {
     id: 2,
+    status: null,
     path: "Tra cứu",
     icon: require("../../../assets/icons/o-02.png"),
   },
+  
   {
     id: 3,
+    status: null,
     path: "Xử lý sự cố",
     icon: require("../../../assets/icons/o-04.png"),
   },
   {
     id: 4,
+    status: null,
     path: "Thông báo sự cố",
     icon: require("../../../assets/icons/o-04.png"),
+  },
+  {
+    id: 5,
+    status: 'new',
+    path: "Báo cáo chỉ số",
+    icon: require("../../../assets/icons/o-05.png"),
   },
 ];
 
@@ -274,7 +304,6 @@ const HomeScreen = ({ navigation }) => {
               resizeMode="contain"
               style={{ height: adjust(80), width: adjust(200) }}
             />
-            // <Text>Hello</Text>
           )}
           <Text
             allowFontScaling={false}
@@ -317,11 +346,11 @@ const HomeScreen = ({ navigation }) => {
             }}
             numColumns={2}
             data={
-              user.ID_Chucvu === 4
+              user?.ent_chucvu?.Role == 3
                 ? dataDanhMuc
-                : user.ID_Chucvu === 2
+                : user?.ent_chucvu?.Role == 1
                 ? dataGD
-                : dataKST
+                : user?.ent_chucvu?.Role == 2 && dataKST
             }
             renderItem={renderItem}
             ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
@@ -356,7 +385,6 @@ const HomeScreen = ({ navigation }) => {
             Giám đốc Tòa nhà toàn quyền sử dụng.
           </Text>
         </View>
-       
       </View>
     </ImageBackground>
   );

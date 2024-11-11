@@ -679,7 +679,6 @@ const DetailChecklist = ({ route, navigation }) => {
       const isCheckValueCheck = arrData.some(
         (item) => item.valueCheck == null || item.valueCheck == ""
       );
-      console.log("isCheckValueCheck", isCheckValueCheck);
 
       if (isCheckValueCheck) {
         setLoadingSubmit(false);

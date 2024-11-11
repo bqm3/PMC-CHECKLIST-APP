@@ -35,9 +35,8 @@ import {
   BottomSheetModalProvider,
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
-import DataLicense from "../components/PrivacyPolicy";
-import Checkbox from "../components/Active/Checkbox";
 import * as FileSystem from "expo-file-system";
+import * as Network from 'expo-network';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import adjust from "../adjust";
 import { BASE_URL, BASE_URL_NOTI } from "../constants/config";
@@ -48,6 +47,9 @@ import {
   Toast,
 } from "react-native-alert-notification";
 import axios from "axios";
+
+import DataLicense from "../components/PrivacyPolicy";
+import Checkbox from "../components/Active/Checkbox";
 
 const alertTypeMap = {
   SUCCESS: ALERT_TYPE.SUCCESS,
@@ -81,6 +83,15 @@ const LoginScreen = ({ navigation }) => {
   const [statusLocation, setStatusLocation] = useState(1);
 
   const handleSubmit = async () => {
+    const networkState = await Network.getNetworkStateAsync();
+
+    if (!networkState.isConnected) {
+      Alert.alert("PMC Thông báo", "Không có kết nối mạng", [
+        { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+      ]);
+      return;
+    }
+    
     if (data?.UserName === "" || data?.Password === "") {
       Alert.alert("PMC Thông báo", "Thiếu thông tin đăng nhập", [
         { text: "Xác nhận", onPress: () => console.log("OK Pressed") },

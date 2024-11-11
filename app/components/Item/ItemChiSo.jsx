@@ -1,0 +1,109 @@
+import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
+import React from "react";
+import adjust from "../../adjust";
+import moment from "moment";
+import { COLORS, SIZES } from "../../constants/theme";
+
+export default function ItemSucongoai({
+  item,
+  index,
+  toggleTodo,
+  newActionClick,
+}) {
+  const isExistIndex = newActionClick.findIndex(
+    (existingItem) => existingItem.ID_Baocaochiso === item.ID_Baocaochiso
+  );
+
+  return (
+    <TouchableOpacity
+      style={[
+        styles.container,
+        {
+          backgroundColor: isExistIndex ? "white" : COLORS.bg_button,
+        },
+      ]}
+      onPress={() => toggleTodo(item)}
+    >
+      <View style={styles.row}>
+        <View style={{ width: 100 }}>
+          <Text
+            allowFontScaling={false}
+            style={[styles.title, { color: isExistIndex ? "black" : "white" }]}
+          >
+            Ngày gửi
+          </Text>
+        </View>
+        <Text
+          allowFontScaling={false}
+          style={[
+            styles.title,
+            { fontWeight: "500", color: isExistIndex ? "black" : "white" },
+          ]}
+        >
+          : {moment(item?.Day).format("DD/MM/YYYY")}
+        </Text>
+      </View>
+      <View style={styles.row}>
+        <View style={{ width: 100 }}>
+          <Text
+            allowFontScaling={false}
+            style={[styles.title, { color: isExistIndex ? "black" : "white" }]}
+          >
+            Báo cáo
+          </Text>
+        </View>
+        <View style={{ width: SIZES.width - 160 }}>
+          <Text
+            allowFontScaling={false}
+            style={[styles.title, { fontWeight: "500", color: isExistIndex ? "black" : "white" }]}
+          >
+            : Tháng {item?.Month} - Năm {item?.Year}
+          </Text>
+        </View>
+      </View>
+      <View style={styles.row}>
+        <View style={{ width: 100 }}>
+          <Text
+            allowFontScaling={false}
+            style={[styles.title, { color: isExistIndex ? "black" : "white" }]}
+          >
+            Người gửi
+          </Text>
+        </View>
+        <Text
+          allowFontScaling={false}
+          style={[
+            styles.title,
+            { fontWeight: "500", color: isExistIndex ? "black" : "white" },
+          ]}
+        >
+          : {item?.ent_user?.Hoten}
+        </Text>
+      </View>
+    </TouchableOpacity>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor: "white",
+    marginVertical: 8,
+    padding: 10,
+    borderRadius: 16,
+  },
+
+  title: {
+    paddingTop: 4,
+    fontSize: adjust(16),
+    paddingVertical: 2,
+    color: "black",
+    fontWeight: "700",
+    textAlign: "left",
+  },
+  row: {
+    marginLeft: 10,
+    width: "100%",
+    flexDirection: "row",
+    flexWrap: "wrap",
+  },
+});

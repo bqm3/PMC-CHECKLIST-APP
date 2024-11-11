@@ -37,7 +37,9 @@ import Sucongoai from "../screens/Checklist/Sucongoai";
 import ThuchienSucongoai from "../screens/Checklist/ThuchienSucongoai";
 import DetailSucongoai from "../screens/Checklist/DetailSucongoai";
 import XulySuco from "../screens/Checklist/XulySuco";
-import YourComponent from "../screens/TestScreen";
+import DanhMucBaoCaoChiSo from "../screens/Checklist/DanhMucBaoCaoChiSo";
+import DanhMucBaoCaoChiSoChiTiet from "../screens/Checklist/DanhMucBaoCaoChiSoChiTiet";
+import DanhMucBaoCaoChiSoChiTietUpdate from "../screens/Checklist/DanhMucBaoCaoChiSoChiTietUpdate";
 
 const Stack = createNativeStackNavigator();
 
@@ -49,16 +51,15 @@ const Back = ({ navigation, title }) => {
       }
     >
       {/* <FontAwesome5 name="user-alt" size={adjust(28)} color="white" /> */}
-    
+
       <Image
         source={require("../../assets/icons/ic_person.png")}
         style={{
-          width: adjust(40) ,  
-          height: adjust(40) , 
-          tintColor: "white",    
+          width: adjust(40),
+          height: adjust(40),
+          tintColor: "white",
         }}
       />
-    
     </TouchableOpacity>
   );
 };
@@ -266,6 +267,39 @@ const HomeStack = ({ navigation }) => {
           headerBackTitleVisible: false,
         })}
       />
+      <Stack.Screen
+        name="Báo cáo chỉ số"
+        component={DanhMucBaoCaoChiSo}
+        lazy={false}
+        options={({ navigation, route }) => ({
+          headerShown: true,
+
+          headerTitle: () => (
+            <Text
+              allowFontScaling={false}
+              style={{
+                fontSize: adjust(20),
+                fontWeight: "700",
+                color: "white",
+              }}
+            >
+              Báo cáo chỉ số
+            </Text>
+          ),
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              {Platform.OS === "ios" && (
+                <Ionicons name="chevron-back" size={adjust(28)} color="white" />
+              )}
+            </TouchableOpacity>
+          ),
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: COLORS.bg_button,
+          },
+          headerBackTitleVisible: false,
+        })}
+      />
 
       <Stack.Screen
         name="Thực hiện hạng mục"
@@ -356,7 +390,7 @@ const HomeStack = ({ navigation }) => {
           headerLeft: () => (
             <TouchableOpacity
               onPress={() => {
-                navigation.goBack()
+                navigation.goBack();
               }}
             >
               {Platform.OS === "ios" && (
@@ -543,6 +577,70 @@ const HomeStack = ({ navigation }) => {
       <Stack.Screen
         name="Thực hiện sự cố ngoài"
         component={ThuchienSucongoai}
+        lazy={false}
+        options={({ navigation, route }) => ({
+          headerShown: true,
+
+          headerTitle: () => (
+            <Text
+              allowFontScaling={false}
+              style={{
+                fontSize: adjust(20),
+                fontWeight: "700",
+                color: "white",
+              }}
+            ></Text>
+          ),
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              {Platform.OS === "ios" && (
+                <Ionicons name="chevron-back" size={adjust(28)} color="white" />
+              )}
+            </TouchableOpacity>
+          ),
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: COLORS.bg_button,
+          },
+          headerBackTitleVisible: false,
+        })}
+      />
+
+      <Stack.Screen
+        name="Thực hiện chỉ số"
+        component={DanhMucBaoCaoChiSoChiTiet}
+        lazy={false}
+        options={({ navigation, route }) => ({
+          headerShown: true,
+
+          headerTitle: () => (
+            <Text
+              allowFontScaling={false}
+              style={{
+                fontSize: adjust(20),
+                fontWeight: "700",
+                color: "white",
+              }}
+            ></Text>
+          ),
+          headerLeft: () => (
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              {Platform.OS === "ios" && (
+                <Ionicons name="chevron-back" size={adjust(28)} color="white" />
+              )}
+            </TouchableOpacity>
+          ),
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: COLORS.bg_button,
+          },
+          headerBackTitleVisible: false,
+        })}
+      />
+
+      <Stack.Screen
+        name="Thực hiện thay đổi chỉ số"
+        component={DanhMucBaoCaoChiSoChiTietUpdate}
         lazy={false}
         options={({ navigation, route }) => ({
           headerShown: true,
