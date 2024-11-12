@@ -54,7 +54,7 @@ import { useHeaderHeight } from "@react-navigation/elements";
 import ModalBottomSheet from "../../components/Modal/ModalBottomSheet";
 
 const DetailChecklistLai = ({ route, navigation }) => {
-  const { ID_ChecklistC, ID_Hangmuc, hangMuc, Hangmuc } = route.params;
+  const { ID_ChecklistC, ID_Hangmuc, hangMuc, Hangmuc,isScan } = route.params;
   const dispath = useDispatch();
   const { isLoadingDetail } = useSelector((state) => state.entReducer);
   const { setHangMuc, HangMucDefault, setHangMucDefault } =
@@ -81,7 +81,6 @@ const DetailChecklistLai = ({ route, navigation }) => {
   const [visibleBottom, setVisibleBottom] = useState(false);
   const [modalVisibleTieuChuan, setModalVisibleTieuChuan] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
-  const [isScan, setIsScan] = useState(false);
   const [activeAll, setActiveAll] = useState(false);
   const [location, setLocation] = useState(null);
   const [show, setShow] = useState(false);
@@ -506,7 +505,6 @@ const DetailChecklistLai = ({ route, navigation }) => {
       const networkState = await Network.getNetworkStateAsync();
       setIsConnected(networkState.isConnected);
       saveConnect(true);
-
       if (location == null) {
         Alert.alert(
           "PMC Thông báo",
@@ -538,9 +536,10 @@ const DetailChecklistLai = ({ route, navigation }) => {
             const newDataChecklistFaild = dataChecklistFaild.map((item) => {
               return {
                 ...item,
-                Vido: location?.coords?.latitude || null,
-                Kinhdo: location?.coords?.longitude || null,
-                Docao: location?.coords?.altitude || null,
+                Vido: location?.coords?.latitude || "",
+                Kinhdo: location?.coords?.longitude || "",
+                Docao: location?.coords?.altitude || "",
+                isScan: isScan,
               };
             });
             await handleDataChecklistFaild(newDataChecklistFaild);
@@ -552,9 +551,10 @@ const DetailChecklistLai = ({ route, navigation }) => {
               (item) => {
                 return {
                   ...item,
-                  Vido: location?.coords?.latitude || null,
-                  Kinhdo: location?.coords?.longitude || null,
-                  Docao: location?.coords?.altitude || null,
+                  Vido: location?.coords?.latitude || "",
+                  Kinhdo: location?.coords?.longitude || "",
+                  Docao: location?.coords?.altitude || "",
+                  isScan: isScan,
                 };
               }
             );
@@ -569,18 +569,20 @@ const DetailChecklistLai = ({ route, navigation }) => {
               (item) => {
                 return {
                   ...item,
-                  Vido: location?.coords?.latitude || null,
-                  Kinhdo: location?.coords?.longitude || null,
-                  Docao: location?.coords?.altitude || null,
+                  Vido: location?.coords?.latitude || "",
+                  Kinhdo: location?.coords?.longitude || "",
+                  Docao: location?.coords?.altitude || "",
+                  isScan: isScan,
                 };
               }
             );
             const newDataChecklistFaild = dataChecklistFaild.map((item) => {
               return {
                 ...item,
-                Vido: location?.coords?.latitude || null,
-                Kinhdo: location?.coords?.longitude || null,
-                Docao: location?.coords?.altitude || null,
+                Vido: location?.coords?.latitude || "",
+                Kinhdo: location?.coords?.longitude || "",
+                Docao: location?.coords?.altitude || "",
+                isScan: isScan,
               };
             });
             await handleChecklistAll(
@@ -607,9 +609,10 @@ const DetailChecklistLai = ({ route, navigation }) => {
           const updateLocation = combinedData.map((item) => {
             return {
               ...item,
-              Vido: location?.coords?.latitude || null,
-              Kinhdo: location?.coords?.longitude || null,
-              Docao: location?.coords?.altitude || null,
+              Vido: location?.coords?.latitude || "",
+              Kinhdo: location?.coords?.longitude || "",
+              Docao: location?.coords?.altitude || "",
+              isScan: isScan,
             };
           });
 
@@ -635,7 +638,6 @@ const DetailChecklistLai = ({ route, navigation }) => {
     }
   };
 
-  // api faild tb_checklistchitiet
   const handleDataChecklistFaild = async (arrData) => {
     try {
       setLoadingSubmit(true);
@@ -662,6 +664,7 @@ const DetailChecklistLai = ({ route, navigation }) => {
           formData.append("Vido", item.Vido || "");
           formData.append("Kinhdo", item.Kinhdo || "");
           formData.append("Docao", item.Docao || "");
+          formData.append("isScan", isScan || null);
           if (item.Anh) {
             const file = {
               uri:
@@ -723,7 +726,7 @@ const DetailChecklistLai = ({ route, navigation }) => {
     }
   };
 
-  // api faild tb_checklistchitietdone
+  // api tb_checklistchitietdone
   const handleDefaultActionDataChecklist = async (arrData) => {
     // Xử lý API cho defaultActionDataChecklist
     const descriptions = arrData.map((item) => item.ID_Checklist).join(",");
@@ -739,9 +742,10 @@ const DetailChecklistLai = ({ route, navigation }) => {
         ID_ChecklistC: ID_ChecklistC,
         Gioht: Gioht[0],
         checklistLength: arrData.length,
-        Vido: location?.coords?.latitude || null,
-        Kinhdo: location?.coords?.longitude || null,
-        Docao: location?.coords?.altitude || null,
+        Vido: location?.coords?.latitude || "",
+        Kinhdo: location?.coords?.longitude || "",
+        Docao: location?.coords?.altitude || "",
+        isScan: isScan,
       },
       {
         headers: {
@@ -808,6 +812,7 @@ const DetailChecklistLai = ({ route, navigation }) => {
           formData.append("Vido", item.Vido || "");
           formData.append("Kinhdo", item.Kinhdo || "");
           formData.append("Docao", item.Docao || "");
+          formData.append("isScan", isScan || null);
 
           // Nếu có hình ảnh, thêm vào FormData
           if (item.Anh) {
@@ -854,9 +859,10 @@ const DetailChecklistLai = ({ route, navigation }) => {
             ID_ChecklistC: ID_ChecklistC,
             Gioht: dataDefault[0].Gioht,
             checklistLength: dataDefault.length,
-            Vido: dataDefault[0].Vido || null,
-            Kinhdo: dataDefault[0].Kinhdo || null,
-            Docao: dataDefault[0].Docao || null,
+            Vido: dataDefault[0].Vido || "",
+            Kinhdo: dataDefault[0].Kinhdo || "",
+            Docao: dataDefault[0].Docao || "",
+            isScan: isScan || null,
           },
           {
             headers: {
@@ -1379,9 +1385,7 @@ const DetailChecklistLai = ({ route, navigation }) => {
                       allowFontScaling={false}
                       style={[styles.danhmuc, { padding: 10 }]}
                     >
-                      {isScan
-                        ? "Không thấy checklist cho hạng mục này"
-                        : "Không còn checklist cho hạng mục này !"}
+                         Không còn checklist cho hạng mục này
                     </Text>
                   </View>
                 )}

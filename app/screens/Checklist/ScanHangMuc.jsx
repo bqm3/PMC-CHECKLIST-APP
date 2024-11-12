@@ -254,6 +254,7 @@ const ScanHangMuc = ({ navigation, route }) => {
                       ItemSeparatorComponent={() => (
                         <View style={{ height: 16 }} />
                       )}
+                      showsHorizontalScrollIndicator = {false}
                       keyExtractor={(item, index) =>
                         `${item[0]?.ID_Checklist}_${index}`
                       }

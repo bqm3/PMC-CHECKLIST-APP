@@ -93,6 +93,7 @@ const ThucHienHangmucLai = ({ route, navigation }) => {
           ID_Hangmuc: resData[0].ID_Hangmuc,
           hangMuc,
           Hangmuc: resData[0],
+          isScan: null
         });
         setIsScan(false);
         setModalVisibleQr(false);
@@ -130,6 +131,7 @@ const ThucHienHangmucLai = ({ route, navigation }) => {
       hangMuc,
       ID_Khuvuc,
       Hangmuc: dataSelect[0],
+      isScan: 1
     });
     setDataSelect([]);
   };

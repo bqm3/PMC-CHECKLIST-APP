@@ -196,6 +196,7 @@ const ScanKhuVuc = ({ navigation, route }) => {
                           <FlatList
                             style={styles.flatList}
                             data={dataKhuvuc}
+                            showsHorizontalScrollIndicator = {false}
                             renderItem={renderItem}
                             ItemSeparatorComponent={() => (
                               <View style={styles.separator} />
