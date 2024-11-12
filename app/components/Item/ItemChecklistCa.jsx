@@ -5,7 +5,7 @@ import moment from "moment";
 import { COLORS } from "../../constants/theme";
 
  const ItemChecklistCa = ({selectedItem, item, index, toggleTodo}) => {
-    console.log("item",item)
+
  const isExistIndex = selectedItem === item;
   return (
     <View>

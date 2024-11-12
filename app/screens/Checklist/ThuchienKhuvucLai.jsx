@@ -403,6 +403,8 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
           formData.append("Vido", item.Vido || "");
           formData.append("Kinhdo", item.Kinhdo || "");
           formData.append("Docao", item.Docao || "");
+          formData.append("isScan", item.isScan || null);
+          formData.append("isCheckListLai", 1);
 
           // If there is an image, append it to formData
           if (item.Anh) {
@@ -495,6 +497,8 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
             Vido: ItemDefaultActionDataChecklist[0]?.Vido || "",
             Kinhdo: ItemDefaultActionDataChecklist[0]?.Kinhdo || "",
             Docao: ItemDefaultActionDataChecklist[0]?.Docao || "",
+            isScan: ItemDefaultActionDataChecklist[0]?.isScan || null,
+            isCheckListLia: 1,
           },
           {
             headers: {
@@ -566,6 +570,8 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
           formData.append("Vido", item?.Vido || "");
           formData.append("Kinhdo", item?.Kinhdo || "");
           formData.append("Docao", item?.Docao || "");
+          formData.append("isScan", item.isScan || null);
+          formData.append("isCheckListLai", 1);
 
           // Nếu có hình ảnh, thêm vào FormData
           if (item.Anh) {
@@ -628,6 +634,8 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
                 Vido: ItemDefaultActionDataChecklist[0]?.Vido || "",
                 Kinhdo: ItemDefaultActionDataChecklist[0]?.Kinhdo || "",
                 Docao: ItemDefaultActionDataChecklist[0]?.Docao || "",
+                isScan: ItemDefaultActionDataChecklist[0]?.isScan || null,
+                isCheckListLai: 1,
               },
               {
                 headers: {

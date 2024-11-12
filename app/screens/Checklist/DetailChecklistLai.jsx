@@ -665,6 +665,7 @@ const DetailChecklistLai = ({ route, navigation }) => {
           formData.append("Kinhdo", item.Kinhdo || "");
           formData.append("Docao", item.Docao || "");
           formData.append("isScan", isScan || null);
+          formData.append("isCheckListLai", 1);
           if (item.Anh) {
             const file = {
               uri:
@@ -746,6 +747,7 @@ const DetailChecklistLai = ({ route, navigation }) => {
         Kinhdo: location?.coords?.longitude || "",
         Docao: location?.coords?.altitude || "",
         isScan: isScan,
+        isCheckListLai: 1,
       },
       {
         headers: {
@@ -813,6 +815,7 @@ const DetailChecklistLai = ({ route, navigation }) => {
           formData.append("Kinhdo", item.Kinhdo || "");
           formData.append("Docao", item.Docao || "");
           formData.append("isScan", isScan || null);
+          formData.append("isCheckListLai", 1);
 
           // Nếu có hình ảnh, thêm vào FormData
           if (item.Anh) {
@@ -863,6 +866,7 @@ const DetailChecklistLai = ({ route, navigation }) => {
             Kinhdo: dataDefault[0].Kinhdo || "",
             Docao: dataDefault[0].Docao || "",
             isScan: isScan || null,
+            isCheckListLai: 1,
           },
           {
             headers: {
