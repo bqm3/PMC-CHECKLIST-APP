@@ -280,6 +280,7 @@ const NotHangMuc = ({ route, navigation }) => {
                       ItemSeparatorComponent={() => (
                         <View style={{ height: 16 }} />
                       )}
+                      showsHorizontalScrollIndicator = {false}
                       keyExtractor={(item, index) =>
                         `${item?.ID_Checklist}_${index}`
                       }
