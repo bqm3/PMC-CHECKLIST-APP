@@ -131,6 +131,17 @@ const ScanKhuVuc = ({ navigation, route }) => {
           {item?.khuVucName} - {item?.toaNhaName}
         </Text>
       </View>
+      {/* {item.some(
+              (i) => i?.ent_checklist?.ent_hangmuc?.isScan == 1
+            ) && (
+              <View style={styles.qrWrapper}>
+              <Image
+                source={require("../../../assets/icons/ic_qrcode_30x30.png")}
+              />
+              <View style={[styles.diagonalLine1]} />
+              <View style={[styles.diagonalLine2]} />
+            </View>
+            )} */}
       <View
         style={[
           styles.countContainer,

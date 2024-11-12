@@ -17,13 +17,11 @@ export default function ItemHome({ item, index, roleUser }) {
           flexGrow: 1,
           width: "30%",
           position: "relative",
-          backgroundColor:  roleUser !== 1 && item?.role === 1
-          ? COLORS.bg_active
-          : COLORS.bg_white,
+          backgroundColor:  COLORS.bg_white ,
           alignItems: "center",
           justifyContent: "center",
           borderRadius: 16,
-          display: roleUser !== 1 && item?.role === 1 ? "none": "flex"
+          display: "flex"
         },
         item.id == 2 && item.id == 5 && { marginHorizontal: 10 },
       ]}
@@ -51,7 +49,8 @@ export default function ItemHome({ item, index, roleUser }) {
             textAlign: "center",
           }}
         >
-          {item.path}
+          {item.path} 
+          <Text style={{color: 'green', fontWeight: '800'}}> {item.status == null ? '' : `(${item.status})`}</Text>
         </Text>
       </View>
     </TouchableOpacity>

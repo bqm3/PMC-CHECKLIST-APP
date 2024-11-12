@@ -30,51 +30,16 @@ const ScanHangMuc = ({ navigation, route }) => {
   const [tieuChuan, setTieuChuan] = useState();
   const [dataSelect, setDataSelect] = useState([]);
 
-  //  useEffect(() => {
-  //   if (data && data.length > 0) {
-  //     const groupedData = data.reduce((acc, item) => {
-  //       const HangMuc = item?.hangMucs?.ent_hangmuc?.Hangmuc;
-
-  //       if (HangMuc) {
-  //         // Check if the group already exists in acc, if not create it
-  //         if (!acc[HangMuc]) {
-  //           acc[HangMuc] = [];
-  //         }
-  //         // Add the current item to the relevant group
-  //         acc[HangMuc].push(item);
-  //       }
-  //       return acc;
-  //     }, {});
-
-  //     setDataHangMuc(Object.values(groupedData));
-  //   }
-  // }, [data]);
-
   const handlePopupActive = (item, index) => {
     setModalVisible(true);
     setOpacity(0.2);
     setTieuChuan(item?.ent_checklist?.ent_hangmuc?.Tieuchuankt);
   };
 
-  // toggle Data select
-  const toggleTodo = async (item) => {
-    console.log("item", JSON.stringify(item, null, 2));
-    // navigation.navigate("Checklist chưa kiểm tra", {
-    //   ID_ChecklistC: ID_ChecklistC,
-    //   ID_KhoiCV: ID_KhoiCV,
-    //   ID_Hangmuc: item.ID_Hangmuc,
-    //   hangMuc: hangMuc,
-    //   ID_Khuvuc: ID_Khuvuc,
-    //   Hangmuc: item,
-    //   isScan: 1,
-    // });
-    // setDataSelect([]);
-  };
 
   const renderItem = (item, index) => {
     return (
       <TouchableOpacity
-        onPress={() => toggleTodo(item)}
         style={[
           styles.content,
           {
