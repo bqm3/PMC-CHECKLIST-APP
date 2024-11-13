@@ -120,8 +120,19 @@ const LoginScreen = ({ navigation }) => {
             Toast.show({
               type: alertType,
               title: data?.textTitle,
-              textBody: data?.textBody,
+              textBody: `${data?.textBody}\n(Bấm vào thông báo để cập nhật)`, 
               autoClose: data?.time,
+              onPress: () => {
+                const url = Platform.select({
+                  ios: "https://apps.apple.com/vn/app/checklist-pmc/id6503722675",
+                  android: "https://play.google.com/store/apps/details?id=com.anonymous.PMCCHECKLISTAPP&pcampaignid=web_share"
+                });
+                if (url) {
+                  Linking.openURL(url).catch((err) => console.error("Không thể mở link:", err));
+                } else {
+                  console.log("Không xác định được URL cho nền tảng này.");
+                }
+              },
             });
           }
         })

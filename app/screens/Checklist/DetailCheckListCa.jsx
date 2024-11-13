@@ -114,7 +114,7 @@ const DetailCheckListCa = ({ route }) => {
   //       setIsShowChecklist(false);
   //       return null;
   //     }
-      
+
   //     // Nếu click vào item mới
   //     setNewActionCheckList([item]);
   //     const filter = !(
@@ -131,6 +131,7 @@ const DetailCheckListCa = ({ route }) => {
     setModalVisible(active);
     setOpacity(Number(op));
   };
+
 
   const _renderItem = ({ item, index }) => {
     // const isExistIndex = newActionCheckList?.find(
@@ -162,6 +163,9 @@ const DetailCheckListCa = ({ route }) => {
               numberOfLines={3}
             >
               {item?.ent_checklist?.Checklist}
+              {item?.isCheckListLai == 1 ? (
+                <Text style={{ color: "red" }}> (CheckList lại)</Text>
+              ) : null}
             </Text>
           </DataTable.Cell>
           <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
@@ -202,7 +206,7 @@ const DetailCheckListCa = ({ route }) => {
 
   // const _renderItem = React.useCallback(({ item, index }) => {
   //   const isSelected = selectedIndex === index;
-    
+
   //   return (
   //     <DataTable.Row
   //       key={`${item?.ID_ChecklistC}_${index}`}

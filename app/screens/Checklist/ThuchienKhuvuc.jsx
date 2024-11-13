@@ -1058,7 +1058,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
                     >
                       {isScan
                         ? "Không thấy khu vực này"
-                        : "Không có khu vực trong ca làm việc này !"}
+                        : "Khu vực của ca này đã hoàn thành !"}
                     </Text>
                   </View>
                 )}
