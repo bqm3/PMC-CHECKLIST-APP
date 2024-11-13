@@ -132,11 +132,6 @@ const DetailCheckListCa = ({ route }) => {
     setOpacity(Number(op));
   };
 
-  const sortedItems = data.sort((a, b) => {
-    const dateA = moment(a?.tb_checklistc?.Ngay);
-    const dateB = moment(b?.tb_checklistc?.Ngay);
-    return dateB.isBefore(dateA) ? 1 : -1; // sắp xếp giảm dần
-  });
 
   const _renderItem = ({ item, index }) => {
     // const isExistIndex = newActionCheckList?.find(
@@ -342,7 +337,7 @@ const DetailCheckListCa = ({ route }) => {
                   `${item?.ID_ChecklistC}_${index}`
                 }
                 scrollEnabled={true}
-                data={sortedItems}
+                data={data}
                 renderItem={_renderItem}
               />
             ) : null}
