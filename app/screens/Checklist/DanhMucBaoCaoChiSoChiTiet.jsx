@@ -252,20 +252,6 @@ const DanhMucBaoCaoChiSoChiTiet = ({ navigation }) => {
     }
   };
 
-  const resetDataInput = () => {
-    setDataInput({
-      Day: null,
-      Month: null,
-      Year: null,
-      Electrical: null,
-      Water: null,
-      ImageElectrical: null,
-      ImageWater: null,
-      Ghichu: "",
-      ID_Duan: null,
-      ID_User: null,
-    });
-  };
 
   const handleSubmit = async () => {
     setLoadingSubmit(true);
@@ -292,7 +278,6 @@ const DanhMucBaoCaoChiSoChiTiet = ({ navigation }) => {
           `${Math.floor(Math.random() * 999999999)}.jpg`,
         type: "image/jpeg",
       };
-      console.log(dataInput);
 
       formData.append("ImageElectrical", fileElectrical);
       formData.append("ImageWater", fileWater);
@@ -728,7 +713,7 @@ const DanhMucBaoCaoChiSoChiTiet = ({ navigation }) => {
                         placeholderTextColor="gray"
                         textAlignVertical="top"
                         blurOnSubmit={true}
-                        value={dataInput.Electrical}
+                        value={dataInput.Electrical == null ? '' : dataInput.Electrical}
                         style={[
                           styles.textInput,
                           {
@@ -752,7 +737,7 @@ const DanhMucBaoCaoChiSoChiTiet = ({ navigation }) => {
                         placeholderTextColor="gray"
                         textAlignVertical="top"
                         blurOnSubmit={true}
-                        value={dataInput.Water}
+                        value={dataInput.Water == null ? '' : dataInput.Water}
                         style={[
                           styles.textInput,
                           {

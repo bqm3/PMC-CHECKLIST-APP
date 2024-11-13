@@ -71,7 +71,6 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [isScan, setIsScan] = useState(false);
   const [modalVisibleQr, setModalVisibleQr] = useState(false);
-  const [data, setData] = useState([]);
   const [dataSelect, setDataSelect] = useState([]);
   const [dataKhuvuc, setDataKhuvuc] = useState([]);
 

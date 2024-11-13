@@ -241,20 +241,6 @@ const DanhMucBaoCaoChiSoChiTietUpdate = ({ navigation, route }) => {
     }
   };
 
-  const resetDataInput = () => {
-    setDataInput({
-      Day: null,
-      Month: null,
-      Year: null,
-      Electrical: null,
-      Water: null,
-      ImageElectrical: null,
-      ImageWater: null,
-      Ghichu: "",
-      ID_Duan: null,
-      ID_User: null,
-    });
-  };
 
   const handleSubmit = async () => {
     setLoadingSubmit(true);
@@ -301,9 +287,6 @@ const DanhMucBaoCaoChiSoChiTietUpdate = ({ navigation, route }) => {
           };
           formData.append("ImageWater", fileWater);
         }
-        console.log("dataInput", dataInput);
-        console.log("fileElectrical", fileElectrical);
-        console.log("fileWater", fileWater);
 
         formData.append(
           "ImageElectrical",
@@ -343,7 +326,8 @@ const DanhMucBaoCaoChiSoChiTietUpdate = ({ navigation, route }) => {
             },
             { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
           ]);
-        } else {
+        }
+       else {
           const response = await axios.put(
             BASE_URL + `/ent_baocaochiso/${dataChiSo.ID_Baocaochiso}`,
             formData,
@@ -388,7 +372,6 @@ const DanhMucBaoCaoChiSoChiTietUpdate = ({ navigation, route }) => {
         ]);
       }
     } catch (error) {
-      console.log(error);
       setLoadingSubmit(false);
       if (error.response) {
         // Lỗi từ phía server (có response từ server)
@@ -769,7 +752,7 @@ const DanhMucBaoCaoChiSoChiTietUpdate = ({ navigation, route }) => {
                         textAlignVertical="top"
                         blurOnSubmit={true}
                         defaultValue={`${dataInput?.Electrical}`}
-                        value={`${dataInput?.Electrical}`}
+                        value={`${dataInput?.Electrical}` == 'null' ? '' : `${dataInput.Electrical}`}
                         style={[
                           styles.textInput,
                           {
@@ -794,7 +777,7 @@ const DanhMucBaoCaoChiSoChiTietUpdate = ({ navigation, route }) => {
                         textAlignVertical="top"
                         blurOnSubmit={true}
                         defaultValue={`${dataInput?.Water}`}
-                        value={`${dataInput?.Water}`}
+                        value={`${dataInput?.Water}` == 'null' ? '' : dataInput.Water}
                         style={[
                           styles.textInput,
                           {
