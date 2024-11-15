@@ -53,7 +53,7 @@ import ItemCaChecklist from "../../components/Item/ItemCaChecklist";
 import DataContext from "../../context/DataContext";
 import adjust from "../../adjust";
 import { useFocusEffect } from "@react-navigation/native";
-import * as Network from "expo-network";
+import NetInfo from "@react-native-community/netinfo";
 import CustomAlertModal from "../../components/CustomAlertModal";
 import RenderHTML from 'react-native-render-html';
 import { flatMap } from "lodash";
@@ -80,7 +80,6 @@ const ThucHienChecklist = ({ navigation }) => {
   const [newActionCheckList, setNewActionCheckList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
-  const [isConnected, setIsConnected] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -101,6 +100,15 @@ const ThucHienChecklist = ({ navigation }) => {
     Giochupanh4: null,
     Anh4: null,
   });
+
+  const [isConnected, setConnected] = useState(true);
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener(state => {
+      setConnected(state.isConnected);
+    });
+  
+    return () => unsubscribe();
+  }, []);
 
   const handleChangeText = (key, value) => {
     setDataInput((data) => ({
@@ -464,9 +472,7 @@ const ThucHienChecklist = ({ navigation }) => {
   };
 
   const handleChecklistDetail = async (id1, id2, id3, id4) => {
-    const networkState = await Network.getNetworkStateAsync();
-    setIsConnected(networkState.isConnected);
-    if (networkState.isConnected) {
+    if (isConnected) {
       navigation.navigate("Thực hiện khu vực", {
         ID_ChecklistC: id1,
         ID_KhoiCV: id2,

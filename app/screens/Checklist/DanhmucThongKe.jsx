@@ -79,64 +79,20 @@ const headerList = [
     til: "Tình trạng",
     width: 150,
   },
-  // {
-  //   til: "Ghi chú",
-  //   width: 200,
-  // },
 ];
-
-//const DanhmucThongKe = ({ handlePresentModalPress2,data }) => {
 const DanhmucThongKe = memo(
   ({ handlePresentModalPress2 = () => {}, data = [], navigation }) => {
     const dispath = useDispatch();
     const { tb_checklistc } = useSelector((state) => state.tbReducer);
     const { user, authToken } = useSelector((state) => state.authReducer);
 
-    const date = new Date();
-    const dateDay = moment(date).format("YYYY-MM-DD");
-    const dateHour = moment(date).format("LTS");
-
-    const [opacity, setOpacity] = useState(1);
     const [page, setPage] = React.useState(0);
 
     const [numberOfItemsPerPage, onItemsPerPageChange] = React.useState(
       numberOfItemsPerPageList[0]
     );
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
-
-
-    const [dataInput, setDataInput] = useState({
-      dateDay: dateDay,
-      dateHour: dateHour,
-      Calv: null,
-      ID_Duan: user?.ID_Duan,
-    });
-
-    const [dataImages, setDataImages] = useState({
-      Giochupanh1: null,
-      Anh1: null,
-      Giochupanh2: null,
-      Anh2: null,
-      Giochupanh3: null,
-      Anh3: null,
-      Giochupanh4: null,
-      Anh4: null,
-    });
-
-
-
-    useEffect(() => {
-      setIsLoading(true);
-      // Use setTimeout to update the message after 2000 milliseconds (2 seconds)
-      const timeoutId = setTimeout(() => {
-        setIsLoading(false);
-      }, 1000);
-
-      // Cleanup function to clear the timeout if the component unmounts
-      return () => clearTimeout(timeoutId);
-    }, []); //
-
 
     const init_ca = async () => {
       await dispath(ent_calv_get());
@@ -158,7 +114,7 @@ const DanhmucThongKe = memo(
     }, []);
 
     const toggleTodo = (item, index) => {
-      if (user.ID_Chucvu == 2) {
+      if (user?.ent_chucvu?.Role !== 3) {
         handleToggleOptions(item);
       } else {
         navigation.navigate("Chi tiết checklist ca", {
@@ -169,7 +125,7 @@ const DanhmucThongKe = memo(
 
 
     const notChecked = (item, index) => {
-      navigation.navigate("Khu vực chưa check list", {
+      navigation.navigate("Khu vực chưa checklist", {
         ID_ChecklistC: item.ID_ChecklistC,
         ID_KhoiCV: item.ID_KhoiCV,
         ID_ThietLapCa: item.ID_ThietLapCa,
@@ -212,7 +168,6 @@ const DanhmucThongKe = memo(
           style={{
             flex: 1,
             justifyContent: "center",
-            opacity: opacity,
           }}
         >
           <View style={styles.container}>

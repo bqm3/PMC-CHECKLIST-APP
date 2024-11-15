@@ -34,7 +34,7 @@ import DataContext from "../../context/DataContext";
 import ChecklistLaiContext from "../../context/ChecklistLaiContext";
 import adjust from "../../adjust";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as Network from "expo-network";
+import NetInfo from "@react-native-community/netinfo";
 import ConnectContext from "../../context/ConnectContext";
 import { Camera } from "expo-camera";
 
@@ -78,6 +78,15 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
   const [dataChecklistFaild, setDataChecklistFaild] = useState([]);
   const [dataFilterHandler, setDataFilterHandler] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  const [isConnected, setConnected] = useState(true);
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener(state => {
+      setConnected(state.isConnected);
+    });
+  
+    return () => unsubscribe();
+  }, []);
 
   const init_checklist = async () => {
     setIsLoadingDetail(true);
@@ -325,8 +334,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
     const resultArray = Object.values(groupedByID_Hangmuc);
 
     try {
-      const networkState = await Network.getNetworkStateAsync();
-      if (networkState.isConnected) {
+      if (isConnected) {
         setLoadingSubmit(true);
         if (
           defaultActionDataChecklist.length === 0 &&

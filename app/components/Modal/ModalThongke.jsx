@@ -175,7 +175,7 @@ const ModalThongke = ({
               </View>
             </View>
             <View>
-              {user.ID_Chucvu == 2 ? (
+              {user?.ent_chucvu?.Role !== 3 ? (
                 ent_khoicv && ent_khoicv.length > 0 ? (
                   <View>
                     <Text allowFontScaling={false} style={styles.text}>
@@ -233,7 +233,7 @@ const ModalThongke = ({
               ) : null}
             </View>
             <View>
-              {user.ID_Chucvu == 2 ? (
+              {user?.ent_chucvu?.Role !== 3 ? (
                 filteredCalv && filteredCalv.length > 0 ? (
                   <>
                     <Text allowFontScaling={false} style={styles.text}>

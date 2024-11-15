@@ -30,6 +30,7 @@ import {
   ent_khuvuc_get,
 } from "../../redux/actions/entActions";
 import { Provider, useDispatch, useSelector } from "react-redux";
+import NetInfo from "@react-native-community/netinfo";
 import {
   BottomSheetModal,
   BottomSheetView,
@@ -42,7 +43,7 @@ import { COLORS, SIZES } from "../../constants/theme";
 import { tb_checklistc_get } from "../../redux/actions/tbActions";
 import DataContext from "../../context/DataContext";
 import adjust from "../../adjust";
-import * as Network from "expo-network";
+
 
 const ThucHienChecklist = ({ navigation }) => {
   const ref = useRef(null);
@@ -51,12 +52,21 @@ const ThucHienChecklist = ({ navigation }) => {
   const { tb_checklistc } = useSelector((state) => state.tbReducer);
   const { user, authToken } = useSelector((state) => state.authReducer);
   const { setDataHangmuc, stepKhuvuc } = useContext(DataContext);
-  const [isConnected, setIsConnected] = useState(false);
 
   const [data, setData] = useState([]);
 
   const [newActionCheckList, setNewActionCheckList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  const [isConnected, setConnected] = useState(true);
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener(state => {
+      setConnected(state.isConnected);
+    });
+  
+    return () => unsubscribe();
+  }, []);
+
 
   useEffect(() => {
     if (tb_checklistc?.data) {
@@ -115,9 +125,7 @@ const ThucHienChecklist = ({ navigation }) => {
   };
 
   const handleChecklistDetail = async (id1, id2, id3, id4) => {
-    const networkState = await Network.getNetworkStateAsync();
-    setIsConnected(networkState.isConnected);
-    if (networkState.isConnected) {
+    if (isConnected) {
       navigation.navigate("Thực hiện khu vực lại", {
         ID_ChecklistC: id1,
         ID_KhoiCV: id2,

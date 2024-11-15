@@ -180,12 +180,12 @@ const dataKST = [
     path: "Xử lý sự cố",
     icon: require("../../../assets/icons/o-04.png"),
   },
-  {
-    id: 4,
-    status: null,
-    path: "Thông báo sự cố",
-    icon: require("../../../assets/icons/o-04.png"),
-  },
+  // {
+  //   id: 4,
+  //   status: null,
+  //   path: "Thông báo sự cố",
+  //   icon: require("../../../assets/icons/o-04.png"),
+  // },
   {
     id: 5,
     status: 'new',
@@ -346,7 +346,7 @@ const HomeScreen = ({ navigation }) => {
             }}
             numColumns={2}
             data={
-              user?.ent_chucvu?.Role == 3
+              user?.ent_chucvu?.Role !== 3
                 ? dataDanhMuc
                 : user?.ent_chucvu?.Role == 1
                 ? dataGD

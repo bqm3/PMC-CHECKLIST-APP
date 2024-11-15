@@ -44,7 +44,7 @@ import { BASE_URL } from "../../constants/config";
 import QRCodeScreen from "../QRCodeScreen";
 import DataContext from "../../context/DataContext";
 import ChecklistLaiContext from "../../context/ChecklistLaiContext";
-import * as Network from "expo-network";
+import NetInfo from "@react-native-community/netinfo";
 import adjust from "../../adjust";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Checkbox from "../../components/Active/Checkbox";
@@ -63,7 +63,6 @@ const DetailChecklistLai = ({ route, navigation }) => {
   const { isConnect, saveConnect } = useContext(ConnectContext);
   const { dataChecklistFilterContext, setDataChecklistFilterContext } =
     useContext(ChecklistLaiContext);
-  const [isConnected, setIsConnected] = useState(false);
 
   const { user, authToken } = useSelector((state) => state.authReducer);
 
@@ -87,6 +86,15 @@ const DetailChecklistLai = ({ route, navigation }) => {
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const headerHeight = useHeaderHeight();
+  
+  const [isConnected, setConnected] = useState(true);
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener(state => {
+      setConnected(state.isConnected);
+    });
+  
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -502,8 +510,6 @@ const DetailChecklistLai = ({ route, navigation }) => {
   // call api submit data checklsit
   const handleSubmit = async () => {
     try {
-      const networkState = await Network.getNetworkStateAsync();
-      setIsConnected(networkState.isConnected);
       saveConnect(true);
       if (location == null) {
         Alert.alert(
@@ -513,7 +519,7 @@ const DetailChecklistLai = ({ route, navigation }) => {
         );
         return;
       } else {
-        if (networkState.isConnected) {
+        if (isConnected) {
           setLoadingSubmit(true);
           setActiveAll(false);
           saveConnect(false);

@@ -31,7 +31,7 @@ import DataContext from "../../context/DataContext";
 import ChecklistContext from "../../context/ChecklistContext";
 import adjust from "../../adjust";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as Network from "expo-network";
+import NetInfo from "@react-native-community/netinfo";
 import ConnectContext from "../../context/ConnectContext";
 import axiosClient from "../../api/axiosClient";
 
@@ -74,6 +74,15 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
   const [defaultActionDataChecklist, setDataChecklistDefault] = useState([]);
   const [dataChecklistFaild, setDataChecklistFaild] = useState([]);
   const [dataFilterHandler, setDataFilterHandler] = useState([]);
+
+  const [isConnected, setConnected] = useState(true);
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener(state => {
+      setConnected(state.isConnected);
+    });
+  
+    return () => unsubscribe();
+  }, []);
 
   const init_checklist = async () => {
     setIsLoadingDetail(true);
@@ -330,10 +339,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
     const resultArray = Object.values(groupedByID_Hangmuc);
 
     try {
-      const networkState = await Network.getNetworkStateAsync();
-      console.log('defaultActionDataChecklist',defaultActionDataChecklist)
-      console.log('dataChecklistFaild',dataChecklistFaild)
-      if (networkState.isConnected) {
+      if (isConnected) {
         setLoadingSubmit(true);
         if (
           defaultActionDataChecklist.length === 0 &&

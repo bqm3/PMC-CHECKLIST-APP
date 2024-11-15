@@ -33,7 +33,7 @@ import ModalBottomSheet from "../../components/Modal/ModalBottomSheet";
 
 const numberOfItemsPerPageList = [20, 30, 50];
 
-const DanhmucThongkeContent = ({ setOpacity, opacity, navigation }) => {
+const DanhmucTraCuuContent = ({ setOpacity, opacity, navigation }) => {
   const dispath = useDispatch();
   const { user, authToken } = useSelector((state) => state.authReducer);
   const { ent_khoicv, ent_calv } = useSelector((state) => state.entReducer);
@@ -54,7 +54,6 @@ const DanhmucThongkeContent = ({ setOpacity, opacity, navigation }) => {
   const date = new Date();
   const startOfMonth = moment().startOf("month").format("YYYY-MM-DD");
   const endOfMonth = moment(date).format("YYYY-MM-DD");
-  const [isShowChecklist, setIsShowChecklist] = useState(false);
   const [isDatePickerVisible, setDatePickerVisibility] = useState({
     fromDate: false,
     toDate: false,
@@ -63,7 +62,6 @@ const DanhmucThongkeContent = ({ setOpacity, opacity, navigation }) => {
   const [selectedKhoiCV, setSelectedKhoiCV] = useState(null);
   const [filteredCalv, setFilteredCalv] = useState(ent_calv);
   const [shouldFetch, setShouldFetch] = useState(false);
-  const [dataTraCuu, setDataTraCuu] = useState([]);
   const [data, setData] = useState([]);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [visibleBottom, setVisibleBottom] = useState(false);
@@ -85,31 +83,6 @@ const DanhmucThongkeContent = ({ setOpacity, opacity, navigation }) => {
       (ca) => ca?.ent_khoicv?.ID_KhoiCV === selectedKhoi?.ID_KhoiCV
     );
     setFilteredCalv(filtered);
-  };
-  const toggleTodo = async (item) => {
-    console.log(item);
-    // setIsCheckbox(true);
-    // const isExistIndex = newActionCheckList.findIndex(
-    //   (existingItem) =>
-    //     existingItem.ID_Checklistchitiet === item.ID_Checklistchitiet
-    // );
-
-    // // Nếu item đã tồn tại, xóa item đó đi
-    // if (isExistIndex !== -1) {
-    //   setNewActionCheckList((prevArray) =>
-    //     prevArray.filter((_, index) => index !== isExistIndex)
-    //   );
-    // } else {
-    //   // Nếu item chưa tồn tại, thêm vào mảng mới
-    //   setNewActionCheckList([item]);
-    //   const filter =
-    //     item.Ketqua == item?.ent_checklist?.Giatridinhdanh &&
-    //     item?.Ghichu == "" &&
-    //     (item?.Anh == "" || item?.Anh === null)
-    //       ? false
-    //       : true;
-    //   setIsShowChecklist(filter);
-    // }
   };
 
   const toggleDatePicker = (key, isCheck) => {
@@ -192,24 +165,6 @@ const DanhmucThongkeContent = ({ setOpacity, opacity, navigation }) => {
 
     return () => backHandler.remove();
   }, [isBottomSheetOpen]);
-
-  // const handleSheetChanges = useCallback((index) => {
-  //   if (index === -1) {
-  //     setOpacity(1);
-  //   } else {
-  //     setOpacity(0.2);
-  //   }
-  // }, []);
-
-  // const handlePresentModalPress2 = useCallback(() => {
-  //   setOpacity(0.2);
-  //   bottomSheetModalRef?.current?.present();
-  // }, []);
-
-  // const handlePresentModalClose = useCallback(() => {
-  //   setOpacity(1);
-  //   bottomSheetModalRef.current?.close();
-  // }, []);
 
   const handleSheetChanges = useCallback((index) => {
     setOpacity(index === -1 ? 1 : 0.2);
@@ -307,7 +262,7 @@ const DanhmucThongkeContent = ({ setOpacity, opacity, navigation }) => {
   );
 };
 
-export default DanhmucThongkeContent;
+export default DanhmucTraCuuContent;
 
 const styles = StyleSheet.create({
   container: {

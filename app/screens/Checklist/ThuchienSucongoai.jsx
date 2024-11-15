@@ -772,14 +772,14 @@ const ThuchienSucongoai = ({ navigation }) => {
                     </View>
                   </View>
 
-                  <View>
+                  <View style={{marginBottom: 10}}>
                     <ButtonSubmit
                       text="Gửi"
                       onPress={() => handleSubmit()}
                       isLoading={loadingSubmit}
                       backgroundColor={COLORS.bg_button}
                       color="white"
-                      width="100"
+                      width="100%"
                     />
                   </View>
                 </View>

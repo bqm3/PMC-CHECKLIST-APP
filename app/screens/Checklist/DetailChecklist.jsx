@@ -33,6 +33,7 @@ import BottomSheet, {
 } from "@gorhom/bottom-sheet";
 import * as Location from "expo-location";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import NetInfo from "@react-native-community/netinfo";
 import { COLORS, SIZES } from "../../constants/theme";
 import ActiveChecklist from "../../components/Active/ActiveCheckList";
 import Button from "../../components/Button/Button";
@@ -42,7 +43,7 @@ import axios, { isCancel } from "axios";
 import { BASE_URL } from "../../constants/config";
 import DataContext from "../../context/DataContext";
 import ChecklistContext from "../../context/ChecklistContext";
-import * as Network from "expo-network";
+
 import adjust from "../../adjust";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Checkbox from "../../components/Active/Checkbox";
@@ -64,7 +65,6 @@ const DetailChecklist = ({ route, navigation }) => {
   const { isConnect, saveConnect } = useContext(ConnectContext);
   const { dataChecklistFilterContext, setDataChecklistFilterContext } =
     useContext(ChecklistContext);
-  const [isConnected, setIsConnected] = useState(false);
 
   const { user, authToken } = useSelector((state) => state.authReducer);
 
@@ -89,6 +89,15 @@ const DetailChecklist = ({ route, navigation }) => {
   const [loading, setLoading] = useState(true);
 
   const headerHeight = useHeaderHeight();
+  const [isConnected, setConnected] = useState(true);
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener(state => {
+      setConnected(state.isConnected);
+    });
+  
+    return () => unsubscribe();
+  }, []);
+
 
   useEffect(() => {
     let locationSubscription;
@@ -548,8 +557,7 @@ const DetailChecklist = ({ route, navigation }) => {
   // call api submit data checklsit
   const handleSubmit = async () => {
     try {
-      const networkState = await Network.getNetworkStateAsync();
-      setIsConnected(networkState.isConnected);
+     
       saveConnect(true);
       if (location == null) {
         Alert.alert(
@@ -559,7 +567,7 @@ const DetailChecklist = ({ route, navigation }) => {
         );
         return;
       } else {
-        if (networkState.isConnected) {
+        if (isConnected) {
           setLoadingSubmit(true);
           setActiveAll(false);
           saveConnect(false);

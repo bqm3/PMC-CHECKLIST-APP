@@ -37,6 +37,7 @@ import {
 } from "@gorhom/bottom-sheet";
 import * as FileSystem from "expo-file-system";
 import * as Network from 'expo-network';
+import NetInfo from "@react-native-community/netinfo";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import adjust from "../adjust";
 import { BASE_URL, BASE_URL_NOTI } from "../constants/config";
@@ -58,7 +59,7 @@ const alertTypeMap = {
   INFO: ALERT_TYPE.INFO,
 };
 
-const version = "2.0.8";
+const version = "2.0.9";
 
 const LoginScreen = ({ navigation }) => {
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
@@ -73,6 +74,7 @@ const LoginScreen = ({ navigation }) => {
 
   const [show, setShow] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+  
   const [data, setData] = useState({
     UserName: "",
     Password: "",
@@ -81,11 +83,17 @@ const LoginScreen = ({ navigation }) => {
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const [statusLocation, setStatusLocation] = useState(1);
+  const [isConnected, setConnected] = useState(true);
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener(state => {
+      setConnected(state.isConnected);
+    });
+  
+    return () => unsubscribe();
+  }, []);
 
   const handleSubmit = async () => {
-    const networkState = await Network.getNetworkStateAsync();
-
-    if (!networkState.isConnected) {
+    if (!isConnected) {
       Alert.alert("PMC Thông báo", "Không có kết nối mạng", [
         { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
       ]);

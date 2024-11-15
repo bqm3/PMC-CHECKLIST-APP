@@ -516,7 +516,7 @@ const HomeStack = ({ navigation }) => {
       />
 
       <Stack.Screen
-        name="Khu vực chưa check list"
+        name="Khu vực chưa checklist"
         component={NotKhuVuc}
         lazy={false}
         options={({ navigation, route }) => ({
@@ -531,7 +531,7 @@ const HomeStack = ({ navigation }) => {
                 color: "white",
               }}
             >
-              Khu vực chưa check list
+              Khu vực chưa checklist
             </Text>
           ),
           headerLeft: () => (
