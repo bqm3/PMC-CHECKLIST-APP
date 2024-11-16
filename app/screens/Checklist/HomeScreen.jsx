@@ -346,7 +346,7 @@ const HomeScreen = ({ navigation }) => {
             }}
             numColumns={2}
             data={
-              user?.ent_chucvu?.Role !== 3
+              user?.ent_chucvu?.Role == 3
                 ? dataDanhMuc
                 : user?.ent_chucvu?.Role == 1
                 ? dataGD

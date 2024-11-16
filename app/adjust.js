@@ -1,8 +1,7 @@
-import { PixelRatio, Dimensions } from "react-native";
+import { Dimensions, PixelRatio } from 'react-native';
 
-const pixelRatio = PixelRatio.get();
-const deviceHeight = Dimensions.get("window").height;
-const deviceWidth = Dimensions.get("window").width;
+const { width: deviceWidth, height: deviceHeight } = Dimensions.get('window');
+const pixelRatio = PixelRatio.get(); // Lấy thông tin độ phân giải pixel
 
 const adjust = (size) => {
   
@@ -13,25 +12,25 @@ const adjust = (size) => {
     }
     return size * 1.2;
   }
-  
+
   // Thiết bị nhỏ (điện thoại nhỏ)
   if (deviceWidth < 360) {
     return size * 0.85;
   }
-  
+
   // Các thiết bị trung bình (bao gồm iPhone, Android)
   if (deviceHeight < 667) {
     return size * 0.9;
   }
-  
+
   // Các thiết bị cỡ trung bình lớn hơn một chút (ví dụ iPhone 6-8, Android tương đương)
   if (deviceHeight >= 667 && deviceHeight < 812) {
-    return size * 0.9;
+    return size * 0.95;  // Sửa lại một chút nếu muốn điều chỉnh theo tỷ lệ hợp lý hơn
   }
-  
+
   // Các thiết bị lớn hơn nhưng không phải iPad (ví dụ iPhone X và các dòng iPhone sau đó)
   if (deviceHeight >= 812 && deviceHeight < 1024) {
-    return size * 1;
+    return size * 1;  // Trả về kích thước gốc nếu không cần điều chỉnh
   }
 
   return size; // Kích thước mặc định cho các thiết bị không rơi vào các trường hợp trên

@@ -36,7 +36,7 @@ import {
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
 import * as FileSystem from "expo-file-system";
-import * as Network from 'expo-network';
+import * as Network from "expo-network";
 import NetInfo from "@react-native-community/netinfo";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import adjust from "../adjust";
@@ -47,6 +47,10 @@ import {
   AlertNotificationRoot,
   Toast,
 } from "react-native-alert-notification";
+import { Snackbar } from "react-native-paper";
+import { Provider as PaperProvider } from "react-native-paper";
+import { PanGestureHandler } from "react-native-gesture-handler";
+import NotificationComponent from "../components/Notification/NotificationComponent";
 import axios from "axios";
 
 import DataLicense from "../components/PrivacyPolicy";
@@ -59,7 +63,7 @@ const alertTypeMap = {
   INFO: ALERT_TYPE.INFO,
 };
 
-const version = "2.0.9";
+const version = "2.0.2";
 
 const LoginScreen = ({ navigation }) => {
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
@@ -74,7 +78,7 @@ const LoginScreen = ({ navigation }) => {
 
   const [show, setShow] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
-  
+
   const [data, setData] = useState({
     UserName: "",
     Password: "",
@@ -84,11 +88,14 @@ const LoginScreen = ({ navigation }) => {
   const [errorMsg, setErrorMsg] = useState(null);
   const [statusLocation, setStatusLocation] = useState(1);
   const [isConnected, setConnected] = useState(true);
+  const [notification, setNotification] = useState(null);
+  const [animation, setAnimation] = useState("slideInDown");
+
   useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener(state => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
       setConnected(state.isConnected);
     });
-  
+
     return () => unsubscribe();
   }, []);
 
@@ -99,7 +106,7 @@ const LoginScreen = ({ navigation }) => {
       ]);
       return;
     }
-    
+
     if (data?.UserName === "" || data?.Password === "") {
       Alert.alert("PMC Thông báo", "Thiếu thông tin đăng nhập", [
         { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
@@ -115,39 +122,25 @@ const LoginScreen = ({ navigation }) => {
 
   useEffect(() => {
     const handleNoti = async () => {
-      await axios
-        .get(BASE_URL + `/noti?version=${version}&platform=${Platform.OS}`, {
-          headers: {
-            Accept: "application/json",
-          },
-        })
-        .then((res) => {
-          if (res.data.status == 1) {
-            const data = res.data.data;
-            const alertType = alertTypeMap[data.type] || ALERT_TYPE.INFO;
-            Toast.show({
-              type: alertType,
-              title: data?.textTitle,
-              textBody: `${data?.textBody}\n(Bấm vào thông báo để cập nhật)`, 
-              autoClose: data?.time,
-              onPress: () => {
-                const url = Platform.select({
-                  ios: "https://apps.apple.com/vn/app/checklist-pmc/id6503722675",
-                  android: "https://play.google.com/store/apps/details?id=com.anonymous.PMCCHECKLISTAPP&pcampaignid=web_share"
-                });
-                if (url) {
-                  Linking.openURL(url).catch((err) => console.error("Không thể mở link:", err));
-                } else {
-                  console.log("Không xác định được URL cho nền tảng này.");
-                }
-              },
-            });
+      try {
+        const response = await axios.get(
+          BASE_URL + `/noti?version=${version}&platform=${Platform.OS}`,
+          {
+            headers: {
+              Accept: "application/json",
+            },
           }
-        })
-        .catch((err) => {
-          console.log("err", err);
-        });
+        );
+
+        if (response.data.status == 1) {
+          const data = response.data;
+          setNotification(data);
+        }
+      } catch (err) {
+        console.log("err", err);
+      }
     };
+
     handleNoti();
   }, []);
 
@@ -222,6 +215,19 @@ const LoginScreen = ({ navigation }) => {
       keyboardDidShowListener.remove();
     };
   }, []);
+
+  useEffect(() => {
+    if (notification) {
+      const timer = setTimeout(() => {
+        setAnimation("slideOutUp");
+      }, notification?.data?.time);
+
+      return () => {
+        clearTimeout(timer);
+        setNotification(null);
+      };
+    }
+  }, [notification]);
 
   const handleSheetChanges = useCallback((index) => {
     if (index === -1) {
@@ -312,8 +318,16 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <AlertNotificationRoot theme="light">
+      <PaperProvider>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          {notification?.status == 1 && (
+            <NotificationComponent
+              notification={notification}
+              animation={animation}
+              setAnimation={setAnimation}
+              setNotification={setNotification}
+            />
+          )}
           <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : null}
             style={{ flex: 1 }}
@@ -345,7 +359,7 @@ const LoginScreen = ({ navigation }) => {
                       }}
                     >
                       <View style={{ height: adjust(20) }}></View>
-                      {/* <Text allowFontScaling={false} style={styles.paragraph}>{text}</Text> */}
+
                       <View style={styles.action}>
                         <TextInput
                           allowFontScaling={false}
@@ -485,8 +499,8 @@ const LoginScreen = ({ navigation }) => {
               </BottomSheetModal>
             </BottomSheetModalProvider>
           </KeyboardAvoidingView>
-        </AlertNotificationRoot>
-      </GestureHandlerRootView>
+        </GestureHandlerRootView>
+      </PaperProvider>
     </>
   );
 };
