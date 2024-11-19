@@ -420,23 +420,21 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
           formData.append("isScan", item.isScan || null);
 
           // If there is an image, append it to formData
-          if (item.Anh) {
-            const file = {
-              uri:
-                Platform.OS === "android"
-                  ? item.Anh.uri
-                  : item.Anh.uri.replace("file://", ""),
-              name:
-                item.Anh.fileName ||
-                `${Math.floor(Math.random() * 999999999)}.jpg`,
-              type: "image/jpeg",
-            };
-            formData.append(`Images_${index}`, file);
-            formData.append("Anh", file.name);
-          } else {
-            // formData.append("Anh", "");
-            // formData.append(`Images_${index}`, {});
-          }
+          if (item.Anh && Array.isArray(item.Anh)) {
+            item.Anh.forEach((image, imgIndex) => {
+              const file = {
+                uri:
+                  Platform.OS === "android"
+                    ? image.uri
+                    : image.uri.replace("file://", ""),
+                name:
+                  image.fileName ||
+                  `${Math.floor(Math.random() * 999999999)}_${item.ID_Checklist}_${imgIndex}.jpg`,
+                type: "image/jpeg",
+              };
+              formData.append(`Images_${index}_${item.ID_Checklist}_${imgIndex}`, file);
+            });
+          }          
         });
 
         // Send the entire FormData in a single request
@@ -587,23 +585,21 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
           formData.append("isScan", item.isScan || null);
 
           // Nếu có hình ảnh, thêm vào FormData
-          if (item.Anh) {
-            const file = {
-              uri:
-                Platform.OS === "android"
-                  ? item.Anh.uri
-                  : item.Anh.uri.replace("file://", ""),
-              name:
-                item.Anh.fileName ||
-                `${Math.floor(Math.random() * 999999999)}.jpg`,
-              type: "image/jpeg",
-            };
-            formData.append(`Images_${index}`, file);
-            formData.append("Anh", file.name);
-          } else {
-            // formData.append("Anh", "");
-            // formData.append(`Images_${index}`, {});
-          }
+          if (item.Anh && Array.isArray(item.Anh)) {
+            item.Anh.forEach((image, imgIndex) => {
+              const file = {
+                uri:
+                  Platform.OS === "android"
+                    ? image.uri
+                    : image.uri.replace("file://", ""),
+                name:
+                  image.fileName ||
+                  `${Math.floor(Math.random() * 999999999)}_${item.ID_Checklist}_${imgIndex}.jpg`,
+                type: "image/jpeg",
+              };
+              formData.append(`Images_${index}_${item.ID_Checklist}_${imgIndex}`, file);
+            });
+          }          
         });
         // Tạo các yêu cầu API
         const requestFaild = axios.post(

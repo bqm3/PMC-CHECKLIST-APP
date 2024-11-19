@@ -13,6 +13,7 @@ import {
   Image,
 } from "react-native";
 import { TouchableWithoutFeedback } from "react-native";
+import Swiper from "react-native-swiper";
 import { Feather } from "@expo/vector-icons";
 import { DataTable } from "react-native-paper";
 import { BASE_URL } from "../../constants/config";
@@ -118,8 +119,12 @@ const DetailCheckListCa = ({ route }) => {
           style={{
             gap: 20,
             paddingVertical: 10,
-            backgroundColor: 
-              newActionCheckList[0] == item ? COLORS.bg_button : isError == 1 ? '#fff2cc' : 'white',
+            backgroundColor:
+              newActionCheckList[0] == item
+                ? COLORS.bg_button
+                : isError == 1
+                ? "#fff2cc"
+                : "white",
           }}
         >
           <DataTable.Cell style={{ width: 120, justifyContent: "center" }}>
@@ -189,7 +194,6 @@ const DetailCheckListCa = ({ route }) => {
     );
   };
 
-
   if (loading) {
     return (
       <ImageBackground
@@ -204,6 +208,19 @@ const DetailCheckListCa = ({ route }) => {
       </ImageBackground>
     );
   }
+
+  const renderImage = ({ item }) => {
+    return (
+      <View style={styles.imageContainer}>
+        <Image
+          style={styles.image}
+          source={{
+            uri: `https://drive.google.com/thumbnail?id=${item.trim()}`,
+          }}
+        />
+      </View>
+    );
+  };
 
   return (
     <ImageBackground
@@ -344,15 +361,12 @@ const DetailCheckListCa = ({ route }) => {
                 {newActionCheckList[0]?.Anh !== null &&
                   newActionCheckList[0]?.Anh !== "" &&
                   newActionCheckList[0]?.Anh !== undefined && (
-                    <Image
-                      style={{
-                        width: SIZES.width * 0.8,
-                        height: SIZES.height * 0.5,
-                        objectFit: "cover",
-                      }}
-                      source={{
-                        uri: `https://drive.google.com/thumbnail?id=${newActionCheckList[0]?.Anh}`,
-                      }}
+                    <FlatList
+                      data={newActionCheckList[0]?.Anh.split(",")}
+                      renderItem={renderImage}
+                      keyExtractor={(item, index) => index.toString()}
+                      horizontal={true}
+                      showsHorizontalScrollIndicator={false}
                     />
                   )}
 
@@ -528,5 +542,13 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.5)",
     justifyContent: "center",
     alignItems: "center",
+  },
+  imageContainer: {
+    marginHorizontal: 10,
+  },
+  image: {
+    width: 200,
+    height: 150,
+    borderRadius: 10,
   },
 });

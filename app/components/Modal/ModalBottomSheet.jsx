@@ -12,6 +12,7 @@ import adjust from "../../adjust";
 const ModalBottomSheet = React.memo(({ visible, setVisible,setOpacity, children }) => {
   const handleClose = useCallback(() => {
     setVisible(false);
+    setOpacity(1)
   }, [setVisible]);
 
   return (

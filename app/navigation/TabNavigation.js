@@ -108,7 +108,6 @@ const HomeStack = ({ navigation }) => {
           headerRight: () => (
             <TouchableOpacity
               style={{
-                backgroundColor: "red",
                 width: adjust(40),
                 height: adjust(40),
               }}

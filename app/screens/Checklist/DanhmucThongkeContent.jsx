@@ -6,6 +6,7 @@ import {
   TouchableHighlight,
   View,
   BackHandler,
+  ActivityIndicator,
 } from "react-native";
 import React, {
   useRef,
@@ -15,11 +16,7 @@ import React, {
   useCallback,
 } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  BottomSheetModal,
-  BottomSheetModalProvider,
-  BottomSheetScrollView,
-} from "@gorhom/bottom-sheet";
+import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { DataTable } from "react-native-paper";
 import { COLORS, SIZES } from "../../constants/theme";
@@ -40,6 +37,7 @@ const DanhmucTraCuuContent = ({ setOpacity, opacity, navigation }) => {
   const { tb_checklistc } = useSelector((state) => state.tbReducer);
   const [newActionCheckList, setNewActionCheckList] = useState([]);
   const bottomSheetModalRef = useRef(null);
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const snapPoints2 = useMemo(() => ["65%"], []);
   const [page, setPage] = React.useState(0);
   const [numberOfItemsPerPage, onItemsPerPageChange] = React.useState(
@@ -63,7 +61,6 @@ const DanhmucTraCuuContent = ({ setOpacity, opacity, navigation }) => {
   const [filteredCalv, setFilteredCalv] = useState(ent_calv);
   const [shouldFetch, setShouldFetch] = useState(false);
   const [data, setData] = useState([]);
-  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [visibleBottom, setVisibleBottom] = useState(false);
 
   const [filters, setFilters] = useState({
@@ -167,16 +164,16 @@ const DanhmucTraCuuContent = ({ setOpacity, opacity, navigation }) => {
   }, [isBottomSheetOpen]);
 
   const handleSheetChanges = useCallback((index) => {
-    setOpacity(index === -1 ? 1 : 0.2);
     setIsBottomSheetOpen(index !== -1);
+    setOpacity(index === -1 ? 1 : 0.2);
   }, []);
+
   const handlePresentModalPress2 = useCallback(() => {
     setOpacity(0.2);
-    setIsBottomSheetOpen(true);
     if (user?.isError == 1) {
       setVisibleBottom(true);
     } else {
-      bottomSheetModalRef?.current?.present();
+      setIsBottomSheetOpen(true);
     }
   }, []);
 
@@ -196,67 +193,88 @@ const DanhmucTraCuuContent = ({ setOpacity, opacity, navigation }) => {
         behavior={Platform.OS === "ios" ? "padding" : null}
         style={{ flex: 1 }}
       >
-        <BottomSheetModalProvider>
-          <View style={{ flex: 1, opacity: opacity }}>
-            <DanhmucThongKe
-              handlePresentModalPress2={handlePresentModalPress2}
-              data={data}
-              navigation={navigation}
-            />
-            <ModalBottomSheet
-              visible={visibleBottom}
-              setVisible={setVisibleBottom}
-              setOpacity={setOpacity}
-            >
-              <ModalThongke
-                handleChangeFilters={handleChangeFilters}
-                filters={filters}
-                setVisibleBottom={setVisibleBottom}
-                setOpacity={setOpacity}
-                toggleDatePicker={toggleDatePicker}
-                isDatePickerVisible={isDatePickerVisible}
-                setIsEnabled={setIsEnabled}
-                toggleSwitch={toggleSwitch}
-                isEnabled={isEnabled}
-                fetchData={fetchData}
-                handlePresentModalClose={handlePresentModalClose}
-                ent_khoicv={ent_khoicv}
-                ent_calv={ent_calv}
-                user={user}
-                handleKhoiSelection={handleKhoiSelection}
-                filteredCalv={filteredCalv}
+        <View
+          style={{ flex: 1, opacity: opacity }}
+          pointerEvents={isBottomSheetOpen || visibleBottom ? "none" : "auto"}
+        >
+          {isLoading ? (
+            <ActivityIndicator
+              style={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+              size="large"
+              color={COLORS.bg_white}
+            ></ActivityIndicator>
+          ) : (
+            <>
+              <DanhmucThongKe
+                handlePresentModalPress2={handlePresentModalPress2}
+                data={data}
+                navigation={navigation}
               />
-            </ModalBottomSheet>
-          </View>
+              <ModalBottomSheet
+                visible={visibleBottom}
+                setVisible={setVisibleBottom}
+                setOpacity={setOpacity}
+              >
+                <ModalThongke
+                  handleChangeFilters={handleChangeFilters}
+                  filters={filters}
+                  setVisibleBottom={setVisibleBottom}
+                  setOpacity={setOpacity}
+                  toggleDatePicker={toggleDatePicker}
+                  isDatePickerVisible={isDatePickerVisible}
+                  setIsEnabled={setIsEnabled}
+                  toggleSwitch={toggleSwitch}
+                  isEnabled={isEnabled}
+                  fetchData={fetchData}
+                  handlePresentModalClose={handlePresentModalClose}
+                  ent_khoicv={ent_khoicv}
+                  ent_calv={ent_calv}
+                  user={user}
+                  handleKhoiSelection={handleKhoiSelection}
+                  filteredCalv={filteredCalv}
+                />
+              </ModalBottomSheet>
+            </>
+          )}
+        </View>
 
-          <BottomSheetModal
-            ref={bottomSheetModalRef}
-            index={0}
-            snapPoints={snapPoints2}
-            onChange={handleSheetChanges}
-          >
-            <BottomSheetScrollView style={styles.contentContainer}>
-              <ModalThongke
-                handleChangeFilters={handleChangeFilters}
-                filters={filters}
-                toggleDatePicker={toggleDatePicker}
-                setVisibleBottom={setVisibleBottom}
-                setOpacity={setOpacity}
-                isDatePickerVisible={isDatePickerVisible}
-                setIsEnabled={setIsEnabled}
-                toggleSwitch={toggleSwitch}
-                isEnabled={isEnabled}
-                fetchData={fetchData}
-                handlePresentModalClose={handlePresentModalClose}
-                ent_khoicv={ent_khoicv}
-                ent_calv={ent_calv}
-                user={user}
-                handleKhoiSelection={handleKhoiSelection}
-                filteredCalv={filteredCalv}
-              />
-            </BottomSheetScrollView>
-          </BottomSheetModal>
-        </BottomSheetModalProvider>
+        <BottomSheet
+          ref={bottomSheetModalRef}
+          index={isBottomSheetOpen ? 0 : -1}
+          snapPoints={snapPoints2}
+          onChange={handleSheetChanges}
+          enablePanDownToClose={true}
+          onClose={handlePresentModalClose}
+        >
+          <BottomSheetView style={styles.contentContainer}>
+            <ModalThongke
+              handleChangeFilters={handleChangeFilters}
+              filters={filters}
+              toggleDatePicker={toggleDatePicker}
+              setVisibleBottom={setVisibleBottom}
+              setOpacity={setOpacity}
+              isDatePickerVisible={isDatePickerVisible}
+              setIsEnabled={setIsEnabled}
+              toggleSwitch={toggleSwitch}
+              isEnabled={isEnabled}
+              fetchData={fetchData}
+              handlePresentModalClose={handlePresentModalClose}
+              ent_khoicv={ent_khoicv}
+              ent_calv={ent_calv}
+              user={user}
+              handleKhoiSelection={handleKhoiSelection}
+              filteredCalv={filteredCalv}
+            />
+          </BottomSheetView>
+        </BottomSheet>
       </KeyboardAvoidingView>
     </GestureHandlerRootView>
   );

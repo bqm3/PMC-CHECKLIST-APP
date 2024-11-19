@@ -35,54 +35,87 @@ const ModalPopupDetailChecklist = ({
   const [defaultChecklist, setDefaultChecklist] = useState(
     dataItem?.valueCheck
   );
-  const [image, setImage] = useState();
+  const [images, setImages] = useState([]);
   const [ghichu, setGhichu] = useState();
   const [chiso, setChiso] = useState();
 
+  // const pickImage = async () => {
+  //   // Ask the user for the permission to access the camera
+  //   const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+
+  //   if (permissionResult.granted === false) {
+  //     alert("You've refused to allow this appp to access your camera!");
+  //     return;
+  //   }
+
+  //   try {
+  //     // Cấu hình các tùy chọn cho ImagePicker
+  //     const result = await ImagePicker.launchCameraAsync({
+  //       quality: 0.5, // Giảm chất lượng ảnh (giá trị từ 0.0 đến 1.0, 0.5 là giảm 50% chất lượng)
+  //       base64: false, // Không cần mã hóa ảnh thành base64, nếu không cần thiết
+  //       exif: false, // Bỏ thông tin Exif nếu không cần
+  //     });
+
+  //     if (!result.canceled) {
+  //       dataItem.Anh = result?.assets[0];
+  //       handleItemClick(result?.assets[0], "option", "Anh", dataItem);
+  //       setImage(result?.assets[0]);
+  //     }
+  //   } catch (error) {
+  //     console.error("Lỗi khi chụp ảnh: ", error);
+  //   }
+  // };
+
   const pickImage = async () => {
-    // Ask the user for the permission to access the camera
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
 
     if (permissionResult.granted === false) {
-      alert("You've refused to allow this appp to access your camera!");
+      alert("You've refused to allow this app to access your camera!");
       return;
     }
 
     try {
-      // Cấu hình các tùy chọn cho ImagePicker
       const result = await ImagePicker.launchCameraAsync({
-        quality: 0.5, // Giảm chất lượng ảnh (giá trị từ 0.0 đến 1.0, 0.5 là giảm 50% chất lượng)
-        base64: false, // Không cần mã hóa ảnh thành base64, nếu không cần thiết
-        exif: false, // Bỏ thông tin Exif nếu không cần
+        quality: 0.5,
+        base64: false,
+        exif: false,
       });
 
       if (!result.canceled) {
-        dataItem.Anh = result?.assets[0];
-        handleItemClick(result?.assets[0], "option", "Anh", dataItem);
-        setImage(result?.assets[0]);
+        const newImage = result?.assets[0];
+        setImages((prevImages) => [...prevImages, newImage]); // Thêm ảnh mới vào danh sách
+        handleItemClick(newImage, "option", "Anh", dataItem);
       }
     } catch (error) {
-      console.error("Lỗi khi chụp ảnh: ", error);
+      console.error("Error capturing image: ", error);
     }
   };
 
+  const removeImage = (indexToRemove) => {
+    setImages((prevImages) =>
+      prevImages.filter((_, index) => index !== indexToRemove)
+    );
+    // Cập nhật dataItem sau khi xóa ảnh
+    handleItemClick(null, "option", "Anh", dataItem);
+  };
+
   const objData = {
-    Anh: image,
+    Anh: images,
     GhichuChitiet: ghichu,
-    valueCheck: null,
+    valueCheck: defaultChecklist || chiso,
   };
 
   const setData = () => {
     dataItem.valueCheck = defaultChecklist || chiso;
-    dataItem.Anh = image ? image : null;
-    dataItem.GhichuChitiet = ghichu ? ghichu : "";
-    objData.Anh = image ? image : null;
-    objData.GhichuChitiet = ghichu ? ghichu : "";
+    dataItem.Anh = images;
+    dataItem.GhichuChitiet = ghichu || "";
+    objData.Anh = images;
+    objData.GhichuChitiet = ghichu || "";
     objData.valueCheck = defaultChecklist || chiso;
   };
 
   useEffect(() => {
-    setImage(dataItem?.Anh);
+    setImages(dataItem?.Anh || []);
     setGhichu(dataItem?.GhichuChitiet);
     setChiso(dataItem?.valueCheck);
   }, [dataItem]);
@@ -207,16 +240,11 @@ const ModalPopupDetailChecklist = ({
                     ]}
                   />
                 </View>
-                <View
-                  style={{
-                    flexDirection: "row",
-                    width: "100%",
-                  }}
-                >
-                  <View>
-                    <Text allowFontScaling={false} style={styles.text}>
-                      Chụp ảnh
-                    </Text>
+                <View>
+                  <Text allowFontScaling={false} style={styles.text}>
+                    Chụp ảnh
+                  </Text>
+                  <View style={{ flexDirection: "row", marginBottom: 5 }}>
                     <TouchableOpacity
                       style={{
                         backgroundColor: "white",
@@ -224,71 +252,63 @@ const ModalPopupDetailChecklist = ({
                         borderRadius: SIZES.borderRadius,
                         borderColor: COLORS.bg_button,
                         borderWidth: 1,
-                        width: 80,
                         alignItems: "center",
                         justifyContent: "center",
-                        height: 80,
+                        height: 50,
+                        width: 50,
                       }}
-                      onPress={pickImage}
+                      onPress={() => pickImage()}
                     >
-                      <Entypo name="camera" size={24} color="black" />
+                      <Entypo name="camera" size={15} color="black" />
                     </TouchableOpacity>
-                  </View>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      gap: 20,
-                    }}
-                  >
-                    {image && (
-                      <Image
-                        source={{ uri: image?.uri }}
-                        style={styles.image}
-                      />
-                    )}
-                    {image && (
-                      <TouchableOpacity
-                        onPress={() => {
-                          setImage(null);
-                          handleItemClick(null, "option", "Anh", dataItem);
-                        }}
-                        style={{
-                          flexDirection: "row",
-                          alignItems: "center",
-                          gap: 4,
-                        }}
-                      >
-                        <AntDesign
-                          name="delete"
-                          size={adjust(22)}
-                          color="black"
-                        />
-                        <Text
-                          allowFontScaling={false}
-                          style={{ fontSize: adjust(16), fontWeight: "600" }}
-                        >
-                          Xóa
-                        </Text>
-                      </TouchableOpacity>
-                    )}
+                    <ScrollView horizontal>
+                      {images.map((img, index) => (
+                        <View style={{ marginLeft: 10 }}>
+                          <Image
+                            source={{ uri: img.uri }}
+                            style={{
+                              width: 100,
+                              height: 140,
+                              position: "relative",
+                              opacity: 0.8,
+                            }}
+                          />
+                          <TouchableOpacity
+                            style={{
+                              position: "absolute",
+                              top: 40,
+                              left: 30,
+                              width: 50,
+                              height: 50,
+                              justifyContent: "center",
+                              alignItems: "center",
+                            }}
+                            onPress={() => removeImage(index)}
+                          >
+                            <FontAwesome
+                              name="remove"
+                              size={adjust(30)}
+                              color="red"
+                            />
+                          </TouchableOpacity>
+                        </View>
+                      ))}
+                    </ScrollView>
                   </View>
                 </View>
               </View>
-              <View style={{ marginTop: 10 }}>
-                <Button
-                  onPress={() => {
-                    setData();
-                    handleItemClick(objData, "close", objData, dataItem);
-                    close();
-                  }}
-                  backgroundColor={COLORS.bg_button}
-                  border={COLORS.bg_button}
-                  color={"white"}
-                  text={"Hoàn thành"}
-                  width={"100%"}
-                />
-              </View>
+              <Button
+                onPress={() => {
+                  setData();
+                  handleItemClick(objData, "close", objData, dataItem);
+                  close();
+                }}
+                backgroundColor={COLORS.bg_button}
+                border={COLORS.bg_button}
+                color={"white"}
+                text={"Hoàn thành"}
+                width={"100%"}
+              />
             </>
           )}
 
