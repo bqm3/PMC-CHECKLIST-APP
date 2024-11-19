@@ -21,6 +21,7 @@ import { COLORS, SIZES, marginBottomValue } from "../../constants/theme";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import moment from "moment";
+import adjust from "../../adjust";
 
 const DetailCheckListCa = ({ route }) => {
   const headerList = [
@@ -56,6 +57,9 @@ const DetailCheckListCa = ({ route }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [opacity, setOpacity] = useState(1);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [imageModalVisible, setImageModalVisible] = useState(false);
+  const [isImageLoading, setIsImageLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -209,18 +213,83 @@ const DetailCheckListCa = ({ route }) => {
     );
   }
 
+  const handleImagePress = (item) => {
+    const { fullSize } = getImageUrls(item);
+    setSelectedImage(fullSize);
+    // setIsImageLoading(true);
+    setImageModalVisible(true);
+  };
+
+  const getImageUrls = (id) => {
+    return {
+      thumbnail: `https://drive.google.com/thumbnail?id=${id.trim()}`,
+      fullSize: `https://drive.google.com/uc?id=${id.trim()}&export=download`,
+    };
+  };
+
   const renderImage = ({ item }) => {
+    const { thumbnail } = getImageUrls(item);
+    const imageUri = `https://drive.google.com/thumbnail?id=${item.trim()}`;
     return (
       <View style={styles.imageContainer}>
-        <Image
-          style={styles.image}
-          source={{
-            uri: `https://drive.google.com/thumbnail?id=${item.trim()}`,
-          }}
-        />
+        <TouchableOpacity onPress={() => handleImagePress(item)}>
+          <Image
+            style={styles.image}
+            source={{
+              uri: thumbnail,
+            }}
+          />
+        </TouchableOpacity>
       </View>
     );
   };
+
+  const ImagePreviewModal = () => (
+    <Modal
+      animationType="fade"
+      transparent={true}
+      visible={imageModalVisible}
+      onRequestClose={() => setImageModalVisible(false)}
+    >
+      <TouchableOpacity
+        style={styles.imagePreviewBackground}
+        activeOpacity={1}
+        onPress={() => setImageModalVisible(false)}
+      >
+        <View style={styles.imagePreviewContainer}>
+          {/* {isImageLoading ? (
+            <ActivityIndicator size="large" color={COLORS.bg_button} />
+          ) : ( */}
+            <Image
+             source={{ uri: selectedImage }}
+              style={styles.fullScreenImage}
+              resizeMode="contain"
+              onLoadStart={() => {
+                console.log("onLoadStart triggered");
+                setIsImageLoading(true); // Cập nhật trạng thái loading
+              }}
+              onLoadEnd={() => {
+                console.log("onLoadEnd triggered");
+                setIsImageLoading(false); // Cập nhật trạng thái loading
+              }}
+              onError={(error) =>
+                console.log("Image failed to load:", error.nativeEvent)
+              }
+            />
+          {/* )}  */}
+
+          <TouchableOpacity
+            style={styles.closeButton}
+            onPress={() => setImageModalVisible(false)}
+          >
+            <Feather name="x" size={30} color="white" />
+          </TouchableOpacity>
+        </View>
+      </TouchableOpacity>
+    </Modal>
+  );
+
+  console.log("isImageLoading",isImageLoading)
 
   return (
     <ImageBackground
@@ -325,7 +394,7 @@ const DetailCheckListCa = ({ route }) => {
           newActionCheckList[0]?.Anh !== undefined &&
           newActionCheckList[0]?.Anh !== "" ? (
             <TouchableOpacity
-              style={styles.button}
+              style={[styles.button, { marginBottom: adjust(30) }]}
               onPress={() => handleModalShow(true, 0.2)}
             >
               <Feather name="image" size={26} color="white" />
@@ -333,7 +402,7 @@ const DetailCheckListCa = ({ route }) => {
           ) : (
             <>
               <TouchableOpacity
-                style={styles.button}
+                style={[styles.button, { marginBottom: adjust(30) }]}
                 onPress={() => handleModalShow(true, 0.2)}
               >
                 <Feather name="eye" size={26} color="white" />
@@ -454,6 +523,7 @@ const DetailCheckListCa = ({ route }) => {
           </View>
         </View>
       </Modal>
+      <ImagePreviewModal/>
     </ImageBackground>
   );
 };
@@ -550,5 +620,33 @@ const styles = StyleSheet.create({
     width: 200,
     height: 150,
     borderRadius: 10,
+  },
+  imagePreviewBackground: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.9)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  imagePreviewContainer: {
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  fullScreenImage: {
+    width: SIZES.width,
+    height: SIZES.height,
+  },
+  closeButton: {
+    position: "absolute",
+    top: adjust(40),
+    right: adjust(0),
+    padding: adjust(10),
+    borderRadius: adjust(25),
+    backgroundColor: "black",
+  },
+  loader: {
+    position: "absolute",
+    zIndex: 1,
   },
 });
