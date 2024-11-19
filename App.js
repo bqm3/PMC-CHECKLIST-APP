@@ -8,6 +8,7 @@ import { LoginProvider } from "./app/context/LoginContext";
 import { LocationProvider } from "./app/context/LocationContext";
 import { ConnectProvider } from "./app/context/ConnectContext";
 import { UserProvider } from "./app/context/UserContext";
+import { ReportProvider } from "./app/context/ReportContext";
 import { DataProvider } from "./app/context/DataContext";
 import { ChecklistProvider } from "./app/context/ChecklistContext";
 import { ChecklistLaiProvider } from "./app/context/ChecklistLaiContext";
@@ -33,6 +34,7 @@ export default function App() {
               <ThemeProvider>
                 <UserProvider>
                   <DataProvider>
+                  <ReportProvider>
                     <ChecklistProvider>
                       <ChecklistLaiProvider>
                         <NavigationContainer>
@@ -41,6 +43,7 @@ export default function App() {
                         </NavigationContainer>
                       </ChecklistLaiProvider>
                     </ChecklistProvider>
+                  </ReportProvider>
                   </DataProvider>
                 </UserProvider>
               </ThemeProvider>

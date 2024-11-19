@@ -35,7 +35,6 @@ import {
   BottomSheetModalProvider,
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
-import * as FileSystem from "expo-file-system";
 import * as Network from 'expo-network';
 import NetInfo from "@react-native-community/netinfo";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -59,7 +58,7 @@ const alertTypeMap = {
   INFO: ALERT_TYPE.INFO,
 };
 
-const version = "2.0.9";
+const version = "2.0.8";
 
 const LoginScreen = ({ navigation }) => {
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
@@ -122,6 +121,7 @@ const LoginScreen = ({ navigation }) => {
           },
         })
         .then((res) => {
+          console.log(res.data)
           if (res.data.status == 1) {
             const data = res.data.data;
             const alertType = alertTypeMap[data.type] || ALERT_TYPE.INFO;
@@ -284,31 +284,10 @@ const LoginScreen = ({ navigation }) => {
 
         if (status === "granted") {
           let location = await Location.getCurrentPositionAsync({});
-          setLocation(location);
-          console.log("location", location);
         }
       }
     })();
   }, [statusLocation]);
-
-  useEffect(() => {
-    clearCacheDirectory();
-  }, []);
-
-  const clearCacheDirectory = async () => {
-    try {
-      const cacheDir = FileSystem.cacheDirectory;
-      const files = await FileSystem.readDirectoryAsync(cacheDir);
-      for (const file of files) {
-        await FileSystem.deleteAsync(`${cacheDir}${file}`, {
-          idempotent: true,
-        });
-      }
-      console.log("Đã xóa cache khi ứng dụng đóng.");
-    } catch (error) {
-      console.error("Lỗi khi xóa cache:", error);
-    }
-  };
 
   return (
     <>
