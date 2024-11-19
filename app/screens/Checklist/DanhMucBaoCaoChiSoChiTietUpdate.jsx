@@ -826,7 +826,7 @@ const DanhMucBaoCaoChiSoChiTietUpdate = ({ navigation, route }) => {
                 isLoading={loadingSubmit}
                 backgroundColor={COLORS.bg_button}
                 color="white"
-                width="100"
+                width="100%"
               />
             </View>
           </View>

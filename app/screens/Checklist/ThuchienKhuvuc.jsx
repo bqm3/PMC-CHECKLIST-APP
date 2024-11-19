@@ -178,11 +178,12 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
       try {
         // Retrieve the item from AsyncStorage
         const network = await AsyncStorage.getItem("checkNetwork");
-        if (network === "1" && isConnect) {
+        const savedData = await AsyncStorage.getItem("dataChecklistStorage");
+        if ((network === "1" && isConnect) || savedData) {
           setSubmit(true);
         }
 
-        if (network === null) {
+        if (network === null && (savedData == null || savedData == undefined || savedData == '')) {
           console.log("Network status not found in storage.");
           setSubmit(false);
         }
@@ -203,7 +204,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
 
   // Tải lại dữ liệu khi vào lại trang
   const loadData = async () => {
-    const savedData = await AsyncStorage.getItem("dataChecklist");
+    const savedData = await AsyncStorage.getItem("dataChecklistStorage");
     if (savedData !== null) {
       setDataChecklists(JSON.parse(savedData));
       setDataChecklistFilterContext(JSON.parse(savedData));

@@ -297,31 +297,10 @@ const LoginScreen = ({ navigation }) => {
 
         if (status === "granted") {
           let location = await Location.getCurrentPositionAsync({});
-          setLocation(location);
-          console.log("location", location);
         }
       }
     })();
   }, [statusLocation]);
-
-  useEffect(() => {
-    clearCacheDirectory();
-  }, []);
-
-  const clearCacheDirectory = async () => {
-    try {
-      const cacheDir = FileSystem.cacheDirectory;
-      const files = await FileSystem.readDirectoryAsync(cacheDir);
-      for (const file of files) {
-        await FileSystem.deleteAsync(`${cacheDir}${file}`, {
-          idempotent: true,
-        });
-      }
-      console.log("Đã xóa cache khi ứng dụng đóng.");
-    } catch (error) {
-      console.error("Lỗi khi xóa cache:", error);
-    }
-  };
 
   return (
     <>

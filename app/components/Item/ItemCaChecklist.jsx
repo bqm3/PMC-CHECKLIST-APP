@@ -150,15 +150,15 @@ export default function ItemCaChecklist({
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "white",
-    marginVertical: 8,
-    padding: 10,
-    borderRadius: 16,
+    marginVertical: 6,
+    padding: 8,
+    borderRadius: 12,
   },
 
   title: {
-    paddingTop: 4,
+    paddingTop: 2,
     fontSize: adjust(16),
-    paddingVertical: 2,
+    paddingVertical: 1,
     color: "black",
     fontWeight: "700",
     textAlign: "left",

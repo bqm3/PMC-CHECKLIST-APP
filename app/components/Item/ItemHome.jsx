@@ -5,7 +5,7 @@ import { useNavigation } from "@react-navigation/native";
 import { Image } from "react-native";
 import adjust from "../../adjust";
 
-export default function ItemHome({ item, index, roleUser }) {
+export default function ItemHome({ item, index, roleUser, showReport }) {
   const navigation = useNavigation();
   return (
     <TouchableOpacity

@@ -39,7 +39,7 @@ import ActiveChecklist from "../../components/Active/ActiveCheckList";
 import Button from "../../components/Button/Button";
 import ModalPopupDetailChecklist from "../../components/Modal/ModalPopupDetailChecklist";
 import moment from "moment";
-import axios, { isCancel } from "axios";
+import axios from "axios";
 import { BASE_URL } from "../../constants/config";
 import DataContext from "../../context/DataContext";
 import ChecklistContext from "../../context/ChecklistContext";
@@ -50,7 +50,6 @@ import Checkbox from "../../components/Active/Checkbox";
 import ConnectContext from "../../context/ConnectContext";
 import WebView from "react-native-webview";
 import { useHeaderHeight } from "@react-navigation/elements";
-import axiosClient from "../../api/axiosClient";
 import ModalBottomSheet from "../../components/Modal/ModalBottomSheet";
 
 const DetailChecklist = ({ route, navigation }) => {
@@ -682,6 +681,7 @@ const DetailChecklist = ({ route, navigation }) => {
 
           // Lưu lại kết quả cập nhật
           setDataChecklistFilterContext(updatedData1);
+          await AsyncStorage.setItem('dataChecklistStorage', JSON.stringify(updatedData1));
         }
       }
     } catch (error) {

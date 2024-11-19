@@ -4,9 +4,6 @@ import {
   View,
   ImageBackground,
   Platform,
-  Keyboard,
-  TouchableWithoutFeedback,
-  KeyboardAvoidingView,
   TouchableOpacity,
   FlatList,
   TextInput,
@@ -14,34 +11,22 @@ import {
   Alert,
   ScrollView,
 } from "react-native";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useContext } from "react";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-
-import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Entypo, AntDesign, FontAwesome } from "@expo/vector-icons";
 import { Provider, useDispatch, useSelector } from "react-redux";
-import Checkbox from "expo-checkbox";
 import adjust from "../../adjust";
 import moment from "moment";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import * as ImagePicker from "expo-image-picker";
-import {
-  ent_tang_get,
-  ent_khuvuc_get,
-  ent_toanha_get,
-  ent_khoicv_get,
-  ent_hangmuc_get,
-} from "../../redux/actions/entActions";
 import SelectDropdown from "react-native-select-dropdown";
 import { COLORS, SIZES } from "../../constants/theme";
-import ItemSucongoai from "../../components/Item/ItemSucongoai";
 import VerticalSelect from "../../components/Vertical/VerticalSelect";
 import ButtonSubmit from "../../components/Button/ButtonSubmit";
 import axios from "axios";
 import { BASE_URL } from "../../constants/config";
-import { axiosClient } from "../../api/axiosClient";
 import { nowDate } from "../../utils/util";
+import ReportContext from "../../context/ReportContext";
 
 const listMonth = [
   { value: "1", label: "Tháng 1" },
@@ -67,6 +52,7 @@ const DanhMucBaoCaoChiSoChiTiet = ({ navigation }) => {
   const dispath = useDispatch();
 
   const { user, authToken } = useSelector((state) => state.authReducer);
+  const { showReport } = useContext(ReportContext);
 
   const [loadingSubmit, setLoadingSubmit] = useState(false);
 
@@ -74,16 +60,22 @@ const DanhMucBaoCaoChiSoChiTiet = ({ navigation }) => {
     Day: null,
     Month: null,
     Year: null,
-    Electrical: null,
-    Water: null,
-    ImageElectrical: null,
-    ImageWater: null,
+    Electrical_CDT: null,
+    Water_CDT: null,
+    ImageElectrical_CDT: null,
+    ImageWater_CDT: null,
+    Electrical_CuDan: null,
+    Water_CuDan: null,
+    ImageElectrical_CuDan: null,
+    ImageWater_CuDan: null,
+    Electrical_CuDan_Real: null,
+    Water_CuDan_Real: null,
+    Electrical_CDT_Real: null,
+    Water_CDT_Real: null,
     Ghichu: "",
     ID_Duan: null,
     ID_User: null,
   });
-
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
   const handleChangeText = (key, value) => {
     setDataInput((data) => ({
@@ -92,45 +84,35 @@ const DanhMucBaoCaoChiSoChiTiet = ({ navigation }) => {
     }));
   };
 
-  const handleChangeTextTime = (key, value) => {
-    setDataInput((data) => ({
-      ...data,
-      [key]: value,
-    }));
-  };
-
-  const showDatePicker = () => {
-    setDatePickerVisibility(true);
-  };
-
-  const handleConfirm = (key, date, format) => {
-    handleChangeText(key, moment(date).format(format));
-    hideDatePicker();
-  };
-
-  const hideDatePicker = () => {
-    setDatePickerVisibility(false);
-  };
-
   const handleRemoveImage = (key) => {
     setDataInput((data) => ({
       ...data,
       [key]: null,
     }));
-    if (key == "ImageWater") {
+    if (key == "ImageWater_CuDan") {
       setDataInput((data) => ({
         ...data,
-        Water: null,
+        Water_CuDan: null,
       }));
-    } else {
+    } else if (key == "ImageElectrical_CuDan") {
       setDataInput((data) => ({
         ...data,
-        Electrical: null,
+        Electrical_CuDan: null,
+      }));
+    } else if (key == "ImageWater_CDT") {
+      setDataInput((data) => ({
+        ...data,
+        Water_CDT: null,
+      }));
+    } else if (key == "ImageElectrical_CDT") {
+      setDataInput((data) => ({
+        ...data,
+        Electrical_CDT: null,
       }));
     }
   };
 
-  const pickImageElectric = async () => {
+  const pickImageElectricCDT = async () => {
     // Request permission to access the camera or gallery
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
@@ -149,7 +131,7 @@ const DanhMucBaoCaoChiSoChiTiet = ({ navigation }) => {
       const imageUri = result.assets[0];
       setDataInput((data) => ({
         ...data,
-        ImageElectrical: result.assets[0],
+        ImageElectrical_CDT: result.assets[0],
       }));
       const formData = new FormData();
       if (imageUri.uri) {
@@ -184,7 +166,8 @@ const DanhMucBaoCaoChiSoChiTiet = ({ navigation }) => {
         // setUploadResult(response.data);
         setDataInput((data) => ({
           ...data,
-          Electrical: response.data.result[0],
+          Electrical_CDT: response.data.result[0],
+          Electrical_CDT_Real: response.data.result[0],
         }));
         console.log(response.data.result[0]);
       } catch (error) {
@@ -193,7 +176,7 @@ const DanhMucBaoCaoChiSoChiTiet = ({ navigation }) => {
     }
   };
 
-  const pickImageWater = async () => {
+  const pickImageWaterCDT = async () => {
     // Request permission to access the camera or gallery
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== "granted") {
@@ -212,7 +195,7 @@ const DanhMucBaoCaoChiSoChiTiet = ({ navigation }) => {
       const imageUri = result.assets[0];
       setDataInput((data) => ({
         ...data,
-        ImageWater: result.assets[0],
+        ImageWater_CDT: result.assets[0],
       }));
       const formData = new FormData();
       if (imageUri.uri) {
@@ -244,7 +227,8 @@ const DanhMucBaoCaoChiSoChiTiet = ({ navigation }) => {
         );
         setDataInput((data) => ({
           ...data,
-          Water: response.data.result[0],
+          Water_CDT: response.data.result[0],
+          Water_CDT_Real: response.data.result[0],
         }));
       } catch (error) {
         console.log(error);
@@ -252,49 +236,202 @@ const DanhMucBaoCaoChiSoChiTiet = ({ navigation }) => {
     }
   };
 
+  const pickImageElectricCuDan = async () => {
+    // Request permission to access the camera or gallery
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
+      alert("Permission to access camera or gallery is required!");
+      return;
+    }
+
+    // Launch image picker
+    const result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      const imageUri = result.assets[0];
+      setDataInput((data) => ({
+        ...data,
+        ImageElectrical_CuDan: result.assets[0],
+      }));
+      const formData = new FormData();
+      if (imageUri.uri) {
+        const file = {
+          uri:
+            Platform.OS === "android"
+              ? imageUri.uri
+              : imageUri.uri.replace("file://", ""),
+          name:
+            imageUri.fileName || `${Math.floor(Math.random() * 999999999)}.jpg`,
+          type: "image/jpeg",
+        };
+
+        formData.append("file", file);
+      } else {
+        alert("Invalid image data");
+        return;
+      }
+
+      try {
+        const response = await axios.post(
+          `${BASE_URL}/image/upload`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        // Handle success response
+        // setUploadResult(response.data);
+        setDataInput((data) => ({
+          ...data,
+          Electrical_CuDan: response.data.result[0],
+          ElectricaL_CuDan_Real: response.data.result[0],
+        }));
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
+  const pickImageWaterCuDan = async () => {
+    // Request permission to access the camera or gallery
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
+      alert("Permission to access camera or gallery is required!");
+      return;
+    }
+
+    // Launch image picker
+    const result = await ImagePicker.launchImageLibraryAsync({
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      const imageUri = result.assets[0];
+      setDataInput((data) => ({
+        ...data,
+        ImageWater_CuDan: result.assets[0],
+      }));
+      const formData = new FormData();
+      if (imageUri.uri) {
+        const file = {
+          uri:
+            Platform.OS === "android"
+              ? imageUri.uri
+              : imageUri.uri.replace("file://", ""),
+          name:
+            imageUri.fileName || `${Math.floor(Math.random() * 999999999)}.jpg`,
+          type: "image/jpeg",
+        };
+
+        formData.append("file", file);
+      } else {
+        alert("Invalid image data");
+        return;
+      }
+
+      try {
+        const response = await axios.post(
+          `${BASE_URL}/image/upload`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        setDataInput((data) => ({
+          ...data,
+          Water_CuDan: response.data.result[0],
+          Water_CuDan_Real: response.data.result[0],
+        }));
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
 
   const handleSubmit = async () => {
     setLoadingSubmit(true);
     let formData = new FormData();
     try {
-      const fileElectrical = {
+      const fileElectricalCDT = {
         uri:
           Platform.OS === "android"
-            ? dataInput?.ImageElectrical?.uri
-            : dataInput?.ImageElectrical?.uri?.replace("file://", ""),
+            ? dataInput?.ImageElectrical_CDT?.uri
+            : dataInput?.ImageElectrical_CDT?.uri?.replace("file://", ""),
         name:
-          dataInput?.ImageElectrical?.fileName ||
+          dataInput?.ImageElectrical_CDT?.fileName ||
           `${Math.floor(Math.random() * 999999999)}.jpg`,
         type: "image/jpeg",
       };
 
-      const fileWater = {
+      const fileWaterCDT = {
         uri:
           Platform.OS === "android"
-            ? dataInput?.ImageWater?.uri
-            : dataInput?.ImageWater?.uri?.replace("file://", ""),
+            ? dataInput?.ImageWater_CDT?.uri
+            : dataInput?.ImageWater_CDT?.uri?.replace("file://", ""),
         name:
-          dataInput?.ImageWater?.fileName ||
+          dataInput?.ImageWater_CDT?.fileName ||
+          `${Math.floor(Math.random() * 999999999)}.jpg`,
+        type: "image/jpeg",
+      };
+      
+      const fileElectricalCuDan = {
+        uri:
+          Platform.OS === "android"
+            ? dataInput?.ImageElectrical_CuDan?.uri
+            : dataInput?.ImageElectrical_CuDan?.uri?.replace("file://", ""),
+        name:
+          dataInput?.ImageElectrical_CuDan?.fileName ||
           `${Math.floor(Math.random() * 999999999)}.jpg`,
         type: "image/jpeg",
       };
 
-      formData.append("ImageElectrical", fileElectrical);
-      formData.append("ImageWater", fileWater);
+      const fileWaterCuDan = {
+        uri:
+          Platform.OS === "android"
+            ? dataInput?.ImageWater_CuDan?.uri
+            : dataInput?.ImageWater_CuDan?.uri?.replace("file://", ""),
+        name:
+          dataInput?.ImageWater_CuDan?.fileName ||
+          `${Math.floor(Math.random() * 999999999)}.jpg`,
+        type: "image/jpeg",
+      };
+
+      formData.append("ImageElectrical_CDT", fileElectricalCDT);
+      formData.append("ImageWater_CDT", fileWaterCDT);
+      formData.append("ImageElectrical_CuDan", fileElectricalCuDan);
+      formData.append("ImageWater_CuDan", fileWaterCuDan);
       formData.append("ID_User", user?.ID_User);
       formData.append("ID_Duan", user.ID_Duan);
-      formData.append("Day", dataInput.Day);
       formData.append("Month", dataInput.Month);
       formData.append("Year", dataInput.Year);
       formData.append("Ghichu", dataInput.Ghichu);
-      formData.append("Electrical", dataInput.Electrical);
-      formData.append("Water", dataInput.Water);
+      formData.append("Electrical_CDT", dataInput.Electrical_CDT);
+      formData.append("Electrical_CDT_Real", dataInput.Electrical_CDT_Real);
+      formData.append("Water_CDT", dataInput.Water_CDT);
+      formData.append("Water_CDT_Real", dataInput.Water_CDT_Real);
+      formData.append("Electrical_CuDan", dataInput.Electrical_CuDan);
+      formData.append("Electrical_CuDan_Real", dataInput.Electrical_CuDan_Real);
+      formData.append("Water_CuDan", dataInput.Water_CuDan);
+      formData.append("Water_CuDan_Real", dataInput.Water_CuDan_Real);
       if (
         dataInput.Day == null ||
         dataInput.Month == null ||
         dataInput.Year == null ||
-        dataInput.Electrical == null ||
-        dataInput.Water == null
+        dataInput.Electrical_CDT == null ||
+        dataInput.Water_CDT == null ||
+        dataInput.Electrical_CuDan == null ||
+        dataInput.Water_CuDan == null
       ) {
         Alert.alert("PMC Thông báo", "Vui lòng nhập đầy đủ thông tin", [
           {
@@ -394,57 +531,6 @@ const DanhMucBaoCaoChiSoChiTiet = ({ navigation }) => {
             }}
           >
             <View>
-              {/* Ngày giờ sự cố  */}
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                }}
-              >
-                <View style={{ width: "100%" }}>
-                  <Text allowFontScaling={false} style={styles.text}>
-                    Ngày báo cáo
-                  </Text>
-                  <TouchableOpacity onPress={() => showDatePicker("Day")}>
-                    <View style={styles.action}>
-                      <TextInput
-                        allowFontScaling={false}
-                        value={dataInput.Day}
-                        placeholder="Nhập ngày báo cáo"
-                        placeholderTextColor="gray"
-                        style={{
-                          paddingLeft: 12,
-                          color: "#05375a",
-                          width: "85%",
-                          fontSize: adjust(16),
-                          height: adjust(50),
-                        }}
-                        pointerEvents="none"
-                      />
-                      <TouchableOpacity
-                        onPress={() => showDatePicker("Day")}
-                        style={{
-                          justifyContent: "center",
-                          alignItems: "center",
-                          height: adjust(50),
-                          width: adjust(50),
-                        }}
-                      >
-                        <AntDesign name="calendar" size={24} color="black" />
-                      </TouchableOpacity>
-                    </View>
-                    <DateTimePickerModal
-                      isVisible={isDatePickerVisible}
-                      mode="date"
-                      isDarkModeEnabled={true}
-                      onConfirm={(date) =>
-                        handleConfirm("Day", date, "YYYY-MM-DD")
-                      }
-                      onCancel={() => hideDatePicker("Day", false)}
-                    />
-                  </TouchableOpacity>
-                </View>
-              </View>
               {/* Chọn khu vực hạng mục xảy ra sự cố  */}
               <View>
                 <View
@@ -457,115 +543,47 @@ const DanhMucBaoCaoChiSoChiTiet = ({ navigation }) => {
                     <Text allowFontScaling={false} style={styles.text}>
                       Tháng
                     </Text>
-                    {listMonth && listMonth?.length > 0 ? (
-                      <SelectDropdown
-                        data={listMonth}
-                        buttonStyle={styles.select}
-                        dropdownStyle={{
-                          borderRadius: 8,
-                          maxHeight: 400,
-                        }}
-                        defaultButtonText={"Tháng"}
-                        buttonTextStyle={styles.customText}
-                        defaultValue={dataInput?.Month}
-                        onSelect={(selectedItem, index) => {
-                          handleChangeTextTime("Month", selectedItem.value);
-                        }}
-                        renderDropdownIcon={(isOpened) => {
-                          return (
-                            <FontAwesome
-                              name={isOpened ? "chevron-up" : "chevron-down"}
-                              color={"#637381"}
-                              size={14}
-                            />
-                          );
-                        }}
-                        dropdownIconPosition={"right"}
-                        buttonTextAfterSelection={(selectedItem, index) => {
-                          return (
-                            <Text
-                              allowFontScaling={false}
-                              style={[styles.text, { color: "black" }]}
-                            >
-                              {selectedItem?.label}
-                            </Text>
-                          );
-                        }}
-                        renderCustomizedRowChild={(item, index) => {
-                          return (
-                            <VerticalSelect
-                              value={item.value}
-                              label={item.label}
-                              key={index}
-                              selectedItem={dataInput.Month}
-                            />
-                          );
-                        }}
-                      />
-                    ) : (
-                      <Text allowFontScaling={false} style={styles.errorText}>
-                        Không có tháng.
-                      </Text>
-                    )}
+                    <TextInput
+                      allowFontScaling={false}
+                      placeholder="Tháng"
+                      placeholderTextColor="gray"
+                      textAlignVertical="top"
+                      editable={false}
+                      defaultValue={`Tháng ${showReport.month}`}
+                      value={showReport.month == null ? "" : showReport.month}
+                      style={[
+                        styles.textInput,
+                        {
+                          paddingHorizontal: 10,
+                        },
+                      ]}
+                    />
                   </View>
 
                   <View style={{ width: "49%" }}>
                     <Text allowFontScaling={false} style={styles.text}>
                       Năm
                     </Text>
-                    {listYear && listYear?.length > 0 ? (
-                      <SelectDropdown
-                        data={listYear}
-                        buttonStyle={styles.select}
-                        dropdownStyle={{
-                          borderRadius: 8,
-                          maxHeight: 400,
-                        }}
-                        defaultButtonText={"Năm"}
-                        buttonTextStyle={styles.customText}
-                        defaultValue={dataInput?.Year}
-                        onSelect={(selectedItem, index) => {
-                          handleChangeTextTime("Year", selectedItem.value);
-                        }}
-                        renderDropdownIcon={(isOpened) => {
-                          return (
-                            <FontAwesome
-                              name={isOpened ? "chevron-up" : "chevron-down"}
-                              color={"#637381"}
-                              size={14}
-                            />
-                          );
-                        }}
-                        dropdownIconPosition={"right"}
-                        buttonTextAfterSelection={(selectedItem, index) => {
-                          return (
-                            <Text
-                              allowFontScaling={false}
-                              style={[styles.text, { color: "black" }]}
-                            >
-                              {selectedItem?.label}
-                            </Text>
-                          );
-                        }}
-                        renderCustomizedRowChild={(item, index) => {
-                          return (
-                            <VerticalSelect
-                              value={item.value}
-                              label={item.label}
-                              key={index}
-                              selectedItem={dataInput.Year}
-                            />
-                          );
-                        }}
-                      />
-                    ) : (
-                      <Text allowFontScaling={false} style={styles.errorText}>
-                        Không có năm.
-                      </Text>
-                    )}
+                    <TextInput
+                      allowFontScaling={false}
+                      placeholder="Năm"
+                      placeholderTextColor="gray"
+                      textAlignVertical="top"
+                      editable={false}
+                      defaultValue={`Năm ${showReport.year}`}
+                      value={showReport.year == null ? "" : showReport.year}
+                      style={[
+                        styles.textInput,
+                        {
+                          paddingHorizontal: 10,
+                        },
+                      ]}
+                    />
                   </View>
                 </View>
               </View>
+
+              {/* Hình ảnh chủ đầu tư */}
               <View>
                 <View
                   style={{
@@ -573,11 +591,10 @@ const DanhMucBaoCaoChiSoChiTiet = ({ navigation }) => {
                     justifyContent: "space-between",
                   }}
                 >
-                  {/* Hình ảnh sự cố  */}
                   <View style={{ width: "49%" }}>
                     <View>
                       <Text allowFontScaling={false} style={styles.text}>
-                        Hình ảnh điện
+                        Hình ảnh điện CĐT
                       </Text>
                       <View style={{ flexDirection: "row" }}>
                         <TouchableOpacity
@@ -592,15 +609,15 @@ const DanhMucBaoCaoChiSoChiTiet = ({ navigation }) => {
                             height: 60,
                             width: 60,
                           }}
-                          onPress={() => pickImageElectric()}
+                          onPress={() => pickImageElectricCDT()}
                         >
                           <Entypo name="camera" size={24} color="black" />
                         </TouchableOpacity>
-                        {dataInput.ImageElectrical && (
+                        {dataInput.ImageElectrical_CDT && (
                           <View style={{ marginLeft: 10 }}>
                             <Image
                               source={{
-                                uri: dataInput?.ImageElectrical?.uri,
+                                uri: dataInput?.ImageElectrical_CDT?.uri,
                               }}
                               style={{
                                 width: 100,
@@ -620,7 +637,7 @@ const DanhMucBaoCaoChiSoChiTiet = ({ navigation }) => {
                                 alignItems: "center",
                               }}
                               onPress={() =>
-                                handleRemoveImage("ImageElectrical")
+                                handleRemoveImage("ImageElectrical_CDT")
                               }
                             >
                               <FontAwesome
@@ -637,7 +654,7 @@ const DanhMucBaoCaoChiSoChiTiet = ({ navigation }) => {
                   <View style={{ width: "49%" }}>
                     <View>
                       <Text allowFontScaling={false} style={styles.text}>
-                        Hình ảnh nước
+                        Hình ảnh nước CĐT
                       </Text>
                       <View style={{ flexDirection: "row" }}>
                         <TouchableOpacity
@@ -652,15 +669,15 @@ const DanhMucBaoCaoChiSoChiTiet = ({ navigation }) => {
                             height: 60,
                             width: 60,
                           }}
-                          onPress={() => pickImageWater()}
+                          onPress={() => pickImageWaterCDT()}
                         >
                           <Entypo name="camera" size={24} color="black" />
                         </TouchableOpacity>
-                        {dataInput.ImageWater && (
+                        {dataInput.ImageWater_CDT && (
                           <View style={{ marginLeft: 10 }}>
                             <Image
                               source={{
-                                uri: dataInput?.ImageWater?.uri,
+                                uri: dataInput?.ImageWater_CDT?.uri,
                               }}
                               style={{
                                 width: 100,
@@ -679,7 +696,9 @@ const DanhMucBaoCaoChiSoChiTiet = ({ navigation }) => {
                                 justifyContent: "center",
                                 alignItems: "center",
                               }}
-                              onPress={() => handleRemoveImage("ImageWater")}
+                              onPress={() =>
+                                handleRemoveImage("ImageWater_CDT")
+                              }
                             >
                               <FontAwesome
                                 name="remove"
@@ -694,7 +713,7 @@ const DanhMucBaoCaoChiSoChiTiet = ({ navigation }) => {
                   </View>
                 </View>
               </View>
-
+              {/* Thông số chủ đầu tư  */}
               <View>
                 <View
                   style={{
@@ -705,7 +724,7 @@ const DanhMucBaoCaoChiSoChiTiet = ({ navigation }) => {
                   <View style={{ width: "49%" }}>
                     <View>
                       <Text allowFontScaling={false} style={styles.text}>
-                        Chỉ số điện
+                        Chỉ số điện CĐT
                       </Text>
                       <TextInput
                         allowFontScaling={false}
@@ -713,7 +732,11 @@ const DanhMucBaoCaoChiSoChiTiet = ({ navigation }) => {
                         placeholderTextColor="gray"
                         textAlignVertical="top"
                         blurOnSubmit={true}
-                        value={dataInput.Electrical == null ? '' : dataInput.Electrical}
+                        value={
+                          dataInput.Electrical_CDT == null
+                            ? ""
+                            : dataInput.Electrical_CDT
+                        }
                         style={[
                           styles.textInput,
                           {
@@ -721,7 +744,7 @@ const DanhMucBaoCaoChiSoChiTiet = ({ navigation }) => {
                           },
                         ]}
                         onChangeText={(text) => {
-                          handleChangeText("Electrical", text);
+                          handleChangeText("Electrical_CDT", text);
                         }}
                       />
                     </View>
@@ -729,15 +752,17 @@ const DanhMucBaoCaoChiSoChiTiet = ({ navigation }) => {
                   <View style={{ width: "49%" }}>
                     <View>
                       <Text allowFontScaling={false} style={styles.text}>
-                        Chỉ số nước
+                        Chỉ số nước CĐT
                       </Text>
                       <TextInput
                         allowFontScaling={false}
-                        placeholder="Chỉ số nước"
+                        placeholder="Chỉ số nước "
                         placeholderTextColor="gray"
                         textAlignVertical="top"
                         blurOnSubmit={true}
-                        value={dataInput.Water == null ? '' : dataInput.Water}
+                        value={
+                          dataInput.Water_CDT == null ? "" : dataInput.Water_CDT
+                        }
                         style={[
                           styles.textInput,
                           {
@@ -745,13 +770,216 @@ const DanhMucBaoCaoChiSoChiTiet = ({ navigation }) => {
                           },
                         ]}
                         onChangeText={(text) => {
-                          handleChangeText("Water", text);
+                          handleChangeText("Water_CDT", text);
                         }}
                       />
                     </View>
                   </View>
                 </View>
               </View>
+
+              {/* ===================================================================  */}
+
+              {showReport.show == true && (
+                <>
+                  {/* Hình ảnh chủ đầu tư */}
+                  <View>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <View style={{ width: "49%" }}>
+                        <View>
+                          <Text allowFontScaling={false} style={styles.text}>
+                            Hình ảnh điện cư dân
+                          </Text>
+                          <View style={{ flexDirection: "row" }}>
+                            <TouchableOpacity
+                              style={{
+                                backgroundColor: "white",
+                                padding: SIZES.padding,
+                                borderRadius: SIZES.borderRadius,
+                                borderColor: COLORS.bg_button,
+                                borderWidth: 1,
+                                alignItems: "center",
+                                justifyContent: "center",
+                                height: 60,
+                                width: 60,
+                              }}
+                              onPress={() => pickImageElectricCuDan()}
+                            >
+                              <Entypo name="camera" size={24} color="black" />
+                            </TouchableOpacity>
+                            {dataInput.ImageElectrical_CuDan && (
+                              <View style={{ marginLeft: 10 }}>
+                                <Image
+                                  source={{
+                                    uri: dataInput?.ImageElectrical_CuDan?.uri,
+                                  }}
+                                  style={{
+                                    width: 100,
+                                    height: 140,
+                                    position: "relative",
+                                    opacity: 0.8,
+                                  }}
+                                />
+                                <TouchableOpacity
+                                  style={{
+                                    position: "absolute",
+                                    top: 40,
+                                    left: 30,
+                                    width: 50,
+                                    height: 50,
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                  }}
+                                  onPress={() =>
+                                    handleRemoveImage("ImageElectrical_CuDan")
+                                  }
+                                >
+                                  <FontAwesome
+                                    name="remove"
+                                    size={adjust(30)}
+                                    color="white"
+                                  />
+                                </TouchableOpacity>
+                              </View>
+                            )}
+                          </View>
+                        </View>
+                      </View>
+                      <View style={{ width: "49%" }}>
+                        <View>
+                          <Text allowFontScaling={false} style={styles.text}>
+                            Hình ảnh nước cư dân
+                          </Text>
+                          <View style={{ flexDirection: "row" }}>
+                            <TouchableOpacity
+                              style={{
+                                backgroundColor: "white",
+                                padding: SIZES.padding,
+                                borderRadius: SIZES.borderRadius,
+                                borderColor: COLORS.bg_button,
+                                borderWidth: 1,
+                                alignItems: "center",
+                                justifyContent: "center",
+                                height: 60,
+                                width: 60,
+                              }}
+                              onPress={() => pickImageWaterCuDan()}
+                            >
+                              <Entypo name="camera" size={24} color="black" />
+                            </TouchableOpacity>
+                            {dataInput.ImageWater_CuDan && (
+                              <View style={{ marginLeft: 10 }}>
+                                <Image
+                                  source={{
+                                    uri: dataInput?.ImageWater_CuDan?.uri,
+                                  }}
+                                  style={{
+                                    width: 100,
+                                    height: 140,
+                                    position: "relative",
+                                    opacity: 0.8,
+                                  }}
+                                />
+                                <TouchableOpacity
+                                  style={{
+                                    position: "absolute",
+                                    top: 40,
+                                    left: 30,
+                                    width: 50,
+                                    height: 50,
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                  }}
+                                  onPress={() =>
+                                    handleRemoveImage("ImageWater_CuDan")
+                                  }
+                                >
+                                  <FontAwesome
+                                    name="remove"
+                                    size={adjust(30)}
+                                    color="white"
+                                  />
+                                </TouchableOpacity>
+                              </View>
+                            )}
+                          </View>
+                        </View>
+                      </View>
+                    </View>
+                  </View>
+                  {/* Thông số chủ đầu tư  */}
+                  <View>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <View style={{ width: "49%" }}>
+                        <View>
+                          <Text allowFontScaling={false} style={styles.text}>
+                            Chỉ số điện cư dân
+                          </Text>
+                          <TextInput
+                            allowFontScaling={false}
+                            placeholder="Chỉ số điện cư dân"
+                            placeholderTextColor="gray"
+                            textAlignVertical="top"
+                            blurOnSubmit={true}
+                            value={
+                              dataInput.Electrical_CuDan == null
+                                ? ""
+                                : dataInput.Electrical_CuDan
+                            }
+                            style={[
+                              styles.textInput,
+                              {
+                                paddingHorizontal: 10,
+                              },
+                            ]}
+                            onChangeText={(text) => {
+                              handleChangeText("Electrical_CuDan", text);
+                            }}
+                          />
+                        </View>
+                      </View>
+                      <View style={{ width: "49%" }}>
+                        <View>
+                          <Text allowFontScaling={false} style={styles.text}>
+                            Chỉ số nước cư dân
+                          </Text>
+                          <TextInput
+                            allowFontScaling={false}
+                            placeholder="Chỉ số nước cư dân"
+                            placeholderTextColor="gray"
+                            textAlignVertical="top"
+                            blurOnSubmit={true}
+                            value={
+                              dataInput.Water_CuDan == null
+                                ? ""
+                                : dataInput.Water_CuDan
+                            }
+                            style={[
+                              styles.textInput,
+                              {
+                                paddingHorizontal: 10,
+                              },
+                            ]}
+                            onChangeText={(text) => {
+                              handleChangeText("Water_CuDan", text);
+                            }}
+                          />
+                        </View>
+                      </View>
+                    </View>
+                  </View>
+                </>
+              )}
 
               <View>
                 <Text allowFontScaling={false} style={styles.text}>
@@ -786,7 +1014,7 @@ const DanhMucBaoCaoChiSoChiTiet = ({ navigation }) => {
                 isLoading={loadingSubmit}
                 backgroundColor={COLORS.bg_button}
                 color="white"
-                width="100"
+                width="100%"
               />
             </View>
           </View>

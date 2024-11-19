@@ -33,14 +33,12 @@ import {
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { AntDesign, Ionicons, Feather } from "@expo/vector-icons";
-import { DataTable } from "react-native-paper";
+
+import * as FileSystem from "expo-file-system";
 import ButtonChecklist from "../../components/Button/ButtonCheckList";
 import { COLORS, SIZES } from "../../constants/theme";
 import {
   ent_calv_get,
-  ent_hangmuc_get,
-  ent_khuvuc_get,
 } from "../../redux/actions/entActions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { tb_checklistc_get } from "../../redux/actions/tbActions";
@@ -56,7 +54,6 @@ import { useFocusEffect } from "@react-navigation/native";
 import NetInfo from "@react-native-community/netinfo";
 import CustomAlertModal from "../../components/CustomAlertModal";
 import RenderHTML from 'react-native-render-html';
-import { flatMap } from "lodash";
 
 const ThucHienChecklist = ({ navigation }) => {
   const ref = useRef(null);
@@ -126,6 +123,12 @@ const ThucHienChecklist = ({ navigation }) => {
 
   useEffect(() => {
     setDataCalv(tb_checklistc?.data);
+    if(tb_checklistc?.data && tb_checklistc?.data.length > 0){
+      const isCheck = tb_checklistc.data.some(check => check.Tinhtrang == 0)
+      if(!isCheck){
+        clearCacheDirectory()
+      }
+    }
   }, [tb_checklistc]);
 
   useEffect(() => {
@@ -152,6 +155,21 @@ const ThucHienChecklist = ({ navigation }) => {
     init_ca();
     int_checklistc();
   }, []);
+
+  const clearCacheDirectory = async () => {
+    try {
+      const cacheDir = FileSystem.cacheDirectory;
+      const files = await FileSystem.readDirectoryAsync(cacheDir);
+      for (const file of files) {
+        await FileSystem.deleteAsync(`${cacheDir}${file}`, {
+          idempotent: true,
+        });
+      }
+      console.log("Đã xóa cache khi ứng dụng đóng.");
+    } catch (error) {
+      console.error("Lỗi khi xóa cache:", error);
+    }
+  };
 
   useFocusEffect(
     useCallback(() => {
@@ -447,10 +465,6 @@ const ThucHienChecklist = ({ navigation }) => {
     setOpacity(1);
   }, []);
 
-  const handleToggleModal = () => {
-    bottomSheetModalRef2?.current?.present();
-    setOpacity(0.2);
-  };
 
   const handleAdd = () => {
     setDataInput({

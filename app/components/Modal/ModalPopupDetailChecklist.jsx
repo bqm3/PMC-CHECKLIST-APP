@@ -252,10 +252,10 @@ const ModalPopupDetailChecklist = ({
                         borderRadius: SIZES.borderRadius,
                         borderColor: COLORS.bg_button,
                         borderWidth: 1,
+                        width: 60,
                         alignItems: "center",
                         justifyContent: "center",
-                        height: 50,
-                        width: 50,
+                        height: 60,
                       }}
                       onPress={() => pickImage()}
                     >

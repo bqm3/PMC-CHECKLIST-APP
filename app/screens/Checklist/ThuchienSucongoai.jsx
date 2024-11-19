@@ -148,9 +148,7 @@ const ThuchienSucongoai = ({ navigation }) => {
   const init_khuvuc = async () => {
     await dispath(ent_khuvuc_get());
   };
-  const init_sucongoai = async () => {
-    await dispath(tb_sucongoai_get());
-  };
+
 
   useEffect(() => {
     init_toanha();
