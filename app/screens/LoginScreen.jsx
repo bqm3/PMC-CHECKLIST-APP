@@ -76,7 +76,7 @@ const LoginScreen = ({ navigation }) => {
   //  const bottomSheetModalRef = useRef(null);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(-1); // Add this state
   const bottomSheetModalRef = useRef(null);
-  const snapPoints = useMemo(() => ["85%"], []);
+  const snapPoints = useMemo(() => ["60%"], []);
   const [opacity, setOpacity] = useState(1);
 
   const [show, setShow] = useState(false);
@@ -241,6 +241,7 @@ const LoginScreen = ({ navigation }) => {
   }, []);
 
   const handlePresentModalPress = useCallback(() => {
+    bottomSheetModalRef.current.expand();
     setIsBottomSheetOpen(0); // Open bottomsheet
   }, []);
 
