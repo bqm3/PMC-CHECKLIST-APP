@@ -125,7 +125,6 @@ const DetailChecklist = ({ route, navigation }) => {
     return () => {
       if (locationSubscription) {
         locationSubscription.remove();
-        console.log("Stopped tracking location");
       }
     };
   }, []);
@@ -1082,38 +1081,7 @@ const DetailChecklist = ({ route, navigation }) => {
   };
 
   // close modal bottomsheet
-  const handleCloseModal = () => {
-    bottomSheetModalRef?.current?.close();
-    setOpacity(1);
-  };
-
-  const handleSheetChanges = useCallback((index) => {
-    if (index === -1) {
-      handleCloseModal();
-    } else {
-      setOpacity(0.2);
-    }
-  }, []);
-
-  // click dots and show modal bottom sheet
-  const handlePopupActive = useCallback((item, index) => {
-    setDataItem(item);
-    setModalVisible(true);
-    setIndex(index);
-
-    console.log(
-      "bottomSheetModalRef?.current",
-      bottomSheetModalRef.current.expand()
-    );
-    // Mở bottom sheet
-    if (bottomSheetModalRef?.current) {
-      bottomSheetModalRef.current.expand();
-      setOpacity(0.2); // Chỉ thay đổi opacity khi bottom sheet mở thành công
-    } else {
-      // Nếu không mở được bottom sheet, đặt lại opacity là 1
-      setOpacity(1);
-    }
-  }, []);
+ 
 
   const handlePopupActiveTieuChuan = useCallback((item, index) => {
     setOpacity(0.2);
@@ -1142,14 +1110,15 @@ const DetailChecklist = ({ route, navigation }) => {
 
   const handleBottom = useCallback((item, index) => {
     setVisibleBottom(true);
+    setIsBottomSheetOpen(true)
     setDataItem(item);
     setIndex(index);
-
-    if (visibleBottom == false) {
-      setOpacity(0.2);
-    } else {
-      setOpacity(1);
-    }
+    setOpacity(0.2);
+    // if (visibleBottom == false) {
+    //   setOpacity(0.2);
+    // } else {
+    //   setOpacity(1);
+    // }
   }, []);
 
   const handleClearBottom = useCallback((item, index) => {
@@ -1157,6 +1126,7 @@ const DetailChecklist = ({ route, navigation }) => {
     setDataItem(null);
     setIndex(null);
     setVisibleBottom(false);
+    setIsBottomSheetOpen(false)
   }, []);
 
   // view item flatlist
@@ -1516,28 +1486,40 @@ const DetailChecklist = ({ route, navigation }) => {
             </View>
           </ImageBackground>
 
-          <BottomSheet
-            ref={bottomSheetModalRef}
-            index={isOpen}
-            snapPoints={snapPoints}
-            onChange={handleSheetChanges}
-            enablePanDownToClose={true}
-            onClose={handleClearBottom}
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={isBottomSheetOpen}
+            onRequestClose={() => {
+              setIsBottomSheetOpen(!isBottomSheetOpen);
+            }}
           >
-            <BottomSheetView style={styles.contentContainer}>
-              <ModalPopupDetailChecklist
-                handlePopupClear={handlePopupClear}
-                dataItem={dataItem}
-                handleItemClick={handleItemClick}
-                index={index}
-                // handleChange={handleChange}
-                handleClearBottom={handleClearBottom}
-                user={user}
-              />
-            </BottomSheetView>
-          </BottomSheet>
-
-          <ModalBottomSheet
+            <View style={[styles.centeredView, { height: "100%" }]}>
+              <View
+                style={[
+                  styles.modalView,
+                  {
+                    width: "90%",
+                    height: "auto",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    alignContent: "center",
+                  },
+                ]}
+              >
+                <ModalPopupDetailChecklist
+                  handlePopupClear={handlePopupClear}
+                  dataItem={dataItem}
+                  handleItemClick={handleItemClick}
+                  index={index}
+                  // handleChange={handleChange}
+                  handleClearBottom={handleClearBottom}
+                  user={user}
+                />
+              </View>
+            </View>
+          </Modal>
+          {/* <ModalBottomSheet
             visible={visibleBottom}
             setVisible={setVisibleBottom}
             setOpacity={setOpacity}
@@ -1550,15 +1532,15 @@ const DetailChecklist = ({ route, navigation }) => {
               handleClearBottom={handleClearBottom}
               user={user}
             />
-          </ModalBottomSheet>
+          </ModalBottomSheet> */}
 
           {/* Modal show tieu chuan  */}
           <Modal
             animationType="slide"
             transparent={true}
-            visible={modalVisibleTieuChuan}
+            visible={modalVisible}
             onRequestClose={() => {
-              setModalVisibleTieuChuan(!modalVisibleTieuChuan);
+              setModalVisible(!modalVisible);
             }}
           >
             <View style={[styles.centeredView, { height: "100%" }]}>

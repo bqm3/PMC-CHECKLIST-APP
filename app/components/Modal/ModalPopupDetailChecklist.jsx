@@ -91,19 +91,20 @@ const ModalPopupDetailChecklist = ({
     setChiso(dataItem?.valueCheck);
   }, [dataItem]);
 
-  // const close = () => {
-  //   user.isError !== 1 ? handlePopupClear() : handleClearBottom();
-  // };
-
   const close = () => {
-    handleClearBottom()
-  }
+    handleClearBottom();
+  };
 
   return (
     <GestureHandlerRootView style={{ height: "auto" }}>
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <View
-          style={{ width: SIZES.width, paddingHorizontal: 20, height: "auto" }}
+          style={{
+            width: "100%",
+            height: "auto",
+            justifyContent: "center",
+            alignContent: "center",
+          }}
         >
           {step === 1 &&
             (`${dataItem?.isCheck}` === "0" ? (
@@ -113,7 +114,11 @@ const ModalPopupDetailChecklist = ({
                 </Text>
                 <SelectDropdown
                   ref={ref}
-                  data={dataItem?.Giatrinhan ? dataItem?.Giatrinhan.map((it)=> it.trim()) : []}
+                  data={
+                    dataItem?.Giatrinhan
+                      ? dataItem?.Giatrinhan.map((it) => it.trim())
+                      : []
+                  }
                   buttonStyle={styles.select}
                   dropdownStyle={{
                     borderRadius: 8,
@@ -189,9 +194,51 @@ const ModalPopupDetailChecklist = ({
                 />
               </View>
             ))}
+
+          {step === 1 && (
+            <>
+              <View style={{ marginTop: 10 }}>
+                <Button
+                  onPress={() => {
+                    setStep(2);
+                  }}
+                  backgroundColor={COLORS.bg_white}
+                  border={COLORS.bg_button}
+                  color={"black"}
+                  text={"Chụp ảnh, Ghi chú"}
+                  width={"100%"}
+                />
+              </View>
+            </>
+          )}
+          {step === 1 && (
+            <View style={{ marginTop: 10 }}>
+              <Button
+                onPress={() => {
+                  setData();
+                  handleItemClick(objData, "close", objData, dataItem);
+                  close();
+                }}
+                backgroundColor={COLORS.bg_button}
+                border={COLORS.bg_button}
+                color={"white"}
+                text={"Hoàn thành"}
+                width={"100%"}
+              />
+            </View>
+          )}
           {step === 2 && (
             <>
-              <View>
+              <View
+                style={{
+                  width: SIZES.width * 0.85,
+                  height: "auto",
+                  flex: "auto",
+                  justifyContent: "center",
+                  alignContent: "center",
+                  // padding
+                }}
+              >
                 <View>
                   <Text allowFontScaling={false} style={styles.text}>
                     Ghi chú
@@ -238,7 +285,7 @@ const ModalPopupDetailChecklist = ({
                     </TouchableOpacity>
                     <ScrollView horizontal>
                       {images.map((img, index) => (
-                        <View key={img} style={{ marginLeft: 10 }}>
+                        <View key={index} style={{ marginLeft: 10 }}>
                           <Image
                             source={{ uri: img.uri }}
                             style={{
@@ -263,7 +310,7 @@ const ModalPopupDetailChecklist = ({
                             <FontAwesome
                               name="remove"
                               size={adjust(30)}
-                              color="red"
+                              color="white"
                             />
                           </TouchableOpacity>
                         </View>
@@ -271,54 +318,24 @@ const ModalPopupDetailChecklist = ({
                     </ScrollView>
                   </View>
                 </View>
+                <View style={{ marginTop: 10 }}>
+                  <Button
+                    onPress={() => {
+                      setData();
+                      handleItemClick(objData, "close", objData, dataItem);
+                      close();
+                    }}
+                    backgroundColor={COLORS.bg_button}
+                    border={COLORS.bg_button}
+                    color={"white"}
+                    text={"Hoàn thành"}
+                    width={"100%"}
+                  />
+                </View>
               </View>
-              <Button
-                onPress={() => {
-                  setData();
-                  handleItemClick(objData, "close", objData, dataItem);
-                  close();
-                }}
-                backgroundColor={COLORS.bg_button}
-                border={COLORS.bg_button}
-                color={"white"}
-                text={"Hoàn thành"}
-                width={"100%"}
-              />
             </>
           )}
 
-          {step === 1 && (
-            <>
-              <View style={{ marginTop: 10 }}>
-                <Button
-                  onPress={() => {
-                    setStep(2);
-                  }}
-                  backgroundColor={COLORS.bg_white}
-                  border={COLORS.bg_button}
-                  color={"black"}
-                  text={"Chụp ảnh, Ghi chú"}
-                  width={"100%"}
-                />
-              </View>
-            </>
-          )}
-          {step === 1 && (
-            <View style={{ marginTop: 10 }}>
-              <Button
-                onPress={() => {
-                  setData();
-                  handleItemClick(objData, "close", objData, dataItem);
-                  close();
-                }}
-                backgroundColor={COLORS.bg_button}
-                border={COLORS.bg_button}
-                color={"white"}
-                text={"Hoàn thành"}
-                width={"100%"}
-              />
-            </View>
-          )}
           <View style={{ marginTop: 10 }}>
             <Button
               onPress={() => {
@@ -327,8 +344,6 @@ const ModalPopupDetailChecklist = ({
                   : (setStep(1),
                     setData(),
                     handleItemClick(objData, "close", objData, dataItem));
-                // handleItemClick(image, "option", "Anh", dataItem);
-                // handleItemClick(ghichu, "option", "GhichuChitiet", dataItem);
               }}
               backgroundColor={step === 1 ? COLORS.bg_button : COLORS.bg_white}
               border={COLORS.bg_button}
@@ -378,6 +393,7 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     textAlign: "left",
     paddingLeft: 10,
+    width: "100%",
   },
   image: {
     width: 150,

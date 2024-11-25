@@ -185,7 +185,6 @@ const ThucHienHangmuc = ({ route, navigation }) => {
       isScan: 1
     });
     setDataSelect([]);
-    // Set the non-serializable values immediately after navigation
   };
 
   // view item flatlist

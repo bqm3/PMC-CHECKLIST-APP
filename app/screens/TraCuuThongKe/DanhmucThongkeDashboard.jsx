@@ -12,6 +12,7 @@ import moment from 'moment';
 import { BASE_URL } from "../../constants/config";
 import axiosClient from "../../api/axiosClient";
 import { DataTable } from "react-native-paper";
+import axios from "axios";
 
 // Header của bảng với chiều rộng tương ứng
 const headerList = [
@@ -32,7 +33,7 @@ const DanhmucThongkeDashBoard = () => {
     const handleDataPercent = async () => {
       try {
         setLoading(true); // Bắt đầu loading
-        const res = await axiosClient.get(
+        const res = await axios.get(
           `${BASE_URL}/tb_checklistc/percent-checklist-days`,
           {
             headers: {

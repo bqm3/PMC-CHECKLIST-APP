@@ -25,7 +25,7 @@ export default function ItemCaChecklist({
       onPress={() => toggleTodo(item)}
     >
       <View style={styles.row}>
-        <View style={{ width: 120 }}>
+        <View style={{ width: 110 }}>
           <Text
             allowFontScaling={false}
             style={[styles.title, { color: isExistIndex ? "black" : "white" }]}
@@ -40,32 +40,13 @@ export default function ItemCaChecklist({
             { fontWeight: "500", color: isExistIndex ? "black" : "white" },
           ]}
         >
-          : {moment(item?.Ngay).format("DD/MM/YYYY")}
+          : {moment(item.Giobd, "HH:mm:ss").format("HH:mm")} -{" "}
+          {item.Giokt && moment(item?.Giokt, "HH:mm:ss").format("HH:mm")} (
+          {moment(item?.Ngay).format("DD-MM")})
         </Text>
       </View>
       <View style={styles.row}>
-        <View style={{ width: 120 }}>
-          <Text
-            allowFontScaling={false}
-            style={[styles.title, { color: isExistIndex ? "black" : "white" }]}
-          >
-            Giờ vào - ra
-          </Text>
-        </View>
-        <View style={{ width: 200 }}>
-          <Text
-            allowFontScaling={false}
-            style={[
-              styles.title,
-              { fontWeight: "500", color: isExistIndex ? "black" : "white" },
-            ]}
-          >
-            : {item?.Giobd} - {item?.Giokt}
-          </Text>
-        </View>
-      </View>
-      <View style={styles.row}>
-        <View style={{ width: 120 }}>
+        <View style={{ width: 110 }}>
           <Text
             allowFontScaling={false}
             style={[styles.title, { color: isExistIndex ? "black" : "white" }]}
@@ -84,26 +65,7 @@ export default function ItemCaChecklist({
         </Text>
       </View>
       <View style={styles.row}>
-        <View style={{ width: 120 }}>
-          <Text
-            allowFontScaling={false}
-            style={[styles.title, { color: isExistIndex ? "black" : "white" }]}
-          >
-            Số lượng
-          </Text>
-        </View>
-        <Text
-          allowFontScaling={false}
-          style={[
-            styles.title,
-            { fontWeight: "500", color: isExistIndex ? "black" : "white" },
-          ]}
-        >
-          : {item?.Tong}
-        </Text>
-      </View>
-      <View style={styles.row}>
-        <View style={{ width: 120 }}>
+        <View style={{ width: 110 }}>
           <Text
             allowFontScaling={false}
             style={[styles.title, { color: isExistIndex ? "black" : "white" }]}
@@ -122,7 +84,27 @@ export default function ItemCaChecklist({
         </Text>
       </View>
       <View style={styles.row}>
-        <View style={{ width: 120 }}>
+        <View style={{ width: 110 }}>
+          <Text
+            allowFontScaling={false}
+            style={[styles.title, { color: isExistIndex ? "black" : "white" }]}
+          >
+            Số lượng
+          </Text>
+        </View>
+        <Text
+          allowFontScaling={false}
+          style={[
+            styles.title,
+            { fontWeight: "500", color: isExistIndex ? "black" : "white" },
+          ]}
+        >
+          : {item?.TongC}/{item?.Tong}
+        </Text>
+      </View>
+
+      <View style={styles.row}>
+        <View style={{ width: 110 }}>
           <Text
             allowFontScaling={false}
             style={[styles.title, { color: isExistIndex ? "black" : "white" }]}
@@ -165,7 +147,7 @@ const styles = StyleSheet.create({
   },
   row: {
     marginLeft: 10,
-    width: "100%",
+    width: "95%",
     flexDirection: "row",
     flexWrap: "wrap",
   },

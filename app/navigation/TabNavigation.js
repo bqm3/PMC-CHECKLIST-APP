@@ -23,13 +23,15 @@ import {
   DetailCheckListCa,
   ThucHienHangmucLai,
   DetailChecklistLai,
-  NotKhuVuc,
-  NotHangMuc,
-  NotCheckList,
   ScanKhuVuc,
   ScanHangMuc,
 } from "../screens/Checklist";
-import { DanhmucTracuuVsThongke } from "../screens/TraCuuThongKe";
+import {
+  DanhmucTracuuVsThongke,
+  NotKhuVuc,
+  NotHangMuc,
+  NotCheckList,
+} from "../screens/TraCuuThongKe";
 import { COLORS } from "../constants/theme";
 import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
 import DanhmucToanhaScreen from "../screens/PSH/DanhmucToanhaScreen";
@@ -886,7 +888,9 @@ const HomeStack = ({ navigation }) => {
                 fontWeight: "700",
                 color: "white",
               }}
-            >Sự cố ngoài</Text>
+            >
+              Sự cố ngoài
+            </Text>
           ),
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -925,8 +929,10 @@ const HomeStack = ({ navigation }) => {
                 fontWeight: "700",
                 color: "white",
               }}
-            >Báo cáo Tháng {route?.params?.data?.monthYear?.split("-")[1]} - Năm{" "}
-              {route?.params?.data?.monthYear?.split("-")[0]}</Text>
+            >
+              Báo cáo Tháng {route?.params?.data?.monthYear?.split("-")[1]} -
+              Năm {route?.params?.data?.monthYear?.split("-")[0]}
+            </Text>
           ),
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -966,7 +972,9 @@ const HomeStack = ({ navigation }) => {
                 fontWeight: "700",
                 color: "white",
               }}
-            >Hạng mục chỉ số</Text>
+            >
+              Hạng mục chỉ số
+            </Text>
           ),
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -1006,7 +1014,9 @@ const HomeStack = ({ navigation }) => {
                 fontWeight: "700",
                 color: "white",
               }}
-            >Xử lý sự cố</Text>
+            >
+              Xử lý sự cố
+            </Text>
           ),
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.goBack()}>

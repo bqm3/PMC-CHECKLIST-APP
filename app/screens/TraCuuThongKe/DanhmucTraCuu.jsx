@@ -7,6 +7,7 @@ import {
   View,
   BackHandler,
   ActivityIndicator,
+  FlatList,
 } from "react-native";
 import React, {
   useRef,
@@ -27,6 +28,7 @@ import ModalThongke from "../../components/Modal/ModalThongke";
 import DanhmucThongKe from "./DanhmucThongKe";
 import axiosClient from "../../api/axiosClient";
 import ModalBottomSheet from "../../components/Modal/ModalBottomSheet";
+import ItemCaChecklist from "../../components/Item/ItemCaChecklist";
 
 const numberOfItemsPerPageList = [20, 30, 50];
 
@@ -45,7 +47,6 @@ const DanhmucTraCuu = ({ setOpacity, opacity, navigation }) => {
   );
 
   const [isLoading, setIsLoading] = useState(false);
-
   const [isEnabled, setIsEnabled] = useState(true);
 
   const date = new Date();
@@ -96,6 +97,24 @@ const DanhmucTraCuu = ({ setOpacity, opacity, navigation }) => {
     setIsEnabled(false);
   };
 
+  const toggleTodo = async (item, index) => {
+    // setIsCheckbox(true);
+    const isExistIndex = newActionCheckList.findIndex(
+      (existingItem) => existingItem.ID_ChecklistC === item.ID_ChecklistC
+    );
+
+    // Nếu item đã tồn tại, xóa item đó đi
+    if (isExistIndex !== -1) {
+      setNewActionCheckList((prevArray) =>
+        prevArray.filter((_, index) => index !== isExistIndex)
+      );
+    } else {
+      // Nếu item chưa tồn tại, thêm vào mảng mới
+      setNewActionCheckList([item]);
+    }
+  };
+
+
   const fetchData = async (filter) => {
     setIsLoading(true);
     await axios
@@ -121,6 +140,8 @@ const DanhmucTraCuu = ({ setOpacity, opacity, navigation }) => {
         setIsLoading(false);
       });
   };
+
+
 
   // useEffect(() => {
   //   fetchData(filters);
@@ -213,11 +234,28 @@ const DanhmucTraCuu = ({ setOpacity, opacity, navigation }) => {
             ></ActivityIndicator>
           ) : (
             <>
-              <DanhmucThongKe
+              <FlatList
+                horizontal={false}
+                contentContainerStyle={{ flexGrow: 1 }}
+                style={{ margin: 10 }}
+                data={data}
+                renderItem={({ item, index }) => (
+                  <ItemCaChecklist
+                    key={index}
+                    item={item}
+                    toggleTodo={toggleTodo}
+                    newActionCheckList={newActionCheckList}
+                  />
+                )}
+                keyExtractor={(item, index) => index.toString()}
+                scrollEventThrottle={16}
+                scrollEnabled={true}
+              />
+              {/* <DanhmucThongKe
                 handlePresentModalPress2={handlePresentModalPress2}
                 data={data}
                 navigation={navigation}
-              />
+              /> */}
 
               <ModalBottomSheet
                 visible={visibleBottom}
