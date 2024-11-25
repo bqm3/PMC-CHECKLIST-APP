@@ -74,10 +74,13 @@ const LoginScreen = ({ navigation }) => {
   const { error, user, message, isLoading } = useSelector(
     (state) => state.authReducer
   );
-  //  const bottomSheetModalRef = useRef(null);
-  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(-1); // Add this state
+
   const bottomSheetModalRef = useRef(null);
-  const snapPoints = useMemo(() => ["85%"], []);
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(-1); 
+  const snapPoints = ['20%', '50%', '80%'];
+
+//  const snapPoints = [200, '50%'];
+
   const [opacity, setOpacity] = useState(1);
 
   const [show, setShow] = useState(false);
@@ -241,11 +244,13 @@ const LoginScreen = ({ navigation }) => {
   }, []);
 
   const handlePresentModalPress = useCallback(() => {
-    setIsBottomSheetOpen(0); // Open bottomsheet
+    bottomSheetModalRef.current.expand();
+    setIsBottomSheetOpen(1); 
   }, []);
 
   const handleCloseBottomSheet = useCallback(() => {
-    setIsBottomSheetOpen(-1); // Close bottomsheet
+    bottomSheetModalRef.current.close();
+    setIsBottomSheetOpen(-1); 
   }, []);
 
   useEffect(() => {
@@ -304,18 +309,24 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <StatusBar theme={"white"} />
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : null}
-          style={{ flex: 1 }}
-        >
-          {/* <BottomSheetModalProvider> */}
-          <ImageBackground
-            source={require("../../assets/bg_new.png")}
-            resizeMode="cover"
-            style={styles.defaultFlex}
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          {notification?.status == 1 && (
+            <NotificationComponent
+              notification={notification}
+              animation={animation}
+              setAnimation={setAnimation}
+              setNotification={setNotification}
+            />
+          )}
+          <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : null}
+            style={{ flex: 1 }}
           >
+          <ImageBackground
+              source={require("../../assets/bg_new.png")}
+              resizeMode="cover"
+              style={styles.defaultFlex}
+            >
             <ScrollView
               contentContainerStyle={[styles.container]}
               style={{ opacity: opacity }}
@@ -467,21 +478,22 @@ const LoginScreen = ({ navigation }) => {
             </ScrollView>
           </ImageBackground>
 
-          <BottomSheet
-            ref={bottomSheetModalRef}
-            index={isBottomSheetOpen}
-            snapPoints={snapPoints}
-            onChange={handleSheetChanges}
-            enablePanDownToClose={true}
-            onClose={handleCloseBottomSheet}
-          >
-            <BottomSheetView style={styles.contentContainer}>
-              <DataLicense />
-            </BottomSheetView>
-          </BottomSheet>
-          {/* </BottomSheetModalProvider> */}
-        </KeyboardAvoidingView>
-      </GestureHandlerRootView>
+            <BottomSheet
+              ref={bottomSheetModalRef}
+              index={isBottomSheetOpen}
+              snapPoints={snapPoints}
+              onChange={handleSheetChanges}
+              enableDynamicSizing={true}
+              enablePanDownToClose={true}
+              onClose={handleCloseBottomSheet}
+            >
+              <View style={styles.contentContainer}>
+                <DataLicense />
+              </View>
+            </BottomSheet>
+            {/* </BottomSheetModalProvider> */}
+          </KeyboardAvoidingView>
+        </GestureHandlerRootView>
     </>
   );
 };

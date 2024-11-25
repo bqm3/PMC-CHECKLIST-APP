@@ -12,7 +12,7 @@ import {
   ActivityIndicator,
   Alert,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback, useContext } from "react";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -21,13 +21,17 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import adjust from "../../adjust";
 import ItemChiSo from "../../components/Item/ItemChiSo";
 import { baocaochiso_get } from "../../redux/actions/tbActions";
-import { COLORS } from "../../constants/theme";
-import { Feather } from "@expo/vector-icons";
-import axios from "axios";
+import ReportContext from "../../context/ReportContext";
 import { BASE_URL } from "../../constants/config";
+import { COLORS, SIZES } from "../../constants/theme";
+import axios from "axios";
+
+
 
 const DanhMucBaoCaoChiSo = ({ navigation }) => {
   const dispatch = useDispatch();
+
+  const { setShowReport, showReport } = useContext(ReportContext);
 
   const { user, authToken } = useSelector((state) => state.authReducer);
   const { baocaochiso } = useSelector((state) => state.tbReducer);
@@ -35,6 +39,7 @@ const DanhMucBaoCaoChiSo = ({ navigation }) => {
   const [dataChiSo, setDataChiSo] = useState([]);
   const [loading, setLoading] = useState(true);
   const [newActionClick, setNewActionClick] = useState([]);
+  const [item, setItem] = useState(null);
 
   const init_baocaochiso = async () => {
     setLoading(true);
@@ -60,70 +65,49 @@ const DanhMucBaoCaoChiSo = ({ navigation }) => {
     }
   }, [baocaochiso]);
 
+  useEffect(() => {
+    const dataRes = async () => {
+      await axios
+        .post(BASE_URL + "/date", {
+          ID_Duan: user.ID_Duan,
+        })
+        .then((response) => {
+          setShowReport(response.data.data);
+          console.log("setShowReport",showReport)
+        })
+        .catch((err) => console.log("err device 1", err.response.data));
+    };
+    dataRes();
+  }, []);
+
   const toggleTodo = async (item, index) => {
-    const isExistIndex = newActionClick.findIndex(
-      (existingItem) => existingItem.ID_Baocaochiso === item.ID_Baocaochiso
-    );
-
-    // Nếu item đã tồn tại, xóa item đó đi
-    if (isExistIndex !== -1) {
-      setNewActionClick((prevArray) =>
-        prevArray.filter((_, index) => index !== isExistIndex)
-      );
-    } else {
-      setNewActionClick([item]);
-    }
-  };
-
-  const handleChangeTinhTrang = async (data) => {
-    Alert.alert(
-      "PMC Thông báo",
-      `Bạn muốn xóa báo cáo chỉ số tháng ${data.Month}`,
-      [
-        {
-          text: "Hủy",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel",
-        },
-        { text: "Xác nhận", onPress: () => handleDelete(data) },
-      ]
-    );
-  };
-
-  const handleDelete = async (data) => {
-    await axios
-      .put(BASE_URL + `/ent_baocaochiso/delete/${data.ID_Baocaochiso}`, [], {
-        headers: {
-          Accept: "application/json",
-          Authorization: "Bearer " + authToken,
-        },
-      })
-      .then((response) => {
-        setDataChiSo((prevData) =>
-          prevData.filter((item) => item.ID_Baocaochiso !== data.ID_Baocaochiso)
-        );
-        Alert.alert(
-          "PMC Thông báo",
-          `Xóa thành công. Lịch sử xóa sẽ được lưu trữ`,
-          [{ text: "Xác nhận", onPress: () => console.log("Cancel Pressed") }]
-        );
-      })
-      .catch((error) => {
-        Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
-          {
-            text: "Hủy",
-            onPress: () => console.log("Cancel Pressed"),
-            style: "cancel",
-          },
-        ]);
-      });
-  };
-
-  const hanldeDetailSuco = async (data) => {
-    navigation.navigate("Thực hiện thay đổi chỉ số", {
-      dataChiSo: data,
+    navigation.navigate("Báo cáo chỉ số tháng năm", {
+      data: item,
     });
   };
+
+  const renderItem = useCallback(
+    ({ item, index }) => (
+      <TouchableOpacity
+        style={[styles.content, { backgroundColor: "white" }]}
+        key={index}
+        onPress={() => toggleTodo(item)}
+      >
+        <View style={styles.row}>
+          <View style={{ width: SIZES.width - 160 }}>
+            <Text
+              allowFontScaling={false}
+              style={[styles.title, { color: "black" }]}
+            >
+              Báo cáo : Tháng {item?.monthYear?.split("-")[1]} - Năm{" "}
+              {item?.monthYear?.split("-")[0]}
+            </Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    ),
+    []
+  );
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -158,38 +142,35 @@ const DanhMucBaoCaoChiSo = ({ navigation }) => {
               ) : (
                 <View style={{ flex: 1, width: "100%" }}>
                   <View style={[styles.container]}>
-                    <View style={styles.header}>
-                      <TouchableOpacity
-                        style={styles.action}
-                        onPress={() => navigation.navigate("Thực hiện chỉ số")}
-                      >
-                        <AntDesign name="pluscircle" size={24} color="white" />
-                        <Text
-                          style={{
-                            fontSize: adjust(16),
-                            color: "white",
-                            fontWeight: "600",
-                          }}
+                    {showReport?.show && (
+                      <View style={styles.header}>
+                        <TouchableOpacity
+                          style={styles.action}
+                          onPress={() => navigation.navigate("Hạng mục chỉ số")}
                         >
-                          Chỉ số{" "}
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
+                          <AntDesign
+                            name="pluscircle"
+                            size={24}
+                            color="white"
+                          />
+                          <Text
+                            style={{
+                              fontSize: adjust(16),
+                              color: "white",
+                              fontWeight: "600",
+                            }}
+                          >
+                            Chỉ số{" "}
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    )}
+
                     <View style={styles.content}>
                       {dataChiSo.length > 0 && loading === false && (
                         <FlatList
-                          style={{
-                            marginHorizontal: 12,
-                          }}
                           data={dataChiSo}
-                          renderItem={({ item, index }) => (
-                            <ItemChiSo
-                              key={index}
-                              item={item}
-                              toggleTodo={toggleTodo}
-                              newActionClick={newActionClick}
-                            />
-                          )}
+                          renderItem={renderItem}
                           scrollEventThrottle={16}
                           ListFooterComponent={<View style={{ height: 80 }} />}
                           scrollEnabled={true}
@@ -207,38 +188,6 @@ const DanhMucBaoCaoChiSo = ({ navigation }) => {
                       )}
                     </View>
                   </View>
-
-                  {newActionClick?.length > 0 && (
-                    <View
-                      style={{
-                        width: 60,
-                        position: "absolute",
-                        right: 20,
-                        bottom: 50,
-                        flexDirection: "column",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        gap: 10,
-                      }}
-                    >
-                      <TouchableOpacity
-                        style={[
-                          styles.button,
-                          { backgroundColor: COLORS.bg_red },
-                        ]}
-                        onPress={() => handleChangeTinhTrang(newActionClick[0])}
-                      >
-                        <Feather name="delete" size={26} color="white" />
-                      </TouchableOpacity>
-
-                      <TouchableOpacity
-                        style={[styles.button]}
-                        onPress={() => hanldeDetailSuco(newActionClick[0])}
-                      >
-                        <Feather name="log-in" size={26} color="white" />
-                      </TouchableOpacity>
-                    </View>
-                  )}
                 </View>
               )}
             </ImageBackground>
@@ -259,7 +208,9 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     justifyContent: "flex-end",
-    margin: 12,
+    marginTop: 12,
+    marginStart: 12,
+    marginEnd: 12,
   },
   action: {
     flexDirection: "row",
@@ -294,11 +245,33 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    elevation: 5,
   },
   modalText: {
     fontSize: adjust(20),
     fontWeight: "600",
     paddingVertical: 10,
+  },
+  content: {
+    borderRadius: 12,
+    padding: 16,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 10,
+  },
+  title: {
+    paddingTop: 4,
+    fontSize: adjust(18),
+    paddingVertical: 2,
+    color: "black",
+    fontWeight: "700",
+    textAlign: "left",
   },
 });

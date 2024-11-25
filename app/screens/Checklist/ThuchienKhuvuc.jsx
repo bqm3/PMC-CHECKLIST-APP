@@ -415,6 +415,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
         // Iterate over all items in dataChecklistFaild
         dataChecklistFaild.forEach((item, index) => {
           // Extract and append checklist details to formData
+          formData.append("Key_Image", 1);
           formData.append("ID_ChecklistC", ID_ChecklistC);
           formData.append("ID_Checklist", item.ID_Checklist);
           formData.append("Ketqua", item.valueCheck || "");
@@ -589,6 +590,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
       } else {
         // Lặp qua từng phần tử trong dataChecklistFaild để thêm vào FormData
         dataChecklistFaild.forEach((item, index) => {
+          formData.append("Key_Image", 1);
           formData.append("ID_ChecklistC", ID_ChecklistC);
           formData.append("ID_Checklist", item.ID_Checklist);
           formData.append("Ketqua", item.valueCheck || "");

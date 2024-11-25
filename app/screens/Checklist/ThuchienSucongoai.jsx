@@ -13,6 +13,7 @@ import {
   Image,
   Alert,
   ScrollView,
+  Modal,
 } from "react-native";
 import React, { useState, useEffect, useCallback } from "react";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
@@ -39,10 +40,12 @@ import ButtonSubmit from "../../components/Button/ButtonSubmit";
 import axios from "axios";
 import { BASE_URL } from "../../constants/config";
 import { axiosClient } from "../../api/axiosClient";
-import { nowDate } from "../../utils/util"
+import { nowDate } from "../../utils/util";
+import ModalCallSucongoai from "../../components/Modal/ModalCallSucongoai";
 
-const ThuchienSucongoai = ({ navigation }) => {
+const ThuchienSucongoai = ({ navigation, route }) => {
   const dispath = useDispatch();
+  const { userPhone } = route.params;
   const { user, authToken } = useSelector((state) => state.authReducer);
   const { ent_khuvuc, ent_khoicv, ent_toanha, ent_hangmuc } = useSelector(
     (state) => state.entReducer
@@ -51,6 +54,7 @@ const ThuchienSucongoai = ({ navigation }) => {
   const [dataKhuvuc, setDataKhuvuc] = useState([]);
   const [dataHangmuc, setDataHangmuc] = useState([]);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
+  const [isModalcall, setIsModalcall] = useState(false);
 
   const [dataInput, setDataInput] = useState({
     ID_KV_CV: null,
@@ -149,7 +153,6 @@ const ThuchienSucongoai = ({ navigation }) => {
     await dispath(ent_khuvuc_get());
   };
 
-
   useEffect(() => {
     init_toanha();
     init_hangmuc();
@@ -213,7 +216,7 @@ const ThuchienSucongoai = ({ navigation }) => {
         formData.append("Noidungsuco", dataInput.Noidungsuco);
         formData.append("ID_User", user.ID_User);
         formData.append("Tinhtrangxuly", 0);
-        if( dataInput.Ngaysuco == null || dataInput.Giosuco == null){
+        if (dataInput.Ngaysuco == null || dataInput.Giosuco == null) {
           Alert.alert("PMC Thông báo", "Vui lòng nhập đầy đủ thông tin", [
             {
               text: "Hủy",
@@ -275,7 +278,7 @@ const ThuchienSucongoai = ({ navigation }) => {
           ]);
           setLoadingSubmit(false);
           resetDataInput();
-        } else if (data.Ngaysuco > nowDate()){
+        } else if (data.Ngaysuco > nowDate()) {
           Alert.alert("PMC Thông báo", "Ngày không hợp lệ", [
             {
               text: "Hủy",
@@ -770,7 +773,16 @@ const ThuchienSucongoai = ({ navigation }) => {
                     </View>
                   </View>
 
-                  <View style={{marginBottom: 10}}>
+                  <View style={{ marginBottom: 10 }}>
+                    <TouchableOpacity onPress={() => setIsModalcall(true)}>
+                      <View
+                        style={{ alignItems: "flex-end", marginBottom: 10 }}
+                      >
+                        <Image
+                          source={require("../../../assets/icons/ic_phone.png")}
+                        />
+                      </View>
+                    </TouchableOpacity>
                     <ButtonSubmit
                       text="Gửi"
                       onPress={() => handleSubmit()}
@@ -781,6 +793,29 @@ const ThuchienSucongoai = ({ navigation }) => {
                     />
                   </View>
                 </View>
+
+                <Modal
+                  animationType="slide"
+                  transparent={true}
+                  visible={isModalcall}
+                  onRequestClose={() => {
+                    setIsModalcall(false);
+                  }}
+                >
+                  <View style={styles.centeredView}>
+                    <View
+                      style={[
+                        styles.modalView,
+                        { width: "80%", height: "70%" },
+                      ]}
+                    >
+                      <ModalCallSucongoai
+                        userPhone={userPhone}
+                        setIsModalcall={setIsModalcall}
+                      />
+                    </View>
+                  </View>
+                </Modal>
               </ScrollView>
             </ImageBackground>
           </BottomSheetModalProvider>
@@ -878,5 +913,25 @@ const styles = StyleSheet.create({
     height: 100,
     resizeMode: "center",
     marginVertical: 10,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalView: {
+    backgroundColor: "white",
+    borderRadius: 16,
+    padding: 4,
+    // alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
 });

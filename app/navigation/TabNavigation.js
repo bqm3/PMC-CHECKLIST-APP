@@ -44,9 +44,9 @@ import Sucongoai from "../screens/Checklist/Sucongoai";
 import ThuchienSucongoai from "../screens/Checklist/ThuchienSucongoai";
 import DetailSucongoai from "../screens/Checklist/DetailSucongoai";
 import XulySuco from "../screens/Checklist/XulySuco";
-import DanhMucBaoCaoChiSo from "../screens/Checklist/DanhMucBaoCaoChiSo";
-import DanhMucBaoCaoChiSoChiTiet from "../screens/Checklist/DanhMucBaoCaoChiSoChiTiet";
-import DanhMucBaoCaoChiSoChiTietUpdate from "../screens/Checklist/DanhMucBaoCaoChiSoChiTietUpdate";
+import DanhMucBaoCaoChiSo from "../screens/Baocaochiso/DanhMucBaoCaoChiSo";
+import BaoCaoChiSoTheoNamThang from "../screens/Baocaochiso/BaoCaoChiSoTheoNamThang";
+import DanhmucHangMucChiSo from "../screens/Baocaochiso/DanhmucHangMucChiSo";
 
 const Stack = createNativeStackNavigator();
 
@@ -886,7 +886,7 @@ const HomeStack = ({ navigation }) => {
                 fontWeight: "700",
                 color: "white",
               }}
-            ></Text>
+            >Sự cố ngoài</Text>
           ),
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -912,12 +912,11 @@ const HomeStack = ({ navigation }) => {
       />
 
       <Stack.Screen
-        name="Thực hiện chỉ số"
-        component={DanhMucBaoCaoChiSoChiTiet}
+        name="Báo cáo chỉ số tháng năm"
+        component={BaoCaoChiSoTheoNamThang}
         lazy={false}
         options={({ navigation, route }) => ({
           headerShown: true,
-
           headerTitle: () => (
             <Text
               allowFontScaling={false}
@@ -926,7 +925,8 @@ const HomeStack = ({ navigation }) => {
                 fontWeight: "700",
                 color: "white",
               }}
-            ></Text>
+            >Báo cáo Tháng {route?.params?.data?.monthYear?.split("-")[1]} - Năm{" "}
+              {route?.params?.data?.monthYear?.split("-")[0]}</Text>
           ),
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -952,8 +952,8 @@ const HomeStack = ({ navigation }) => {
       />
 
       <Stack.Screen
-        name="Thực hiện thay đổi chỉ số"
-        component={DanhMucBaoCaoChiSoChiTietUpdate}
+        name="Hạng mục chỉ số"
+        component={DanhmucHangMucChiSo}
         lazy={false}
         options={({ navigation, route }) => ({
           headerShown: true,
@@ -966,7 +966,7 @@ const HomeStack = ({ navigation }) => {
                 fontWeight: "700",
                 color: "white",
               }}
-            ></Text>
+            >Hạng mục chỉ số</Text>
           ),
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -1006,9 +1006,7 @@ const HomeStack = ({ navigation }) => {
                 fontWeight: "700",
                 color: "white",
               }}
-            >
-              Báo cáo sự cố
-            </Text>
+            >Xử lý sự cố</Text>
           ),
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.goBack()}>

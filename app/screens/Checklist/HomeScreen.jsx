@@ -287,19 +287,20 @@ const HomeScreen = ({ navigation }) => {
     dataRes();
   }, [authToken]);
 
-  useEffect(() => {
-    const dataRes = async () => {
-      await axios
-        .post(BASE_URL + "/date", {
-          ID_Duan: user.ID_Duan,
-        })
-        .then((response) => {
-          setShowReport(response.data.data);
-        })
-        .catch((err) => console.log("err device", err));
-    };
-    dataRes();
-  }, [authToken]);
+  // useEffect(() => {
+  //   const dataRes = async () => {
+  //     await axios
+  //       .post(BASE_URL + "/date", {
+  //         ID_Duan: user.ID_Duan
+  //       })
+  //       .then((response) => {
+  //         setShowReport(response.data.data);
+  //       })
+  //       .catch((err) => console.log("err device", err));
+  //   };
+  //   dataRes();
+  // }, [authToken]);
+  // console.log('show', showReport)
 
   return (
     <ImageBackground
@@ -371,9 +372,11 @@ const HomeScreen = ({ navigation }) => {
                   : user?.ent_chucvu?.Role == 2 && dataKST;
 
               // Kiểm tra showReport.show để lọc dữ liệu
-              return showReport?.show
-                ? baseData
-                : baseData?.filter((item) => item.path !== "Báo cáo chỉ số");
+              // return showReport?.show
+              //   ? baseData
+              //   : baseData?.filter((item) => item.path !== "Báo cáo chỉ số");
+
+                return baseData
             })()}
             renderItem={renderItem}
             ItemSeparatorComponent={() => <View style={{ height: 10 }} />}

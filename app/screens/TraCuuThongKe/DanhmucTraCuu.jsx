@@ -213,11 +213,11 @@ const DanhmucTraCuu = ({ setOpacity, opacity, navigation }) => {
             ></ActivityIndicator>
           ) : (
             <>
-              {/* <DanhmucThongKe
+              <DanhmucThongKe
                 handlePresentModalPress2={handlePresentModalPress2}
                 data={data}
                 navigation={navigation}
-              /> */}
+              />
 
               <ModalBottomSheet
                 visible={visibleBottom}

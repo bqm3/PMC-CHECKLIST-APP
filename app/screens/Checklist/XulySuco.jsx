@@ -49,6 +49,7 @@ const XulySuco = ({ navigation }) => {
   const [modalHeight, setModalHeight] = useState(350);
   const [images, setImages] = useState([]);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+  const [userPhone, setUserPhone] = useState([]);
   const hangmuc = newActionClick[0]?.ent_hangmuc?.Hangmuc;
 
   const [dataInput, setDataInput] = useState({
@@ -70,7 +71,9 @@ const XulySuco = ({ navigation }) => {
 
   const [saveStatus, setSaveStatus] = useState(null);
 
-  
+  const init_sucongoai = async () => {
+    await dispath(tb_sucongoai_get());
+  };
 
   const handleChangeDate = (key, value) => {
     setNgayXuLy((data) => ({
@@ -78,13 +81,8 @@ const XulySuco = ({ navigation }) => {
       [key]: value,
     }));
   };
-  
-  const init_sucongoai = async () => {
-    await dispath(tb_sucongoai_get());
-  };
-  
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
+    const unsubscribe = navigation.addListener("focus", () => {
       init_sucongoai();
     });
 
@@ -164,6 +162,35 @@ const XulySuco = ({ navigation }) => {
     setModalVisible(true);
     setOpacity(0.2);
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}/ent_user/getPhone`, {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${authToken}`, 
+          },
+          timeout: 10000, 
+        });
+  
+        setUserPhone(response.data.data);
+      } catch (error) {
+        console.error("Error fetching user phone:", error);
+        Alert.alert("PMC Thông báo", "Có lỗi xảy ra!", [
+          {
+            text: "Xác nhận",
+            onPress: () => {
+              console.log("OK Pressed");
+            },
+          },
+        ]);
+      }
+    };
+
+    fetchData();
+  }, []); 
+  
 
   const hanldeDetailSuco = async (data) => {
     try {
@@ -516,7 +543,7 @@ const XulySuco = ({ navigation }) => {
                   <View></View>
                   <TouchableOpacity
                     style={styles.action}
-                    onPress={() => navigation.navigate("Thực hiện sự cố ngoài")}
+                    onPress={() => navigation.navigate("Thực hiện sự cố ngoài", {userPhone: userPhone})}
                   >
                     <AntDesign name="pluscircle" size={24} color="white" />
                     <Text
