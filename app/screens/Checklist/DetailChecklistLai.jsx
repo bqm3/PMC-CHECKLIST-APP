@@ -662,6 +662,7 @@ const DetailChecklistLai = ({ route, navigation }) => {
         // Iterate over all items in dataChecklistFaild
         arrData.forEach((item, index) => {
           // Extract and append checklist details to formData
+          formData.append("Key_Image", 1);
           formData.append("ID_ChecklistC", ID_ChecklistC);
           formData.append("ID_Checklist", item.ID_Checklist);
           formData.append("Ketqua", item.valueCheck || "");
@@ -813,6 +814,7 @@ const DetailChecklistLai = ({ route, navigation }) => {
       } else {
         // Lặp qua từng phần tử trong dataChecklistFaild để thêm vào FormData
         dataFaild.forEach((item, index) => {
+          formData.append("Key_Image", 1);
           formData.append("ID_ChecklistC", ID_ChecklistC);
           formData.append("ID_Checklist", item.ID_Checklist);
           formData.append("Ketqua", item.valueCheck || "");
@@ -1175,11 +1177,12 @@ const DetailChecklistLai = ({ route, navigation }) => {
 
             <TouchableOpacity
               onPress={() => {
-                if (user.isError == 1) {
-                  handleBottom(item, index);
-                } else {
-                  handlePopupActive(item, index), setIsBottomSheetOpen(true);
-                }
+                // if (user.isError == 1) {
+                //   handleBottom(item, index);
+                // } else {
+                //   handlePopupActive(item, index), setIsBottomSheetOpen(true);
+                // }
+                handleBottom(item, index);
               }}
             >
               <Image

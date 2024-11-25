@@ -120,9 +120,13 @@ const ModalPopupDetailChecklist = ({
     setChiso(dataItem?.valueCheck);
   }, [dataItem]);
 
+  // const close = () => {
+  //   user.isError !== 1 ? handlePopupClear() : handleClearBottom();
+  // };
+
   const close = () => {
-    user.isError !== 1 ? handlePopupClear() : handleClearBottom();
-  };
+    handleClearBottom()
+  }
 
   return (
     <GestureHandlerRootView style={{ height: "auto" }}>

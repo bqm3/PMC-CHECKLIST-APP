@@ -15,22 +15,25 @@ import adjust from "../../adjust";
 
 const ModalBaocaochisoThangNam = ({ item, handleCloseBottomSheet }) => {
   const [showFullNote, setShowFullNote] = useState(false);
-  const [height, setHeight] = useState(70)
+  const [height, setHeight] = useState(70);
 
   const handlePress = () => {
     setShowFullNote(!showFullNote);
-    setHeight(100)
+    setHeight(100);
   };
 
   return (
     <GestureHandlerRootView style={styles.container}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.content}>
-        <TouchableOpacity 
+          <TouchableOpacity
             style={styles.closeButton}
             onPress={handleCloseBottomSheet}
           >
-            <AntDesign name="close" size={24} color="red" />
+            <Image
+              source={require("../../../assets/icons/ic_close.png")}
+              style={styles.closeIcon}
+            />
           </TouchableOpacity>
           {/* Hình ảnh */}
           <Image
@@ -206,15 +209,20 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
   },
   closeButton: {
-    position: 'absolute',
+    position: "absolute",
     right: 15,
     top: 15,
     zIndex: 1,
     width: 30,
     height: 30,
     borderRadius: 15,
-    backgroundColor: 'rgba(200, 200, 200, 0.3)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  }
+    backgroundColor: "rgba(200, 200, 200, 0.3)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  closeIcon: {
+    width: adjust(20),
+    height: adjust(20),
+    tintColor: "red"
+  },
 });

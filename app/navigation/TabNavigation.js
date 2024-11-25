@@ -885,7 +885,7 @@ const HomeStack = ({ navigation }) => {
                 fontWeight: "700",
                 color: "white",
               }}
-            ></Text>
+            >Sự cố ngoài</Text>
           ),
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -1005,7 +1005,7 @@ const HomeStack = ({ navigation }) => {
                 fontWeight: "700",
                 color: "white",
               }}
-            ></Text>
+            >Xử lý sự cố</Text>
           ),
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.goBack()}>

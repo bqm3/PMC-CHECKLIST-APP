@@ -156,7 +156,6 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    elevation: 5,
   },
   modalText: {
     fontSize: adjust(20),
@@ -175,7 +174,6 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    elevation: 5,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",

@@ -87,6 +87,8 @@ const DetailChecklist = ({ route, navigation }) => {
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  const [isOpen, setIsOpen] = useState(-1);
+
   const headerHeight = useHeaderHeight();
   const [isConnected, setConnected] = useState(true);
   useEffect(() => {
@@ -709,6 +711,7 @@ const DetailChecklist = ({ route, navigation }) => {
         // Iterate over all items in dataChecklistFaild
         arrData.forEach((item, index) => {
           // Extract and append checklist details to formData
+          formData.append("Key_Image", 1);
           formData.append("ID_ChecklistC", ID_ChecklistC);
           formData.append("ID_Checklist", item.ID_Checklist);
           formData.append("Ketqua", item.valueCheck || "");
@@ -858,6 +861,7 @@ const DetailChecklist = ({ route, navigation }) => {
       } else {
         // Lặp qua từng phần tử trong dataChecklistFaild để thêm vào FormData
         dataFaild.forEach((item, index) => {
+          formData.append("Key_Image", 1);
           formData.append("ID_ChecklistC", ID_ChecklistC);
           formData.append("ID_Checklist", item.ID_Checklist);
           formData.append("Ketqua", item.valueCheck || "");
@@ -1066,7 +1070,7 @@ const DetailChecklist = ({ route, navigation }) => {
 
     // Mở bottom sheet
     if (bottomSheetModalRef?.current) {
-      bottomSheetModalRef.current.present();
+      bottomSheetModalRef.current.expand();
       setOpacity(0.2); // Chỉ thay đổi opacity khi bottom sheet mở thành công
     } else {
       // Nếu không mở được bottom sheet, đặt lại opacity là 1
@@ -1222,11 +1226,12 @@ const DetailChecklist = ({ route, navigation }) => {
             )}
             <TouchableOpacity
               onPress={() => {
-                if (user.isError == 1) {
-                  handleBottom(item, index);
-                } else {
-                  handlePopupActive(item, index), setIsBottomSheetOpen(true);
-                }
+                // if (user.isError == 1) {
+                //   handleBottom(item, index);
+                // } else {
+                //   handlePopupActive(item, index), setIsBottomSheetOpen(true);
+                // }
+                handleBottom(item, index);
               }}
             >
               <Image
@@ -1474,13 +1479,15 @@ const DetailChecklist = ({ route, navigation }) => {
             </View>
           </ImageBackground>
 
-          <BottomSheetModal
+          <BottomSheet
             ref={bottomSheetModalRef}
-            index={0}
+            index={isOpen}
             snapPoints={snapPoints}
             onChange={handleSheetChanges}
+            enablePanDownToClose={true}
+            onClose={handleClearBottom}
           >
-            <View style={styles.contentContainer}>
+            <BottomSheetView style={styles.contentContainer}>
               <ModalPopupDetailChecklist
                 handlePopupClear={handlePopupClear}
                 dataItem={dataItem}
@@ -1490,8 +1497,8 @@ const DetailChecklist = ({ route, navigation }) => {
                 handleClearBottom={handleClearBottom}
                 user={user}
               />
-            </View>
-          </BottomSheetModal>
+            </BottomSheetView>
+          </BottomSheet>
 
           <ModalBottomSheet
             visible={visibleBottom}

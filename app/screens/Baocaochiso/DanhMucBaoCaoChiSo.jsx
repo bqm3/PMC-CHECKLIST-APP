@@ -12,7 +12,7 @@ import {
   ActivityIndicator,
   Alert,
 } from "react-native";
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useContext } from "react";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -21,13 +21,17 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import adjust from "../../adjust";
 import ItemChiSo from "../../components/Item/ItemChiSo";
 import { baocaochiso_get } from "../../redux/actions/tbActions";
-import { COLORS, SIZES } from "../../constants/theme";
-import { Feather } from "@expo/vector-icons";
-import axios from "axios";
+import ReportContext from "../../context/ReportContext";
 import { BASE_URL } from "../../constants/config";
+import { COLORS, SIZES } from "../../constants/theme";
+import axios from "axios";
+
+
 
 const DanhMucBaoCaoChiSo = ({ navigation }) => {
   const dispatch = useDispatch();
+
+  const { setShowReport, showReport } = useContext(ReportContext);
 
   const { user, authToken } = useSelector((state) => state.authReducer);
   const { baocaochiso } = useSelector((state) => state.tbReducer);
@@ -61,12 +65,26 @@ const DanhMucBaoCaoChiSo = ({ navigation }) => {
     }
   }, [baocaochiso]);
 
+  useEffect(() => {
+    const dataRes = async () => {
+      await axios
+        .post(BASE_URL + "/date", {
+          ID_Duan: user.ID_Duan,
+        })
+        .then((response) => {
+          setShowReport(response.data.data);
+          console.log("setShowReport",showReport)
+        })
+        .catch((err) => console.log("err device 1", err.response.data));
+    };
+    dataRes();
+  }, []);
+
   const toggleTodo = async (item, index) => {
     navigation.navigate("Báo cáo chỉ số tháng năm", {
       data: item,
     });
   };
-
 
   const renderItem = useCallback(
     ({ item, index }) => (
@@ -124,23 +142,30 @@ const DanhMucBaoCaoChiSo = ({ navigation }) => {
               ) : (
                 <View style={{ flex: 1, width: "100%" }}>
                   <View style={[styles.container]}>
-                    <View style={styles.header}>
-                      <TouchableOpacity
-                        style={styles.action}
-                        onPress={() => navigation.navigate("Hạng mục chỉ số")}
-                      >
-                        <AntDesign name="pluscircle" size={24} color="white" />
-                        <Text
-                          style={{
-                            fontSize: adjust(16),
-                            color: "white",
-                            fontWeight: "600",
-                          }}
+                    {showReport?.show && (
+                      <View style={styles.header}>
+                        <TouchableOpacity
+                          style={styles.action}
+                          onPress={() => navigation.navigate("Hạng mục chỉ số")}
                         >
-                          Chỉ số{" "}
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
+                          <AntDesign
+                            name="pluscircle"
+                            size={24}
+                            color="white"
+                          />
+                          <Text
+                            style={{
+                              fontSize: adjust(16),
+                              color: "white",
+                              fontWeight: "600",
+                            }}
+                          >
+                            Chỉ số{" "}
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    )}
+
                     <View style={styles.content}>
                       {dataChiSo.length > 0 && loading === false && (
                         <FlatList
@@ -183,7 +208,9 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     justifyContent: "flex-end",
-    margin: 12,
+    marginTop: 12,
+    marginStart: 12,
+    marginEnd: 12,
   },
   action: {
     flexDirection: "row",
@@ -218,7 +245,6 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    elevation: 5,
   },
   modalText: {
     fontSize: adjust(20),
@@ -235,10 +261,17 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    elevation: 5,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
     gap: 10,
+  },
+  title: {
+    paddingTop: 4,
+    fontSize: adjust(18),
+    paddingVertical: 2,
+    color: "black",
+    fontWeight: "700",
+    textAlign: "left",
   },
 });

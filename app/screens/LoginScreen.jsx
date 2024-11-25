@@ -73,10 +73,13 @@ const LoginScreen = ({ navigation }) => {
   const { error, user, message, isLoading } = useSelector(
     (state) => state.authReducer
   );
-  //  const bottomSheetModalRef = useRef(null);
-  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(-1); // Add this state
+
   const bottomSheetModalRef = useRef(null);
-  const snapPoints = useMemo(() => ["60%"], []);
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(-1); 
+  const snapPoints = ['20%', '50%', '80%'];
+
+//  const snapPoints = [200, '50%'];
+
   const [opacity, setOpacity] = useState(1);
 
   const [show, setShow] = useState(false);
@@ -242,11 +245,12 @@ const LoginScreen = ({ navigation }) => {
 
   const handlePresentModalPress = useCallback(() => {
     bottomSheetModalRef.current.expand();
-    setIsBottomSheetOpen(0); // Open bottomsheet
+    setIsBottomSheetOpen(1); 
   }, []);
 
   const handleCloseBottomSheet = useCallback(() => {
-    setIsBottomSheetOpen(-1); // Close bottomsheet
+    bottomSheetModalRef.current.close();
+    setIsBottomSheetOpen(-1); 
   }, []);
 
   useEffect(() => {
@@ -305,7 +309,6 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <>
-      <PaperProvider>
         <GestureHandlerRootView style={{ flex: 1 }}>
           {notification?.status == 1 && (
             <NotificationComponent
@@ -476,17 +479,17 @@ const LoginScreen = ({ navigation }) => {
               index={isBottomSheetOpen}
               snapPoints={snapPoints}
               onChange={handleSheetChanges}
+              enableDynamicSizing={true}
               enablePanDownToClose={true}
               onClose={handleCloseBottomSheet}
             >
-              <BottomSheetView style={styles.contentContainer}>
+              <View style={styles.contentContainer}>
                 <DataLicense />
-              </BottomSheetView>
+              </View>
             </BottomSheet>
             {/* </BottomSheetModalProvider> */}
           </KeyboardAvoidingView>
         </GestureHandlerRootView>
-      </PaperProvider>
     </>
   );
 };
