@@ -39,33 +39,6 @@ const ModalPopupDetailChecklist = ({
   const [ghichu, setGhichu] = useState();
   const [chiso, setChiso] = useState();
 
-  // const pickImage = async () => {
-  //   // Ask the user for the permission to access the camera
-  //   const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
-
-  //   if (permissionResult.granted === false) {
-  //     alert("You've refused to allow this appp to access your camera!");
-  //     return;
-  //   }
-
-  //   try {
-  //     // Cấu hình các tùy chọn cho ImagePicker
-  //     const result = await ImagePicker.launchCameraAsync({
-  //       quality: 0.5, // Giảm chất lượng ảnh (giá trị từ 0.0 đến 1.0, 0.5 là giảm 50% chất lượng)
-  //       base64: false, // Không cần mã hóa ảnh thành base64, nếu không cần thiết
-  //       exif: false, // Bỏ thông tin Exif nếu không cần
-  //     });
-
-  //     if (!result.canceled) {
-  //       dataItem.Anh = result?.assets[0];
-  //       handleItemClick(result?.assets[0], "option", "Anh", dataItem);
-  //       setImage(result?.assets[0]);
-  //     }
-  //   } catch (error) {
-  //     console.error("Lỗi khi chụp ảnh: ", error);
-  //   }
-  // };
-
   const pickImage = async () => {
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
 
@@ -77,8 +50,6 @@ const ModalPopupDetailChecklist = ({
     try {
       const result = await ImagePicker.launchCameraAsync({
         quality: 0.5,
-        base64: false,
-        exif: false,
       });
 
       if (!result.canceled) {
@@ -138,7 +109,7 @@ const ModalPopupDetailChecklist = ({
                 </Text>
                 <SelectDropdown
                   ref={ref}
-                  data={dataItem?.Giatrinhan ? dataItem?.Giatrinhan : []}
+                  data={dataItem?.Giatrinhan ? dataItem?.Giatrinhan.map((it)=> it.trim()) : []}
                   buttonStyle={styles.select}
                   dropdownStyle={{
                     borderRadius: 8,
@@ -149,14 +120,14 @@ const ModalPopupDetailChecklist = ({
                   buttonTextStyle={styles.customText}
                   defaultValue={defaultChecklist}
                   onSelect={(selectedItem, i) => {
-                    dataItem.valueCheck = selectedItem;
+                    dataItem.valueCheck = selectedItem.trim();
                     handleItemClick(
-                      selectedItem,
+                      selectedItem.trim(),
                       "option",
                       "valueCheck",
                       dataItem
                     );
-                    setDefaultChecklist(selectedItem);
+                    setDefaultChecklist(selectedItem.trim());
                   }}
                   renderDropdownIcon={(isOpened) => {
                     return (
@@ -263,7 +234,7 @@ const ModalPopupDetailChecklist = ({
                     </TouchableOpacity>
                     <ScrollView horizontal>
                       {images.map((img, index) => (
-                        <View style={{ marginLeft: 10 }}>
+                        <View key={img} style={{ marginLeft: 10 }}>
                           <Image
                             source={{ uri: img.uri }}
                             style={{

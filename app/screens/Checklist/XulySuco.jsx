@@ -70,15 +70,17 @@ const XulySuco = ({ navigation }) => {
 
   const [saveStatus, setSaveStatus] = useState(null);
 
-   const init_sucongoai = async () => {
-    await dispath(tb_sucongoai_get());
-  };
+  
 
   const handleChangeDate = (key, value) => {
     setNgayXuLy((data) => ({
       ...data,
       [key]: value,
     }));
+  };
+  
+  const init_sucongoai = async () => {
+    await dispath(tb_sucongoai_get());
   };
   
   useEffect(() => {
@@ -89,10 +91,6 @@ const XulySuco = ({ navigation }) => {
     return unsubscribe;
   }, [navigation]);
 
-  useEffect(() => {
-    setLoading(true);
-    init_sucongoai();
-  }, []);
 
   const handleChangeStatus = (key, val) => {
     setChangeStatus((prevStatus) => {
@@ -126,6 +124,7 @@ const XulySuco = ({ navigation }) => {
     }
     setLoading(false);
   }, [tb_sucongoai]);
+
 
   useEffect(() => {
     const backAction = () => {
@@ -213,13 +212,6 @@ const XulySuco = ({ navigation }) => {
     setIsBottomSheetOpen(false);
   };
 
-  // useEffect(() => {
-  //   if (changeStatus?.status3) {
-  //     setModalHeight(550);
-  //   } else if(changeStatus.status2){
-  //     setModalHeight(350);
-  //   }
-  // }, [changeStatus]);
 
   useEffect(() => {
     let height = 300;
@@ -238,20 +230,6 @@ const XulySuco = ({ navigation }) => {
     setModalHeight(height);
   }, [hangmuc, changeStatus]);
 
-  // const handleChangeHeight = (status,val) => {
-  //   if (status === "status3" && val == true) {
-  //     setModalHeight(modalHeight + 200);
-  //   } else if (status === "status3" && val == false){
-  //     setModalHeight(modalHeight - 200)
-  //   }
-  //   // else{
-  //   //   setModalHeight(modalHeight)
-  //   // }
-
-  //   if(status === "status2" && val == true){
-  //     setModalHeight(modalHeight + 200);
-  //   }
-  // };
 
   const handleChangeText = (key, value) => {
     setDataInput((data) => ({
@@ -392,6 +370,7 @@ const XulySuco = ({ navigation }) => {
         });
     }
   };
+
   const handleSubmitStatusImage = async () => {
     let formData = new FormData();
     images.map((item, index) => {

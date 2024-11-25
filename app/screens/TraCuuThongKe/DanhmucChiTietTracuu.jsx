@@ -89,7 +89,7 @@ const headerList = [
   },
 ];
 
-const DanhmucTracuu = () => {
+const DanhmucChiTietTracuu = () => {
   const dispath = useDispatch();
   const { ent_tang, ent_khuvuc, ent_toanha } = useSelector(
     (state) => state.entReducer
@@ -779,7 +779,7 @@ const DanhmucTracuu = () => {
   );
 };
 
-export default DanhmucTracuu;
+export default DanhmucChiTietTracuu;
 
 const styles = StyleSheet.create({
   container: {

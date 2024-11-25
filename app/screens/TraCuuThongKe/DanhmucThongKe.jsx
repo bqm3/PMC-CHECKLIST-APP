@@ -44,7 +44,7 @@ import ModalChecklistC from "../../components/Modal/ModalChecklistC";
 import ModalChecklistCImage from "../../components/Modal/ModalChecklistCImage";
 import WebView from "react-native-webview";
 import adjust from "../../adjust";
-import DetailCheckListCa from "./DetailCheckListCa";
+import DetailCheckListCa from "../Checklist/DetailCheckListCa";
 import ItemChecklistCa from "../../components/Item/ItemChecklistCa";
 
 // import mime from "mime";

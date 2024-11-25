@@ -631,6 +631,7 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     backgroundColor: "white",
   },
+  
   select: {
     width: "100%",
     borderRadius: 8,

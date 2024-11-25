@@ -859,6 +859,7 @@ const styles = StyleSheet.create({
     width: "100%",
     textAlign: "left",
   },
+  
   section: {
     flexDirection: "row",
     alignItems: "center",

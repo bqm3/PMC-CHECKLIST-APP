@@ -381,7 +381,7 @@ export const ent_checklist_mul_hm = (dataHangmuc, ID_Calv, ID_ChecklistC, ID_Kho
         const processedData = data?.map((item) => {
           return {
             ...item,
-            Giatrinhan: item?.Giatrinhan?.split("/"),
+            Giatrinhan: item?.Giatrinhan?.split("/").map((item) => item.trim()),
             valueCheck: null,
             GhichuChitiet: "",
             ID_ChecklistC: ID_ChecklistC,
@@ -439,7 +439,7 @@ export const ent_checklist_mul_hm_return = (dataHangmuc, ID_Calv, ID_ChecklistC)
         const processedData = data?.map((item) => {
           return {
             ...item,
-            Giatrinhan: item?.Giatrinhan?.split("/"),
+            Giatrinhan: item?.Giatrinhan?.split("/").map((item) => item.trim()),
             valueCheck: null,
             GhichuChitiet: "",
             ID_ChecklistC: ID_ChecklistC,

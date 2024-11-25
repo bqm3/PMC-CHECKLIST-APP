@@ -7,7 +7,8 @@ import {
   TouchableOpacity,
   Platform,
   Alert,
-  Pressable
+  Pressable,
+  View,
 } from "react-native";
 import {
   ThucHienChecklist,
@@ -17,7 +18,6 @@ import {
   DetailChecklist,
   Profile,
   DanhmucChecklist,
-  DanhmucTracuuVsThongke,
   ChecklistLaiScreen,
   ThuchienKhuvucLai,
   DetailCheckListCa,
@@ -29,6 +29,7 @@ import {
   ScanKhuVuc,
   ScanHangMuc,
 } from "../screens/Checklist";
+import { DanhmucTracuuVsThongke } from "../screens/TraCuuThongKe";
 import { COLORS } from "../constants/theme";
 import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
 import DanhmucToanhaScreen from "../screens/PSH/DanhmucToanhaScreen";
@@ -52,13 +53,11 @@ const Stack = createNativeStackNavigator();
 const Back = ({ navigation, title }) => {
   return (
     <TouchableOpacity
-    style={{backgroundColor:"red" , width: adjust(40),
-      height: adjust(40),}}
-      onPress={() =>{
-        console.log("vao day")
-        title ? navigation.navigate("Profile") : navigation.goBack()
-      }
-      }
+      style={{ backgroundColor: "red", width: adjust(40), height: adjust(40) }}
+      onPress={() => {
+        console.log("vao day");
+        title ? navigation.navigate("Profile") : navigation.goBack();
+      }}
     >
       {/* <FontAwesome5 name="user-alt" size={adjust(28)} color="white" /> */}
 
@@ -108,8 +107,8 @@ const HomeStack = ({ navigation }) => {
           headerRight: () => (
             <TouchableOpacity
               style={{
-                width: adjust(40),
-                height: adjust(40),
+                width: adjust(36),
+                height: adjust(36),
               }}
               onPress={() => {
                 navigation.navigate("Profile");
@@ -118,8 +117,8 @@ const HomeStack = ({ navigation }) => {
               <Image
                 source={require("../../assets/icons/ic_person.png")}
                 style={{
-                  width: adjust(40),
-                  height: adjust(40),
+                  width: adjust(36),
+                  height: adjust(36),
                   tintColor: "white",
                 }}
               />
@@ -282,7 +281,7 @@ const HomeStack = ({ navigation }) => {
                   style={{
                     height: adjust(22),
                     width: adjust(22),
-                   tintColor: "white",
+                    tintColor: "white",
                   }}
                 />
               )}
@@ -1007,7 +1006,9 @@ const HomeStack = ({ navigation }) => {
                 fontWeight: "700",
                 color: "white",
               }}
-            ></Text>
+            >
+              Báo cáo sự cố
+            </Text>
           ),
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.goBack()}>

@@ -90,12 +90,13 @@ const DetailChecklist = ({ route, navigation }) => {
   const headerHeight = useHeaderHeight();
   const [isConnected, setConnected] = useState(true);
   useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener(state => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
       setConnected(state.isConnected);
     });
-  
+
     return () => unsubscribe();
   }, []);
+
   useEffect(() => {
     let locationSubscription;
 
@@ -108,16 +109,10 @@ const DetailChecklist = ({ route, navigation }) => {
       locationSubscription = await Location.watchPositionAsync(
         {
           accuracy: Location.Accuracy.BestForNavigation,
-          timeInterval: 5000,
+          timeInterval: 8000,
           distanceInterval: 1,
         },
         (location) => {
-          console.log(
-            "New location update: " +
-              location.coords.latitude +
-              ", " +
-              location.coords.longitude
-          );
           setLocation(location);
         }
       );
@@ -160,9 +155,9 @@ const DetailChecklist = ({ route, navigation }) => {
     );
     const dataChecklistDefault = dataChecklistAction.filter(
       (item) =>
-        item.valueCheck === item.Giatridinhdanh &&
-        item.GhichuChitiet === "" &&
-        item.Anh === null
+        item.valueCheck == item.Giatridinhdanh &&
+        item.GhichuChitiet == "" &&
+        item.Anh == null
     );
 
     const dataChecklistActionWithoutDefault = dataChecklistAction.filter(
@@ -250,9 +245,9 @@ const DetailChecklist = ({ route, navigation }) => {
 
       const dataChecklistDefault = dataChecklistAction.filter(
         (item) =>
-          item.valueCheck === item.Giatridinhdanh &&
-          item.GhichuChitiet === "" &&
-          item.Anh === null
+          item.valueCheck == item.Giatridinhdanh &&
+          item.GhichuChitiet == "" &&
+          item.Anh == null
       );
 
       const DetaildataChecklistFaild = dataChecklistFaild?.map((item) => {
@@ -260,7 +255,7 @@ const DetailChecklist = ({ route, navigation }) => {
           return {
             ...item,
             valueCheck: item.Giatridinhdanh,
-            isScan: isScan
+            isScan: isScan,
           };
         }
         return item;
@@ -367,7 +362,7 @@ const DetailChecklist = ({ route, navigation }) => {
 
   // set data checklist
   const handleSetData = async (status, dataChecklist, it) => {
-    let mergedArrClick = [...defaultActionDataChecklist];
+    let mergedArrDefault = [...defaultActionDataChecklist];
     let mergedArrOption = [...dataChecklistFaild];
 
     // newDataChecklist là data được chọn.
@@ -383,19 +378,19 @@ const DetailChecklist = ({ route, navigation }) => {
       );
     });
 
-    if (it.valueCheck === null) {
+    if (it.valueCheck == null) {
       if (
         it.Anh !== null ||
         it.GhichuChitiet !== "" ||
         it.valueCheck !== it.Giatridinhdanh
       ) {
-        const indexDefault = mergedArrClick.findIndex(
+        const indexDefault = mergedArrDefault.findIndex(
           (item) => item.ID_Checklist === it.ID_Checklist
         );
 
-        // Xóa phần tử nếu có trong mergedArrClick
+        // Xóa phần tử nếu có trong mergedArrDefault
         if (indexDefault !== -1) {
-          mergedArrClick.splice(indexDefault, 1);
+          mergedArrDefault.splice(indexDefault, 1);
         }
 
         const existingItem = mergedArrOption.find(
@@ -430,13 +425,13 @@ const DetailChecklist = ({ route, navigation }) => {
           it.GhichuChitiet !== "" ||
           it.valueCheck !== it.Giatridinhdanh
         ) {
-          const indexDefault = mergedArrClick.findIndex(
+          const indexDefault = mergedArrDefault.findIndex(
             (item) => item.ID_Checklist === it.ID_Checklist
           );
 
-          // Xóa phần tử nếu có trong mergedArrClick
+          // Xóa phần tử nếu có trong mergedArrDefault
           if (indexDefault !== -1) {
-            mergedArrClick.splice(indexDefault, 1);
+            mergedArrDefault.splice(indexDefault, 1);
           }
 
           const existingItem = mergedArrOption.find(
@@ -452,46 +447,66 @@ const DetailChecklist = ({ route, navigation }) => {
           }
         } else {
           if (
-            !mergedArrClick.some(
+            !mergedArrDefault.some(
               (existingItem) => existingItem.ID_Checklist === it.ID_Checklist
             )
           ) {
-            mergedArrClick.push(it);
+            mergedArrDefault.push(it);
           }
         }
       }
 
       if (status === "option" || status === "close") {
-        const indexDefault = mergedArrClick.findIndex(
-          (item) => item.ID_Checklist === it.ID_Checklist
-        );
+        // Kiểm tra nếu valueCheck !== Giatridinhdanh
+        if (
+          it.Anh !== null ||
+          it.GhichuChitiet !== "" ||
+          it.valueCheck !== it.Giatridinhdanh
+        ) {
+          // Tìm vị trí của phần tử trong mảng Default và Option
+          const indexDefault = mergedArrDefault.findIndex(
+            (item) => item.ID_Checklist === it.ID_Checklist
+          );
 
-        // Xóa phần tử nếu có trong mergedArrClick
-        if (indexDefault !== -1) {
-          mergedArrClick.splice(indexDefault, 1);
-        }
+          const indexOption = mergedArrOption.findIndex(
+            (item) => item.ID_Checklist === it.ID_Checklist
+          );
 
-        // Tìm phần tử trong mergedArrOption theo ID_Checklist
-        const indexOption = mergedArrOption.findIndex(
-          (existingItem) => existingItem.ID_Checklist === it.ID_Checklist
-        );
-        // Kiểm tra nếu phần tử đã tồn tại trong mergedArrOption
-        if (indexOption !== -1) {
-          const existingItem = mergedArrOption[indexOption];
-          // Kiểm tra nếu dữ liệu của 'it' khác so với dữ liệu hiện tại
-          if (JSON.stringify(existingItem) !== JSON.stringify(it)) {
-            // Nếu khác, thay thế phần tử cũ bằng phần tử mới
-            mergedArrOption.splice(indexOption, 1, it);
+          // Xóa phần tử khỏi Default nếu tồn tại
+          if (indexDefault !== -1) {
+            mergedArrDefault.splice(indexDefault, 1);
+          }
+
+          // Nếu phần tử không tồn tại trong Option, thêm mới
+          if (indexOption === -1) {
+            mergedArrOption.push(it);
           }
         } else {
-          // Nếu phần tử chưa tồn tại, thêm 'it' mới vào
-          mergedArrOption.push(it);
+          // Nếu valueCheck === Giatridinhdanh
+          const indexOption = mergedArrOption.findIndex(
+            (item) => item.ID_Checklist === it.ID_Checklist
+          );
+
+          // Xóa phần tử khỏi Option nếu tồn tại
+          if (indexOption !== -1) {
+            mergedArrOption.splice(indexOption, 1);
+          }
+
+          // Thêm vào Default nếu chưa tồn tại
+          if (
+            !mergedArrDefault.some(
+              (existingItem) => existingItem.ID_Checklist === it.ID_Checklist
+            )
+          ) {
+            mergedArrDefault.push(it);
+          }
         }
       }
     }
+
     setDataChecklistFaild([...mergedArrOption]);
-    setDataChecklistDefault(mergedArrClick);
-    setNewActionDataChecklist([...mergedArrOption, ...mergedArrClick]);
+    setDataChecklistDefault(mergedArrDefault);
+    setNewActionDataChecklist([...mergedArrOption, ...mergedArrDefault]);
     setDataChecklistFilter(dataChecklist);
 
     const data2Map = new Map(
@@ -554,7 +569,6 @@ const DetailChecklist = ({ route, navigation }) => {
   // call api submit data checklsit
   const handleSubmit = async () => {
     try {
-     
       saveConnect(true);
       if (location == null) {
         Alert.alert(
@@ -643,7 +657,7 @@ const DetailChecklist = ({ route, navigation }) => {
           }
         } else {
           // Mất kết nối mạng
-          await AsyncStorage.setItem("checkNetwork", "1");
+          await AsyncStorage.setItem("checkNetwork", "close");
           Alert.alert(
             "Không có kết nối mạng",
             "Vui lòng kiểm tra kết nối mạng của bạn."
@@ -681,7 +695,11 @@ const DetailChecklist = ({ route, navigation }) => {
 
           // Lưu lại kết quả cập nhật
           setDataChecklistFilterContext(updatedData1);
-          await AsyncStorage.setItem('dataChecklistStorage', JSON.stringify(updatedData1));
+          // Dùng trong trường hợp checklist bị văng rá
+          await AsyncStorage.setItem(
+            "dataChecklistStorage",
+            JSON.stringify(updatedData1)
+          );
         }
       }
     } catch (error) {
@@ -709,6 +727,7 @@ const DetailChecklist = ({ route, navigation }) => {
         // Iterate over all items in dataChecklistFaild
         arrData.forEach((item, index) => {
           // Extract and append checklist details to formData
+          formData.append("Key_Image", 1);
           formData.append("ID_ChecklistC", ID_ChecklistC);
           formData.append("ID_Checklist", item.ID_Checklist);
           formData.append("Ketqua", item.valueCheck || "");
@@ -727,12 +746,17 @@ const DetailChecklist = ({ route, navigation }) => {
                     : image.uri.replace("file://", ""),
                 name:
                   image.fileName ||
-                  `${Math.floor(Math.random() * 999999999)}_${item.ID_Checklist}_${imgIndex}.jpg`,
+                  `${Math.floor(Math.random() * 999999999)}_${
+                    item.ID_Checklist
+                  }_${imgIndex}.jpg`,
                 type: "image/jpeg",
               };
-              formData.append(`Images_${index}_${item.ID_Checklist}_${imgIndex}`, file);
+              formData.append(
+                `Images_${index}_${item.ID_Checklist}_${imgIndex}`,
+                file
+              );
             });
-          }          
+          }
         });
 
         // Send the entire FormData in a single request
@@ -786,6 +810,7 @@ const DetailChecklist = ({ route, navigation }) => {
     const descriptions = arrData.map((item) => item.ID_Checklist).join(",");
 
     const ID_Checklists = arrData.map((item) => item.ID_Checklist);
+    const valueChecks = arrData.map((item) => item.valueCheck);
     const Gioht = arrData.map((item) => item.Gioht);
 
     const requestDone = axios.post(
@@ -794,6 +819,7 @@ const DetailChecklist = ({ route, navigation }) => {
         Description: descriptions,
         ID_Checklists: ID_Checklists,
         ID_ChecklistC: ID_ChecklistC,
+        valueChecks: valueChecks,
         Gioht: Gioht[0],
         checklistLength: arrData.length,
         Vido: location?.coords?.latitude || "",
@@ -878,12 +904,17 @@ const DetailChecklist = ({ route, navigation }) => {
                     : image.uri.replace("file://", ""),
                 name:
                   image.fileName ||
-                  `${Math.floor(Math.random() * 999999999)}_${item.ID_Checklist}_${imgIndex}.jpg`,
+                  `${Math.floor(Math.random() * 999999999)}_${
+                    item.ID_Checklist
+                  }_${imgIndex}.jpg`,
                 type: "image/jpeg",
               };
-              formData.append(`Images_${index}_${item.ID_Checklist}_${imgIndex}`, file);
+              formData.append(
+                `Images_${index}_${item.ID_Checklist}_${imgIndex}`,
+                file
+              );
             });
-          }          
+          }
         });
 
         // Chuẩn bị dữ liệu cho yêu cầu thứ hai
@@ -892,6 +923,7 @@ const DetailChecklist = ({ route, navigation }) => {
           .join(",");
 
         const ID_Checklists = dataDefault.map((item) => item.ID_Checklist);
+        const valueChecks = dataDefault.map((item) => item.valueCheck);
 
         // Tạo các yêu cầu API
         const requestFaild = axios.post(
@@ -911,6 +943,7 @@ const DetailChecklist = ({ route, navigation }) => {
             Description: descriptions,
             ID_Checklists: ID_Checklists,
             ID_ChecklistC: ID_ChecklistC,
+            valueChecks: valueChecks,
             Gioht: dataDefault[0].Gioht,
             checklistLength: dataDefault.length,
             Vido: dataDefault[0].Vido || "",
@@ -1011,7 +1044,7 @@ const DetailChecklist = ({ route, navigation }) => {
   };
 
   // Thiết lập lại dữ liệu sau khi hoàn thành xử lý API
-  const postHandleSubmit = () => {
+  const postHandleSubmit = async () => {
     const idsToRemove = new Set([
       ...defaultActionDataChecklist.map((item) => item.ID_Checklist),
       ...dataChecklistFaild.map((item) => item.ID_Checklist),
@@ -1039,6 +1072,7 @@ const DetailChecklist = ({ route, navigation }) => {
 
     setDataChecklistFilter(dataChecklist);
     setDataChecklistFilterContext(dataChecklistFilterContextReset);
+
     setNewActionDataChecklist([]);
     setDataChecklistDefault([]);
     setDataChecklistFaild([]);
@@ -1064,9 +1098,13 @@ const DetailChecklist = ({ route, navigation }) => {
     setModalVisible(true);
     setIndex(index);
 
+    console.log(
+      "bottomSheetModalRef?.current",
+      bottomSheetModalRef.current.expand()
+    );
     // Mở bottom sheet
     if (bottomSheetModalRef?.current) {
-      bottomSheetModalRef.current.present();
+      bottomSheetModalRef.current.expand();
       setOpacity(0.2); // Chỉ thay đổi opacity khi bottom sheet mở thành công
     } else {
       // Nếu không mở được bottom sheet, đặt lại opacity là 1

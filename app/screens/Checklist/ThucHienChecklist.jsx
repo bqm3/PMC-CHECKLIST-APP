@@ -147,7 +147,7 @@ const ThucHienChecklist = ({ navigation }) => {
   };
 
   const loadData = async () => {
-    await AsyncStorage.removeItem("dataChecklist");
+    
     await AsyncStorage.removeItem("checkNetwork");
   };
 
@@ -156,6 +156,7 @@ const ThucHienChecklist = ({ navigation }) => {
     int_checklistc();
   }, []);
 
+  // Xóa cache khi không còn ca đang mở
   const clearCacheDirectory = async () => {
     try {
       const cacheDir = FileSystem.cacheDirectory;
@@ -165,6 +166,8 @@ const ThucHienChecklist = ({ navigation }) => {
           idempotent: true,
         });
       }
+
+      await AsyncStorage.removeItem("dataChecklistStorage");
       console.log("Đã xóa cache khi ứng dụng đóng.");
     } catch (error) {
       console.error("Lỗi khi xóa cache:", error);
@@ -433,7 +436,7 @@ const ThucHienChecklist = ({ navigation }) => {
 
   const clearAsyncStorage = async () => {
     try {
-      await AsyncStorage.removeItem("dataChecklist");
+      
       await AsyncStorage.removeItem("checkNetwork");
     } catch (error) {
       console.error("Error clearing AsyncStorage:", error);

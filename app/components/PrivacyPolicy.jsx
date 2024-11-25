@@ -4,20 +4,25 @@ import { ScrollView, Text, View, Linking, StyleSheet } from "react-native";
 const PrivacyPolicy = () => {
   return (
     <ScrollView style={styles.container}>
-      <Text allowFontScaling={false} style={styles.h1}>Privacy Policy</Text>
-      <Text allowFontScaling={false} style={styles.p}>Last updated: May 19, 2024</Text>
-      <Text allowFontScaling={false} style={styles.p}>
-        This Privacy Policy describes Our policies and procedures on the
-        collection, use and disclosure of Your information when You use the
-        Service and tells You about Your privacy rights and how the law protects
-        You.
+      <Text allowFontScaling={false} style={styles.h1}>
+        Chính Sách Bảo Mật
       </Text>
       <Text allowFontScaling={false} style={styles.p}>
-        We use Your Personal data to provide and improve the Service. By using
-        the Service, You agree to the collection and use of information in
-        accordance with this Privacy Policy. This Privacy Policy has been
-        created with the help of the
-        <Text allowFontScaling={false}
+        Cập nhật lần cuối: 19 tháng 5, 2024
+      </Text>
+      <Text allowFontScaling={false} style={styles.p}>
+        Chính Sách Bảo Mật này mô tả các chính sách và thủ tục của chúng tôi về
+        việc thu thập, sử dụng và tiết lộ thông tin của bạn khi bạn sử dụng Dịch
+        Vụ và thông báo cho bạn về quyền riêng tư của bạn và cách thức pháp luật
+        bảo vệ bạn.
+      </Text>
+      <Text allowFontScaling={false} style={styles.p}>
+        Chúng tôi sử dụng Dữ Liệu Cá Nhân của bạn để cung cấp và cải thiện Dịch
+        Vụ. Bằng việc sử dụng Dịch Vụ, bạn đồng ý với việc thu thập và sử dụng
+        thông tin theo Chính Sách Bảo Mật này. Chính Sách Bảo Mật này đã được
+        tạo ra với sự trợ giúp của
+        <Text
+          allowFontScaling={false}
           style={styles.link}
           onPress={() =>
             Linking.openURL(
@@ -26,382 +31,214 @@ const PrivacyPolicy = () => {
           }
         >
           {" "}
-          Privacy Policy Generator
+          Công Cụ Tạo Chính Sách Bảo Mật
         </Text>
         .
       </Text>
-      <Text allowFontScaling={false} style={styles.h2}>Interpretation and Definitions</Text>
-      <Text allowFontScaling={false} style={styles.h3}>Interpretation</Text>
-      <Text allowFontScaling={false} style={styles.p}>
-        The words of which the initial letter is capitalized have meanings
-        defined under the following conditions. The following definitions shall
-        have the same meaning regardless of whether they appear in singular or
-        in plural.
+      <Text allowFontScaling={false} style={styles.h2}>
+        Giải Thích và Định Nghĩa
       </Text>
-      <Text allowFontScaling={false} style={styles.h3}>Definitions</Text>
-      <Text allowFontScaling={false} style={styles.p}>For the purposes of this Privacy Policy:</Text>
-      <View style={styles.ul}>
-        <Text allowFontScaling={false} style={styles.li}>
-          <Text allowFontScaling={false} style={styles.strong}>Account</Text> means a unique account
-          created for You to access our Service or parts of our Service.
-        </Text>
-        <Text allowFontScaling={false} style={styles.li}>
-          <Text allowFontScaling={false} style={styles.strong}>Affiliate</Text> means an entity that
-          controls, is controlled by or is under common control with a party,
-          where "control" means ownership of 50% or more of the shares, equity
-          interest or other securities entitled to vote for election of
-          directors or other managing authority.
-        </Text>
-        <Text allowFontScaling={false} style={styles.li}>
-          <Text allowFontScaling={false} style={styles.strong}>Application</Text> refers to Checklist,
-          the software program provided by the Company.
-        </Text>
-        <Text allowFontScaling={false} style={styles.li}>
-          <Text allowFontScaling={false} style={styles.strong}>Company</Text> (referred to as either "the
-          Company", "We", "Us" or "Our" in this Agreement) refers to PMC, 57
-          Huỳnh Thúc Kháng, Q. Đống Đa.
-        </Text>
-        <Text allowFontScaling={false} style={styles.li}>
-          <Text allowFontScaling={false} style={styles.strong}>Country</Text> refers to: Vietnam
-        </Text>
-        <Text allowFontScaling={false} style={styles.li}>
-          <Text allowFontScaling={false} style={styles.strong}>Device</Text> means any device that can
-          access the Service such as a computer, a cellphone or a digital
-          tablet.
-        </Text>
-        <Text allowFontScaling={false} style={styles.li}>
-          <Text allowFontScaling={false} style={styles.strong}>Personal Data</Text> is any information
-          that relates to an identified or identifiable individual.
-        </Text>
-        <Text allowFontScaling={false} style={styles.li}>
-          <Text allowFontScaling={false} style={styles.strong}>Service</Text> refers to the Application.
-        </Text>
-        <Text allowFontScaling={false} style={styles.li}>
-          <Text allowFontScaling={false} style={styles.strong}>Service Provider</Text> means any natural
-          or legal person who processes the data on behalf of the Company. It
-          refers to third-party companies or individuals employed by the Company
-          to facilitate the Service, to provide the Service on behalf of the
-          Company, to perform services related to the Service or to assist the
-          Company in analyzing how the Service is used.
-        </Text>
-        <Text allowFontScaling={false} style={styles.li}>
-          <Text allowFontScaling={false} style={styles.strong}>Usage Data</Text> refers to data collected
-          automatically, either generated by the use of the Service or from the
-          Service infrastructure itself (for example, the duration of a page
-          visit).
-        </Text>
-        <Text allowFontScaling={false} style={styles.li}>
-          <Text allowFontScaling={false} style={styles.strong}>You</Text> means the individual accessing
-          or using the Service, or the company, or other legal entity on behalf
-          of which such individual is accessing or using the Service, as
-          applicable.
-        </Text>
-      </View>
-      <Text allowFontScaling={false} style={styles.h2}>Collecting and Using Your Personal Data</Text>
-      <Text allowFontScaling={false} style={styles.h3}>Types of Data Collected</Text>
-      <Text allowFontScaling={false} style={styles.h4}>Personal Data</Text>
+      <Text allowFontScaling={false} style={styles.h3}>
+        Giải Thích
+      </Text>
       <Text allowFontScaling={false} style={styles.p}>
-        While using Our Service, We may ask You to provide Us with certain
-        personally identifiable information that can be used to contact or
-        identify You. Personally identifiable information may include, but is
-        not limited to:
+        Các từ có chữ cái đầu tiên viết hoa có nghĩa được định nghĩa theo các
+        điều kiện dưới đây. Các định nghĩa dưới đây sẽ có ý nghĩa giống nhau bất
+        kể chúng xuất hiện ở dạng số ít hay số nhiều.
+      </Text>
+      <Text allowFontScaling={false} style={styles.h3}>
+        Định Nghĩa
+      </Text>
+      <Text allowFontScaling={false} style={styles.p}>
+        Vì mục đích của Chính Sách Bảo Mật này:
       </Text>
       <View style={styles.ul}>
         <Text allowFontScaling={false} style={styles.li}>
-          Address, State, Province, ZIP/Postal code, City
+          <Text allowFontScaling={false} style={styles.strong}>
+            Tài Khoản
+          </Text>{" "}
+          là tài khoản duy nhất được tạo cho bạn để truy cập vào Dịch Vụ của
+          chúng tôi hoặc các phần của Dịch Vụ.
         </Text>
-        <Text allowFontScaling={false} style={styles.li}>Usage Data</Text>
+        <Text allowFontScaling={false} style={styles.li}>
+          <Text allowFontScaling={false} style={styles.strong}>
+            Công Ty
+          </Text>{" "}
+          (được gọi là "Công Ty", "Chúng Tôi", "Chúng Tôi" hoặc "Của Chúng Tôi"
+          trong Thỏa Thuận này) chỉ về PMC, 57 Huỳnh Thúc Kháng, Q. Đống Đa.
+        </Text>
+        <Text allowFontScaling={false} style={styles.li}>
+          <Text allowFontScaling={false} style={styles.strong}>
+            Quốc Gia
+          </Text>{" "}
+          chỉ về: Việt Nam.
+        </Text>
+        <Text allowFontScaling={false} style={styles.li}>
+          <Text allowFontScaling={false} style={styles.strong}>
+            Thiết Bị
+          </Text>{" "}
+          là bất kỳ thiết bị nào có thể truy cập vào Dịch Vụ, chẳng hạn như máy
+          tính, điện thoại di động hoặc máy tính bảng kỹ thuật số.
+        </Text>
+        <Text allowFontScaling={false} style={styles.li}>
+          <Text allowFontScaling={false} style={styles.strong}>
+            Dữ Liệu Cá Nhân
+          </Text>{" "}
+          là bất kỳ thông tin nào liên quan đến một cá nhân đã được xác định
+          hoặc có thể xác định được.
+        </Text>
+        <Text allowFontScaling={false} style={styles.li}>
+          <Text allowFontScaling={false} style={styles.strong}>
+            Dịch Vụ
+          </Text>{" "}
+          chỉ về Ứng Dụng.
+        </Text>
       </View>
-      <Text allowFontScaling={false} style={styles.h4}>Usage Data</Text>
-      <Text allowFontScaling={false} style={styles.p}>
-        Usage Data is collected automatically when using the Service.
+      <Text allowFontScaling={false} style={styles.h2}>
+        Thu Thập và Sử Dụng Dữ Liệu Cá Nhân của Bạn
       </Text>
-      <Text allowFontScaling={false} style={styles.p}>
-        Usage Data may include information such as Your Device's Internet
-        Protocol address (e.g. IP address), browser type, browser version, the
-        pages of our Service that You visit, the time and date of Your visit,
-        the time spent on those pages, unique device identifiers and other
-        diagnostic data.
-      </Text>
-      <Text allowFontScaling={false} style={styles.p}>
-        When You access the Service by or through a mobile device, We may
-        collect certain information automatically, including, but not limited
-        to, the type of mobile device You use, Your mobile device unique ID, the
-        IP address of Your mobile device, Your mobile operating system, the type
-        of mobile Internet browser You use, unique device identifiers and other
-        diagnostic data.
-      </Text>
-      <Text allowFontScaling={false} style={styles.p}>
-        We may also collect information that Your browser sends whenever You
-        visit our Service or when You access the Service by or through a mobile
-        device.
+      <Text allowFontScaling={false} style={styles.h3}>
+        Các Loại Dữ Liệu Được Thu Thập
       </Text>
       <Text allowFontScaling={false} style={styles.h4}>
-        Information Collected while Using the Application
+        Dữ Liệu Cá Nhân
       </Text>
       <Text allowFontScaling={false} style={styles.p}>
-        While using Our Application, in order to provide features of Our
-        Application, We may collect, with Your prior permission:
-      </Text>
-      <View style={styles.ul}>
-        <Text allowFontScaling={false} style={styles.li}>Information regarding your location</Text>
-        <Text allowFontScaling={false} style={styles.li}>
-          Pictures and other information from your Device's camera and photo
-          library
-        </Text>
-      </View>
-      <Text allowFontScaling={false} style={styles.p}>
-        We use this information to provide features of Our Service, to improve
-        and customize Our Service. The information may be uploaded to the
-        Company's servers and/or a Service Provider's server or it may be simply
-        stored on Your device.
-      </Text>
-      <Text allowFontScaling={false} style={styles.p}>
-        You can enable or disable access to this information at any time,
-        through Your Device settings.
-      </Text>
-      <Text allowFontScaling={false} style={styles.h3}>Use of Your Personal Data</Text>
-      <Text allowFontScaling={false} style={styles.p}>
-        The Company may use Personal Data for the following purposes:
+        Trong khi sử dụng Dịch Vụ của chúng tôi, chúng tôi có thể yêu cầu bạn
+        cung cấp thông tin cá nhân có thể được sử dụng để liên hệ hoặc nhận dạng
+        bạn. Thông tin cá nhân có thể bao gồm, nhưng không giới hạn:
       </Text>
       <View style={styles.ul}>
         <Text allowFontScaling={false} style={styles.li}>
-          <Text allowFontScaling={false} style={styles.strong}>To provide and maintain our Service</Text>
-          , including to monitor the usage of our Service.
+          Địa chỉ, Tỉnh/Thành phố, Mã bưu chính, Thành phố
         </Text>
         <Text allowFontScaling={false} style={styles.li}>
-          <Text allowFontScaling={false} style={styles.strong}>To manage Your Account:</Text> to manage
-          Your registration as a user of the Service. The Personal Data You
-          provide can give You access to different functionalities of the
-          Service that are available to You as a registered user.
-        </Text>
-        <Text allowFontScaling={false} style={styles.li}>
-          <Text allowFontScaling={false} style={styles.strong}>For the performance of a contract:</Text>{" "}
-          the development, compliance and undertaking of the purchase contract
-          for the products, items or services You have purchased or of any other
-          contract with Us through the Service.
-        </Text>
-        <Text allowFontScaling={false} style={styles.li}>
-          <Text allowFontScaling={false} style={styles.strong}>To contact You:</Text> To contact You by
-          email, telephone calls, SMS, or other equivalent forms of electronic
-          communication, such as a mobile application's push notifications
-          regarding updates or informative communications related to the
-          functionalities, products or contracted services, including the
-          security updates, when necessary or reasonable for their
-          implementation.
-        </Text>
-        <Text allowFontScaling={false} style={styles.li}>
-          <Text allowFontScaling={false} style={styles.strong}>To provide You</Text> with news, special
-          offers and general information about other goods, services and events
-          which we offer that are similar to those that you have already
-          purchased or enquired about unless You have opted not to receive such
-          information.
-        </Text>
-        <Text allowFontScaling={false} style={styles.li}>
-          <Text allowFontScaling={false} style={styles.strong}>To manage Your requests:</Text> To attend
-          and manage Your requests to Us.
-        </Text>
-        <Text allowFontScaling={false} style={styles.li}>
-          <Text allowFontScaling={false} style={styles.strong}>For business transfers:</Text> We may use
-          Your information to evaluate or conduct a merger, divestiture,
-          restructuring, reorganization, dissolution, or other sale or transfer
-          of some or all of Our assets, whether as a going concern or as part of
-          bankruptcy, liquidation, or similar proceeding, in which Personal Data
-          held by Us about our Service users is among the assets transferred.
-        </Text>
-        <Text allowFontScaling={false} style={styles.li}>
-          <Text allowFontScaling={false} style={styles.strong}>For other purposes</Text>: We may use Your
-          information for other purposes, such as data analysis, identifying
-          usage trends, determining the effectiveness of our promotional
-          campaigns and to evaluate and improve our Service, products, services,
-          marketing and your experience.
+          Dữ Liệu Sử Dụng
         </Text>
       </View>
+      <Text allowFontScaling={false} style={styles.h4}>
+        Dữ Liệu Sử Dụng
+      </Text>
       <Text allowFontScaling={false} style={styles.p}>
-        We may share Your personal information in the following situations:
+        Dữ Liệu Sử Dụng được thu thập tự động khi sử dụng Dịch Vụ.
+      </Text>
+      <Text allowFontScaling={false} style={styles.p}>
+        Dữ Liệu Sử Dụng có thể bao gồm thông tin như địa chỉ IP của Thiết Bị của
+        bạn, loại trình duyệt, phiên bản trình duyệt, các trang của Dịch Vụ mà
+        bạn truy cập, thời gian và ngày của chuyến thăm, thời gian bạn dành cho
+        các trang đó, các định danh thiết bị duy nhất và các dữ liệu chuẩn đoán
+        khác.
+      </Text>
+      <Text allowFontScaling={false} style={styles.h3}>
+        Sử Dụng Dữ Liệu Cá Nhân của Bạn
+      </Text>
+      <Text allowFontScaling={false} style={styles.p}>
+        Công Ty có thể sử dụng Dữ Liệu Cá Nhân cho các mục đích sau:
       </Text>
       <View style={styles.ul}>
         <Text allowFontScaling={false} style={styles.li}>
-          <Text allowFontScaling={false} style={styles.strong}>With Service Providers:</Text> We may
-          share Your personal information with Service Providers to monitor and
-          analyze the use of our Service, to contact You.
+          <Text allowFontScaling={false} style={styles.strong}>
+            Cung Cấp và Duy Trì Dịch Vụ của chúng tôi
+          </Text>
+          , bao gồm việc giám sát việc sử dụng dịch vụ của chúng tôi.
         </Text>
         <Text allowFontScaling={false} style={styles.li}>
-          <Text allowFontScaling={false} style={styles.strong}>For business transfers:</Text> We may
-          share or transfer Your personal information in connection with, or
-          during negotiations of, any merger, sale of Company assets, financing,
-          or acquisition of all or a portion of Our business to another company.
-        </Text>
-        <Text allowFontScaling={false} style={styles.li}>
-          <Text allowFontScaling={false} style={styles.strong}>With Affiliates:</Text> We may share Your
-          information with Our affiliates, in which case we will require those
-          affiliates to honor this Privacy Policy. Affiliates include Our parent
-          company and any other subsidiaries, joint venture partners or other
-          companies that We control or that are under common control with Us.
-        </Text>
-        <Text allowFontScaling={false} style={styles.li}>
-          <Text allowFontScaling={false} style={styles.strong}>With business partners:</Text> We may
-          share Your information with Our business partners to offer You certain
-          products, services or promotions.
-        </Text>
-        <Text allowFontScaling={false} style={styles.li}>
-          <Text allowFontScaling={false} style={styles.strong}>With other users:</Text> when You share
-          personal information or otherwise interact in the public areas with
-          other users, such information may be viewed by all users and may be
-          publicly distributed outside.
-        </Text>
-        <Text allowFontScaling={false} style={styles.li}>
-          <Text allowFontScaling={false} style={styles.strong}>With Your consent</Text>: We may disclose
-          Your personal information for any other purpose with Your consent.
+          <Text allowFontScaling={false} style={styles.strong}>
+            Quản lý Tài Khoản của Bạn:
+          </Text>{" "}
+          để quản lý việc đăng ký của bạn như là người dùng của Dịch Vụ.
         </Text>
       </View>
-      <Text allowFontScaling={false} style={styles.h3}>Retention of Your Personal Data</Text>
-      <Text allowFontScaling={false} style={styles.p}>
-        The Company will retain Your Personal Data only for as long as is
-        necessary for the purposes set out in this Privacy Policy. We will
-        retain and use Your Personal Data to the extent necessary to comply with
-        our legal obligations (for example, if we are required to retain your
-        data to comply with applicable laws), resolve disputes, and enforce our
-        legal agreements and policies.
+      <Text allowFontScaling={false} style={styles.h3}>
+        Quản Lý Dữ Liệu Cá Nhân của Bạn
       </Text>
       <Text allowFontScaling={false} style={styles.p}>
-        The Company will also retain Usage Data for internal analysis purposes.
-        Usage Data is generally retained for a shorter period of time, except
-        when this data is used to strengthen the security or to improve the
-        functionality of Our Service, or We are legally obligated to retain this
-        data for longer time periods.
-      </Text>
-      <Text allowFontScaling={false} style={styles.h3}>Transfer of Your Personal Data</Text>
-      <Text allowFontScaling={false} style={styles.p}>
-        Your information, including Personal Data, is processed at the Company's
-        operating offices and in any other places where the parties involved in
-        the processing are located. It means that this information may be
-        transferred to — and maintained on — computers located outside of Your
-        state, province, country or other governmental jurisdiction where the
-        data protection laws may differ than those from Your jurisdiction.
+        Chúng tôi sẽ lưu trữ và xử lý Dữ Liệu Cá Nhân của bạn chỉ trong khoảng
+        thời gian cần thiết để hoàn thành các mục đích đã được mô tả trong Chính
+        Sách Bảo Mật này.
       </Text>
       <Text allowFontScaling={false} style={styles.p}>
-        Your consent to this Privacy Policy followed by Your submission of such
-        information represents Your agreement to that transfer.
+        Chúng tôi sẽ giữ lại và sử dụng Dữ Liệu Cá Nhân của bạn trong phạm vi
+        cần thiết để tuân thủ các nghĩa vụ pháp lý, giải quyết tranh chấp và
+        thực thi các thỏa thuận và chính sách của chúng tôi.
+      </Text>
+      <Text allowFontScaling={false} style={styles.h3}>
+        Chia Sẻ Dữ Liệu Cá Nhân của Bạn
       </Text>
       <Text allowFontScaling={false} style={styles.p}>
-        The Company will take all steps reasonably necessary to ensure that Your
-        data is treated securely and in accordance with this Privacy Policy and
-        no transfer of Your Personal Data will take place to an organization or
-        a country unless there are adequate controls in place including the
-        security of Your data and other personal information.
-      </Text>
-      <Text allowFontScaling={false} style={styles.h3}>Delete Your Personal Data</Text>
-      <Text allowFontScaling={false} style={styles.p}>
-        You have the right to delete or request that We assist in deleting the
-        Personal Data that We have collected about You.
-      </Text>
-      <Text allowFontScaling={false} style={styles.p}>
-        Our Service may give You the ability to delete certain information about
-        You from within the Service.
-      </Text>
-      <Text allowFontScaling={false} style={styles.p}>
-        You may update, amend, or delete Your information at any time by signing
-        in to Your Account, if you have one, and visiting the account settings
-        section that allows you to manage Your personal information. You may
-        also contact Us to request access to, correct, or delete any personal
-        information that You have provided to Us.
-      </Text>
-      <Text allowFontScaling={false} style={styles.p}>
-        Please note, however, that We may need to retain certain information
-        when we have a legal obligation or lawful basis to do so.
-      </Text>
-      <Text allowFontScaling={false} style={styles.h3}>Disclosure of Your Personal Data</Text>
-      <Text allowFontScaling={false} style={styles.h4}>Business Transactions</Text>
-      <Text allowFontScaling={false} style={styles.p}>
-        If the Company is involved in a merger, acquisition or asset sale, Your
-        Personal Data may be transferred. We will provide notice before Your
-        Personal Data is transferred and becomes subject to a different Privacy
-        Policy.
-      </Text>
-      <Text allowFontScaling={false} style={styles.h4}>Law enforcement</Text>
-      <Text allowFontScaling={false} style={styles.p}>
-        Under certain circumstances, the Company may be required to disclose
-        Your Personal Data if required to do so by law or in response to valid
-        requests by public authorities (e.g. a court or a government agency).
-      </Text>
-      <Text allowFontScaling={false} style={styles.h4}>Other legal requirements</Text>
-      <Text allowFontScaling={false} style={styles.p}>
-        The Company may disclose Your Personal Data in the good faith belief
-        that such action is necessary to:
+        Chúng tôi có thể chia sẻ Dữ Liệu Cá Nhân của bạn với các bên thứ ba
+        trong một số trường hợp sau:
       </Text>
       <View style={styles.ul}>
-        <Text allowFontScaling={false} style={styles.li}>Comply with a legal obligation</Text>
         <Text allowFontScaling={false} style={styles.li}>
-          Protect and defend the rights or property of the Company
+          Để cung cấp dịch vụ của chúng tôi, chúng tôi có thể chia sẻ Dữ Liệu Cá
+          Nhân của bạn với các nhà cung cấp dịch vụ hoặc đối tác đáng tin cậy.
         </Text>
         <Text allowFontScaling={false} style={styles.li}>
-          Prevent or investigate possible wrongdoing in connection with the
-          Service
+          Nếu có yêu cầu pháp lý hoặc nghĩa vụ pháp lý phải thực hiện, chúng tôi
+          có thể cung cấp Dữ Liệu Cá Nhân của bạn cho các cơ quan chức năng hoặc
+          các bên liên quan.
         </Text>
-        <Text allowFontScaling={false} style={styles.li}>
-          Protect the personal safety of Users of the Service or the public
-        </Text>
-        <Text allowFontScaling={false} style={styles.li}>Protect against legal liability</Text>
       </View>
-      <Text allowFontScaling={false} style={styles.h3}>Security of Your Personal Data</Text>
-      <Text allowFontScaling={false} style={styles.p}>
-        The security of Your Personal Data is important to Us, but remember that
-        no method of transmission over the Internet, or method of electronic
-        storage is 100% secure. While We strive to use commercially acceptable
-        means to protect Your Personal Data, We cannot guarantee its absolute
-        security.
-      </Text>
-      <Text allowFontScaling={false} style={styles.h2}>Children's Privacy</Text>
-      <Text allowFontScaling={false} style={styles.p}>
-        Our Service does not address anyone under the age of 13. We do not
-        knowingly collect personally identifiable information from anyone under
-        the age of 13. If You are a parent or guardian and You are aware that
-        Your child has provided Us with Personal Data, please contact Us. If We
-        become aware that We have collected Personal Data from anyone under the
-        age of 13 without verification of parental consent, We take steps to
-        remove that information from Our servers.
+
+      <Text allowFontScaling={false} style={styles.h3}>
+        Bảo Vệ Dữ Liệu Cá Nhân của Bạn
       </Text>
       <Text allowFontScaling={false} style={styles.p}>
-        If We need to rely on consent as a legal basis for processing Your
-        information and Your country requires consent from a parent, We may
-        require Your parent's consent before We collect and use that
-        information.
+        Chúng tôi cam kết bảo vệ Dữ Liệu Cá Nhân của bạn bằng các biện pháp bảo
+        mật hợp lý. Tuy nhiên, không có phương thức truyền tải qua internet hay
+        phương thức lưu trữ điện tử nào là 100% an toàn. Mặc dù chúng tôi nỗ lực
+        hết mình để bảo vệ thông tin cá nhân của bạn, nhưng không thể đảm bảo
+        tuyệt đối rằng thông tin của bạn sẽ luôn được bảo vệ.
       </Text>
-      <Text allowFontScaling={false} style={styles.h2}>Links to Other Websites</Text>
-      <Text allowFontScaling={false} style={styles.p}>
-        Our Service may contain links to other websites that are not operated by
-        Us. If You click on a third party link, You will be directed to that
-        third party's site. We strongly advise You to review the Privacy Policy
-        of every site You visit.
+
+      <Text allowFontScaling={false} style={styles.h3}>
+        Quyền Của Bạn
       </Text>
       <Text allowFontScaling={false} style={styles.p}>
-        We have no control over and assume no responsibility for the content,
-        privacy policies or practices of any third party sites or services.
-      </Text>
-      <Text allowFontScaling={false} style={styles.h2}>Changes to this Privacy Policy</Text>
-      <Text allowFontScaling={false} style={styles.p}>
-        We may update Our Privacy Policy from time to time. We will notify You
-        of any changes by posting the new Privacy Policy on this page.
+        Bạn có quyền yêu cầu truy cập, sửa đổi, hoặc xóa Dữ Liệu Cá Nhân mà
+        chúng tôi thu thập từ bạn, theo các yêu cầu của pháp luật. Bạn cũng có
+        thể yêu cầu hạn chế hoặc phản đối việc xử lý Dữ Liệu Cá Nhân của mình
+        trong một số trường hợp nhất định.
       </Text>
       <Text allowFontScaling={false} style={styles.p}>
-        We will let You know via email and/or a prominent notice on Our Service,
-        prior to the change becoming effective and update the "Last updated"
-        date at the top of this Privacy Policy.
+        Để thực hiện các quyền của bạn, vui lòng liên hệ với chúng tôi qua thông
+        tin liên hệ được cung cấp trong phần cuối của Chính Sách Bảo Mật này.
+      </Text>
+
+      <Text allowFontScaling={false} style={styles.h3}>
+        Liên Hệ với Chúng Tôi
       </Text>
       <Text allowFontScaling={false} style={styles.p}>
-        You are advised to review this Privacy Policy periodically for any
-        changes. Changes to this Privacy Policy are effective when they are
-        posted on this page.
-      </Text>
-      <Text allowFontScaling={false} style={styles.h2}>Contact Us</Text>
-      <Text allowFontScaling={false} style={styles.p}>
-        If you have any questions about this Privacy Policy, You can contact us:
+        Nếu bạn có bất kỳ câu hỏi nào về Chính Sách Bảo Mật này hoặc muốn thực
+        hiện các quyền của mình liên quan đến Dữ Liệu Cá Nhân, vui lòng liên hệ
+        với chúng tôi theo thông tin sau:
       </Text>
       <View style={styles.ul}>
-        <Text allowFontScaling={false} style={styles.li}>By email: hanoipmc57@gmail.com</Text>
-        <Text allowFontScaling={false} style={styles.li}>By phone number: 0903454449</Text>
+        <Text allowFontScaling={false} style={styles.li}>
+          <Text allowFontScaling={false} style={styles.strong}>
+            Công Ty
+          </Text>
+          : PMC, 57 Huỳnh Thúc Kháng, Q. Đống Đa, Việt Nam
+        </Text>
+        <Text allowFontScaling={false} style={styles.li}>
+          <Text allowFontScaling={false} style={styles.strong}>
+            Email
+          </Text>
+          : support@pmc.com.vn
+        </Text>
       </View>
+
+      <Text allowFontScaling={false} style={styles.h2}>
+        Thay Đổi Chính Sách Bảo Mật
+      </Text>
+      <Text allowFontScaling={false} style={styles.p}>
+        Chúng tôi có thể cập nhật Chính Sách Bảo Mật này theo thời gian để phản
+        ánh các thay đổi trong thực tiễn hoặc các yêu cầu pháp lý. Mọi thay đổi
+        sẽ được công bố trên trang này với ngày cập nhật mới nhất. Chúng tôi
+        khuyến khích bạn thường xuyên kiểm tra Chính Sách Bảo Mật để được cập
+        nhật.
+      </Text>
     </ScrollView>
   );
 };

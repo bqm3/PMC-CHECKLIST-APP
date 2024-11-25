@@ -291,7 +291,7 @@ const HomeScreen = ({ navigation }) => {
     const dataRes = async () => {
       await axios
         .post(BASE_URL + "/date", {
-          ID_Duan: user.ID_Duan
+          ID_Duan: user.ID_Duan,
         })
         .then((response) => {
           setShowReport(response.data.data);
@@ -300,7 +300,6 @@ const HomeScreen = ({ navigation }) => {
     };
     dataRes();
   }, [authToken]);
-  console.log('show', showReport)
 
   return (
     <ImageBackground

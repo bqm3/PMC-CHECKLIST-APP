@@ -30,7 +30,7 @@ import ModalBottomSheet from "../../components/Modal/ModalBottomSheet";
 
 const numberOfItemsPerPageList = [20, 30, 50];
 
-const DanhmucTraCuuContent = ({ setOpacity, opacity, navigation }) => {
+const DanhmucTraCuu = ({ setOpacity, opacity, navigation }) => {
   const dispath = useDispatch();
   const { user, authToken } = useSelector((state) => state.authReducer);
   const { ent_khoicv, ent_calv } = useSelector((state) => state.entReducer);
@@ -47,7 +47,6 @@ const DanhmucTraCuuContent = ({ setOpacity, opacity, navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const [isEnabled, setIsEnabled] = useState(true);
-  const [modalVisible, setModalVisible] = useState(false);
 
   const date = new Date();
   const startOfMonth = moment().startOf("month").format("YYYY-MM-DD");
@@ -126,6 +125,7 @@ const DanhmucTraCuuContent = ({ setOpacity, opacity, navigation }) => {
   // useEffect(() => {
   //   fetchData(filters);
   // }, [page, numberOfItemsPerPage]);
+
   useEffect(() => {
     if (shouldFetch) {
       fetchData(filters);
@@ -213,11 +213,12 @@ const DanhmucTraCuuContent = ({ setOpacity, opacity, navigation }) => {
             ></ActivityIndicator>
           ) : (
             <>
-              <DanhmucThongKe
+              {/* <DanhmucThongKe
                 handlePresentModalPress2={handlePresentModalPress2}
                 data={data}
                 navigation={navigation}
-              />
+              /> */}
+
               <ModalBottomSheet
                 visible={visibleBottom}
                 setVisible={setVisibleBottom}
@@ -280,7 +281,7 @@ const DanhmucTraCuuContent = ({ setOpacity, opacity, navigation }) => {
   );
 };
 
-export default DanhmucTraCuuContent;
+export default DanhmucTraCuu;
 
 const styles = StyleSheet.create({
   container: {

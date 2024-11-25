@@ -6,11 +6,9 @@ import {
   TouchableOpacity,
   ImageBackground,
 } from "react-native";
-import DanhmucTracuuContent from "./DanhmucTracuuContent";
-import DanhmucTraCuuContent from "./DanhmucThongkeContent";
 import { COLORS } from "../../constants/theme";
-import { WebView } from "react-native-webview";
 import DanhmucThongkeDashBoard from "./DanhmucThongkeDashboard";
+import DanhmucTraCuu from "./DanhmucTraCuu";
 
 const TabButtons = ({
   tabButtonType,
@@ -54,7 +52,7 @@ const DanhmucTracuuVsThongke = ({ route, navigation }) => {
     switch (selectedTab) {
       case "Tra cứu":
         return (
-          <DanhmucTraCuuContent
+          <DanhmucTraCuu
             opacity={opacity}
             setOpacity={setOpacity}
             navigation={navigation}
@@ -125,6 +123,7 @@ const styles = StyleSheet.create({
   tabText: {
     fontSize: 16,
     color: "#666",
+    fontWeight: "bold",
   },
   selectedTabText: {
     color: "#fff",

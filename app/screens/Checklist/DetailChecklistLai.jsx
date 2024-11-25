@@ -598,7 +598,7 @@ const DetailChecklistLai = ({ route, navigation }) => {
           }
         } else {
           // Mất kết nối mạng
-          await AsyncStorage.setItem("checkNetwork", "1");
+          await AsyncStorage.setItem("checkNetwork", "close");
           Alert.alert(
             "Không có kết nối mạng",
             "Vui lòng kiểm tra kết nối mạng của bạn."
@@ -740,6 +740,7 @@ const DetailChecklistLai = ({ route, navigation }) => {
     const descriptions = arrData.map((item) => item.ID_Checklist).join(",");
 
     const ID_Checklists = arrData.map((item) => item.ID_Checklist);
+    const valueChecks = arrData.map((item) => item.valueCheck);
     const Gioht = arrData.map((item) => item.Gioht);
 
     const requestDone = axios.post(
@@ -747,6 +748,7 @@ const DetailChecklistLai = ({ route, navigation }) => {
       {
         Description: descriptions,
         ID_Checklists: ID_Checklists,
+        valueChecks: valueChecks,
         ID_ChecklistC: ID_ChecklistC,
         Gioht: Gioht[0],
         checklistLength: arrData.length,
@@ -848,7 +850,7 @@ const DetailChecklistLai = ({ route, navigation }) => {
           .join(",");
 
         const ID_Checklists = dataDefault.map((item) => item.ID_Checklist);
-
+        const valueChecks = arrData.map((item) => item.valueCheck);
         // Tạo các yêu cầu API
         const requestFaild = axios.post(
           `${BASE_URL}/tb_checklistchitiet/create`,
@@ -866,6 +868,7 @@ const DetailChecklistLai = ({ route, navigation }) => {
           {
             Description: descriptions,
             ID_Checklists: ID_Checklists,
+            valueChecks: valueChecks,
             ID_ChecklistC: ID_ChecklistC,
             Gioht: dataDefault[0].Gioht,
             checklistLength: dataDefault.length,

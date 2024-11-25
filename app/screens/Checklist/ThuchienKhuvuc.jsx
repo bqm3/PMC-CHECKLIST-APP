@@ -77,10 +77,10 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
 
   const [isConnected, setConnected] = useState(true);
   useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener(state => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
       setConnected(state.isConnected);
     });
-  
+
     return () => unsubscribe();
   }, []);
 
@@ -179,17 +179,25 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
         // Retrieve the item from AsyncStorage
         const network = await AsyncStorage.getItem("checkNetwork");
         const savedData = await AsyncStorage.getItem("dataChecklistStorage");
-        if ((network === "1" && isConnect) || savedData) {
+        if (
+          (network === "close" && isConnect) ||
+          (savedData !== null && savedData !== undefined && savedData !== "")
+        ) {
           setSubmit(true);
         }
 
-        if (network === null && (savedData == null || savedData == undefined || savedData == '')) {
+        if (
+          network === null &&
+          (savedData == null ||
+            savedData == undefined ||
+            savedData == "")
+        ) {
           console.log("Network status not found in storage.");
           setSubmit(false);
         }
       } catch (error) {
         // Handle any errors that occur
-        console.log("Error fetching network status:", error);
+        console.log("Error fetching network status 123:", error);
         setSubmit(false);
       }
     };
@@ -205,7 +213,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
   // Tải lại dữ liệu khi vào lại trang
   const loadData = async () => {
     const savedData = await AsyncStorage.getItem("dataChecklistStorage");
-    if (savedData !== null) {
+    if (savedData !== null && savedData !== undefined && savedData !== "") {
       setDataChecklists(JSON.parse(savedData));
       setDataChecklistFilterContext(JSON.parse(savedData));
     } else {
@@ -241,10 +249,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
   }, [dataChecklistFilterContext]);
 
   const handlePushDataFilterQr = async (value) => {
-    const cleanedValue = value
-      
-      .trim()
-      .toLowerCase();
+    const cleanedValue = value.trim().toLowerCase();
 
     try {
       const resDataKhuvuc = ent_khuvuc.filter(
@@ -347,7 +352,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
           dataChecklistFaild.length === 0
         ) {
           await AsyncStorage.removeItem("checkNetwork");
-          await AsyncStorage.removeItem("dataChecklist");
+          
           // Hiển thị thông báo cho người dùng
           Alert.alert("PMC Thông báo", "Không có checklist để kiểm tra!", [
             { text: "OK", onPress: () => console.log("OK Pressed") },
@@ -382,7 +387,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
           "Không có kết nối mạng",
           "Vui lòng kiểm tra kết nối mạng của bạn."
         );
-        await AsyncStorage.setItem("checkNetwork", "1");
+        await AsyncStorage.setItem("checkNetwork", "close");
       }
     } catch (error) {
       // Cập nhật sau khi hoàn thành xử lý API} catch (error) {
@@ -430,12 +435,17 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
                     : image.uri.replace("file://", ""),
                 name:
                   image.fileName ||
-                  `${Math.floor(Math.random() * 999999999)}_${item.ID_Checklist}_${imgIndex}.jpg`,
+                  `${Math.floor(Math.random() * 999999999)}_${
+                    item.ID_Checklist
+                  }_${imgIndex}.jpg`,
                 type: "image/jpeg",
               };
-              formData.append(`Images_${index}_${item.ID_Checklist}_${imgIndex}`, file);
+              formData.append(
+                `Images_${index}_${item.ID_Checklist}_${imgIndex}`,
+                file
+              );
             });
-          }          
+          }
         });
 
         // Send the entire FormData in a single request
@@ -448,7 +458,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
           })
           .then(async (res) => {
             await AsyncStorage.removeItem("checkNetwork");
-            await AsyncStorage.removeItem("dataChecklist");
+            
             setSubmit(false);
             postHandleSubmit();
             setLoadingSubmit(false);
@@ -471,7 +481,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
           });
       }
     } catch (error) {
-      console.log("Error: 2" + error)
+      console.log("Error: 2" + error);
       setLoadingSubmit(false);
       if (error.response) {
         // Handle error response from the server
@@ -499,6 +509,9 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
         const ID_Checklists = ItemDefaultActionDataChecklist.map(
           (item) => item.ID_Checklist
         );
+        const valueChecks = ItemDefaultActionDataChecklist.map(
+          (item) => item.valueCheck
+        );
 
         const requestDone = axios.post(
           BASE_URL + "/tb_checklistchitietdone/create",
@@ -506,6 +519,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
             Description: descriptions,
             Gioht: ItemDefaultActionDataChecklist[0].Gioht,
             ID_Checklists: ID_Checklists,
+            valueChecks: valueChecks,
             ID_ChecklistC: ID_ChecklistC,
             checklistLength: ItemDefaultActionDataChecklist.length,
             Vido: ItemDefaultActionDataChecklist[0]?.Vido || null,
@@ -528,7 +542,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
       postHandleSubmit();
       setLoadingSubmit(false);
       await AsyncStorage.removeItem("checkNetwork");
-      await AsyncStorage.removeItem("dataChecklist");
+      
       setSubmit(false);
       saveConnect(false);
 
@@ -595,12 +609,17 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
                     : image.uri.replace("file://", ""),
                 name:
                   image.fileName ||
-                  `${Math.floor(Math.random() * 999999999)}_${item.ID_Checklist}_${imgIndex}.jpg`,
+                  `${Math.floor(Math.random() * 999999999)}_${
+                    item.ID_Checklist
+                  }_${imgIndex}.jpg`,
                 type: "image/jpeg",
               };
-              formData.append(`Images_${index}_${item.ID_Checklist}_${imgIndex}`, file);
+              formData.append(
+                `Images_${index}_${item.ID_Checklist}_${imgIndex}`,
+                file
+              );
             });
-          }          
+          }
         });
         // Tạo các yêu cầu API
         const requestFaild = axios.post(
@@ -622,6 +641,10 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
             const ID_Checklists = ItemDefaultActionDataChecklist.map(
               (item) => item.ID_Checklist
             );
+            const valueChecks = ItemDefaultActionDataChecklist.map(
+              (item) => item.valueCheck
+            );
+
             // Thực hiện yêu cầu API
             return axios.post(
               BASE_URL + "/tb_checklistchitietdone/create",
@@ -629,6 +652,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
                 Description: descriptions,
                 Gioht: ItemDefaultActionDataChecklist[0].Gioht,
                 ID_Checklists: ID_Checklists,
+                valueChecks: valueChecks,
                 ID_ChecklistC: ID_ChecklistC,
                 checklistLength: ItemDefaultActionDataChecklist.length,
                 Vido: ItemDefaultActionDataChecklist[0]?.Vido || null,
@@ -653,7 +677,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
               postHandleSubmit();
               setLoadingSubmit(false);
               await AsyncStorage.removeItem("checkNetwork");
-              await AsyncStorage.removeItem("dataChecklist");
+              
               setSubmit(false);
               saveConnect(false);
               // Hiển thị thông báo thành công
@@ -668,7 +692,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
             })
           )
           .catch((error) => {
-            console.log("Error: 1" + error)
+            console.log("Error: 1" + error);
             setLoadingSubmit(false);
 
             if (error.response) {
@@ -718,7 +742,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
           });
       }
     } catch (error) {
-      console.log('error',error)
+      console.log("error", error);
       setLoadingSubmit(false);
       Alert.alert(
         "PMC Thông báo",
@@ -735,7 +759,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
     }
   };
 
-  const postHandleSubmit = () => {
+  const postHandleSubmit = async () => {
     const idsToRemove = new Set([
       ...defaultActionDataChecklist.map((item) => item.ID_Checklist),
       ...dataChecklistFaild.map((item) => item.ID_Checklist),
@@ -750,6 +774,10 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
     );
 
     setDataChecklistFilterContext(dataChecklistFilterContextReset);
+    await AsyncStorage.setItem(
+      "dataChecklistStorage",
+      JSON.stringify(dataChecklistFilterContextReset)
+    );
     setDataChecklistDefault([]);
     setDataChecklistFaild([]);
 

@@ -81,10 +81,10 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
 
   const [isConnected, setConnected] = useState(true);
   useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener(state => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
       setConnected(state.isConnected);
     });
-  
+
     return () => unsubscribe();
   }, []);
 
@@ -185,7 +185,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
       try {
         // Retrieve the item from AsyncStorage
         const network = await AsyncStorage.getItem("checkNetwork");
-        if (network === "1" && isConnect) {
+        if (network === "close" && isConnect) {
           setSubmit(true);
         }
 
@@ -238,10 +238,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
   }, [dataChecklistFilterContext]);
 
   const handlePushDataFilterQr = async (value) => {
-    const cleanedValue = value
-      
-      .trim()
-      .toLowerCase();
+    const cleanedValue = value.trim().toLowerCase();
 
     try {
       const resDataKhuvuc = ent_khuvuc.filter(
@@ -375,7 +372,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
           "Không có kết nối mạng",
           "Vui lòng kiểm tra kết nối mạng của bạn."
         );
-        await AsyncStorage.setItem("checkNetwork", "1");
+        await AsyncStorage.setItem("checkNetwork", "close");
       }
     } catch (error) {
       // Cập nhật sau khi hoàn thành xử lý API} catch (error) {
@@ -492,6 +489,9 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
         const ID_Checklists = ItemDefaultActionDataChecklist.map(
           (item) => item.ID_Checklist
         );
+        const valueChecks = ItemDefaultActionDataChecklist.map(
+          (item) => item.valueCheck
+        );
 
         const requestDone = axios.post(
           BASE_URL + "/tb_checklistchitietdone/create",
@@ -499,6 +499,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
             Description: descriptions,
             Gioht: ItemDefaultActionDataChecklist[0].Gioht,
             ID_Checklists: ID_Checklists,
+            valueChecks: valueChecks,
             ID_ChecklistC: ID_ChecklistC,
             checklistLength: ItemDefaultActionDataChecklist.length,
             Vido: ItemDefaultActionDataChecklist[0]?.Vido || "",
@@ -629,6 +630,10 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
             const ID_Checklists = ItemDefaultActionDataChecklist.map(
               (item) => item.ID_Checklist
             );
+            const valueChecks = ItemDefaultActionDataChecklist.map(
+              (item) => item.valueCheck
+            );
+
             // Thực hiện yêu cầu API
             return axios.post(
               BASE_URL + "/tb_checklistchitietdone/create",
@@ -636,6 +641,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
                 Description: descriptions,
                 Gioht: ItemDefaultActionDataChecklist[0].Gioht,
                 ID_Checklists: ID_Checklists,
+                valueChecks: valueChecks,
                 ID_ChecklistC: ID_ChecklistC,
                 checklistLength: ItemDefaultActionDataChecklist.length,
                 Vido: ItemDefaultActionDataChecklist[0]?.Vido || "",
@@ -661,7 +667,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
               postHandleSubmit();
               setLoadingSubmit(false);
               await AsyncStorage.removeItem("checkNetwork");
-              await AsyncStorage.removeItem("dataChecklist");
+
               setSubmit(false);
               saveConnect(false);
               // Hiển thị thông báo thành công

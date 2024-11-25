@@ -13,7 +13,6 @@ import {
   Image,
 } from "react-native";
 import { TouchableWithoutFeedback } from "react-native";
-import Swiper from "react-native-swiper";
 import { Feather } from "@expo/vector-icons";
 import { DataTable } from "react-native-paper";
 import { BASE_URL } from "../../constants/config";
@@ -288,8 +287,6 @@ const DetailCheckListCa = ({ route }) => {
       </TouchableOpacity>
     </Modal>
   );
-
-  console.log("isImageLoading",isImageLoading)
 
   return (
     <ImageBackground

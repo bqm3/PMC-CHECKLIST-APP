@@ -46,7 +46,7 @@ export const tb_checklist_get_lai = (id) => {
           const processedData = data?.map((item) => {
             return {
               ...item,
-              Giatrinhan: item?.Giatrinhan?.split("/"),
+              Giatrinhan: item?.Giatrinhan?.split("/").map((item) => item.trim()),
               valueCheck: null,
               GhichuChitiet: "",
               ID_ChecklistC: ID_ChecklistC,
