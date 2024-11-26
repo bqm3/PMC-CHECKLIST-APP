@@ -118,10 +118,6 @@ const DanhmucHangMucChiSo = ({ navigation }) => {
       for (const [index, item] of arrayItem.entries()) {
         appendFormData(formData, item, index);
       }
-
-      for (let pair of formData.entries()) {
-        console.log(`${pair[0]}: ${pair[1]}`);
-      }
       try {
         const response = await axios.post(
           `${BASE_URL}/ent_baocaochiso/create`,

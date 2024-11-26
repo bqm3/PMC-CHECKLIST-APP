@@ -31,35 +31,17 @@ import { COLORS, SIZES } from "../constants/theme";
 import Title from "../components/Title";
 import ButtonSubmit from "../components/Button/ButtonSubmit";
 import BottomSheet, { BottomSheetView, BottomSheetScrollView } from "@gorhom/bottom-sheet";
-import * as FileSystem from "expo-file-system";
-import * as Network from "expo-network";
 import NetInfo from "@react-native-community/netinfo";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import adjust from "../adjust";
 import { BASE_URL, BASE_URL_NOTI } from "../constants/config";
-import {
-  ALERT_TYPE,
-  Dialog,
-  AlertNotificationRoot,
-  Toast,
-} from "react-native-alert-notification";
-import { Snackbar } from "react-native-paper";
-import { Provider as PaperProvider } from "react-native-paper";
-import { PanGestureHandler } from "react-native-gesture-handler";
 import NotificationComponent from "../components/Notification/NotificationComponent";
 import axios from "axios";
 
 import DataLicense from "../components/PrivacyPolicy";
 import Checkbox from "../components/Active/Checkbox";
 
-const alertTypeMap = {
-  SUCCESS: ALERT_TYPE.SUCCESS,
-  WARNING: ALERT_TYPE.WARNING,
-  DANGER: ALERT_TYPE.DANGER,
-  INFO: ALERT_TYPE.INFO,
-};
-
-const version = "2.0.2";
+const version = "2.1.0";
 
 const LoginScreen = ({ navigation }) => {
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
@@ -302,7 +284,7 @@ const LoginScreen = ({ navigation }) => {
     <>
       {/* <PaperProvider> */}
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
+        {/* <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}> */}
           <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : null}
             style={{ flex: 1 }}
@@ -481,7 +463,7 @@ const LoginScreen = ({ navigation }) => {
               </BottomSheetScrollView >
             </BottomSheet>
           </KeyboardAvoidingView>
-        </SafeAreaView>
+        {/* </SafeAreaView> */}
       </GestureHandlerRootView>
     </>
   );

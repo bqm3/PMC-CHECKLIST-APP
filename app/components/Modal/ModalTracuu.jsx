@@ -10,7 +10,7 @@ import {
   Platform,
   Switch,
 } from "react-native";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 import { COLORS } from "../../constants/theme";
@@ -21,6 +21,7 @@ import SelectDropdown from "react-native-select-dropdown";
 import moment from "moment";
 import Button from "../Button/Button";
 import ButtonSubmit from "../Button/ButtonSubmit";
+import adjust from "../../adjust";
 
 const ModalTracuu = ({
   handleChangeFilters,
@@ -28,29 +29,26 @@ const ModalTracuu = ({
   toggleDatePicker,
   handlePresentModalClose,
   isDatePickerVisible,
-  ent_toanha,
-  ent_tang,
-  ent_khuvuc,
   toggleSwitch,
   isEnabled,
   fetchData,
-  dataKhuvuc,
+  ent_khoicv,
+  ent_calv,
+  user,
+  handleKhoiSelection,
+  filteredCalv,
+  setOpacity,
+  setVisibleBottom,
 }) => {
   const ref = useRef(null);
-  const defaultKhuvuc = dataKhuvuc.find(
-    (khuvuc) => khuvuc.ID_Khuvuc === filters?.ID_Khuvuc
+  console.log("filters?.ent_calv", filters);
+  const defaultKhoi = ent_khoicv?.find(
+    (Khoi) => Khoi.ID_KhoiCV == filters?.ID_KhoiCV
   );
-
-  const defaultTang = ent_tang.find(
-    (tang) => tang.ID_Tang === filters?.ID_Tang
-  );
-
-  const defaultToanha = ent_toanha.find(
-    (toanha) => toanha.ID_Toanha === filters?.ID_Toanha
-  );
+  console.log('defaultKhoi',defaultKhoi, filters?.ID_KhoiCV)
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
+    <GestureHandlerRootView style={{ height: adjust(400) }}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : null}
         style={{ flex: 1 }}
@@ -65,7 +63,7 @@ const ModalTracuu = ({
               }}
             >
               <View style={{ width: "48%" }}>
-                <Text allowFontScaling={false}  style={styles.text}>
+                <Text allowFontScaling={false} style={styles.text}>
                   Từ ngày
                 </Text>
 
@@ -73,8 +71,8 @@ const ModalTracuu = ({
                   onPress={() => toggleDatePicker("fromDate", true)}
                 >
                   <View style={styles.action}>
-                    <TextInput allowFontScaling={false}
-                      
+                    <TextInput
+                      allowFontScaling={false}
                       value={filters?.fromDate}
                       placeholder="Từ ngày"
                       placeholderTextColor="gray"
@@ -116,15 +114,15 @@ const ModalTracuu = ({
                 </TouchableOpacity>
               </View>
               <View style={{ width: "48%" }}>
-                <Text allowFontScaling={false}  style={styles.text}>
+                <Text allowFontScaling={false} style={styles.text}>
                   Đến ngày
                 </Text>
                 <TouchableOpacity
                   onPress={() => toggleDatePicker("toDate", true)}
                 >
                   <View style={styles.action}>
-                    <TextInput allowFontScaling={false}
-                      
+                    <TextInput
+                      allowFontScaling={false}
                       value={filters?.toDate}
                       placeholder="Đến ngày"
                       placeholderTextColor="gray"
@@ -167,100 +165,154 @@ const ModalTracuu = ({
               </View>
             </View>
             <View>
-              <Text allowFontScaling={false}  style={styles.text}>
-                Tòa nhà
-              </Text>
-              {ent_toanha && ent_toanha?.length > 0 ? (
-                <SelectDropdown
-                  data={ent_toanha ? ent_toanha : []}
-                  buttonStyle={styles.select}
-                  dropdownStyle={{
-                    borderRadius: 8,
-                    maxHeight: 400,
-                  }}
-                  // rowStyle={{ height: 50, justifyContent: "center" }}
-                  defaultButtonText={"Tòa nhà"}
-                  buttonTextStyle={styles.customText}
-                  defaultValue={defaultToanha}
-                  onSelect={(selectedItem, index) => {
-                    handleChangeFilters("ID_Toanha", selectedItem?.ID_Toanha);
-                  }}
-                  renderDropdownIcon={(isOpened) => {
-                    return (
-                      <FontAwesome
-                        name={isOpened ? "chevron-up" : "chevron-down"}
-                        color={"#637381"}
-                        size={14}
-                        style={{ marginRight: 10 }}
-                      />
-                    );
-                  }}
-                  dropdownIconPosition={"right"}
-                  buttonTextAfterSelection={(selectedItem, index) => {
-                    return (
-                      <View
-                        key={index}
-                        style={{
-                          justifyContent: "center",
-                          alignContent: "center",
-                          height: 50,
-                        }}
-                      >
-                        <Text allowFontScaling={false}  style={styles.text}>
-                          {selectedItem?.Toanha}
-                        </Text>
-                      </View>
-                    );
-                  }}
-                  renderCustomizedRowChild={(item, index) => {
-                    return (
-                      <VerticalSelect
-                        value={item.ID_Toanha}
-                        label={item.Toanha}
-                        key={index}
-                        selectedItem={filters?.ID_Toanha}
-                      />
-                    );
-                  }}
-                />
-              ) : (
-                <Text allowFontScaling={false}  style={styles.errorText}>
-                  Không có dữ liệu tòa nhà.
-                </Text>
-              )}
+              {user?.ent_chucvu?.Role !== 3 ? (
+                ent_khoicv && ent_khoicv.length > 0 ? (
+                  <View>
+                    <Text allowFontScaling={false} style={styles.text}>
+                      Khối
+                    </Text>
+                    <SelectDropdown
+                      data={ent_khoicv ? ent_khoicv : []}
+                      style={{ alignItems: "center" }}
+                      buttonStyle={styles.select}
+                      dropdownStyle={{
+                        borderRadius: 8,
+                        maxHeight: 400,
+                      }}
+                      defaultButtonText={defaultKhoi !== undefined ? defaultKhoi : "Chọn khối công việc"}
+                      defaultValue={defaultKhoi !== undefined ? defaultKhoi : ""}
+                      buttonTextStyle={styles.customText}
+                      onSelect={(selectedItem, index) => {
+                        handleChangeFilters(
+                          "ID_KhoiCV",
+                          selectedItem?.ID_KhoiCV
+                        );
+                        handleKhoiSelection(selectedItem);
+                      }}
+                      renderDropdownIcon={(isOpened) => (
+                        <FontAwesome
+                          name={isOpened ? "chevron-up" : "chevron-down"}
+                          color={"#637381"}
+                          size={14}
+                          style={{ marginRight: 10 }}
+                        />
+                      )}
+                      dropdownIconPosition={"right"}
+                      buttonTextAfterSelection={(selectedItem, index) => (
+                        <View
+                          key={index}
+                          style={{
+                            justifyContent: "center",
+                            alignContent: "center",
+                            height: 50,
+                          }}
+                        >
+                          <Text allowFontScaling={false} style={styles.text}>
+                            {defaultKhoi !== undefined ? selectedItem?.KhoiCV : "Chọn khối công việc"}
+                          </Text>
+                        </View>
+                      )}
+                      renderCustomizedRowChild={(item, index) => (
+                        <VerticalSelect
+                          value={item.ID_KhoiCV}
+                          label={item.KhoiCV}
+                          key={index}
+                          selectedItem={filters.ID_KhoiCV}
+                        />
+                      )}
+                    />
+                  </View>
+                ) : (
+                  <Text allowFontScaling={false} style={styles.errorText}>
+                    Không có dữ liệu khối.
+                  </Text>
+                )
+              ) : null}
             </View>
             <View>
-              <Text allowFontScaling={false}  style={styles.text}>
-                Khu vực
-              </Text>
-              {dataKhuvuc && dataKhuvuc?.length > 0 ? (
-                <SelectDropdown
-                  data={dataKhuvuc ? dataKhuvuc : []}
-                  buttonStyle={styles.select}
-                  dropdownStyle={{
-                    borderRadius: 8,
-                    maxHeight: 400,
-                  }}
-                  // rowStyle={{ height: 50, justifyContent: "center" }}
-                  defaultButtonText={"Khu vực"}
-                  buttonTextStyle={styles.customText}
-                  defaultValue={defaultKhuvuc}
-                  onSelect={(selectedItem, index) => {
-                    handleChangeFilters("ID_Khuvuc", selectedItem?.ID_Khuvuc);
-                  }}
-                  renderDropdownIcon={(isOpened) => {
-                    return (
+              {user?.ent_chucvu?.Role !== 3 ? (
+                filteredCalv && filteredCalv.length > 0 ? (
+                  <>
+                    <Text allowFontScaling={false} style={styles.text}>
+                      Ca làm việc
+                    </Text>
+                    <SelectDropdown
+                      data={filteredCalv}
+                      buttonStyle={styles.select}
+                      dropdownStyle={{
+                        borderRadius: 8,
+                        maxHeight: 400,
+                      }}
+                      defaultButtonText={"Ca làm việc"}
+                      buttonTextStyle={styles.customText}
+                      onSelect={(selectedItem, index) => {
+                        handleChangeFilters("ID_Calv", selectedItem?.ID_Calv);
+                      }}
+                      renderDropdownIcon={(isOpened) => (
+                        <FontAwesome
+                          name={isOpened ? "chevron-up" : "chevron-down"}
+                          color={"#637381"}
+                          size={14}
+                          style={{ marginRight: 10 }}
+                        />
+                      )}
+                      dropdownIconPosition={"right"}
+                      buttonTextAfterSelection={(selectedItem, index) => (
+                        <View
+                          key={index}
+                          style={{
+                            justifyContent: "center",
+                            alignContent: "center",
+                            height: 50,
+                          }}
+                        >
+                          <Text allowFontScaling={false} style={styles.text}>
+                            {selectedItem?.Tenca}
+                          </Text>
+                        </View>
+                      )}
+                      renderCustomizedRowChild={(item, index) => (
+                        <VerticalSelect
+                          value={item.ID_Calv}
+                          label={`${item?.Tenca}`}
+                          key={index}
+                          selectedItem={filters.ID_Calv ? filters.ID_Calv : null}
+                        />
+                      )}
+                    />
+                  </>
+                ) : (
+                  <Text allowFontScaling={false} style={styles.errorText}>
+                    Không có dữ liệu ca làm việc.
+                  </Text>
+                )
+              ) : ent_calv && ent_calv.length > 0 ? (
+                <View>
+                  <Text allowFontScaling={false} style={styles.text}>
+                    Ca làm việc
+                  </Text>
+                  <SelectDropdown
+                    data={ent_calv}
+                    buttonStyle={styles.select}
+                    dropdownStyle={{
+                      borderRadius: 8,
+                      maxHeight: 400,
+                    }}
+                    defaultButtonText={"Ca làm việc"}
+                    buttonTextStyle={styles.customText}
+                    onSelect={(selectedItem, index) => {
+                      handleChangeFilters("ID_Calv", selectedItem?.ID_Calv);
+                    }}
+                    renderDropdownIcon={(isOpened) => (
                       <FontAwesome
                         name={isOpened ? "chevron-up" : "chevron-down"}
                         color={"#637381"}
                         size={14}
                         style={{ marginRight: 10 }}
                       />
-                    );
-                  }}
-                  dropdownIconPosition={"right"}
-                  buttonTextAfterSelection={(selectedItem, index) => {
-                    return (
+                    )}
+                    dropdownIconPosition={"right"}
+                    buttonTextAfterSelection={(selectedItem, index) => (
                       <View
                         key={index}
                         style={{
@@ -269,95 +321,28 @@ const ModalTracuu = ({
                           height: 50,
                         }}
                       >
-                        <Text allowFontScaling={false}  style={styles.text}>
-                          {" "}
-                          {selectedItem?.Tenkhuvuc} -{" "}
-                          {selectedItem?.ent_khoicv?.KhoiCV}
+                        <Text allowFontScaling={false} style={styles.text}>
+                          {selectedItem?.Tenca}
                         </Text>
                       </View>
-                    );
-                  }}
-                  renderCustomizedRowChild={(item, index) => {
-                    return (
+                    )}
+                    renderCustomizedRowChild={(item, index) => (
                       <VerticalSelect
-                        value={item.ID_Khuvuc}
-                        label={`${item.Tenkhuvuc} - ${item?.ent_khoicv?.KhoiCV}`}
+                        value={item.ID_Calv}
+                        label={`${item?.Tenca}`}
                         key={index}
-                        selectedItem={filters?.ID_Khuvuc}
+                        selectedItem={filters?.ID_Calv}
                       />
-                    );
-                  }}
-                />
+                    )}
+                  />
+                </View>
               ) : (
-                <Text allowFontScaling={false}  style={styles.errorText}>
-                  Không có dữ liệu khu vực.
+                <Text allowFontScaling={false} style={styles.errorText}>
+                  Không có dữ liệu ca làm việc.
                 </Text>
               )}
             </View>
 
-            <View>
-              <Text allowFontScaling={false}  style={styles.text}>
-                Tầng
-              </Text>
-              {ent_tang && ent_tang?.length > 0 ? (
-                <SelectDropdown
-                  data={ent_tang ? ent_tang : []}
-                  buttonStyle={styles.select}
-                  dropdownStyle={{
-                    borderRadius: 8,
-                    maxHeight: 400,
-                  }}
-                  // rowStyle={{ height: 50, justifyContent: "center" }}
-                  defaultButtonText={"Tầng"}
-                  buttonTextStyle={styles.customText}
-                  defaultValue={defaultTang}
-                  onSelect={(selectedItem, index) => {
-                    handleChangeFilters("ID_Tang", selectedItem?.ID_Tang);
-                  }}
-                  renderDropdownIcon={(isOpened) => {
-                    return (
-                      <FontAwesome
-                        name={isOpened ? "chevron-up" : "chevron-down"}
-                        color={"#637381"}
-                        size={14}
-                        style={{ marginRight: 10 }}
-                      />
-                    );
-                  }}
-                  dropdownIconPosition={"right"}
-                  buttonTextAfterSelection={(selectedItem, index) => {
-                    return (
-                      <View
-                        key={index}
-                        style={{
-                          justifyContent: "center",
-                          alignContent: "center",
-                          height: 50,
-                        }}
-                      >
-                        <Text allowFontScaling={false}  style={styles.text}>
-                          {selectedItem?.Tentang}
-                        </Text>
-                      </View>
-                    );
-                  }}
-                  renderCustomizedRowChild={(item, index) => {
-                    return (
-                      <VerticalSelect
-                        value={item.ID_Tang}
-                        label={item.Tentang}
-                        key={index}
-                        selectedItem={filters?.ID_Tang}
-                      />
-                    );
-                  }}
-                />
-              ) : (
-                <Text allowFontScaling={false}  style={styles.errorText}>
-                  Không có dữ liệu tầng.
-                </Text>
-              )}
-            </View>
             <View style={{ height: 10 }}></View>
             <View
               style={[
@@ -372,8 +357,8 @@ const ModalTracuu = ({
                 onValueChange={() => toggleSwitch(isEnabled)}
                 value={isEnabled}
               />
-              <Text allowFontScaling={false}
-                
+              <Text
+                allowFontScaling={false}
                 style={[styles.text, { paddingHorizontal: 12 }]}
               >
                 Tất cả
@@ -381,14 +366,16 @@ const ModalTracuu = ({
             </View>
           </View>
 
-          <View style={{ marginTop: 20 }}>
+          <View style={{ marginTop: 5 }}>
             <ButtonSubmit
               text={"Tìm kiếm"}
               width={"auto"}
               backgroundColor={COLORS.bg_button}
               color={"white"}
               onPress={() => {
-                fetchData(filters);
+                fetchData(filters, true, true);
+                handlePresentModalClose();
+                setVisibleBottom(false);
               }}
             />
             <View style={{ height: 10 }} />
@@ -399,6 +386,7 @@ const ModalTracuu = ({
               color={COLORS.color_bg}
               onPress={() => {
                 handlePresentModalClose();
+                setVisibleBottom(false);
               }}
             />
           </View>

@@ -507,7 +507,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
             Kinhdo: ItemDefaultActionDataChecklist[0]?.Kinhdo || "",
             Docao: ItemDefaultActionDataChecklist[0]?.Docao || "",
             isScan: ItemDefaultActionDataChecklist[0]?.isScan || null,
-            isCheckListLia: 1,
+            isCheckListLai: 1,
           },
           {
             headers: {

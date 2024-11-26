@@ -18,6 +18,8 @@ const NotificationComponent = ({
   setAnimation,
   setNotification,
 }) => {
+  const [offsetY, setOffsetY] = useState(0); // Theo dõi khoảng cách vuốt
+
   const onActionPress = () => {
     const url = Platform.select({
       ios: "https://apps.apple.com/vn/app/checklist-pmc/id6503722675",
@@ -29,27 +31,28 @@ const NotificationComponent = ({
     );
   };
 
-  const onSwipeUp = (event) => {
-    if (event.nativeEvent.translationY < -10) {
-      setAnimation("slideOutUp");
-     // setNotification(null);
+
+  useEffect(() => {
+    if (animation === "slideOutUp") {
+      setTimeout(() => setNotification(null), 500); // Xóa thông báo sau 500ms (thời gian animation)
     }
-  };
+  }, [animation]);
+
+  if (!notification) return null;
 
   return (
-    <PanGestureHandler onGestureEvent={onSwipeUp}>
-      <Animatable.View
-        style={[
-          styles.banner,
-          {
-            backgroundColor: "white",
-          },
-        ]}
-        animation={animation} // Animation khi thông báo xuất hiện
-        duration={1000} // Thời gian animation xuất hiện
-        useNativeDriver
-      >
-        <TouchableOpacity style={styles.banner} onPress={onActionPress}>
+    // <PanGestureHandler onGestureEvent={onSwipeUp}>
+    <Animatable.View
+      style={[
+        styles.banner,
+        animation === "slideOutUp" && { height: 0, opacity: 0 },
+      ]}
+      animation={animation} // Animation khi thông báo xuất hiện
+      duration={1000} // Thời gian animation xuất hiện
+      useNativeDriver
+    >
+      <TouchableOpacity style={styles.banner_noti} onPress={onActionPress}>
+        <View style={styles.noti}>
           <View style={styles.innerContainer}>
             <New
               width={adjust(30)}
@@ -62,9 +65,10 @@ const NotificationComponent = ({
           <Text style={styles.body}>
             {notification?.data?.textBody} (Ấn vào thông báo để cập nhật)
           </Text>
-        </TouchableOpacity>
-      </Animatable.View>
-    </PanGestureHandler>
+        </View>
+      </TouchableOpacity>
+    </Animatable.View>
+    // </PanGestureHandler>
   );
 };
 
@@ -73,17 +77,23 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 0,
     left: 0,
-    width: "100%",
-    height: adjust(100),
+    right: 0,
+    height: adjust(150),
     zIndex: 100,
-    padding: 10,
-    justifyContent: "flex-start",
-    alignItems: "flex-start",
+    width: "100%",
+    alignContent: "center",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  banner_noti: {
+    width: "100%",
+    alignContent: "center",
+    alignItems: "center",
+    justifyContent: "center",
   },
   innerContainer: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
   },
   title: {
     fontWeight: "bold",
@@ -92,6 +102,17 @@ const styles = StyleSheet.create({
   body: {
     fontSize: 14,
     marginVertical: 5,
+    fontWeight: "medium",
+  },
+  noti: {
+    backgroundColor: "#f9fcfa",
+    width: "95%",
+    padding: 8,
+    borderRadius: 16,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
   },
 });
 

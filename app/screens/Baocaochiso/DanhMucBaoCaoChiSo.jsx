@@ -18,9 +18,7 @@ import { Provider, useDispatch, useSelector } from "react-redux";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useFocusEffect } from "@react-navigation/native";
-import AntDesign from "@expo/vector-icons/AntDesign";
 import adjust from "../../adjust";
-import ItemChiSo from "../../components/Item/ItemChiSo";
 import { baocaochiso_get } from "../../redux/actions/tbActions";
 import ReportContext from "../../context/ReportContext";
 import { BASE_URL } from "../../constants/config";
@@ -37,8 +35,6 @@ const DanhMucBaoCaoChiSo = ({ navigation }) => {
 
   const [dataChiSo, setDataChiSo] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [newActionClick, setNewActionClick] = useState([]);
-  const [item, setItem] = useState(null);
 
   const init_baocaochiso = async () => {
     setLoading(true);
@@ -72,7 +68,6 @@ const DanhMucBaoCaoChiSo = ({ navigation }) => {
         })
         .then((response) => {
           setShowReport(response.data.data);
-          console.log("setShowReport", showReport);
         })
         .catch((err) => console.log("err device 1", err.response.data));
     };

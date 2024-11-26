@@ -358,6 +358,8 @@ const DetailChecklist = ({ route, navigation }) => {
       };
     }
 
+    console.log('newItem', newItem)
+
     handleSetData(status, updatedDataChecklist, newItem);
   };
 
@@ -738,6 +740,7 @@ const DetailChecklist = ({ route, navigation }) => {
           formData.append("Kinhdo", item.Kinhdo || "");
           formData.append("Docao", item.Docao || "");
           formData.append("isScan", isScan || null);
+          console.log('item.Anh', item.Anh)
           if (item.Anh && Array.isArray(item.Anh)) {
             item.Anh.forEach((image, imgIndex) => {
               const file = {

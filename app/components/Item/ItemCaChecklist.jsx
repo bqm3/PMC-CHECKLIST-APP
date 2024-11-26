@@ -51,8 +51,8 @@ export default function ItemCaChecklist({
               : require("../../../assets/icons/ic_circle_close.png")
           }
           style={{
-            width: adjust(30),
-            height: adjust(30),
+            width: adjust(26),
+            height: adjust(26),
             marginStart: "auto",
           }}
           resizeMode="contain"

@@ -38,6 +38,7 @@ const ModalPopupDetailChecklist = ({
   const [images, setImages] = useState([]);
   const [ghichu, setGhichu] = useState();
   const [chiso, setChiso] = useState();
+  let newImageItem = []
 
   const pickImage = async () => {
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
@@ -55,7 +56,9 @@ const ModalPopupDetailChecklist = ({
       if (!result.canceled) {
         const newImage = result?.assets[0];
         setImages((prevImages) => [...prevImages, newImage]); // Thêm ảnh mới vào danh sách
-        handleItemClick(newImage, "option", "Anh", dataItem);
+        newImageItem = [...images, newImage];
+        console.log('newImageItem',newImageItem)
+        handleItemClick(newImageItem, "option", "Anh", dataItem);
       }
     } catch (error) {
       console.error("Error capturing image: ", error);
@@ -66,8 +69,9 @@ const ModalPopupDetailChecklist = ({
     setImages((prevImages) =>
       prevImages.filter((_, index) => index !== indexToRemove)
     );
+    const filterImages = images.filter((_, index) => index !== indexToRemove);
     // Cập nhật dataItem sau khi xóa ảnh
-    handleItemClick(null, "option", "Anh", dataItem);
+    handleItemClick(filterImages, "option", "Anh", dataItem);
   };
 
   const objData = {
@@ -75,6 +79,7 @@ const ModalPopupDetailChecklist = ({
     GhichuChitiet: ghichu,
     valueCheck: defaultChecklist || chiso,
   };
+
 
   const setData = () => {
     dataItem.valueCheck = defaultChecklist || chiso;

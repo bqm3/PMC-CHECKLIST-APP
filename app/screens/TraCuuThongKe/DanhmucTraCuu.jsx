@@ -9,7 +9,9 @@ import {
   FlatList,
   TouchableOpacity,
   Image,
+  RefreshControl,
 } from "react-native";
+
 import React, {
   useRef,
   useState,
@@ -20,40 +22,37 @@ import React, {
 import { useDispatch, useSelector } from "react-redux";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { DataTable } from "react-native-paper";
 import { COLORS, SIZES } from "../../constants/theme";
 import axios from "axios";
 import { BASE_URL } from "../../constants/config";
 import moment from "moment";
-import ModalThongke from "../../components/Modal/ModalThongke";
-import DanhmucThongKe from "./DanhmucThongKe";
-import axiosClient from "../../api/axiosClient";
-import ModalBottomSheet from "../../components/Modal/ModalBottomSheet";
+import ModalTraCuu from "../../components/Modal/ModalTracuu";
 import ItemCaChecklist from "../../components/Item/ItemCaChecklist";
-import adjust from "../../adjust";
 
-const numberOfItemsPerPageList = [20, 30, 50];
-
+const numberOfItemsPerPage = 20;
 const DanhmucTraCuu = ({ setOpacity, opacity, navigation }) => {
   const dispath = useDispatch();
   const { user, authToken } = useSelector((state) => state.authReducer);
   const { ent_khoicv, ent_calv } = useSelector((state) => state.entReducer);
-  const { tb_checklistc } = useSelector((state) => state.tbReducer);
   const [newActionCheckList, setNewActionCheckList] = useState([]);
+
   const bottomSheetModalRef = useRef(null);
-  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
-  const snapPoints2 = useMemo(() => ["65%"], []);
-  const [page, setPage] = React.useState(0);
-  const [numberOfItemsPerPage, onItemsPerPageChange] = React.useState(
-    numberOfItemsPerPageList[0]
-  );
+  const snapPoints2 = useMemo(() => ["80%", "80%", "90%"], []);
+  const snapPoints1 = useMemo(() => ["70%", "70%", "80%"], []);
+  const [page, setPage] = useState(0);
 
   const [isLoading, setIsLoading] = useState(false);
   const [isEnabled, setIsEnabled] = useState(true);
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
+
+  const [hasMoreData, setHasMoreData] = useState(true); // Kiểm tra nếu còn dữ liệu để tải
+
+  const flatListRef = React.useRef();
 
   const date = new Date();
   const startOfMonth = moment().startOf("month").format("YYYY-MM-DD");
   const endOfMonth = moment(date).format("YYYY-MM-DD");
+
   const [isDatePickerVisible, setDatePickerVisibility] = useState({
     fromDate: false,
     toDate: false,
@@ -61,19 +60,16 @@ const DanhmucTraCuu = ({ setOpacity, opacity, navigation }) => {
 
   const [selectedKhoiCV, setSelectedKhoiCV] = useState(null);
   const [filteredCalv, setFilteredCalv] = useState(ent_calv);
-  const [shouldFetch, setShouldFetch] = useState(false);
   const [data, setData] = useState([]);
   const [visibleBottom, setVisibleBottom] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false); // Trạng thái refresh
 
   const [filters, setFilters] = useState({
     fromDate: startOfMonth,
     toDate: endOfMonth,
     ID_Calv: null,
+    ID_KhoiCV: null,
   });
-
-  useEffect(() => {
-    setData(tb_checklistc?.data);
-  }, [tb_checklistc]);
 
   const handleKhoiSelection = (selectedKhoi) => {
     setSelectedKhoiCV(selectedKhoi?.ID_KhoiCV);
@@ -99,7 +95,39 @@ const DanhmucTraCuu = ({ setOpacity, opacity, navigation }) => {
     setIsEnabled(false);
   };
 
-  const toggleTodo = async (item, index) => {
+  const toggleTodo = (item, index) => {
+    if (user?.ent_chucvu?.Role !== 3) {
+      handleToggleOptions(item);
+    } else {
+      navigation.navigate("Chi tiết checklist ca", {
+        ID_ChecklistC: item.ID_ChecklistC,
+      });
+    }
+  };
+
+  const notChecked = (item, index) => {
+    navigation.navigate("Khu vực chưa checklist", {
+      ID_ChecklistC: item.ID_ChecklistC,
+      ID_KhoiCV: item.ID_KhoiCV,
+      ID_ThietLapCa: item.ID_ThietLapCa,
+      ID_Hangmucs: item.ID_Hangmucs,
+      ID_Calv: item.ID_Calv,
+    });
+  };
+
+  const scan = (item, index) => {
+    navigation.navigate("Scan khu vực", {
+      ID_ChecklistC: item.ID_ChecklistC,
+    });
+  };
+
+  const detailCheckListCa = (item, index) => {
+    navigation.navigate("Chi tiết checklist ca", {
+      ID_ChecklistC: item.ID_ChecklistC,
+    });
+  };
+
+  const handleToggleOptions = async (item, index) => {
     // setIsCheckbox(true);
     const isExistIndex = newActionCheckList.findIndex(
       (existingItem) => existingItem.ID_ChecklistC === item.ID_ChecklistC
@@ -116,54 +144,97 @@ const DanhmucTraCuu = ({ setOpacity, opacity, navigation }) => {
     }
   };
 
-  const fetchData = async (filter) => {
+  const fetchData = async (filter, reset = false, refresh = false) => {
+    if (isLoading) return; // Ngăn gọi API khi đang tải hoặc không còn dữ liệu
+
     setIsLoading(true);
-    await axios
-      .post(
-        BASE_URL +
-          `/tb_checklistc/thong-ke?page=${page}&limit=${numberOfItemsPerPage}`,
+    try {
+      const currentPage = reset || refresh ? 0 : page;
+      const res = await axios.post(
+        `${BASE_URL}/tb_checklistc/thong-ke?page=${currentPage}&limit=${numberOfItemsPerPage}`,
         filter,
         {
           headers: {
             Accept: "application/json",
-            Authorization: "Bearer " + authToken,
+            Authorization: `Bearer ${authToken}`,
           },
         }
-      )
-      .then((res) => {
-        //setDataTraCuu(res?.data?.data);
-        setData(res?.data?.data);
-        handlePresentModalClose();
-        setVisibleBottom(false);
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        setIsLoading(false);
-      });
+      );
+
+      const newData = res?.data?.data || [];
+      if (reset) {
+        // Tải lại dữ liệu (khi scroll top)
+        setData(newData);
+        setPage(0);
+        setHasMoreData(true); // Cho phép tải thêm dữ liệu sau khi reset
+      } else {
+        // Cộng thêm dữ liệu mới vào danh sách hiện tại
+        setData((prevData) => [...prevData, ...newData]);
+        setHasMoreData(true);
+        if (newData.length === 0) setHasMoreData(false); // Không còn dữ liệu
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setIsLoading(false);
+      setIsRefreshing(false); // Tắt trạng thái refresh
+    }
   };
 
-  // useEffect(() => {
-  //   fetchData(filters);
-  // }, [page, numberOfItemsPerPage]);
-
   useEffect(() => {
-    if (shouldFetch) {
-      fetchData(filters);
-      setShouldFetch(false);
+    fetchData(filters); // Gọi API lần đầu với filters
+  }, [page]); // Mỗi lần `page` thay đổi sẽ gọi lại fetchData
+
+  const handleRefresh = () => {
+    setData([]); // Xóa dữ liệu hiện tại
+    setPage(0); // Đặt lại trang
+    setHasMoreData(true); // Cho phép tải thêm dữ liệu
+    setIsRefreshing(true); // Hiển thị biểu tượng làm mới
+
+    // Khởi tạo bộ lọc mới (ví dụ với giá trị mặc định)
+    const filterReset = {
+      fromDate: startOfMonth,
+      toDate: endOfMonth,
+      ID_Calv: null,
+      ID_KhoiCV: null,
+    };
+    handleClearCache();
+
+    // Gọi API để tải dữ liệu mới
+    fetchData(filterReset, true, true);
+  };
+
+  const handleLoadMore = () => {
+    if (hasMoreData && !isLoading) {
+      setPage((prevPage) => prevPage + 1); // Tăng trang lên 1
     }
-  }, [shouldFetch, page, numberOfItemsPerPage]);
+  };
+
+  const renderFooter = () => {
+    if (!isLoading) return null;
+    return (
+      <View style={{ padding: 10 }}>
+        <ActivityIndicator size="small" color="#0000ff" />
+      </View>
+    );
+  };
 
   const toggleSwitch = (isEnabled) => {
     setIsEnabled(!isEnabled);
     if (isEnabled === false) {
-      setFilters({
-        fromDate: startOfMonth,
-        toDate: endOfMonth,
-        ID_Toanha: null,
-        ID_Khuvuc: null,
-        ID_Tang: null,
-      });
+      handleClearCache();
     }
+  };
+
+  const handleClearCache = () => {
+    setFilters({
+      fromDate: startOfMonth,
+      toDate: endOfMonth,
+      ID_Calv: null,
+      ID_KhoiCV: null,
+    });
+    setSelectedKhoiCV(null);
+    setFilteredCalv(ent_calv);
   };
 
   useEffect(() => {
@@ -190,11 +261,8 @@ const DanhmucTraCuu = ({ setOpacity, opacity, navigation }) => {
 
   const handlePresentModalPress2 = useCallback(() => {
     setOpacity(0.2);
-    if (user?.isError == 1) {
-      setVisibleBottom(true);
-    } else {
-      setIsBottomSheetOpen(true);
-    }
+    bottomSheetModalRef?.current.expand();
+    setIsBottomSheetOpen(true);
   }, []);
 
   const handlePresentModalClose = useCallback(() => {
@@ -203,9 +271,13 @@ const DanhmucTraCuu = ({ setOpacity, opacity, navigation }) => {
     bottomSheetModalRef?.current?.close();
   }, []);
 
-  React.useEffect(() => {
-    setPage(0);
-  }, [numberOfItemsPerPage]);
+  const decimalNumber = (number) => {
+    if (number < 10 && number > 0) return `0${number}`;
+    if (number === 0) return `0`;
+    return number;
+  };
+
+  console.log("newActionCheckList", newActionCheckList);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -233,26 +305,47 @@ const DanhmucTraCuu = ({ setOpacity, opacity, navigation }) => {
             ></ActivityIndicator>
           ) : (
             <>
-              <TouchableOpacity
-                onPress={handlePresentModalPress2}
+              <View
                 style={{
                   flexDirection: "row",
-                  alignItems: "center",
-                  gap: 8,
-                  marginStart: "auto",
-                  marginRight: adjust(15)
+                  justifyContent: "space-between", // Điều chỉnh khoảng cách giữa các phần tử
+                  alignItems: "center", // Canh giữa các phần tử theo trục dọc
+                  paddingHorizontal: 20,
                 }}
               >
-                <Image
-                  source={require("../../../assets/icons/filter_icon.png")}
-                  resizeMode="contain"
-                  style={{ height: 24, width: 24 }}
-                />
-                <Text allowFontScaling={false} style={styles.text}>
-                  Lọc dữ liệu
+                {/* Text hiển thị số lượng */}
+                <Text
+                  allowFontScaling={false}
+                  style={{
+                    fontSize: 16,
+                    color: "white",
+                    fontWeight: "600",
+                  }}
+                >
+                  Số lượng: {decimalNumber(data?.length)}
                 </Text>
-              </TouchableOpacity>
+
+                {/* Button lọc dữ liệu */}
+                <TouchableOpacity
+                  onPress={handlePresentModalPress2}
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 8,
+                  }}
+                >
+                  <Image
+                    source={require("../../../assets/icons/filter_icon.png")}
+                    resizeMode="contain"
+                    style={{ height: 24, width: 24 }}
+                  />
+                  <Text allowFontScaling={false} style={styles.text}>
+                    Lọc dữ liệu
+                  </Text>
+                </TouchableOpacity>
+              </View>
               <FlatList
+                ref={flatListRef}
                 horizontal={false}
                 contentContainerStyle={{ flexGrow: 1 }}
                 style={{ margin: 10 }}
@@ -267,58 +360,90 @@ const DanhmucTraCuu = ({ setOpacity, opacity, navigation }) => {
                 )}
                 keyExtractor={(item, index) => index.toString()}
                 scrollEventThrottle={16}
-                scrollEnabled={true}
-                showsVerticalScrollIndicator={false}
+                onEndReached={handleLoadMore} // Tải thêm khi cuộn đến cuối
+                onEndReachedThreshold={0.95} // Ngưỡng tải thêm (50% cuối màn hình)
+                ListFooterComponent={renderFooter} // Hiển thị loader khi tải thêm
+                refreshControl={
+                  <RefreshControl
+                    refreshing={isRefreshing}
+                    onRefresh={handleRefresh}
+                  />
+                }
               />
-              {/* <DanhmucThongKe
-                handlePresentModalPress2={handlePresentModalPress2}
-                data={data}
-                navigation={navigation}
-              /> */}
-
-              <ModalBottomSheet
-                visible={visibleBottom}
-                setVisible={setVisibleBottom}
-                setOpacity={setOpacity}
-              >
-                <ModalThongke
-                  handleChangeFilters={handleChangeFilters}
-                  filters={filters}
-                  setVisibleBottom={setVisibleBottom}
-                  setOpacity={setOpacity}
-                  toggleDatePicker={toggleDatePicker}
-                  isDatePickerVisible={isDatePickerVisible}
-                  setIsEnabled={setIsEnabled}
-                  toggleSwitch={toggleSwitch}
-                  isEnabled={isEnabled}
-                  fetchData={fetchData}
-                  handlePresentModalClose={handlePresentModalClose}
-                  ent_khoicv={ent_khoicv}
-                  ent_calv={ent_calv}
-                  user={user}
-                  handleKhoiSelection={handleKhoiSelection}
-                  filteredCalv={filteredCalv}
-                />
-              </ModalBottomSheet>
             </>
           )}
         </View>
 
+        {newActionCheckList && newActionCheckList.length > 0 && (
+          <View
+            style={{
+              width: 60,
+              position: "absolute",
+              right: 20,
+              bottom: 50,
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              gap: 10,
+            }}
+          >
+            <>
+              <TouchableOpacity
+                style={[styles.button, { backgroundColor: COLORS.bg_red }]}
+                onPress={() => notChecked(newActionCheckList[0])}
+              >
+                <Image
+                  source={require("../../../assets/icons/ic_unlock.png")}
+                  style={{
+                    tintColor: "white",
+                    resizeMode: "contain",
+                  }}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.button]}
+                onPress={() => scan(newActionCheckList[0])}
+              >
+                <Image
+                  source={require("../../../assets/icons/ic_qrcode_35x35.png")}
+                  style={{
+                    tintColor: "white",
+                    resizeMode: "contain",
+                  }}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.button]}
+                onPress={() => detailCheckListCa(newActionCheckList[0])}
+              >
+                <Image
+                  source={require("../../../assets/icons/ic_detail_checklistca.png")}
+                  style={{
+                    tintColor: "white",
+                    resizeMode: "contain",
+                  }}
+                />
+              </TouchableOpacity>
+            </>
+          </View>
+        )}
+
         <BottomSheet
           ref={bottomSheetModalRef}
-          index={isBottomSheetOpen ? 0 : -1}
-          snapPoints={snapPoints2}
+          index={isBottomSheetOpen ? 1 : -1}
+          snapPoints={user?.ID_KhoiCV ? snapPoints1 : snapPoints2}
           onChange={handleSheetChanges}
           enablePanDownToClose={true}
+          enableDynamicSizing={false}
           onClose={handlePresentModalClose}
         >
           <BottomSheetView style={styles.contentContainer}>
-            <ModalThongke
+            <ModalTraCuu
               handleChangeFilters={handleChangeFilters}
               filters={filters}
-              toggleDatePicker={toggleDatePicker}
               setVisibleBottom={setVisibleBottom}
               setOpacity={setOpacity}
+              toggleDatePicker={toggleDatePicker}
               isDatePickerVisible={isDatePickerVisible}
               setIsEnabled={setIsEnabled}
               toggleSwitch={toggleSwitch}
