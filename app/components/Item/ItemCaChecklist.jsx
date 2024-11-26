@@ -44,6 +44,19 @@ export default function ItemCaChecklist({
           {item.Giokt && moment(item?.Giokt, "HH:mm:ss").format("HH:mm")} (
           {moment(item?.Ngay).format("DD-MM")})
         </Text>
+        <Image
+          source={
+            item.Tinhtrang === 1
+              ? require("../../../assets/icons/ic_done.png")
+              : require("../../../assets/icons/ic_circle_close.png")
+          }
+          style={{
+            width: adjust(30),
+            height: adjust(30),
+            marginStart: "auto",
+          }}
+          resizeMode="contain"
+        />
       </View>
       <View style={styles.row}>
         <View style={{ width: 110 }}>
@@ -102,29 +115,6 @@ export default function ItemCaChecklist({
           : {item?.TongC}/{item?.Tong}
         </Text>
       </View>
-
-      <View style={styles.row}>
-        <View style={{ width: 110 }}>
-          <Text
-            allowFontScaling={false}
-            style={[styles.title, { color: isExistIndex ? "black" : "white" }]}
-          >
-            Tình trạng
-          </Text>
-        </View>
-        <Text
-          allowFontScaling={false}
-          style={[
-            styles.title,
-            {
-              fontWeight: "500",
-              color: item?.Tinhtrang === 1 ? "green" : "red",
-            },
-          ]}
-        >
-          : {item?.Tinhtrang === 1 ? "Xong" : "Đang thực hiện"}
-        </Text>
-      </View>
     </TouchableOpacity>
   );
 }
@@ -150,5 +140,6 @@ const styles = StyleSheet.create({
     width: "95%",
     flexDirection: "row",
     flexWrap: "wrap",
+    alignItems: "center",
   },
 });

@@ -61,8 +61,8 @@ const DanhMucBaoCaoChiSo = ({ navigation }) => {
   useEffect(() => {
     if (baocaochiso) {
       setDataChiSo(baocaochiso);
-      setLoading(false);
     }
+    setLoading(false);
   }, [baocaochiso]);
 
   useEffect(() => {
@@ -85,6 +85,8 @@ const DanhMucBaoCaoChiSo = ({ navigation }) => {
       data: item,
     });
   };
+
+  console.log("baocaochiso",baocaochiso)
 
   const renderItem = useCallback(
     ({ item, index }) => (
@@ -268,7 +270,7 @@ const styles = StyleSheet.create({
   },
   title: {
     paddingTop: 4,
-    fontSize: adjust(18),
+    fontSize: adjust(16),
     paddingVertical: 2,
     color: "black",
     fontWeight: "700",

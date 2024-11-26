@@ -13,6 +13,7 @@ import {
   Platform,
   ScrollView,
   Linking,
+  SafeAreaView,
 } from "react-native";
 import React, {
   useEffect,
@@ -29,13 +30,7 @@ import { login } from "../redux/actions/authActions";
 import { COLORS, SIZES } from "../constants/theme";
 import Title from "../components/Title";
 import ButtonSubmit from "../components/Button/ButtonSubmit";
-// import {
-//   BottomSheetModal,
-//   BottomSheetView,
-//   BottomSheetModalProvider,
-//   BottomSheetScrollView,
-// } from "@gorhom/bottom-sheet";
-import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
+import BottomSheet, { BottomSheetView, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import * as FileSystem from "expo-file-system";
 import * as Network from "expo-network";
 import NetInfo from "@react-native-community/netinfo";
@@ -56,7 +51,6 @@ import axios from "axios";
 
 import DataLicense from "../components/PrivacyPolicy";
 import Checkbox from "../components/Active/Checkbox";
-import { StatusBar } from "expo-status-bar";
 
 const alertTypeMap = {
   SUCCESS: ALERT_TYPE.SUCCESS,
@@ -75,12 +69,9 @@ const LoginScreen = ({ navigation }) => {
     (state) => state.authReducer
   );
 
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(-1);
   const bottomSheetModalRef = useRef(null);
-  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(-1); 
-  const snapPoints = ['20%', '50%', '80%'];
-
-//  const snapPoints = [200, '50%'];
-
+  const snapPoints = useMemo(() => ["50%", "50%", "90%"], []);
   const [opacity, setOpacity] = useState(1);
 
   const [show, setShow] = useState(false);
@@ -245,12 +236,12 @@ const LoginScreen = ({ navigation }) => {
 
   const handlePresentModalPress = useCallback(() => {
     bottomSheetModalRef.current.expand();
-    setIsBottomSheetOpen(1); 
+    setIsBottomSheetOpen(0); // Open bottomsheet
   }, []);
 
   const handleCloseBottomSheet = useCallback(() => {
     bottomSheetModalRef.current.close();
-    setIsBottomSheetOpen(-1); 
+    setIsBottomSheetOpen(-1); // Close bottomsheet
   }, []);
 
   useEffect(() => {
@@ -309,191 +300,189 @@ const LoginScreen = ({ navigation }) => {
 
   return (
     <>
-        <GestureHandlerRootView style={{ flex: 1 }}>
-          {notification?.status == 1 && (
-            <NotificationComponent
-              notification={notification}
-              animation={animation}
-              setAnimation={setAnimation}
-              setNotification={setNotification}
-            />
-          )}
+      {/* <PaperProvider> */}
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: "black" }}>
           <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : null}
             style={{ flex: 1 }}
           >
-          <ImageBackground
+            {/* <BottomSheetModalProvider> */}
+            <ImageBackground
               source={require("../../assets/bg_new.png")}
               resizeMode="cover"
               style={styles.defaultFlex}
             >
-            <ScrollView
-              contentContainerStyle={[styles.container]}
-              style={{ opacity: opacity }}
-            >
-              {notification?.status == 1 && (
-                <NotificationComponent
-                  notification={notification}
-                  animation={animation}
-                  setAnimation={setAnimation}
-                  setNotification={setNotification}
-                />
-              )}
-              <Image
-                style={{
-                  width: adjust(120),
-                  height: adjust(70),
-                  resizeMode: "contain",
-                }}
-                source={require("../../assets/pmc_logo.png")}
-              />
-              <View style={{ marginHorizontal: 20 }}>
-                <Title text={"Đăng nhập"} size={adjust(20)} top={30} />
-
-                <View
-                  style={{
-                    justifyContent: "flex-start",
-                  }}
-                >
-                  <View style={{ height: adjust(20) }}></View>
-
-                  <View style={styles.action}>
-                    <TextInput
-                      allowFontScaling={false}
-                      placeholder="Nhập tài khoản"
-                      placeholderTextColor="gray"
-                      style={[styles.textInput]}
-                      autoCapitalize="sentences"
-                      onChangeText={(val) => handleChangeText("UserName", val)}
-                      defaultValue={data?.UserName}
-                      autoCorrect={false}
-                      secureTextEntry={false}
-                      underLineColorAndroid="transparent"
-                    />
-                  </View>
-
-                  <View style={styles.action}>
-                    <TextInput
-                      allowFontScaling={false}
-                      placeholder="Nhập mật khẩu"
-                      placeholderTextColor="gray"
-                      style={[styles.textInput]}
-                      autoCapitalize="sentences"
-                      value={data?.Password}
-                      onChangeText={(val) => handleChangeText("Password", val)}
-                      secureTextEntry={!show}
-                      // onSubmitEditing={() => handleSubmit()}
-                    />
-                    <TouchableOpacity
-                      style={{
-                        width: 40,
-                        height: 40,
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                      onPress={() => setShow(!show)}
-                    >
-                      {!show ? (
-                        <Image
-                          style={{
-                            width: adjust(28),
-                            height: adjust(28),
-                            resizeMode: "contain",
-                          }}
-                          source={require("../../assets/eye.png")}
-                        />
-                      ) : (
-                        <Image
-                          style={{
-                            width: adjust(28),
-                            height: adjust(28),
-                            resizeMode: "contain",
-                          }}
-                          source={require("../../assets/hidden.png")}
-                        />
-                      )}
-                    </TouchableOpacity>
-                  </View>
-
-                  <View style={styles.checkboxContainer}>
-                    <Checkbox
-                      style={styles.checkbox}
-                      isCheck={isChecked}
-                      onPress={handleToggle}
-                    />
-                    <TouchableOpacity>
-                      <Text
-                        allowFontScaling={false}
-                        style={[styles.label, { textDecorationLine: "none" }]}
-                      >
-                        Lưu tài khoản và mật khẩu
-                      </Text>
-                    </TouchableOpacity>
-                  </View>
-
-                  <View style={{ height: 20 }} />
-                  <ButtonSubmit
-                    backgroundColor={COLORS.bg_button}
-                    text={"Đăng nhập"}
-                    isLoading={isLoading}
-                    onPress={handleSubmit}
+              <ScrollView
+                contentContainerStyle={[styles.container]}
+                style={{ opacity: opacity }}
+              >
+                {notification?.status == 1 && (
+                  <NotificationComponent
+                    notification={notification}
+                    animation={animation}
+                    setAnimation={setAnimation}
+                    setNotification={setNotification}
                   />
-                  <Text
-                    allowFontScaling={false}
+                )}
+                <Image
+                  style={{
+                    width: adjust(120),
+                    height: adjust(70),
+                    resizeMode: "contain",
+                  }}
+                  source={require("../../assets/pmc_logo.png")}
+                />
+                <View style={{ marginHorizontal: 20 }}>
+                  <Title text={"Đăng nhập"} size={adjust(20)} top={30} />
+
+                  <View
                     style={{
-                      color: "white",
-                      fontWeight: "500",
-                      width: "100%",
-                      textAlign: "right",
-                      padding: 4,
+                      justifyContent: "flex-start",
                     }}
                   >
-                    Phiên bản: {version}
-                  </Text>
+                    <View style={{ height: adjust(20) }}></View>
+
+                    <View style={styles.action}>
+                      <TextInput
+                        allowFontScaling={false}
+                        placeholder="Nhập tài khoản"
+                        placeholderTextColor="gray"
+                        style={[styles.textInput]}
+                        autoCapitalize="sentences"
+                        onChangeText={(val) =>
+                          handleChangeText("UserName", val)
+                        }
+                        defaultValue={data?.UserName}
+                        autoCorrect={false}
+                        secureTextEntry={false}
+                        underLineColorAndroid="transparent"
+                      />
+                    </View>
+
+                    <View style={styles.action}>
+                      <TextInput
+                        allowFontScaling={false}
+                        placeholder="Nhập mật khẩu"
+                        placeholderTextColor="gray"
+                        style={[styles.textInput]}
+                        autoCapitalize="sentences"
+                        value={data?.Password}
+                        onChangeText={(val) =>
+                          handleChangeText("Password", val)
+                        }
+                        secureTextEntry={!show}
+                        // onSubmitEditing={() => handleSubmit()}
+                      />
+                      <TouchableOpacity
+                        style={{
+                          width: 40,
+                          height: 40,
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                        onPress={() => setShow(!show)}
+                      >
+                        {!show ? (
+                          <Image
+                            style={{
+                              width: adjust(28),
+                              height: adjust(28),
+                              resizeMode: "contain",
+                            }}
+                            source={require("../../assets/eye.png")}
+                          />
+                        ) : (
+                          <Image
+                            style={{
+                              width: adjust(28),
+                              height: adjust(28),
+                              resizeMode: "contain",
+                            }}
+                            source={require("../../assets/hidden.png")}
+                          />
+                        )}
+                      </TouchableOpacity>
+                    </View>
+
+                    <View style={styles.checkboxContainer}>
+                      <Checkbox
+                        style={styles.checkbox}
+                        isCheck={isChecked}
+                        onPress={handleToggle}
+                      />
+                      <TouchableOpacity>
+                        <Text
+                          allowFontScaling={false}
+                          style={[styles.label, { textDecorationLine: "none" }]}
+                        >
+                          Lưu tài khoản và mật khẩu
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+
+                    <View style={{ height: 20 }} />
+                    <ButtonSubmit
+                      backgroundColor={COLORS.bg_button}
+                      text={"Đăng nhập"}
+                      isLoading={isLoading}
+                      onPress={handleSubmit}
+                    />
+                    <Text
+                      style={{
+                        color: "white",
+                        fontWeight: "500",
+                        width: "100%",
+                        textAlign: "right",
+                        padding: 4,
+                      }}
+                    >
+                      Phiên bản: {version}
+                    </Text>
+                  </View>
                 </View>
-              </View>
-              <View
-                style={[
-                  styles.checkboxContainer,
-                  { marginTop: 30, justifyContent: "center" },
-                ]}
-              >
-                <TouchableOpacity onPress={handlePresentModalPress}>
-                  <Text
-                    allowFontScaling={false}
-                    style={[styles.label, { textDecorationLine: "none" }]}
-                  >
-                    Các{" "}
-                    <Text allowFontScaling={false} style={styles.label}>
-                      điều khoản
-                    </Text>{" "}
-                    và{" "}
-                    <Text allowFontScaling={false} style={styles.label}>
-                      điều kiện
-                    </Text>{" "}
-                    của PMC
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </ScrollView>
-          </ImageBackground>
+                <View
+                  style={[
+                    styles.checkboxContainer,
+                    { marginTop: 30, justifyContent: "center" },
+                  ]}
+                >
+                  <TouchableOpacity onPress={handlePresentModalPress}>
+                    <Text
+                      allowFontScaling={false}
+                      style={[styles.label, { textDecorationLine: "none" }]}
+                    >
+                      Các{" "}
+                      <Text allowFontScaling={false} style={styles.label}>
+                        điều khoản
+                      </Text>{" "}
+                      và{" "}
+                      <Text allowFontScaling={false} style={styles.label}>
+                        điều kiện
+                      </Text>{" "}
+                      của PMC
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+              </ScrollView>
+            </ImageBackground>
 
             <BottomSheet
               ref={bottomSheetModalRef}
               index={isBottomSheetOpen}
               snapPoints={snapPoints}
               onChange={handleSheetChanges}
-              enableDynamicSizing={true}
+              enableDynamicSizing={false}
               enablePanDownToClose={true}
               onClose={handleCloseBottomSheet}
             >
-              <View style={styles.contentContainer}>
+               <BottomSheetScrollView showsVerticalScrollIndicator={false}>
                 <DataLicense />
-              </View>
+              </BottomSheetScrollView >
             </BottomSheet>
-            {/* </BottomSheetModalProvider> */}
           </KeyboardAvoidingView>
-        </GestureHandlerRootView>
+        </SafeAreaView>
+      </GestureHandlerRootView>
     </>
   );
 };

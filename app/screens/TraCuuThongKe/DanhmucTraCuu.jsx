@@ -3,11 +3,12 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
-  TouchableHighlight,
   View,
   BackHandler,
   ActivityIndicator,
   FlatList,
+  TouchableOpacity,
+  Image,
 } from "react-native";
 import React, {
   useRef,
@@ -29,6 +30,7 @@ import DanhmucThongKe from "./DanhmucThongKe";
 import axiosClient from "../../api/axiosClient";
 import ModalBottomSheet from "../../components/Modal/ModalBottomSheet";
 import ItemCaChecklist from "../../components/Item/ItemCaChecklist";
+import adjust from "../../adjust";
 
 const numberOfItemsPerPageList = [20, 30, 50];
 
@@ -114,7 +116,6 @@ const DanhmucTraCuu = ({ setOpacity, opacity, navigation }) => {
     }
   };
 
-
   const fetchData = async (filter) => {
     setIsLoading(true);
     await axios
@@ -140,8 +141,6 @@ const DanhmucTraCuu = ({ setOpacity, opacity, navigation }) => {
         setIsLoading(false);
       });
   };
-
-
 
   // useEffect(() => {
   //   fetchData(filters);
@@ -234,6 +233,25 @@ const DanhmucTraCuu = ({ setOpacity, opacity, navigation }) => {
             ></ActivityIndicator>
           ) : (
             <>
+              <TouchableOpacity
+                onPress={handlePresentModalPress2}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 8,
+                  marginStart: "auto",
+                  marginRight: adjust(15)
+                }}
+              >
+                <Image
+                  source={require("../../../assets/icons/filter_icon.png")}
+                  resizeMode="contain"
+                  style={{ height: 24, width: 24 }}
+                />
+                <Text allowFontScaling={false} style={styles.text}>
+                  Lọc dữ liệu
+                </Text>
+              </TouchableOpacity>
               <FlatList
                 horizontal={false}
                 contentContainerStyle={{ flexGrow: 1 }}
@@ -250,6 +268,7 @@ const DanhmucTraCuu = ({ setOpacity, opacity, navigation }) => {
                 keyExtractor={(item, index) => index.toString()}
                 scrollEventThrottle={16}
                 scrollEnabled={true}
+                showsVerticalScrollIndicator={false}
               />
               {/* <DanhmucThongKe
                 handlePresentModalPress2={handlePresentModalPress2}

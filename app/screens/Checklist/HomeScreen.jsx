@@ -174,6 +174,12 @@ const dataKST = [
     path: "Tra cứu",
     icon: require("../../../assets/icons/o-02.png"),
   },
+  {
+    id: 4,
+    status: null,
+    path: "Checklist Lại",
+    icon: require("../../../assets/icons/o-01.png"),
+  },
 
   {
     id: 3,
