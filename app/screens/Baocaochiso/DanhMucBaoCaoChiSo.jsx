@@ -11,6 +11,7 @@ import {
   FlatList,
   ActivityIndicator,
   Alert,
+  Image,
 } from "react-native";
 import React, { useEffect, useState, useCallback, useContext } from "react";
 import { Provider, useDispatch, useSelector } from "react-redux";
@@ -25,8 +26,6 @@ import ReportContext from "../../context/ReportContext";
 import { BASE_URL } from "../../constants/config";
 import { COLORS, SIZES } from "../../constants/theme";
 import axios from "axios";
-
-
 
 const DanhMucBaoCaoChiSo = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -73,7 +72,7 @@ const DanhMucBaoCaoChiSo = ({ navigation }) => {
         })
         .then((response) => {
           setShowReport(response.data.data);
-          console.log("setShowReport",showReport)
+          console.log("setShowReport", showReport);
         })
         .catch((err) => console.log("err device 1", err.response.data));
     };
@@ -85,8 +84,6 @@ const DanhMucBaoCaoChiSo = ({ navigation }) => {
       data: item,
     });
   };
-
-  console.log("baocaochiso",baocaochiso)
 
   const renderItem = useCallback(
     ({ item, index }) => (
@@ -150,10 +147,9 @@ const DanhMucBaoCaoChiSo = ({ navigation }) => {
                           style={styles.action}
                           onPress={() => navigation.navigate("Hạng mục chỉ số")}
                         >
-                          <AntDesign
-                            name="pluscircle"
-                            size={24}
-                            color="white"
+                          <Image
+                            source={require("../../../assets/icons/ic_plus.png")}
+                            style={styles.closeIcon}
                           />
                           <Text
                             style={{
@@ -218,7 +214,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 8,
+    gap: 5,
   },
   button: {
     backgroundColor: COLORS.color_bg,
@@ -267,6 +263,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     gap: 10,
+    marginBottom: adjust(10),
   },
   title: {
     paddingTop: 4,
@@ -275,5 +272,8 @@ const styles = StyleSheet.create({
     color: "black",
     fontWeight: "700",
     textAlign: "left",
+  },
+  closeIcon: {
+    tintColor: "white",
   },
 });

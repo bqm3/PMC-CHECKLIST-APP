@@ -32,7 +32,7 @@ import ModalBaocaochiso from "../../components/Modal/ModalBaocaochiso";
 import moment from "moment";
 import "moment-timezone";
 
-const DanhmucHangMucChiSo = () => {
+const DanhmucHangMucChiSo = ({ navigation }) => {
   const { height } = Dimensions.get("window");
 
   const { authToken } = useSelector((state) => state.authReducer);
@@ -40,7 +40,8 @@ const DanhmucHangMucChiSo = () => {
   const [dataItem, setDataItem] = useState(null);
   const [opacity, setOpacity] = useState(1);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(-1);
-  const [loadingSubmit, setLoadingSubmit] = useState(false);
+  const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
+  const [isLoadingData, setIsLoadingData] = useState(false);
   const snapPoints = useMemo(() => [height * 0.7], []);
   const bottomSheetModalRef = useRef(null);
 
@@ -54,6 +55,7 @@ const DanhmucHangMucChiSo = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setIsLoadingData(true);
         const response = await axios.get(`${BASE_URL}/hangmuc-chiso/byDuan`, {
           headers: {
             Accept: "application/json",
@@ -61,7 +63,10 @@ const DanhmucHangMucChiSo = () => {
           },
         });
         setData(response.data.data);
+        setIsLoadingData(false);
       } catch (error) {
+        setIsLoadingData(false);
+        showAlert("Có lỗi xảy ra");
         console.error("Error fetching data:", error);
       }
     };
@@ -76,7 +81,6 @@ const DanhmucHangMucChiSo = () => {
   );
 
   const handlePresentModalPress = (item) => {
-    console.log("arrayItem", arrayItem);
     const existingItemData = arrayItem.find(
       (data) => data.ID_Hangmuc_Chiso === item.ID_Hangmuc_Chiso
     );
@@ -103,12 +107,13 @@ const DanhmucHangMucChiSo = () => {
   };
 
   const handleCloseBottomSheet = () => {
-    Keyboard.dismiss()
+    Keyboard.dismiss();
     bottomSheetModalRef?.current?.close();
   };
 
   const handleSubmit = async () => {
     try {
+      setIsLoadingSubmit(true);
       const formData = new FormData();
       for (const [index, item] of arrayItem.entries()) {
         appendFormData(formData, item, index);
@@ -128,11 +133,14 @@ const DanhmucHangMucChiSo = () => {
             },
           }
         );
-        console.log("Response:", response.data);
+        setIsLoadingSubmit(false);
+        showAlert("Thành công", true);
       } catch (error) {
+        setIsLoadingSubmit(false);
         showAlert("Có lỗi xảy ra");
       }
     } catch (error) {
+      setIsLoadingSubmit(false);
       showAlert(error.message || "Có lỗi xảy ra");
     }
   };
@@ -145,7 +153,7 @@ const DanhmucHangMucChiSo = () => {
     formData.append("Year", item.Year);
     formData.append("Chiso", item.Chiso || "");
     formData.append("Chiso_Read_Img", item.Chiso_Read_Img || "");
-    formData.append("Ghichu", item.Ghichu || null);
+    formData.append("Ghichu", item.Ghichu || "");
     if (item.Image) {
       const file = createFile(item.Image);
       formData.append(`Image_${index}`, file);
@@ -161,11 +169,14 @@ const DanhmucHangMucChiSo = () => {
     };
   };
 
-  const showAlert = (message) => {
+  const showAlert = (message, key = false) => {
     Alert.alert("PMC Thông báo", message, [
       {
         text: "Xác nhận",
-        onPress: () => console.log("Cancel Pressed"),
+        onPress: () =>
+          key
+            ? navigation.navigate("Báo cáo chỉ số")
+            : console.log("Cancel Pressed"),
         style: "cancel",
       },
     ]);
@@ -176,6 +187,7 @@ const DanhmucHangMucChiSo = () => {
       <TouchableOpacity
         style={[styles.content, { backgroundColor: "white" }]}
         key={index}
+        onPress={() => handlePresentModalPress(item)}
       >
         <View style={styles.contentRow}>
           <Text
@@ -198,12 +210,12 @@ const DanhmucHangMucChiSo = () => {
             />
           )}
         </View>
-        <TouchableOpacity onPress={() => handlePresentModalPress(item)}>
+        {/* <TouchableOpacity onPress={() => handlePresentModalPress(item)}>
           <Image
             source={require("../../../assets/icons/ic_ellipsis.png")}
             style={styles.ellipsisIcon}
           />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </TouchableOpacity>
     ),
     [arrayItem]
@@ -227,19 +239,30 @@ const DanhmucHangMucChiSo = () => {
               resizeMode="cover"
               style={[styles.flex, { opacity }]}
             >
-              <View style={styles.container}>
-                <FlatList
-                  style={styles.flatList}
-                  data={data}
-                  renderItem={renderItem}
-                  ItemSeparatorComponent={() => (
-                    <View style={styles.separator} />
-                  )}
-                  showsHorizontalScrollIndicator={false}
-                  keyExtractor={keyExtractor}
-                />
-              </View>
+              {isLoadingSubmit && (
+                <View style={styles.loadingContainer}>
+                  <ActivityIndicator size="small" color={COLORS.bg_white} />
+                </View>
+              )}
 
+              {isLoadingData ? (
+                <View style={styles.loadingContainer}>
+                  <ActivityIndicator size="small" color={COLORS.bg_white} />
+                </View>
+              ) : (
+                <View style={styles.container}>
+                  <FlatList
+                    style={styles.flatList}
+                    data={data}
+                    renderItem={renderItem}
+                    ItemSeparatorComponent={() => (
+                      <View style={styles.separator} />
+                    )}
+                    showsHorizontalScrollIndicator={false}
+                    keyExtractor={keyExtractor}
+                  />
+                </View>
+              )}
               <View
                 style={{
                   position: "absolute",
@@ -346,6 +369,17 @@ const styles = StyleSheet.create({
   bottomSheetContent: {
     flex: 1,
     alignItems: "center",
+  },
+  loadingContainer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    zIndex: 10,
   },
 });
 

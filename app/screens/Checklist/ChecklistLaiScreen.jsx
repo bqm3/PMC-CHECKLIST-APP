@@ -44,7 +44,6 @@ import { tb_checklistc_get } from "../../redux/actions/tbActions";
 import DataContext from "../../context/DataContext";
 import adjust from "../../adjust";
 
-
 const ThucHienChecklist = ({ navigation }) => {
   const ref = useRef(null);
   const dispath = useDispatch();
@@ -60,13 +59,12 @@ const ThucHienChecklist = ({ navigation }) => {
 
   const [isConnected, setConnected] = useState(true);
   useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener(state => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
       setConnected(state.isConnected);
     });
-  
+
     return () => unsubscribe();
   }, []);
-
 
   useEffect(() => {
     if (tb_checklistc?.data) {
@@ -241,6 +239,7 @@ const ThucHienChecklist = ({ navigation }) => {
                       keyExtractor={(item, index) =>
                         `${item?.ID_ChecklistC}_${index}`
                       }
+                      showsVerticalScrollIndicator={false}
                     />
                   )}
                 </>
@@ -272,10 +271,9 @@ const ThucHienChecklist = ({ navigation }) => {
                           )
                         }
                       >
-                        <MaterialIcons
-                          name="navigate-next"
-                          size={adjust(40)}
-                          color="white"
+                        <Image
+                          source={require("../../../assets/icons/ic_button_back.png")}
+                          style={styles.closeIcon}
                         />
                       </TouchableOpacity>
                     </>
@@ -368,6 +366,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     gap: 10,
+  },
+  closeIcon: {
+    width: adjust(30),
+    height: adjust(30),
+    tintColor: "white",
+    transform: [{ scaleX: -1 }],
   },
 });
 

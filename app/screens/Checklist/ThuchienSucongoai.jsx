@@ -115,30 +115,63 @@ const ThuchienSucongoai = ({ navigation, route }) => {
   };
 
   const pickImage = async () => {
-    // Ask the user for the permission to access the camera
-    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+    Alert.alert(
+      "Chọn ảnh",
+      "Bạn muốn chụp ảnh hay chọn ảnh từ thư viện?",
+      [
+        {
+          text: "Chụp ảnh",
+          onPress: async () => {
+            const permissionResult =
+              await ImagePicker.requestCameraPermissionsAsync();
+            if (permissionResult.granted === false) {
+              alert(
+                "Bạn đã từ chối cho phép sử dụng camera. Vào cài đặt và mở lại!"
+              );
+              return;
+            }
 
-    if (permissionResult.granted === false) {
-      alert(
-        "Bạn đã từ chối cho phép được sử dụng camera. Vào cài đặt và mở lại!"
-      );
-      return;
-    }
+            const result = await ImagePicker.launchCameraAsync({
+              mediaTypes: ImagePicker.MediaTypeOptions.Images,
+              aspect: [4, 3],
+              quality: 0.5, // Adjust image quality (0 to 1)
+            });
 
-    const result = await ImagePicker.launchCameraAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      aspect: [4, 3],
-      quality: 0.5, // Adjust image quality (0 to 1)
-    });
+            if (!result.canceled) {
+              setImages((prevImages) => [...prevImages, result.assets[0].uri]);
+            }
+          },
+        },
+        {
+          text: "Chọn từ thư viện",
+          onPress: async () => {
+            const permissionResult =
+              await ImagePicker.requestMediaLibraryPermissionsAsync();
+            if (permissionResult.granted === false) {
+              alert(
+                "Bạn đã từ chối cho phép sử dụng thư viện. Vào cài đặt và mở lại!"
+              );
+              return;
+            }
 
-    if (!result.canceled) {
-      setImages((prevImages) => {
-        const updatedImages = [...prevImages, result.assets[0].uri].filter(
-          (uri) => uri
-        ); // Filter out undefined or null
-        return updatedImages;
-      });
-    }
+            const result = await ImagePicker.launchImageLibraryAsync({
+              mediaTypes: ImagePicker.MediaTypeOptions.Images,
+              aspect: [4, 3],
+              quality: 0.5, // Adjust image quality (0 to 1)
+            });
+
+            if (!result.canceled) {
+              setImages((prevImages) => [...prevImages, result.assets[0].uri]);
+            }
+          },
+        },
+        {
+          text: "Hủy",
+          style: "cancel",
+        },
+      ],
+      { cancelable: true }
+    );
   };
 
   const init_toanha = async () => {
@@ -748,8 +781,8 @@ const ThuchienSucongoai = ({ navigation, route }) => {
                               <TouchableOpacity
                                 style={{
                                   position: "absolute",
-                                  top: 40,
-                                  left: 30,
+                                  top: 45,
+                                  left: 25,
                                   width: 50,
                                   height: 50,
                                   justifyContent: "center",
@@ -757,10 +790,9 @@ const ThuchienSucongoai = ({ navigation, route }) => {
                                 }}
                                 onPress={() => handleRemoveImage(item)}
                               >
-                                <FontAwesome
-                                  name="remove"
-                                  size={adjust(30)}
-                                  color="white"
+                                <Image
+                                  source={require("../../../assets/icons/ic_close.png")}
+                                  style={styles.closeIcon}
                                 />
                               </TouchableOpacity>
                             </View>
@@ -894,7 +926,6 @@ const styles = StyleSheet.create({
     width: "100%",
     textAlign: "left",
   },
-  
   section: {
     flexDirection: "row",
     alignItems: "center",
@@ -933,5 +964,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+  },
+  closeIcon: {
+    tintColor: "white",
   },
 });

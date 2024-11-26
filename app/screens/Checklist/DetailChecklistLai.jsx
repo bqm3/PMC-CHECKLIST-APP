@@ -1058,14 +1058,15 @@ const DetailChecklistLai = ({ route, navigation }) => {
 
   const handleBottom = useCallback((item, index) => {
     setVisibleBottom(true);
+    setIsBottomSheetOpen(true)
     setDataItem(item);
     setIndex(index);
-
-    if (visibleBottom == false) {
-      setOpacity(0.2);
-    } else {
-      setOpacity(1);
-    }
+    setOpacity(0.2);
+    // if (visibleBottom == false) {
+    //   setOpacity(0.2);
+    // } else {
+    //   setOpacity(1);
+    // }
   }, []);
 
   const handleClearBottom = useCallback((item, index) => {
@@ -1073,6 +1074,7 @@ const DetailChecklistLai = ({ route, navigation }) => {
     setDataItem(null);
     setIndex(null);
     setVisibleBottom(false);
+    setIsBottomSheetOpen(false)
   }, []);
 
   // view item flatlist
@@ -1433,26 +1435,41 @@ const DetailChecklistLai = ({ route, navigation }) => {
             </View>
           </ImageBackground>
 
-          <BottomSheetModal
-            ref={bottomSheetModalRef}
-            index={0}
-            snapPoints={snapPoints}
-            onChange={handleSheetChanges}
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={isBottomSheetOpen}
+            onRequestClose={() => {
+              setIsBottomSheetOpen(!isBottomSheetOpen);
+            }}
           >
-            <View style={styles.contentContainer}>
-              <ModalPopupDetailChecklist
-                handlePopupClear={handlePopupClear}
-                dataItem={dataItem}
-                handleItemClick={handleItemClick}
-                index={index}
-                // handleChange={handleChange}
-                handleClearBottom={handleClearBottom}
-                user={user}
-              />
+            <View style={[styles.centeredView, { height: "100%" }]}>
+              <View
+                style={[
+                  styles.modalView,
+                  {
+                    width: "90%",
+                    height: "auto",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    alignContent: "center",
+                  },
+                ]}
+              >
+                <ModalPopupDetailChecklist
+                  handlePopupClear={handlePopupClear}
+                  dataItem={dataItem}
+                  handleItemClick={handleItemClick}
+                  index={index}
+                  // handleChange={handleChange}
+                  handleClearBottom={handleClearBottom}
+                  user={user}
+                />
+              </View>
             </View>
-          </BottomSheetModal>
+          </Modal>
 
-          <ModalBottomSheet
+          {/* <ModalBottomSheet
             visible={visibleBottom}
             setVisible={setVisibleBottom}
             setOpacity={setOpacity}
@@ -1465,7 +1482,7 @@ const DetailChecklistLai = ({ route, navigation }) => {
               handleClearBottom={handleClearBottom}
               user={user}
             />
-          </ModalBottomSheet>
+          </ModalBottomSheet> */}
 
           {/* Modal show tieu chuan  */}
           <Modal

@@ -15,6 +15,7 @@ import {
   TouchableHighlight,
   Alert,
   BackHandler,
+  Image
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Provider, useDispatch, useSelector } from "react-redux";
@@ -545,7 +546,10 @@ const XulySuco = ({ navigation }) => {
                     style={styles.action}
                     onPress={() => navigation.navigate("Thực hiện sự cố ngoài", {userPhone: userPhone})}
                   >
-                    <AntDesign name="pluscircle" size={24} color="white" />
+                                              <Image
+                            source={require("../../../assets/icons/ic_plus.png")}
+                            style={styles.closeIcon}
+                          />
                     <Text
                       style={{
                         fontSize: adjust(16),
@@ -697,7 +701,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    gap: 8,
+    gap: 3,
   },
   button: {
     backgroundColor: COLORS.color_bg,
@@ -732,5 +736,8 @@ const styles = StyleSheet.create({
     fontSize: adjust(20),
     fontWeight: "600",
     paddingVertical: 10,
+  },
+  closeIcon: {
+    tintColor: "white",
   },
 });

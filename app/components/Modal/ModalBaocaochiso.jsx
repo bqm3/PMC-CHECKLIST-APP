@@ -54,8 +54,6 @@ const ModalBaocaochiso = ({
     
     const chisoFloat = parseFloat(selectedItemData.Chiso);
 
-    console.log("selectedItemData.chiso", selectedItemData.Chiso)
-
     if (isNaN(chisoFloat)) {
       Alert.alert("Lỗi", "Số tiêu thụ phải là một số hợp lệ.");
       return;
@@ -129,8 +127,19 @@ const ModalBaocaochiso = ({
         setIsLoadingImage(false);
         setOpacity(1);
         console.error("Image upload error:", error);
+        showAlert("Có lỗi xảy ra vui lòng thử lại")
       }
     }
+  };
+
+  const showAlert = (message) => {
+    Alert.alert("PMC Thông báo", message, [
+      {
+        text: "Xác nhận",
+        onPress: () => console.log("Cancel Pressed"),
+        style: "cancel",
+      },
+    ]);
   };
 
   return (

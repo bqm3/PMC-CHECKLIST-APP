@@ -648,6 +648,7 @@ const ThucHienChecklist = ({ navigation }) => {
                           keyExtractor={(item, index) => index.toString()}
                           scrollEventThrottle={16}
                           scrollEnabled={true}
+                          showsVerticalScrollIndicator={false}
                         />
                       ) : (
                         <View
