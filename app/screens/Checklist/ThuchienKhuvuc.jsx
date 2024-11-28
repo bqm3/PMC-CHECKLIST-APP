@@ -178,7 +178,9 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
       try {
         // Retrieve the item from AsyncStorage
         const network = await AsyncStorage.getItem("checkNetwork");
-        const savedData = await AsyncStorage.getItem("dataChecklistStorage");
+        const savedData = await AsyncStorage.getItem(
+          `dataChecklistStorage_${ID_ChecklistC}`
+        );
         if (
           (network === "close" && isConnect) ||
           (savedData !== null && savedData !== undefined && savedData !== "")
@@ -188,11 +190,8 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
 
         if (
           network === null &&
-          (savedData == null ||
-            savedData == undefined ||
-            savedData == "")
+          (savedData == null || savedData == undefined || savedData == "")
         ) {
-          console.log("Network status not found in storage.");
           setSubmit(false);
         }
       } catch (error) {
@@ -212,7 +211,9 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
 
   // Tải lại dữ liệu khi vào lại trang
   const loadData = async () => {
-    const savedData = await AsyncStorage.getItem("dataChecklistStorage");
+    const savedData = await AsyncStorage.getItem(
+      `dataChecklistStorage_${ID_ChecklistC}`
+    );
     if (savedData !== null && savedData !== undefined && savedData !== "") {
       setDataChecklists(JSON.parse(savedData));
       setDataChecklistFilterContext(JSON.parse(savedData));
@@ -352,7 +353,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
           dataChecklistFaild.length === 0
         ) {
           await AsyncStorage.removeItem("checkNetwork");
-          
+
           // Hiển thị thông báo cho người dùng
           Alert.alert("PMC Thông báo", "Không có checklist để kiểm tra!", [
             { text: "OK", onPress: () => console.log("OK Pressed") },
@@ -459,7 +460,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
           })
           .then(async (res) => {
             await AsyncStorage.removeItem("checkNetwork");
-            
+
             setSubmit(false);
             postHandleSubmit();
             setLoadingSubmit(false);
@@ -482,7 +483,6 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
           });
       }
     } catch (error) {
-      console.log("Error: 2" + error);
       setLoadingSubmit(false);
       if (error.response) {
         // Handle error response from the server
@@ -543,7 +543,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
       postHandleSubmit();
       setLoadingSubmit(false);
       await AsyncStorage.removeItem("checkNetwork");
-      
+
       setSubmit(false);
       saveConnect(false);
 
@@ -679,7 +679,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
               postHandleSubmit();
               setLoadingSubmit(false);
               await AsyncStorage.removeItem("checkNetwork");
-              
+
               setSubmit(false);
               saveConnect(false);
               // Hiển thị thông báo thành công
@@ -771,13 +771,9 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
       (item) => !idsToRemove.has(item.ID_Checklist)
     );
 
-    const dataChecklist = dataChecklistFilterContextReset?.filter(
-      (item) => item.ID_Hangmuc == ID_Hangmuc
-    );
-
     setDataChecklistFilterContext(dataChecklistFilterContextReset);
     await AsyncStorage.setItem(
-      "dataChecklistStorage",
+      `dataChecklistStorage_${ID_ChecklistC}`,
       JSON.stringify(dataChecklistFilterContextReset)
     );
     setDataChecklistDefault([]);

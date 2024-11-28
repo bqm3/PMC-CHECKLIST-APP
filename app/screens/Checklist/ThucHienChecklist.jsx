@@ -125,8 +125,9 @@ const ThucHienChecklist = ({ navigation }) => {
     setDataCalv(tb_checklistc?.data);
     if(tb_checklistc?.data && tb_checklistc?.data.length > 0){
       const isCheck = tb_checklistc.data.some(check => check.Tinhtrang == 0)
+      const data = tb_checklistc.data.filter(check => check.Tinhtrang == 0)
       if(!isCheck){
-        clearCacheDirectory()
+        clearCacheDirectory(data)
       }
     }
   }, [tb_checklistc]);
@@ -157,7 +158,7 @@ const ThucHienChecklist = ({ navigation }) => {
   }, []);
 
   // Xóa cache khi không còn ca đang mở
-  const clearCacheDirectory = async () => {
+  const clearCacheDirectory = async (data) => {
     try {
       const cacheDir = FileSystem.cacheDirectory;
       const files = await FileSystem.readDirectoryAsync(cacheDir);
@@ -166,8 +167,7 @@ const ThucHienChecklist = ({ navigation }) => {
           idempotent: true,
         });
       }
-
-      await AsyncStorage.removeItem("dataChecklistStorage");
+      
       console.log("Đã xóa cache khi ứng dụng đóng.");
     } catch (error) {
       console.error("Lỗi khi xóa cache:", error);
