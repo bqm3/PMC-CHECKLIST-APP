@@ -36,26 +36,37 @@ const ModalCallSucongoai = ({ userPhone, setIsModalcall }) => {
           handleCall(item.Sodienthoai);
         }}
       >
-        <View >
-        <View style={styles.nameContainer}>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <View style={styles.nameContainer}>
             <Text allowFontScaling={false} style={styles.name}>
               {item.Hoten}
             </Text>
-            <Text allowFontScaling={false} style={styles.position}>
+
+            <Text
+              allowFontScaling={false}
+              style={styles.position}
+              numberOfLines={2}
+            >
               ({item.ent_chucvu.Chucvu})
             </Text>
-          </View>
 
-          <View style={styles.phoneContainer}>
-            <Text allowFontScaling={false} style={styles.phoneNumber}>
-              {item.Sodienthoai}
-            </Text>
-            <View style={styles.callButton}>
-              <Image
-                source={require("../../../assets/icons/ic_phone2.png")}
-                style={styles.phoneIcon}
-              />
+            <View style={styles.phoneContainer}>
+              <Text allowFontScaling={false} style={styles.phoneNumber}>
+                {item.Sodienthoai}
+              </Text>
             </View>
+          </View>
+          <View style={styles.callButton}>
+            <Image
+              source={require("../../../assets/icons/ic_phone2.png")}
+              style={styles.phoneIcon}
+            />
           </View>
         </View>
       </TouchableOpacity>
@@ -74,7 +85,7 @@ const ModalCallSucongoai = ({ userPhone, setIsModalcall }) => {
             >
               <Image
                 source={require("../../../assets/icons/ic_close.png")}
-                style={[styles.closeIcon, {tintColor: "white"}]}
+                style={[styles.closeIcon, { tintColor: "white" }]}
               />
             </TouchableOpacity>
           </View>
@@ -84,7 +95,7 @@ const ModalCallSucongoai = ({ userPhone, setIsModalcall }) => {
             ItemSeparatorComponent={renderSeparator}
             renderItem={renderItem}
             scrollEventThrottle={16}
-            ListFooterComponent={<View style={{ height: 80 }} />}
+            ListFooterComponent={<View style={{ height: 10 }} />}
             scrollEnabled={true}
             showsVerticalScrollIndicator={false}
           />
@@ -100,6 +111,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "rgba(242, 242, 242, 0.98)",
+    borderRadius: 12,
   },
   content: {
     flex: 1,
@@ -109,7 +121,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    // paddingVertical: adjust(15),
     borderBottomWidth: 1,
     borderBottomColor: "rgba(0, 0, 0, 0.1)",
     marginBottom: adjust(10),
@@ -123,21 +134,21 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   itemContainer: {
-    borderRadius: adjust(12),
-    backgroundColor: COLORS.white,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.08,
-    shadowRadius: 3.84,
+    // borderRadius: adjust(12),
+    // backgroundColor: 'red',
+    // shadowColor: "#000",
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 2,
+    // },
+    // shadowOpacity: 0.08,
+    // shadowRadius: 3.84,
+    // width: 'auto'
   },
   name: {
     fontSize: adjust(16),
     fontWeight: "600",
     color: "#2c3e50",
-    marginBottom: adjust(4),
     marginEnd: adjust(4),
   },
   position: {
@@ -146,8 +157,8 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   nameContainer: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: "column",
+    // alignItems: "center",
   },
   phoneContainer: {
     flexDirection: "row",
@@ -157,8 +168,8 @@ const styles = StyleSheet.create({
     fontSize: adjust(15),
     color: "#34495e",
     fontWeight: "500",
-    width: adjust(100),
-        marginEnd: adjust(4),
+    width: adjust(120),
+    marginEnd: adjust(4),
   },
   callButton: {
     width: adjust(20),
@@ -174,7 +185,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    marginEnd: adjust(10)
+    marginEnd: adjust(10),
   },
   closeIcon: {
     width: adjust(20),
@@ -186,17 +197,17 @@ const styles = StyleSheet.create({
     transform: [{ scaleX: -1 }],
   },
   closeButton: {
-    width: adjust(36),
-    height: adjust(36),
+    width: adjust(30),
+    height: adjust(30),
     borderRadius: adjust(18),
     backgroundColor: "red",
     justifyContent: "center",
     alignItems: "center",
+    marginBottom: 4,
   },
   separator: {
     height: 1,
     backgroundColor: "rgba(0, 0, 0, 0.05)",
     marginVertical: adjust(8),
-    marginHorizontal: adjust(15),
   },
 });

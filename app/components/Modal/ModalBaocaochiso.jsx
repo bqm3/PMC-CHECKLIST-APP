@@ -149,7 +149,7 @@ const ModalBaocaochiso = ({
           <View style={[styles.content, , { opacity: opacity}]}  pointerEvents={isLoadingImage ? "none" : "auto"}>
             <Text style={styles.text}>Chụp ảnh</Text>
             <View style={styles.imageSection}>
-              <TouchableOpacity style={styles.cameraButton} onPress={pickImage} disabled={isLoadingImage}>
+              <TouchableOpacity style={styles.cameraButton} onPress={pickImage}>
                 <Entypo name="camera" size={15} color="black" />
               </TouchableOpacity>
               {selectedItemData?.Image?.uri && (
@@ -167,7 +167,7 @@ const ModalBaocaochiso = ({
               placeholderTextColor="gray"
               onChangeText={handleChiso}
               style={styles.textInput}
-              editable={selectedItemData?.Image?.uri !== undefined || !isLoadingImage}
+              editable={selectedItemData?.Image?.uri !== undefined }
             />
             <Text style={styles.text}>Ghi chú</Text>
             <TextInput
@@ -177,7 +177,7 @@ const ModalBaocaochiso = ({
               multiline
               onChangeText={handleGhichu}
               style={[styles.textInput, styles.multilineTextInput]}
-              editable={!isLoadingImage}
+            
             />
             <View style={styles.buttonContainer}>
               <Button
