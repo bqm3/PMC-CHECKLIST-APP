@@ -84,6 +84,7 @@ const BaoCaoChiSoTheoNamThang = ({ navigation, route }) => {
                         scrollEventThrottle={16}
                         ListFooterComponent={<View style={{ height: 80 }} />}
                         scrollEnabled={true}
+                        showsVerticalScrollIndicator={false}
                       />
                     )}
                   </View>

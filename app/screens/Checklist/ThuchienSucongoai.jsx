@@ -235,8 +235,8 @@ const ThuchienSucongoai = ({ navigation, route }) => {
             name:
               Math.floor(Math.random() * Math.floor(99999999999999)) +
               index +
-              ".jpeg",
-            type: "image/jpeg",
+              ".jpg",
+            type: "image/jpg",
           };
 
           // Append image file to formData
@@ -812,6 +812,11 @@ const ThuchienSucongoai = ({ navigation, route }) => {
                       >
                         <Image
                           source={require("../../../assets/icons/ic_phone.png")}
+                          style={{
+                            width: adjust(80) * 0.8,
+                            height: adjust(80) * 0.8,
+                            resizeMode: "contain",
+                          }}
                         />
                       </View>
                     </TouchableOpacity>

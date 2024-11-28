@@ -47,7 +47,7 @@ const ModalBaocaochiso = ({
 
   const handleGhichu = (value) => {
     setGhichu(value);
-    selectedItemData.ghichu = value;
+    selectedItemData.Ghichu = value;
   };
 
   const handleSubmit = () => {
@@ -101,7 +101,7 @@ const ModalBaocaochiso = ({
             : imageUri.uri.replace("file://", ""),
         name:
           imageUri.fileName || `${Math.floor(Math.random() * 999999999)}.jpg`,
-        type: "image/jpeg",
+        type: "image/jpg",
       };
 
       formData.append("file", file);
@@ -146,10 +146,10 @@ const ModalBaocaochiso = ({
     <GestureHandlerRootView style={[styles.container]}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View>
-          <View style={[styles.content, , { opacity: opacity }]}>
+          <View style={[styles.content, , { opacity: opacity}]}  pointerEvents={isLoadingImage ? "none" : "auto"}>
             <Text style={styles.text}>Chụp ảnh</Text>
             <View style={styles.imageSection}>
-              <TouchableOpacity style={styles.cameraButton} onPress={pickImage}>
+              <TouchableOpacity style={styles.cameraButton} onPress={pickImage} disabled={isLoadingImage}>
                 <Entypo name="camera" size={15} color="black" />
               </TouchableOpacity>
               {selectedItemData?.Image?.uri && (
@@ -167,7 +167,7 @@ const ModalBaocaochiso = ({
               placeholderTextColor="gray"
               onChangeText={handleChiso}
               style={styles.textInput}
-              editable={selectedItemData?.Image?.uri !== undefined}
+              editable={selectedItemData?.Image?.uri !== undefined || !isLoadingImage}
             />
             <Text style={styles.text}>Ghi chú</Text>
             <TextInput
@@ -177,6 +177,7 @@ const ModalBaocaochiso = ({
               multiline
               onChangeText={handleGhichu}
               style={[styles.textInput, styles.multilineTextInput]}
+              editable={!isLoadingImage}
             />
             <View style={styles.buttonContainer}>
               <Button

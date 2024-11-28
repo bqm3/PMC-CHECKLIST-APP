@@ -407,8 +407,8 @@ const XulySuco = ({ navigation }) => {
         name:
           Math.floor(Math.random() * Math.floor(99999999999999)) +
           index +
-          ".jpeg",
-        type: "image/jpeg",
+          ".jpg",
+        type: "image/jpg",
       };
 
       formData.append(`Images`, file);

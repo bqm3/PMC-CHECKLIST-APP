@@ -46,9 +46,21 @@ const DanhmucHangMucChiSo = ({ navigation }) => {
   const bottomSheetModalRef = useRef(null);
 
   const nowVietnam = moment().tz("Asia/Ho_Chi_Minh");
-  const ngay = nowVietnam.format("DD/MM/YYYY");
-  const thang = nowVietnam.month() + 1;
-  const nam = nowVietnam.year();
+  let ngay = nowVietnam.format("DD/MM/YYYY");
+  let thang = nowVietnam.month() + 1;
+  let nam = nowVietnam.year();
+  
+  let day = nowVietnam.date();
+
+  if (day == 1) {
+    if (thang == 1) { 
+      thang = 12; 
+      nam -= 1; 
+    } else {
+      thang -= 1; 
+    }
+  }
+
   const [arrayItem, setArrayItem] = useState([]);
   const [selectedItemData, setSelectedItemData] = useState(null);
 
@@ -161,7 +173,7 @@ const DanhmucHangMucChiSo = ({ navigation }) => {
     return {
       uri: Platform.OS === "android" ? Anh.uri : Anh.uri.replace("file://", ""),
       name: Anh.fileName || `${Math.floor(Math.random() * 999999999)}.jpg`,
-      type: "image/jpeg",
+      type: "image/jpg",
     };
   };
 

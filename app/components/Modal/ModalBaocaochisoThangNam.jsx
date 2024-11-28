@@ -12,6 +12,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { COLORS, SIZES } from "../../constants/theme";
 import adjust from "../../adjust";
+import { funcBaseUri_Image } from "../../utils/util";
 
 const ModalBaocaochisoThangNam = ({ item, handleCloseBottomSheet }) => {
   const [showFullNote, setShowFullNote] = useState(false);
@@ -38,7 +39,7 @@ const ModalBaocaochisoThangNam = ({ item, handleCloseBottomSheet }) => {
           {/* Hình ảnh */}
           <Image
             source={{
-              uri: `https://drive.google.com/thumbnail?id=${item.Image}&sz=w1000`,
+              uri: funcBaseUri_Image(2,item?.Image),
             }}
             style={styles.image}
           />

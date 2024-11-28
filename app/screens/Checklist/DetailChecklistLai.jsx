@@ -683,7 +683,7 @@ const DetailChecklistLai = ({ route, navigation }) => {
                 name:
                   image.fileName ||
                   `${Math.floor(Math.random() * 999999999)}_${item.ID_Checklist}_${imgIndex}.jpg`,
-                type: "image/jpeg",
+                type: "image/jpg",
               };
               formData.append(`Images_${index}_${item.ID_Checklist}_${imgIndex}`, file);
             });
@@ -839,7 +839,7 @@ const DetailChecklistLai = ({ route, navigation }) => {
                 name:
                   image.fileName ||
                   `${Math.floor(Math.random() * 999999999)}_${item.ID_Checklist}_${imgIndex}.jpg`,
-                type: "image/jpeg",
+                type: "image/jpg",
               };
               formData.append(`Images_${index}_${item.ID_Checklist}_${imgIndex}`, file);
             });

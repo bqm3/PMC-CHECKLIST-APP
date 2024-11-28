@@ -439,7 +439,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
                   `${Math.floor(Math.random() * 999999999)}_${
                     item.ID_Checklist
                   }_${imgIndex}.jpg`,
-                type: "image/jpeg",
+                type: "image/jpg",
               };
               formData.append(
                 `Images_${index}_${item.ID_Checklist}_${imgIndex}`,
@@ -614,7 +614,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
                   `${Math.floor(Math.random() * 999999999)}_${
                     item.ID_Checklist
                   }_${imgIndex}.jpg`,
-                type: "image/jpeg",
+                type: "image/jpg",
               };
               formData.append(
                 `Images_${index}_${item.ID_Checklist}_${imgIndex}`,

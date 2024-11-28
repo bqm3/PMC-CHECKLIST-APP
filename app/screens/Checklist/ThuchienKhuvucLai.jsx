@@ -421,7 +421,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
               name:
                 item.Anh.fileName ||
                 `${Math.floor(Math.random() * 999999999)}.jpg`,
-              type: "image/jpeg",
+              type: "image/jpg",
             };
             formData.append(`Images_${index}`, file);
             formData.append("Anh", file.name);
@@ -593,7 +593,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
               name:
                 item.Anh.fileName ||
                 `${Math.floor(Math.random() * 999999999)}.jpg`,
-              type: "image/jpeg",
+              type: "image/jpg",
             };
             formData.append(`Images_${index}`, file);
             formData.append("Anh", file.name);

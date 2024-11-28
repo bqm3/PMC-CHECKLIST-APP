@@ -60,19 +60,23 @@ const DanhMucBaoCaoChiSo = ({ navigation }) => {
     setLoading(false);
   }, [baocaochiso]);
 
-  useEffect(() => {
-    const dataRes = async () => {
-      await axios
-        .post(BASE_URL + "/date", {
-          ID_Duan: user.ID_Duan,
-        })
-        .then((response) => {
-          setShowReport(response.data.data);
-        })
-        .catch((err) => console.log("err device 1", err.response.data));
-    };
-    dataRes();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      const dataRes = async () => {
+        await axios
+          .post(BASE_URL + "/date", {
+            ID_Duan: user.ID_Duan,
+          })
+          .then((response) => {
+            setShowReport(response.data.data);
+          })
+          .catch((err) => console.log("err device 1", err.response.data));
+      };
+      dataRes();
+
+      return () => {};
+    }, [])
+  );
 
   const toggleTodo = async (item, index) => {
     navigation.navigate("Báo cáo chỉ số tháng năm", {

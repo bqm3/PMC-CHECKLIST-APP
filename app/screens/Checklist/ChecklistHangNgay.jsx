@@ -261,8 +261,8 @@ const ChecklistHangNgay = ({ navigation }) => {
               : dataImages?.Anh1?.uri.replace("file://", ""),
           name:
             dataImages?.Anh1?.fileName ||
-            Math.floor(Math.random() * Math.floor(99999999999999)) + ".jpeg",
-          type: "image/jpeg",
+            Math.floor(Math.random() * Math.floor(99999999999999)) + ".jpg",
+          type: "image/jpg",
         };
 
         // Append image file to formData
@@ -278,8 +278,8 @@ const ChecklistHangNgay = ({ navigation }) => {
               : dataImages?.Anh2?.uri.replace("file://", ""),
           name:
             dataImages?.Anh2?.fileName ||
-            Math.floor(Math.random() * Math.floor(99999999999999)) + ".jpeg",
-          type: "image/jpeg",
+            Math.floor(Math.random() * Math.floor(99999999999999)) + ".jpg",
+          type: "image/jpg",
         };
 
         // Append image file to formData
@@ -295,8 +295,8 @@ const ChecklistHangNgay = ({ navigation }) => {
               : dataImages?.Anh3?.uri.replace("file://", ""),
           name:
             dataImages?.Anh3?.fileName ||
-            Math.floor(Math.random() * Math.floor(99999999999999)) + ".jpeg",
-          type: "image/jpeg",
+            Math.floor(Math.random() * Math.floor(99999999999999)) + ".jpg",
+          type: "image/jpg",
         };
 
         // Append image file to formData
@@ -312,8 +312,8 @@ const ChecklistHangNgay = ({ navigation }) => {
               : dataImages?.Anh4?.uri.replace("file://", ""),
           name:
             dataImages?.Anh4?.fileName ||
-            Math.floor(Math.random() * Math.floor(999999999)) + ".jpeg",
-          type: "image/jpeg",
+            Math.floor(Math.random() * Math.floor(999999999)) + ".jpg",
+          type: "image/jpg",
         };
 
         // Append image file to formData

@@ -23,6 +23,7 @@ import { Provider, useDispatch, useSelector } from "react-redux";
 import adjust from "../../adjust";
 import moment from "moment";
 import { COLORS, SIZES } from "../../constants/theme";
+import { funcBaseUri_Image } from "../../utils/util";
 
 const DetailSucongoai = ({ navigation, route }) => {
   const data = route.params.data;
@@ -40,6 +41,14 @@ const DetailSucongoai = ({ navigation, route }) => {
   const handleShowImage = (img) => {
     setIsShowImage(true);
     setDataImage(img);
+  };
+
+  const getImageUrls = (item) => {
+    console.log("item",item)
+    if (!item) return null;
+    return item.endsWith(".jpg")
+      ? funcBaseUri_Image(3, item.trim())
+      : `https://drive.google.com/thumbnail?id=${item.trim()}&sz=w1000`;
   };
   
     const [isLoading, setIsLoading] = useState(true);
@@ -78,7 +87,7 @@ const DetailSucongoai = ({ navigation, route }) => {
                         width: "100%",
                       }}
                       source={{
-                        uri: `https://drive.google.com/thumbnail?id=${dataImage}&sz=w1000`,
+                        uri: getImageUrls(dataImage),
                       }}
                       onLoadStart={() => setIsLoading(true)}
                       onLoadEnd={() => setIsLoading(false)}
@@ -216,7 +225,7 @@ const DetailSucongoai = ({ navigation, route }) => {
                             <View>
                               <Image
                                 source={{
-                                  uri: `https://drive.google.com/thumbnail?id=${item}&sz=w1000`,
+                                  uri: getImageUrls(item),
                                 }}
                                 style={{
                                   width: 100,

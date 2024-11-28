@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useMemo } from "react";
 import {
   View,
   Text,
@@ -15,12 +15,14 @@ import {
 import { TouchableWithoutFeedback } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { DataTable } from "react-native-paper";
-import { BASE_URL } from "../../constants/config";
+import { BASE_URL} from "../../constants/config";
 import { COLORS, SIZES, marginBottomValue } from "../../constants/theme";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import moment from "moment";
 import adjust from "../../adjust";
+import { funcBaseUri_Image } from "../../utils/util";
+import { el } from "date-fns/locale";
 
 const DetailCheckListCa = ({ route }) => {
   const headerList = [
@@ -45,20 +47,19 @@ const DetailCheckListCa = ({ route }) => {
       width: 100,
     },
   ];
+
   const { ID_ChecklistC } = route.params;
   const { user, authToken } = useSelector((state) => state.authReducer);
   const [data, setData] = useState([]);
   const [dataChecklistCa, setDataChecklistCa] = useState([]);
-  const [newActionCheckList, setNewActionCheckList] = useState([]);
-  const [isShowChecklist, setIsShowChecklist] = useState(false);
-  const [selectedIndex, setSelectedIndex] = useState(null);
+  const [newActionCheckList, setNewActionCheckList] = useState(null);
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(null);
   const [opacity, setOpacity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(null);
   const [imageModalVisible, setImageModalVisible] = useState(false);
-  const [isImageLoading, setIsImageLoading] = useState(false);
+
+  // const memoizedData = useMemo(() => data || [], [data]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -85,117 +86,66 @@ const DetailCheckListCa = ({ route }) => {
     fetchData();
   }, [ID_ChecklistC]);
 
-  const toggleTodo = async (item) => {
-    const isExistIndex = newActionCheckList.findIndex(
-      (existingItem) => existingItem.ID_Checklist === item.ID_Checklist
+
+  const toggleTodo = (item) => {
+    setNewActionCheckList((prev) =>
+      prev?.ID_Checklist !== item.ID_Checklist ? item : null
     );
-
-    if (isExistIndex !== -1) {
-      // Nếu item đã tồn tại, xóa item đó đi
-      setNewActionCheckList((prevArray) =>
-        prevArray.filter((_, i) => i !== isExistIndex)
-      );
-    } else {
-      // Nếu item chưa tồn tại, thêm vào mảng mới
-      setNewActionCheckList([item]);
-
-      const filter = !(
-        item.Ketqua == item?.ent_checklist?.Giatridinhdanh &&
-        item?.Ghichu === "" &&
-        (!item?.Anh || item?.Anh === "")
-      );
-
-      setIsShowChecklist(filter);
-    }
   };
 
   const handleModalShow = (active, op) => {
     setModalVisible(active);
-    setOpacity(Number(op));
+    setOpacity(op);
   };
 
-  const _renderItem = (item, index) => {
-    const isError = item.ent_checklist.Tinhtrang;
-    return (
-      <TouchableHighlight key={index} onPress={() => toggleTodo(item)}>
-        <DataTable.Row
-          style={{
-            gap: 20,
-            paddingVertical: 10,
-            backgroundColor:
-              newActionCheckList[0] == item
-                ? COLORS.bg_button
-                : isError == 1
-                ? "#fff2cc"
-                : "white",
-          }}
-        >
-          <DataTable.Cell style={{ width: 120, justifyContent: "center" }}>
-            <Text
-              allowFontScaling={false}
-              style={{
-                color: newActionCheckList[0] == item ? "white" : "black",
-              }}
-              numberOfLines={2}
-            >
-              {moment(item?.tb_checklistc?.Ngay).format("DD-MM-YYYY")}
-            </Text>
-          </DataTable.Cell>
-          <DataTable.Cell style={{ width: 200, justifyContent: "center" }}>
-            <Text
-              allowFontScaling={false}
-              style={{
-                color: newActionCheckList[0] == item ? "white" : "black",
-              }}
-              numberOfLines={3}
-            >
-              {item?.ent_checklist?.Checklist}
-              {item?.isCheckListLai == 1 ? (
-                <Text style={{ color: "red" }}> (CheckList lại)</Text>
-              ) : null}
-            </Text>
-          </DataTable.Cell>
-          <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
-            <Text
-              allowFontScaling={false}
-              style={{
-                color: newActionCheckList[0] == item ? "white" : "black",
-              }}
-              numberOfLines={2}
-            >
-              {item?.Gioht}
-            </Text>
-          </DataTable.Cell>
-          <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
-            <Text
-              allowFontScaling={false}
-              style={{
-                color: newActionCheckList[0] == item ? "white" : "black",
-              }}
-              numberOfLines={2}
-            >
-              {item?.tb_checklistc?.ent_user?.Hoten
-                ? item?.tb_checklistc?.ent_user?.Hoten
-                : dataChecklistCa?.ent_user?.Hoten}
-              {/* {item?.tb_checklistc?.ent_user?.Hoten} */}
-            </Text>
-          </DataTable.Cell>
 
-          <DataTable.Cell style={{ width: 100, justifyContent: "center" }}>
-            <Text
-              allowFontScaling={false}
-              style={{
-                color: newActionCheckList[0] == item ? "white" : "black",
-              }}
-              numberOfLines={2}
-            >
-              {item?.Ketqua}
-            </Text>
-          </DataTable.Cell>
-        </DataTable.Row>
-      </TouchableHighlight>
-    );
+  const _renderItem = 
+    (item, index) => {
+      const isSelected = newActionCheckList?.ID_Checklist === item.ID_Checklist;
+      const isError = item.ent_checklist.Tinhtrang === 1;
+  
+      const backgroundColor = isSelected
+        ? COLORS.bg_button
+        : isError
+        ? "#fff2cc"
+        : "white";
+  
+      const textColor = isSelected ? "white" : "black";
+  
+      return (
+        <TouchableHighlight key={index} onPress={() => toggleTodo(item)}>
+          <DataTable.Row style={[styles.row, { backgroundColor }]}>
+            {headerList.map((header, i) => (
+              <DataTable.Cell
+                key={i}
+                style={{ width: header.width, justifyContent: "center" }}
+              >
+                <Text style={{ color: textColor }}>{getColumnData(item, i)}</Text>
+              </DataTable.Cell>
+            ))}
+          </DataTable.Row>
+        </TouchableHighlight>
+      );
+    };
+    
+  
+  const getColumnData = (item, index) => {
+    switch (index) {
+      case 0:
+        return moment(item?.tb_checklistc?.Ngay).format("DD-MM-YYYY");
+      case 1:
+        return item?.ent_checklist?.Checklist;
+      case 2:
+        return item?.Gioht;
+      case 3:
+        return item?.tb_checklistc?.ent_user?.Hoten || "";
+      case 4:
+        return item?.Ketqua;
+      default:
+        return "";
+    }
   };
+  
 
   if (loading) {
     return (
@@ -213,29 +163,27 @@ const DetailCheckListCa = ({ route }) => {
   }
 
   const handleImagePress = (item) => {
-    const { fullSize } = getImageUrls(item);
-    setSelectedImage(fullSize);
-    // setIsImageLoading(true);
+    setSelectedImage(getImageUrls(item));
     setImageModalVisible(true);
   };
+  
 
-  const getImageUrls = (id) => {
-    return {
-      thumbnail: `https://drive.google.com/thumbnail?id=${id.trim()}`,
-      fullSize: `https://drive.google.com/uc?id=${id.trim()}&export=download`,
-    };
+  const getImageUrls = (item) => {
+    if (!item) return null;
+    return item.endsWith(".jpg")
+      ? funcBaseUri_Image(1, item.trim())
+      : `https://drive.google.com/thumbnail?id=${item.trim()}`;
   };
+  
 
   const renderImage = ({ item }) => {
-    const { thumbnail } = getImageUrls(item);
-    const imageUri = `https://drive.google.com/thumbnail?id=${item.trim()}`;
     return (
       <View style={styles.imageContainer}>
         <TouchableOpacity onPress={() => handleImagePress(item)}>
           <Image
             style={styles.image}
             source={{
-              uri: thumbnail,
+              uri: getImageUrls(item),
             }}
           />
         </TouchableOpacity>
@@ -259,23 +207,12 @@ const DetailCheckListCa = ({ route }) => {
           {/* {isImageLoading ? (
             <ActivityIndicator size="large" color={COLORS.bg_button} />
           ) : ( */}
-            <Image
-             source={{ uri: selectedImage }}
-              style={styles.fullScreenImage}
-              resizeMode="contain"
-              onLoadStart={() => {
-                console.log("onLoadStart triggered");
-                setIsImageLoading(true); // Cập nhật trạng thái loading
-              }}
-              onLoadEnd={() => {
-                console.log("onLoadEnd triggered");
-                setIsImageLoading(false); // Cập nhật trạng thái loading
-              }}
-              onError={(error) =>
-                console.log("Image failed to load:", error.nativeEvent)
-              }
-            />
-          {/* )}  */}
+          <Image
+            source={{ uri: selectedImage }}
+            style={styles.fullScreenImage}
+            resizeMode="contain"
+          />
+          {/* )} */}
 
           <TouchableOpacity
             style={styles.closeButton}
@@ -291,7 +228,7 @@ const DetailCheckListCa = ({ route }) => {
   return (
     <ImageBackground
       source={require("../../../assets/bg.png")}
-      style={[styles.backgroundImage]}
+      style={[styles.backgroundImage, { opacity: opacity }]}
       resizeMode="cover"
     >
       {data && data?.length > 0 ? (
@@ -373,40 +310,6 @@ const DetailCheckListCa = ({ route }) => {
           {/* </ImageBackground> */}
         </View>
       )}
-      <View
-        style={{
-          width: 60,
-          position: "absolute",
-          right: 20,
-          bottom: 50,
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          gap: 10,
-        }}
-      >
-        {newActionCheckList?.length > 0 &&
-          isShowChecklist &&
-          (newActionCheckList[0]?.Anh !== null &&
-          newActionCheckList[0]?.Anh !== undefined &&
-          newActionCheckList[0]?.Anh !== "" ? (
-            <TouchableOpacity
-              style={[styles.button, { marginBottom: adjust(30) }]}
-              onPress={() => handleModalShow(true, 0.2)}
-            >
-              <Feather name="image" size={26} color="white" />
-            </TouchableOpacity>
-          ) : (
-            <>
-              <TouchableOpacity
-                style={[styles.button, { marginBottom: adjust(30) }]}
-                onPress={() => handleModalShow(true, 0.2)}
-              >
-                <Feather name="eye" size={26} color="white" />
-              </TouchableOpacity>
-            </>
-          ))}
-      </View>
 
       <Modal
         animationType="slide"
@@ -424,15 +327,26 @@ const DetailCheckListCa = ({ route }) => {
               </Text>
 
               <ScrollView showsVerticalScrollIndicator={false}>
-                {newActionCheckList[0]?.Anh !== null &&
-                  newActionCheckList[0]?.Anh !== "" &&
-                  newActionCheckList[0]?.Anh !== undefined && (
+                {newActionCheckList?.Anh !== null &&
+                  newActionCheckList?.Anh !== "" &&
+                  newActionCheckList?.Anh !== undefined && (
                     <FlatList
-                      data={newActionCheckList[0]?.Anh.split(",")}
+                      data={
+                        newActionCheckList?.Anh
+                          ? newActionCheckList?.Anh.split(",")
+                          : []
+                      }
                       renderItem={renderImage}
                       keyExtractor={(item, index) => index.toString()}
                       horizontal={true}
                       showsHorizontalScrollIndicator={false}
+                      contentContainerStyle={{
+                        justifyContent:
+                          newActionCheckList?.Anh?.split(",").length === 1
+                            ? "center"
+                            : "flex-start",
+                        flexGrow: 1,
+                      }}
                     />
                   )}
 
@@ -444,67 +358,60 @@ const DetailCheckListCa = ({ route }) => {
                   }}
                 >
                   <Text allowFontScaling={false} style={styles.textModal}>
-                    Tầng:{" "}
-                    {newActionCheckList[0]?.ent_checklist?.ent_tang?.Tentang}
+                    Tầng: {newActionCheckList?.ent_checklist?.ent_tang?.Tentang}
                   </Text>
                   <Text allowFontScaling={false} style={styles.textModal}>
                     Hạng mục - Khu vực:{" "}
-                    {newActionCheckList[0]?.ent_checklist?.ent_hangmuc?.Hangmuc}{" "}
-                    -
-                    {
-                      newActionCheckList[0]?.ent_checklist?.ent_khuvuc
-                        ?.Tenkhuvuc
-                    }
+                    {newActionCheckList?.ent_checklist?.ent_hangmuc?.Hangmuc} -
+                    {newActionCheckList?.ent_checklist?.ent_khuvuc?.Tenkhuvuc}
                   </Text>
                   <Text allowFontScaling={false} style={styles.textModal}>
                     Tòa nhà:{" "}
                     {
-                      newActionCheckList[0]?.ent_checklist?.ent_khuvuc
-                        ?.ent_toanha?.Toanha
+                      newActionCheckList?.ent_checklist?.ent_khuvuc?.ent_toanha
+                        ?.Toanha
                     }
                   </Text>
                   <Text allowFontScaling={false} style={styles.textModal}>
                     Khối công việc:{" "}
-                    {newActionCheckList[0]?.tb_checklistc?.ent_khoicv?.KhoiCV
-                      ? newActionCheckList[0]?.tb_checklistc?.ent_khoicv?.KhoiCV
+                    {newActionCheckList?.tb_checklistc?.ent_khoicv?.KhoiCV
+                      ? newActionCheckList?.tb_checklistc?.ent_khoicv?.KhoiCV
                       : dataChecklistCa?.ent_khoicv?.KhoiCV}
                   </Text>
                   <Text allowFontScaling={false} style={styles.textModal}>
                     Người checklist:{" "}
-                    {newActionCheckList[0]?.tb_checklistc?.ent_user?.Hoten
-                      ? newActionCheckList[0]?.tb_checklistc?.ent_user?.Hoten
+                    {newActionCheckList?.tb_checklistc?.ent_user?.Hoten
+                      ? newActionCheckList?.tb_checklistc?.ent_user?.Hoten
                       : dataChecklistCa?.ent_user?.Hoten}
-                    {/* {newActionCheckList[0]?.tb_checklistc?.ent_user?.Hoten} */}
+                    {/* {newActionCheckList?.tb_checklistc?.ent_user?.Hoten} */}
                   </Text>
 
                   <Text allowFontScaling={false} style={styles.textModal}>
                     Ca làm việc:{" "}
-                    {newActionCheckList[0]?.tb_checklistc?.ent_calv?.Tenca
-                      ? newActionCheckList[0]?.tb_checklistc?.ent_calv?.Tenca
+                    {newActionCheckList?.tb_checklistc?.ent_calv?.Tenca
+                      ? newActionCheckList?.tb_checklistc?.ent_calv?.Tenca
                       : dataChecklistCa?.ent_calv?.Tenca}
                     (
-                    {newActionCheckList[0]?.tb_checklistc?.ent_calv?.Giobatdau
-                      ? newActionCheckList[0]?.tb_checklistc?.ent_calv
-                          ?.Giobatdau
+                    {newActionCheckList?.tb_checklistc?.ent_calv?.Giobatdau
+                      ? newActionCheckList?.tb_checklistc?.ent_calv?.Giobatdau
                       : dataChecklistCa?.ent_calv?.Giobatdau}{" "}
                     -{" "}
-                    {newActionCheckList[0]?.tb_checklistc?.ent_calv?.Gioketthuc
-                      ? newActionCheckList[0]?.tb_checklistc?.ent_calv
-                          ?.Gioketthuc
+                    {newActionCheckList?.tb_checklistc?.ent_calv?.Gioketthuc
+                      ? newActionCheckList?.tb_checklistc?.ent_calv?.Gioketthuc
                       : dataChecklistCa?.ent_calv?.Gioketthuc}
                     )
                   </Text>
                   <Text allowFontScaling={false} style={styles.textModal}>
-                    Giờ checklist: {newActionCheckList[0]?.Gioht}
+                    Giờ checklist: {newActionCheckList?.Gioht}
                   </Text>
                   <Text allowFontScaling={false} style={styles.textModal}>
-                    Kết quả: {newActionCheckList[0]?.Ketqua}{" "}
-                    {newActionCheckList[0]?.ent_checklist?.isCheck == 0
+                    Kết quả: {newActionCheckList?.Ketqua}{" "}
+                    {newActionCheckList?.ent_checklist?.isCheck == 0
                       ? ""
-                      : `${newActionCheckList[0]?.ent_checklist?.Giatrinhan}`}
+                      : `${newActionCheckList?.ent_checklist?.Giatrinhan}`}
                   </Text>
                   <Text allowFontScaling={false} style={styles.textModal}>
-                    Ghi chú: {newActionCheckList[0]?.Ghichu}
+                    Ghi chú: {newActionCheckList?.Ghichu}
                   </Text>
                 </View>
               </ScrollView>
@@ -520,7 +427,37 @@ const DetailCheckListCa = ({ route }) => {
           </View>
         </View>
       </Modal>
-      <ImagePreviewModal/>
+
+      <View
+        style={{
+          width: 60,
+          position: "absolute",
+          right: 20,
+          bottom: 50,
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          gap: 10,
+        }}
+      >
+        {newActionCheckList && (
+          <>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => handleModalShow(true, 0.2)}
+            >
+              {newActionCheckList?.Anh !== null &&
+              newActionCheckList?.Anh !== undefined &&
+              newActionCheckList?.Anh !== "" ? (
+                <Feather name="image" size={26} color="white" />
+              ) : (
+                <Feather name="eye" size={26} color="white" />
+              )}
+            </TouchableOpacity>
+          </>
+        )}
+      </View>
+      <ImagePreviewModal />
     </ImageBackground>
   );
 };
@@ -558,6 +495,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     justifyContent: "center",
     alignItems: "center",
+    marginBottom: adjust(30),
   },
   buttonImage: {
     flexDirection: "row",

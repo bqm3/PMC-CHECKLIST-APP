@@ -42,7 +42,7 @@ export default function App() {
       const file = {
         uri: Platform.OS === "android" ? imageUri.uri : imageUri.uri.replace("file://", ""),
         name: imageUri.fileName || `${Math.floor(Math.random() * 999999999)}.jpg`,
-        type: "image/jpeg",
+        type: "image/jpg",
       };
   
       // Append file to FormData with 'file' as the field name

@@ -304,9 +304,17 @@ const DetailChecklist = ({ route, navigation }) => {
         revertDataChecklist.map((item) => [item.ID_Checklist, item])
       );
 
+  
+
       const updatedData1 = dataChecklistFilterContext.map((item) =>
         data2Map.has(item.ID_Checklist) ? data2Map.get(item.ID_Checklist) : item
       );
+
+      const updatedData2 = newActionDataChecklist.filter((item) =>
+        !data2Map.has(item.ID_Checklist)
+      );
+
+      setNewActionDataChecklist(updatedData2)
       setDataChecklistFilterContext(updatedData1);
     }
   };
@@ -372,7 +380,7 @@ const DetailChecklist = ({ route, navigation }) => {
     let newDataChecklist = dataChecklist.filter(
       (item) => item.valueCheck !== null
     );
-    const indexFaild = newDataChecklist.findIndex((item) => {
+    const indexFaild = newDataChecklist.findIndex((item) => {  //không để làm gì .
       return (
         item.ID_Checklist === it.ID_Checklist &&
         item.Giatridinhdanh === item.valueCheck &&
@@ -481,7 +489,9 @@ const DetailChecklist = ({ route, navigation }) => {
           }
 
           // Nếu phần tử không tồn tại trong Option, thêm mới
-          if (indexOption === -1) {
+          if (indexOption !== -1) {
+            mergedArrOption[indexOption] = it;
+          } else {
             mergedArrOption.push(it);
           }
         } else {
@@ -714,6 +724,8 @@ const DetailChecklist = ({ route, navigation }) => {
   // api tb_checklistchitiet
   const handleDataChecklistFaild = async (arrData) => {
     try {
+
+      console.log("arrData",arrData)
       setLoadingSubmit(true);
       // Create a new FormData instance
       const formData = new FormData();
@@ -753,7 +765,7 @@ const DetailChecklist = ({ route, navigation }) => {
                   `${Math.floor(Math.random() * 999999999)}_${
                     item.ID_Checklist
                   }_${imgIndex}.jpg`,
-                type: "image/jpeg",
+                type: "image/jpg",
               };
               formData.append(
                 `Images_${index}_${item.ID_Checklist}_${imgIndex}`,
@@ -912,7 +924,7 @@ const DetailChecklist = ({ route, navigation }) => {
                   `${Math.floor(Math.random() * 999999999)}_${
                     item.ID_Checklist
                   }_${imgIndex}.jpg`,
-                type: "image/jpeg",
+                type: "image/jpg",
               };
               formData.append(
                 `Images_${index}_${item.ID_Checklist}_${imgIndex}`,
@@ -1139,7 +1151,7 @@ const DetailChecklist = ({ route, navigation }) => {
         style={[
           styles.content,
           {
-            backgroundColor: `${item?.Tinhtrang}` === "1" ? "#ea9999" : "white",
+            backgroundColor:   `${item.isCheck}` == 1 ? "white" : (`${item?.Tinhtrang}` === "1" ? "#ea9999" : "white"),
           },
         ]}
         key={item?.ID_Checklist}
