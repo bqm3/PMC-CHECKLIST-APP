@@ -710,7 +710,7 @@ const DetailChecklist = ({ route, navigation }) => {
           setDataChecklistFilterContext(updatedData1);
           // Dùng trong trường hợp checklist bị văng rá
           await AsyncStorage.setItem(
-            "dataChecklistStorage",
+            `dataChecklistStorage_${ID_ChecklistC}`,
             JSON.stringify(updatedData1)
           );
         }
@@ -752,7 +752,6 @@ const DetailChecklist = ({ route, navigation }) => {
           formData.append("Kinhdo", item.Kinhdo || "");
           formData.append("Docao", item.Docao || "");
           formData.append("isScan", isScan || null);
-          console.log('item.Anh', item.Anh)
           if (item.Anh && Array.isArray(item.Anh)) {
             item.Anh.forEach((image, imgIndex) => {
               const file = {
