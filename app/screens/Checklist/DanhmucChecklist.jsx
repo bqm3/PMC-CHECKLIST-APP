@@ -135,7 +135,6 @@ const DanhmucChecklist = ({ navigation }) => {
     Tieuchuan: "",
     Giatridinhdanh: "",
     Giatrinhan: "",
-    Sothutu: "",
   });
   const [hangMuc, setHangMuc] = useState(ent_hangmuc);
 
