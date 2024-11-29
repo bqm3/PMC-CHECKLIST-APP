@@ -6,9 +6,9 @@ import {
   TouchableOpacity,
   Linking,
   Platform,
+  Image,
 } from "react-native";
 import * as Animatable from "react-native-animatable"; // Import thư viện animatable
-import New from "../../../assets/icons/ic_new2.svg";
 import adjust from "../../adjust"; // Giả sử đây là một module điều chỉnh kích thước
 import { PanGestureHandler } from "react-native-gesture-handler";
 
@@ -30,7 +30,6 @@ const NotificationComponent = ({
       console.error("Không thể mở liên kết:", err)
     );
   };
-
 
   useEffect(() => {
     if (animation === "slideOutUp") {
@@ -54,10 +53,15 @@ const NotificationComponent = ({
       <TouchableOpacity style={styles.banner_noti} onPress={onActionPress}>
         <View style={styles.noti}>
           <View style={styles.innerContainer}>
-            <New
-              width={adjust(30)}
-              height={adjust(30)}
-              marginRight={adjust(5)}
+            <Image
+              source={require("../../../assets/icons/ic_new3.png")}
+              style={{
+                width: adjust(30),
+                height: adjust(30),
+                marginRight: adjust(5),
+                tintColor: "green",
+              }}
+              resizeMode="contain"
             />
             <Text style={styles.title}>{notification?.data?.textTitle}</Text>
           </View>
