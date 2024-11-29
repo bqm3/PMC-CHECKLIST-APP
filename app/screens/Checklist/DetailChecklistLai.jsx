@@ -254,6 +254,18 @@ const DetailChecklistLai = ({ route, navigation }) => {
             ...item,
             valueCheck: null,
             Gioht: moment().format("LTS"),
+            isScan: isScan,
+          };
+        } else if (
+          item.Anh == null &&
+          item.GhichuChitiet == "" &&
+          item.isCheck == 0 &&
+          item.Tinhtrang == 1 &&
+          item.valueCheck == item.Giatridinhdanh
+        ) {
+          return {
+            ...item,
+            valueCheck: null,
           };
         } else {
           return {
@@ -272,6 +284,12 @@ const DetailChecklistLai = ({ route, navigation }) => {
       const updatedData1 = dataChecklistFilterContext.map((item) =>
         data2Map.has(item.ID_Checklist) ? data2Map.get(item.ID_Checklist) : item
       );
+
+      const updatedData2 = revertDataChecklist.filter(
+        (item) => item.valueCheck !== null
+      );
+    
+      setNewActionDataChecklist(updatedData2);
       setDataChecklistFilterContext(updatedData1);
     }
   };

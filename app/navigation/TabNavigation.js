@@ -56,7 +56,7 @@ const Back = ({ navigation, title }) => {
   return (
     <TouchableOpacity
       style={{ backgroundColor: "red", width: adjust(40), height: adjust(40) }}
-      onPress={() => {
+      onPressIn={() => {
         console.log("vao day");
         title ? navigation.navigate("Profile") : navigation.goBack();
       }}
@@ -112,7 +112,7 @@ const HomeStack = ({ navigation }) => {
                 width: adjust(36),
                 height: adjust(36),
               }}
-              onPress={() => {
+              onPressIn={() => {
                 navigation.navigate("Profile");
               }}
             >
@@ -149,7 +149,7 @@ const HomeStack = ({ navigation }) => {
             </Text>
           ),
           headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity onPressIn={() => navigation.goBack()}>
               {Platform.OS === "ios" && (
                 <Image
                   source={require("../../assets/icons/ic_button_back.png")}
@@ -191,7 +191,7 @@ const HomeStack = ({ navigation }) => {
             </Text>
           ),
           headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity onPressIn={() => navigation.goBack()}>
               {Platform.OS === "ios" && (
                 <Image
                   source={require("../../assets/icons/ic_button_back.png")}
@@ -233,7 +233,7 @@ const HomeStack = ({ navigation }) => {
             </Text>
           ),
           headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity onPressIn={() => navigation.goBack()}>
               {Platform.OS === "ios" && (
                 <Image
                   source={require("../../assets/icons/ic_button_back.png")}
@@ -275,7 +275,7 @@ const HomeStack = ({ navigation }) => {
             </Text>
           ),
           headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity onPressIn={() => navigation.goBack()}>
               {Platform.OS === "ios" && (
                 <Image
                   source={require("../../assets/icons/ic_button_back.png")}
@@ -316,7 +316,7 @@ const HomeStack = ({ navigation }) => {
             </Text>
           ),
           headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity onPressIn={() => navigation.goBack()}>
               {Platform.OS === "ios" && (
                 <Image
                   source={require("../../assets/icons/ic_button_back.png")}
@@ -358,7 +358,7 @@ const HomeStack = ({ navigation }) => {
             </Text>
           ),
           headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity onPressIn={() => navigation.goBack()}>
               {Platform.OS === "ios" && (
                 <Image
                   source={require("../../assets/icons/ic_button_back.png")}
@@ -400,7 +400,7 @@ const HomeStack = ({ navigation }) => {
             </Text>
           ),
           headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity onPressIn={() => navigation.goBack()}>
               {Platform.OS === "ios" && (
                 <Image
                   source={require("../../assets/icons/ic_button_back.png")}
@@ -441,7 +441,7 @@ const HomeStack = ({ navigation }) => {
             </Text>
           ),
           headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity onPressIn={() => navigation.goBack()}>
               {Platform.OS === "ios" && (
                 <Image
                   source={require("../../assets/icons/ic_button_back.png")}
@@ -483,7 +483,7 @@ const HomeStack = ({ navigation }) => {
             </Text>
           ),
           headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity onPressIn={() => navigation.goBack()}>
               {Platform.OS === "ios" && (
                 <Image
                   source={require("../../assets/icons/ic_button_back.png")}
@@ -525,7 +525,7 @@ const HomeStack = ({ navigation }) => {
             </Text>
           ),
           headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity onPressIn={() => navigation.goBack()}>
               {Platform.OS === "ios" && (
                 <Image
                   source={require("../../assets/icons/ic_button_back.png")}
@@ -567,7 +567,7 @@ const HomeStack = ({ navigation }) => {
             </Text>
           ),
           headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity onPressIn={() => navigation.goBack()}>
               {Platform.OS === "ios" && (
                 <Image
                   source={require("../../assets/icons/ic_button_back.png")}
@@ -610,7 +610,7 @@ const HomeStack = ({ navigation }) => {
           ),
           headerLeft: () => (
             <TouchableOpacity
-              onPress={() => {
+              onPressIn={() => {
                 navigation.goBack();
               }}
             >
@@ -648,7 +648,7 @@ const HomeStack = ({ navigation }) => {
           ),
           headerLeft: () => (
             <TouchableOpacity
-              onPress={() => {
+              onPressIn={() => {
                 navigation.goBack();
               }}
             >
@@ -685,7 +685,7 @@ const HomeStack = ({ navigation }) => {
             </Text>
           ),
           headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity onPressIn={() => navigation.goBack()}>
               {Platform.OS === "ios" && (
                 <Image
                   source={require("../../assets/icons/ic_button_back.png")}
@@ -727,7 +727,7 @@ const HomeStack = ({ navigation }) => {
             </Text>
           ),
           headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity onPressIn={() => navigation.goBack()}>
               {Platform.OS === "ios" && (
                 <Image
                   source={require("../../assets/icons/ic_button_back.png")}
@@ -768,7 +768,7 @@ const HomeStack = ({ navigation }) => {
             </Text>
           ),
           headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity onPressIn={() => navigation.goBack()}>
               {Platform.OS === "ios" && (
                 <Image
                   source={require("../../assets/icons/ic_button_back.png")}
@@ -809,7 +809,7 @@ const HomeStack = ({ navigation }) => {
             </Text>
           ),
           headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity onPressIn={() => navigation.goBack()}>
               {Platform.OS === "ios" && (
                 <Image
                   source={require("../../assets/icons/ic_button_back.png")}
@@ -851,7 +851,7 @@ const HomeStack = ({ navigation }) => {
             </Text>
           ),
           headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity onPressIn={() => navigation.goBack()}>
               {Platform.OS === "ios" && (
                 <Image
                   source={require("../../assets/icons/ic_button_back.png")}
@@ -893,7 +893,7 @@ const HomeStack = ({ navigation }) => {
             </Text>
           ),
           headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity onPressIn={() => navigation.goBack()}>
               {Platform.OS === "ios" && (
                 <Image
                   source={require("../../assets/icons/ic_button_back.png")}
@@ -935,7 +935,7 @@ const HomeStack = ({ navigation }) => {
             </Text>
           ),
           headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity onPressIn={() => navigation.goBack()}>
               {Platform.OS === "ios" && (
                 <Image
                   source={require("../../assets/icons/ic_button_back.png")}
@@ -977,7 +977,7 @@ const HomeStack = ({ navigation }) => {
             </Text>
           ),
           headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity onPressIn={() => navigation.goBack()}>
               {Platform.OS === "ios" && (
                 <Image
                   source={require("../../assets/icons/ic_button_back.png")}
@@ -1019,7 +1019,7 @@ const HomeStack = ({ navigation }) => {
             </Text>
           ),
           headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity onPressIn={() => navigation.goBack()}>
               {Platform.OS === "ios" && (
                 <Image
                   source={require("../../assets/icons/ic_button_back.png")}
@@ -1059,7 +1059,7 @@ const HomeStack = ({ navigation }) => {
             ></Text>
           ),
           headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity onPressIn={() => navigation.goBack()}>
               {Platform.OS === "ios" && (
                 <Image
                   source={require("../../assets/icons/ic_button_back.png")}
@@ -1101,7 +1101,7 @@ const HomeStack = ({ navigation }) => {
             </Text>
           ),
           headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity onPressIn={() => navigation.goBack()}>
               {Platform.OS === "ios" && (
                 <Image
                   source={require("../../assets/icons/ic_button_back.png")}
@@ -1143,7 +1143,7 @@ const HomeStack = ({ navigation }) => {
             </Text>
           ),
           headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity onPressIn={() => navigation.goBack()}>
               {Platform.OS === "ios" && (
                 <Image
                   source={require("../../assets/icons/ic_button_back.png")}
@@ -1185,7 +1185,7 @@ const HomeStack = ({ navigation }) => {
             </Text>
           ),
           headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity onPressIn={() => navigation.goBack()}>
               {Platform.OS === "ios" && (
                 <Image
                   source={require("../../assets/icons/ic_button_back.png")}
@@ -1226,7 +1226,7 @@ const HomeStack = ({ navigation }) => {
             </Text>
           ),
           headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity onPressIn={() => navigation.goBack()}>
               {Platform.OS === "ios" && (
                 <Image
                   source={require("../../assets/icons/ic_button_back.png")}
@@ -1268,7 +1268,7 @@ const HomeStack = ({ navigation }) => {
             </Text>
           ),
           headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity onPressIn={() => navigation.goBack()}>
               {Platform.OS === "ios" && (
                 <Image
                   source={require("../../assets/icons/ic_button_back.png")}
@@ -1309,7 +1309,7 @@ const HomeStack = ({ navigation }) => {
             </Text>
           ),
           headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity onPressIn={() => navigation.goBack()}>
               {Platform.OS === "ios" && (
                 <Image
                   source={require("../../assets/icons/ic_button_back.png")}
@@ -1350,7 +1350,7 @@ const HomeStack = ({ navigation }) => {
             </Text>
           ),
           headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity onPressIn={() => navigation.goBack()}>
               {Platform.OS === "ios" && (
                 <Image
                   source={require("../../assets/icons/ic_button_back.png")}
@@ -1391,7 +1391,7 @@ const HomeStack = ({ navigation }) => {
             </Text>
           ),
           headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.goBack()}>
+            <TouchableOpacity onPressIn={() => navigation.goBack()}>
               {Platform.OS === "ios" && (
                 <Image
                   source={require("../../assets/icons/ic_button_back.png")}

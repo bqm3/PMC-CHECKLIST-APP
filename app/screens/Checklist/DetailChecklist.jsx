@@ -176,7 +176,6 @@ const DetailChecklist = ({ route, navigation }) => {
 
   const handleCheckAll = (value) => {
     setActiveAll(value);
-    console.log('value', value)
     // value == false
     if (value) {
       const updateDataChecklist = dataChecklistFilter?.map((item, i) => {
@@ -292,20 +291,21 @@ const DetailChecklist = ({ route, navigation }) => {
             Gioht: moment().format("LTS"),
             isScan: isScan,
           };
-        } else if(item.Anh == null &&
+        } else if (
+          item.Anh == null &&
           item.GhichuChitiet == "" &&
           item.isCheck == 0 &&
           item.Tinhtrang == 1 &&
-          item.valueCheck == item.Giatridinhdanh) {
+          item.valueCheck == item.Giatridinhdanh
+        ) {
           return {
             ...item,
-            valueCheck:null,
+            valueCheck: null,
           };
-        }
-        else {
+        } else {
           return {
-            ...item
-          }
+            ...item,
+          };
         }
       });
 
@@ -316,17 +316,15 @@ const DetailChecklist = ({ route, navigation }) => {
         revertDataChecklist.map((item) => [item.ID_Checklist, item])
       );
 
-  
-
       const updatedData1 = dataChecklistFilterContext.map((item) =>
         data2Map.has(item.ID_Checklist) ? data2Map.get(item.ID_Checklist) : item
       );
 
-      const updatedData2 = newActionDataChecklist.filter((item) =>
-        !data2Map.has(item.ID_Checklist)
+      const updatedData2 = revertDataChecklist.filter(
+        (item) => item.valueCheck !== null
       );
-
-      setNewActionDataChecklist(updatedData2)
+    
+      setNewActionDataChecklist(updatedData2);
       setDataChecklistFilterContext(updatedData1);
     }
   };
@@ -378,7 +376,7 @@ const DetailChecklist = ({ route, navigation }) => {
       };
     }
 
-    console.log('newItem', newItem)
+    console.log("newItem", newItem);
 
     handleSetData(status, updatedDataChecklist, newItem);
   };
@@ -392,7 +390,8 @@ const DetailChecklist = ({ route, navigation }) => {
     let newDataChecklist = dataChecklist.filter(
       (item) => item.valueCheck !== null
     );
-    const indexFaild = newDataChecklist.findIndex((item) => {  //không để làm gì .
+    const indexFaild = newDataChecklist.findIndex((item) => {
+      //không để làm gì .
       return (
         item.ID_Checklist === it.ID_Checklist &&
         item.Giatridinhdanh === item.valueCheck &&
@@ -736,8 +735,7 @@ const DetailChecklist = ({ route, navigation }) => {
   // api tb_checklistchitiet
   const handleDataChecklistFaild = async (arrData) => {
     try {
-
-      console.log("arrData",arrData)
+      console.log("arrData", arrData);
       setLoadingSubmit(true);
       // Create a new FormData instance
       const formData = new FormData();
@@ -1107,7 +1105,6 @@ const DetailChecklist = ({ route, navigation }) => {
   };
 
   // close modal bottomsheet
- 
 
   const handlePopupActiveTieuChuan = useCallback((item, index) => {
     setOpacity(0.2);
@@ -1136,7 +1133,7 @@ const DetailChecklist = ({ route, navigation }) => {
 
   const handleBottom = useCallback((item, index) => {
     setVisibleBottom(true);
-    setIsBottomSheetOpen(true)
+    setIsBottomSheetOpen(true);
     setDataItem(item);
     setIndex(index);
     setOpacity(0.2);
@@ -1152,7 +1149,7 @@ const DetailChecklist = ({ route, navigation }) => {
     setDataItem(null);
     setIndex(null);
     setVisibleBottom(false);
-    setIsBottomSheetOpen(false)
+    setIsBottomSheetOpen(false);
   }, []);
 
   // view item flatlist
@@ -1162,7 +1159,12 @@ const DetailChecklist = ({ route, navigation }) => {
         style={[
           styles.content,
           {
-            backgroundColor:   `${item.isCheck}` == 1 ? "white" : (`${item?.Tinhtrang}` === "1" ? "#ea9999" : "white"),
+            backgroundColor:
+              `${item.isCheck}` == 1
+                ? "white"
+                : `${item?.Tinhtrang}` === "1"
+                ? "#ea9999"
+                : "white",
           },
         ]}
         key={item?.ID_Checklist}
