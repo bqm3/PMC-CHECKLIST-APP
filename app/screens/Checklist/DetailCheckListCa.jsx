@@ -6,7 +6,6 @@ import {
   ScrollView,
   FlatList,
   ImageBackground,
-  TouchableHighlight,
   ActivityIndicator,
   TouchableOpacity,
   Modal,
@@ -21,8 +20,9 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import moment from "moment";
 import adjust from "../../adjust";
+import ItemDetailChecklistCa from "../../components/Item/ItemDetailChecklistCa";
 import { funcBaseUri_Image } from "../../utils/util";
-import { el } from "date-fns/locale";
+
 
 const DetailCheckListCa = ({ route }) => {
   const headerList = [
@@ -98,55 +98,6 @@ const DetailCheckListCa = ({ route }) => {
     setOpacity(op);
   };
 
-
-  const _renderItem = 
-    (item, index) => {
-      const isSelected = newActionCheckList?.ID_Checklist === item.ID_Checklist;
-      const isError = item.ent_checklist.Tinhtrang === 1;
-  
-      const backgroundColor = isSelected
-        ? COLORS.bg_button
-        : isError
-        ? "#fff2cc"
-        : "white";
-  
-      const textColor = isSelected ? "white" : "black";
-  
-      return (
-        <TouchableHighlight key={index} onPress={() => toggleTodo(item)}>
-          <DataTable.Row style={[styles.row, { backgroundColor }]}>
-            {headerList.map((header, i) => (
-              <DataTable.Cell
-                key={i}
-                style={{ width: header.width, justifyContent: "center" }}
-              >
-                <Text style={{ color: textColor }}>{getColumnData(item, i)}</Text>
-              </DataTable.Cell>
-            ))}
-          </DataTable.Row>
-        </TouchableHighlight>
-      );
-    };
-    
-  
-  const getColumnData = (item, index) => {
-    switch (index) {
-      case 0:
-        return moment(item?.tb_checklistc?.Ngay).format("DD-MM-YYYY");
-      case 1:
-        return item?.ent_checklist?.Checklist;
-      case 2:
-        return item?.Gioht;
-      case 3:
-        return item?.tb_checklistc?.ent_user?.Hoten || "";
-      case 4:
-        return item?.Ketqua;
-      default:
-        return "";
-    }
-  };
-  
-
   if (loading) {
     return (
       <ImageBackground
@@ -204,16 +155,11 @@ const DetailCheckListCa = ({ route }) => {
         onPress={() => setImageModalVisible(false)}
       >
         <View style={styles.imagePreviewContainer}>
-          {/* {isImageLoading ? (
-            <ActivityIndicator size="large" color={COLORS.bg_button} />
-          ) : ( */}
           <Image
             source={{ uri: selectedImage }}
             style={styles.fullScreenImage}
             resizeMode="contain"
           />
-          {/* )} */}
-
           <TouchableOpacity
             style={styles.closeButton}
             onPress={() => setImageModalVisible(false)}
@@ -283,9 +229,16 @@ const DetailCheckListCa = ({ route }) => {
                 ItemSeparatorComponent={() => <View style={{ height: 4 }} />}
                 scrollEnabled={true}
                 data={data}
-                renderItem={({ item, index, separators }) =>
-                  _renderItem(item, index)
-                }
+                renderItem={({ item, index }) => (
+                  <ItemDetailChecklistCa
+                    key={index}
+                    item={item}
+                    toggleTodo={toggleTodo}
+                    headerList={headerList}
+                    newActionCheckList={newActionCheckList}
+                    dataChecklistCa={dataChecklistCa}
+                  />
+                )}
               />
             ) : null}
           </ScrollView>
