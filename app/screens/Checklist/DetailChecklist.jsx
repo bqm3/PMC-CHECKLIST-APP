@@ -176,6 +176,8 @@ const DetailChecklist = ({ route, navigation }) => {
 
   const handleCheckAll = (value) => {
     setActiveAll(value);
+    console.log('value', value)
+    // value == false
     if (value) {
       const updateDataChecklist = dataChecklistFilter?.map((item, i) => {
         if (
@@ -290,10 +292,20 @@ const DetailChecklist = ({ route, navigation }) => {
             Gioht: moment().format("LTS"),
             isScan: isScan,
           };
-        } else {
+        } else if(item.Anh == null &&
+          item.GhichuChitiet == "" &&
+          item.isCheck == 0 &&
+          item.Tinhtrang == 1 &&
+          item.valueCheck == item.Giatridinhdanh) {
           return {
             ...item,
+            valueCheck:null,
           };
+        }
+        else {
+          return {
+            ...item
+          }
         }
       });
 

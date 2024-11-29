@@ -22,8 +22,6 @@ export const nowDate = () => {
 };
 
 export const funcBaseUri_Image = (key, image) => {
-  console.log(key)
-  console.log(image)
   let uri = ""
   switch (key) {
     // checklist
@@ -39,6 +37,5 @@ export const funcBaseUri_Image = (key, image) => {
       uri = `${BASE_URL_IMAGE}/sucongoai/${image}`;
       break;
   }
-  console.log("uri",uri)
   return uri;
 };

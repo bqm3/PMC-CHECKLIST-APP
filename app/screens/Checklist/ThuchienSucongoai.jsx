@@ -132,9 +132,9 @@ const ThuchienSucongoai = ({ navigation, route }) => {
             }
 
             const result = await ImagePicker.launchCameraAsync({
-              mediaTypes: ImagePicker.MediaTypeOptions.Images,
+              mediaTypes: ["images"],
               aspect: [4, 3],
-              quality: 0.5, // Adjust image quality (0 to 1)
+              quality: 0.8, // Adjust image quality (0 to 1)
             });
 
             if (!result.canceled) {
@@ -155,9 +155,9 @@ const ThuchienSucongoai = ({ navigation, route }) => {
             }
 
             const result = await ImagePicker.launchImageLibraryAsync({
-              mediaTypes: ImagePicker.MediaTypeOptions.Images,
+              mediaTypes: ["images"],
               aspect: [4, 3],
-              quality: 0.5, // Adjust image quality (0 to 1)
+              quality: 0.8, // Adjust image quality (0 to 1)
             });
 
             if (!result.canceled) {

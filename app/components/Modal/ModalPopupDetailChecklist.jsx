@@ -50,7 +50,7 @@ const ModalPopupDetailChecklist = ({
 
     try {
       const result = await ImagePicker.launchCameraAsync({
-        quality: 0.5,
+        quality: 0.8,
       });
 
       if (!result.canceled) {

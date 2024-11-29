@@ -57,10 +57,10 @@ const ModalChecklistCImage = ({
     }
 
     const result = await ImagePicker.launchCameraAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      mediaTypes: ["images"],
       allowsEditing: true,
       aspect: [4, 3],
-      quality: 0.5, // Adjust image quality (0 to 1)
+      quality: 0.8, // Adjust image quality (0 to 1)
     });
 
     if (!result.canceled) {

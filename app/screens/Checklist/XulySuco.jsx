@@ -284,29 +284,63 @@ const XulySuco = ({ navigation }) => {
   };
 
   const pickImage = async () => {
-    const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
+    Alert.alert(
+      "Chọn ảnh",
+      "Bạn muốn chụp ảnh hay chọn ảnh từ thư viện?",
+      [
+        {
+          text: "Chụp ảnh",
+          onPress: async () => {
+            const permissionResult =
+              await ImagePicker.requestCameraPermissionsAsync();
+            if (permissionResult.granted === false) {
+              alert(
+                "Bạn đã từ chối cho phép sử dụng camera. Vào cài đặt và mở lại!"
+              );
+              return;
+            }
 
-    if (permissionResult.granted === false) {
-      alert(
-        "Bạn đã từ chối cho phép được sử dụng camera. Vào cài đặt và mở lại!"
-      );
-      return;
-    }
+            const result = await ImagePicker.launchCameraAsync({
+              mediaTypes: ['images'],
+              aspect: [4, 3],
+              quality: 0.8, // Adjust image quality (0 to 1)
+            });
 
-    const result = await ImagePicker.launchCameraAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      aspect: [4, 3],
-      quality: 0.5, // Adjust image quality (0 to 1)
-    });
+            if (!result.canceled) {
+              setImages((prevImages) => [...prevImages, result.assets[0].uri]);
+            }
+          },
+        },
+        {
+          text: "Chọn từ thư viện",
+          onPress: async () => {
+            const permissionResult =
+              await ImagePicker.requestMediaLibraryPermissionsAsync();
+            if (permissionResult.granted === false) {
+              alert(
+                "Bạn đã từ chối cho phép sử dụng thư viện. Vào cài đặt và mở lại!"
+              );
+              return;
+            }
 
-    if (!result.canceled) {
-      setImages((prevImages) => {
-        const updatedImages = [...prevImages, result.assets[0].uri].filter(
-          (uri) => uri
-        ); // Filter out undefined or null
-        return updatedImages;
-      });
-    }
+            const result = await ImagePicker.launchImageLibraryAsync({
+              mediaTypes: ['images'],
+              aspect: [4, 3],
+              quality: 0.8, // Adjust image quality (0 to 1)
+            });
+
+            if (!result.canceled) {
+              setImages((prevImages) => [...prevImages, result.assets[0].uri]);
+            }
+          },
+        },
+        {
+          text: "Hủy",
+          style: "cancel",
+        },
+      ],
+      { cancelable: true }
+    );
   };
 
   const handleSubmitStatus = async () => {

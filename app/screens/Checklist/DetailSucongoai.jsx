@@ -44,7 +44,6 @@ const DetailSucongoai = ({ navigation, route }) => {
   };
 
   const getImageUrls = (item) => {
-    console.log("item",item)
     if (!item) return null;
     return item.endsWith(".jpg")
       ? funcBaseUri_Image(3, item.trim())
