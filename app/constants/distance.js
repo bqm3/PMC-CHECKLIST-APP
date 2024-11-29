@@ -19,6 +19,7 @@ function areLocationsWithinRadius(lat1, lon1, lat2, lon2, radius) {
   return distance <= radius;
 }
 
+
 module.exports ={
     areLocationsWithinRadius
 }

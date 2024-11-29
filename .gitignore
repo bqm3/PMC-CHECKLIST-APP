@@ -74,13 +74,13 @@ yarn-error.*
 *.tsbuildinfo
 
 # @end expo-cli/ios
-/android
+# /android
 
-credentials.json
-yarn.lock
-google-services.json
-pmc-cskh-firebase-adminsdk-y7378-5122f6edc7.json
-app.json
-babel.config.js
+# credentials.json
+# yarn.lock
+# google-services.json
+# pmc-cskh-firebase-adminsdk-y7378-5122f6edc7.json
+# app.json
+# babel.config.js
 
-app/constans/config.*
+# app/constans/config.*
