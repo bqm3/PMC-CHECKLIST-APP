@@ -97,8 +97,7 @@ const DanhMucBaoCaoChiSo = ({ navigation }) => {
               allowFontScaling={false}
               style={[styles.title, { color: "black" }]}
             >
-              Báo cáo : Tháng {item?.monthYear?.split("-")[1]} - Năm{" "}
-              {item?.monthYear?.split("-")[0]}
+              Báo cáo : {item?.monthYear}
             </Text>
           </View>
         </View>
@@ -138,54 +137,62 @@ const DanhMucBaoCaoChiSo = ({ navigation }) => {
                   />
                 </View>
               ) : (
-                <View style={{ flex: 1, width: "100%" }}>
-                  <View style={[styles.container]}>
-                    {showReport?.show && (
-                      <View style={styles.header}>
-                        <TouchableOpacity
-                          style={styles.action}
-                          onPress={() => navigation.navigate("Hạng mục chỉ số")}
-                        >
-                          <Image
-                            source={require("../../../assets/icons/ic_plus.png")}
-                            style={styles.closeIcon}
-                          />
-                          <Text
-                            style={{
-                              fontSize: adjust(16),
-                              color: "white",
-                              fontWeight: "600",
-                            }}
+                <>
+                  <View style={{ flex: 1, width: "100%" }}>
+                    <View style={[styles.container]}>
+                      {showReport?.show && (
+                        <View style={styles.header}>
+                          <TouchableOpacity
+                            style={styles.action}
+                            onPress={() =>
+                              navigation.navigate("Hạng mục chỉ số")
+                            }
                           >
-                            Chỉ số{" "}
-                          </Text>
-                        </TouchableOpacity>
-                      </View>
-                    )}
-
-                    <View style={styles.content}>
+                            <Image
+                              source={require("../../../assets/icons/ic_plus.png")}
+                              style={styles.closeIcon}
+                            />
+                            <Text
+                              style={{
+                                fontSize: adjust(16),
+                                color: "white",
+                                fontWeight: "600",
+                              }}
+                            >
+                              Chỉ số{" "}
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
+                      )}
                       {dataChiSo.length > 0 && loading === false && (
-                        <FlatList
-                          data={dataChiSo}
-                          renderItem={renderItem}
-                          scrollEventThrottle={16}
-                          ListFooterComponent={<View style={{ height: 80 }} />}
-                          scrollEnabled={true}
-                        />
+                        <View style={styles.content}>
+                          <FlatList
+                            data={dataChiSo}
+                            renderItem={renderItem}
+                            scrollEventThrottle={16}
+                            ListFooterComponent={
+                              <View style={{ height: 80 }} />
+                            }
+                            scrollEnabled={true}
+                          />
+                        </View>
                       )}
-                      {dataChiSo.length == 0 && loading === true && (
-                        <ActivityIndicator size="small" />
-                      )}
-
                       {dataChiSo.length == 0 && loading === false && (
-                        <Text style={{ textAlign: "center", color: "white" }}>
-                          {" "}
-                          Không có báo cáo chỉ số nào
-                        </Text>
+                        <View
+                          style={{
+                            flex: 1,
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                        >
+                          <Text style={{ textAlign: "center", color: "white" }}>
+                            Không có báo cáo chỉ số nào
+                          </Text>
+                        </View>
                       )}
                     </View>
                   </View>
-                </View>
+                </>
               )}
             </ImageBackground>
           </BottomSheetModalProvider>

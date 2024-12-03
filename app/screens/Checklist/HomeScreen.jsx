@@ -144,7 +144,8 @@ const dataGD = [
   {
     id: 1,
     status: null,
-    path: "Thông báo sự cố",
+    // path: "Thông báo sự cố",
+    path: "Xử lý sự cố",
     icon: require("../../../assets/icons/o-04.png"),
   },
   {

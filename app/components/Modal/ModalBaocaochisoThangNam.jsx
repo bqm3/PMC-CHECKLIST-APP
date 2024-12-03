@@ -108,7 +108,7 @@ const ModalBaocaochisoThangNam = ({ item, handleCloseBottomSheet }) => {
               allowFontScaling={false}
               style={[styles.title, { fontWeight: "500", color: "black" }]}
             >
-              : {item?.Chiso}
+              : {item?.Chiso} {item?.ent_hangmuc_chiso?.Donvi}
             </Text>
           </View>
           <View style={[styles.row, { marginBottom: adjust(15) }]}>
@@ -129,7 +129,7 @@ const ModalBaocaochisoThangNam = ({ item, handleCloseBottomSheet }) => {
               allowFontScaling={false}
               style={[styles.title, { fontWeight: "500", color: "black" }]}
             >
-              : {item?.Chiso_Before ? item?.Chiso_Before : "(Không có)"}
+              : {item?.Chiso_Before ? item?.Chiso_Before : "0"} {item?.ent_hangmuc_chiso?.Donvi}
             </Text>
           </View>
           <View style={styles.row}>

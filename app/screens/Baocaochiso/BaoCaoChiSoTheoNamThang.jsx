@@ -45,6 +45,7 @@ const BaoCaoChiSoTheoNamThang = ({ navigation, route }) => {
   }, []);
 
   const toggleTodo = async (item, index) => {
+    console.log("item",item)
     setItem(item)
     bottomSheetModalRef.current.expand();
     setOpacity(0.2);

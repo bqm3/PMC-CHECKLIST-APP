@@ -930,8 +930,7 @@ const HomeStack = ({ navigation }) => {
                 color: "white",
               }}
             >
-              Báo cáo Tháng {route?.params?.data?.monthYear?.split("-")[1]} -
-              Năm {route?.params?.data?.monthYear?.split("-")[0]}
+              Báo cáo {route?.params?.data?.monthYear}
             </Text>
           ),
           headerLeft: () => (
