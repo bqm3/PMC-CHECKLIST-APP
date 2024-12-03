@@ -28,13 +28,12 @@ const ModalCallSucongoai = ({ userPhone, setIsModalcall }) => {
 
   const renderSeparator = () => <View style={styles.separator} />;
 
-  const renderItem = ({ item, index }) => {
+  const ItemSuCo = ({item, handleCall} ) => {
     return (
       <TouchableOpacity
+        key={item?.ID_User}
         style={styles.itemContainer}
-        onPress={() => {
-          handleCall(item.Sodienthoai);
-        }}
+        onPress={() => handleCall(item?.Sodienthoai)}
       >
         <View
           style={{
@@ -45,7 +44,7 @@ const ModalCallSucongoai = ({ userPhone, setIsModalcall }) => {
         >
           <View style={styles.nameContainer}>
             <Text allowFontScaling={false} style={styles.name}>
-              {item.Hoten}
+              {item?.Hoten}
             </Text>
 
             <Text
@@ -53,12 +52,12 @@ const ModalCallSucongoai = ({ userPhone, setIsModalcall }) => {
               style={styles.position}
               numberOfLines={2}
             >
-              ({item.ent_chucvu.Chucvu})
+              ({item?.ent_chucvu?.Chucvu})
             </Text>
 
             <View style={styles.phoneContainer}>
               <Text allowFontScaling={false} style={styles.phoneNumber}>
-                {item.Sodienthoai}
+                {item?.Sodienthoai}
               </Text>
             </View>
           </View>
@@ -93,7 +92,12 @@ const ModalCallSucongoai = ({ userPhone, setIsModalcall }) => {
             style={styles.list}
             data={userPhone}
             ItemSeparatorComponent={renderSeparator}
-            renderItem={renderItem}
+            renderItem={({ item, index }) => (
+              <ItemSuCo
+                item={item}
+                handleCall={handleCall}
+              />
+            )}
             scrollEventThrottle={16}
             ListFooterComponent={<View style={{ height: 10 }} />}
             scrollEnabled={true}

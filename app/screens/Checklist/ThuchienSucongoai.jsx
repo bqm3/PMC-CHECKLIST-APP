@@ -240,7 +240,7 @@ const ThuchienSucongoai = ({ navigation, route }) => {
           };
 
           // Append image file to formData
-          formData.append(`Images`, file);
+          formData.append(`Images_${index}`, file);
           // formData.append(`Anh1`, file?.name);
         });
         formData.append("ID_Hangmuc", dataInput.ID_Hangmuc);

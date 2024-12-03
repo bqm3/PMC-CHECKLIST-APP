@@ -14,15 +14,14 @@ import {
 import { TouchableWithoutFeedback } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import { DataTable } from "react-native-paper";
-import { BASE_URL} from "../../constants/config";
+import { BASE_URL } from "../../constants/config";
 import { COLORS, SIZES, marginBottomValue } from "../../constants/theme";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import moment from "moment";
 import adjust from "../../adjust";
 import ItemDetailChecklistCa from "../../components/Item/ItemDetailChecklistCa";
-import { funcBaseUri_Image } from "../../utils/util";
-
+import { funcBaseUri_Image, getImageUrls } from "../../utils/util";
 
 const DetailCheckListCa = ({ route }) => {
   const headerList = [
@@ -86,10 +85,9 @@ const DetailCheckListCa = ({ route }) => {
     fetchData();
   }, [ID_ChecklistC]);
 
-
   const toggleTodo = (item) => {
     setNewActionCheckList((prev) =>
-      prev?.ID_Checklist !== item.ID_Checklist ? item : null
+     prev == null || prev?.ID_Checklist !== item.ID_Checklist ? item : null
     );
   };
 
@@ -114,33 +112,17 @@ const DetailCheckListCa = ({ route }) => {
   }
 
   const handleImagePress = (item) => {
-    setSelectedImage(getImageUrls(item));
+    setSelectedImage(getImageUrls(1,item));
     setImageModalVisible(true);
   };
-  
 
-  const getImageUrls = (item) => {
-    if (!item) return null;
-    return item.endsWith(".jpg")
-      ? funcBaseUri_Image(1, item.trim())
-      : `https://drive.google.com/thumbnail?id=${item.trim()}`;
-  };
-  
+  // const getImageUrls = (item) => {
+  //   if (!item) return null;
+  //   return item.endsWith(".jpg")
+  //     ? funcBaseUri_Image(1, item.trim())
+  //     : `https://drive.google.com/thumbnail?id=${item.trim()}`;
+  // };
 
-  const renderImage = ({ item }) => {
-    return (
-      <View style={styles.imageContainer}>
-        <TouchableOpacity onPress={() => handleImagePress(item)}>
-          <Image
-            style={styles.image}
-            source={{
-              uri: getImageUrls(item),
-            }}
-          />
-        </TouchableOpacity>
-      </View>
-    );
-  };
 
   const ImagePreviewModal = () => (
     <Modal
@@ -224,7 +206,7 @@ const DetailCheckListCa = ({ route }) => {
             {data && data?.length > 0 ? (
               <FlatList
                 keyExtractor={(item, index) =>
-                  `${item?.ID_ChecklistC}_${index}`
+                  index
                 }
                 ItemSeparatorComponent={() => <View style={{ height: 4 }} />}
                 scrollEnabled={true}
@@ -234,9 +216,7 @@ const DetailCheckListCa = ({ route }) => {
                     key={index}
                     item={item}
                     toggleTodo={toggleTodo}
-                    headerList={headerList}
                     newActionCheckList={newActionCheckList}
-                    dataChecklistCa={dataChecklistCa}
                   />
                 )}
               />
@@ -268,9 +248,7 @@ const DetailCheckListCa = ({ route }) => {
         animationType="slide"
         transparent={true}
         visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
+        onRequestClose={() => setModalVisible(!modalVisible)}
       >
         <View style={styles.modalBackground}>
           <View style={styles.centeredView}>
@@ -289,7 +267,20 @@ const DetailCheckListCa = ({ route }) => {
                           ? newActionCheckList?.Anh.split(",")
                           : []
                       }
-                      renderItem={renderImage}
+                      renderItem={({ item, index }) => (
+                        <View style={styles.imageContainer} key={index}>
+                          <TouchableOpacity
+                            onPress={() => handleImagePress(item)}
+                          >
+                            <Image
+                              style={styles.image}
+                              source={{
+                                uri: getImageUrls(1 , item),
+                              }} 
+                            />
+                          </TouchableOpacity>
+                        </View>
+                      )}
                       keyExtractor={(item, index) => index.toString()}
                       horizontal={true}
                       showsHorizontalScrollIndicator={false}

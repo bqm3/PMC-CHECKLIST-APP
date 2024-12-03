@@ -610,6 +610,7 @@ const XulySuco = ({ navigation }) => {
                           newActionClick={newActionClick}
                         />
                       )}
+                      showsVerticalScrollIndicator={false}
                       scrollEventThrottle={16}
                       ListFooterComponent={<View style={{ height: 80 }} />}
                       scrollEnabled={true}

@@ -276,9 +276,7 @@ const DanhmucTraCuu = ({ setOpacity, opacity, navigation }) => {
     if (number === 0) return `0`;
     return number;
   };
-
-  console.log("newActionCheckList", newActionCheckList);
-
+  
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <KeyboardAvoidingView
@@ -358,6 +356,7 @@ const DanhmucTraCuu = ({ setOpacity, opacity, navigation }) => {
                     newActionCheckList={newActionCheckList}
                   />
                 )}
+                showsVerticalScrollIndicator={false}
                 keyExtractor={(item, index) => index.toString()}
                 scrollEventThrottle={16}
                 onEndReached={handleLoadMore} // Tải thêm khi cuộn đến cuối

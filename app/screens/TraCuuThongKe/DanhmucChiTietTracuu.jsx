@@ -58,10 +58,6 @@ const headerList = [
     til: "Checklist",
     width: 200,
   },
-  // {
-  //   til: "Tên tòa nhà",
-  //   width: 150,
-  // },
   {
     til: "Thuộc tầng",
     width: 150,
@@ -131,7 +127,6 @@ const DanhmucChiTietTracuu = () => {
     ID_Khuvuc: null,
     ID_Tang: null,
   });
-
 
   useEffect(() => {
     setDataKhuvuc(ent_khuvuc);

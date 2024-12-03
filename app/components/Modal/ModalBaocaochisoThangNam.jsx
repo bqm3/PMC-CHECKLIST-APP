@@ -39,7 +39,7 @@ const ModalBaocaochisoThangNam = ({ item, handleCloseBottomSheet }) => {
           {/* Hình ảnh */}
           <Image
             source={{
-              uri: funcBaseUri_Image(2,item?.Image),
+              uri: funcBaseUri_Image(2, item?.Image),
             }}
             style={styles.image}
           />
@@ -224,6 +224,6 @@ const styles = StyleSheet.create({
   closeIcon: {
     width: adjust(20),
     height: adjust(20),
-    tintColor: "red"
+    tintColor: "red",
   },
 });
