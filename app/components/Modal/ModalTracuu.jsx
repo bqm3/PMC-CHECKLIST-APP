@@ -41,11 +41,9 @@ const ModalTracuu = ({
   setVisibleBottom,
 }) => {
   const ref = useRef(null);
-  console.log("filters?.ent_calv", filters);
   const defaultKhoi = ent_khoicv?.find(
     (Khoi) => Khoi.ID_KhoiCV == filters?.ID_KhoiCV
   );
-  console.log('defaultKhoi',defaultKhoi, filters?.ID_KhoiCV)
 
   return (
     <GestureHandlerRootView style={{ height: adjust(400) }}>

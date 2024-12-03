@@ -57,7 +57,6 @@ const ModalPopupDetailChecklist = ({
         const newImage = result?.assets[0];
         setImages((prevImages) => [...prevImages, newImage]); // Thêm ảnh mới vào danh sách
         newImageItem = [...images, newImage];
-        console.log('newImageItem',newImageItem)
         handleItemClick(newImageItem, "option", "Anh", dataItem);
       }
     } catch (error) {
@@ -111,7 +110,7 @@ const ModalPopupDetailChecklist = ({
             alignContent: "center",
           }}
         >
-          {step === 1 &&
+          {step == 1 &&
             (`${dataItem?.isCheck}` === "0" ? (
               <View>
                 <Text allowFontScaling={false} style={styles.text}>
@@ -200,13 +199,11 @@ const ModalPopupDetailChecklist = ({
               </View>
             ))}
 
-          {step === 1 && (
+          {step == 1 && (
             <>
               <View style={{ marginTop: 10 }}>
                 <Button
-                  onPress={() => {
-                    setStep(2);
-                  }}
+                  onPress={() => setStep(2)}
                   backgroundColor={COLORS.bg_white}
                   border={COLORS.bg_button}
                   color={"black"}
@@ -216,7 +213,7 @@ const ModalPopupDetailChecklist = ({
               </View>
             </>
           )}
-          {step === 1 && (
+          {step == 1 && (
             <View style={{ marginTop: 10 }}>
               <Button
                 onPress={() => {
@@ -232,13 +229,12 @@ const ModalPopupDetailChecklist = ({
               />
             </View>
           )}
-          {step === 2 && (
+          {step == 2 && (
             <>
               <View
                 style={{
                   width: SIZES.width * 0.85,
                   height: "auto",
-                  flex: "auto",
                   justifyContent: "center",
                   alignContent: "center",
                   // padding
@@ -262,7 +258,8 @@ const ModalPopupDetailChecklist = ({
                       styles.textInput,
                       {
                         paddingHorizontal: 10,
-                        height: 80,
+                        height: 70,
+                        textAlignVertical: 'top',
                       },
                     ]}
                   />
@@ -344,16 +341,16 @@ const ModalPopupDetailChecklist = ({
           <View style={{ marginTop: 10 }}>
             <Button
               onPress={() => {
-                step === 1
+                step == 1
                   ? close()
                   : (setStep(1),
                     setData(),
                     handleItemClick(objData, "close", objData, dataItem));
               }}
-              backgroundColor={step === 1 ? COLORS.bg_button : COLORS.bg_white}
+              backgroundColor={step == 1 ? COLORS.bg_button : COLORS.bg_white}
               border={COLORS.bg_button}
-              color={step === 1 ? "white" : "black"}
-              text={step === 1 ? "Đóng" : "Quay lại"}
+              color={step == 1 ? "white" : "black"}
+              text={step == 1 ? "Đóng" : "Quay lại"}
               width={"100%"}
             />
           </View>

@@ -10,8 +10,6 @@ export default function ItemDetailChecklistCa({
   index,
   toggleTodo,
   newActionCheckList,
-  headerList,
-  dataChecklistCa,
 }) {
   const isSelected = newActionCheckList?.ID_Checklist === item.ID_Checklist;
   const isError = item.ent_checklist.Tinhtrang === 1;
@@ -22,48 +20,78 @@ export default function ItemDetailChecklistCa({
     ? "#fff2cc"
     : "white";
 
-  const textColor = isSelected ? "white" : "black";
-
-  const getColumnData = (item, index) => {
-    switch (index) {
-      case 0:
-        return moment(item?.tb_checklistc?.Ngay).format("DD-MM-YYYY");
-      case 1:
-        // Xử lý thêm điều kiện cho cột Checklist
-        return (
-          <Text>
-            {item?.ent_checklist?.Checklist}
-            {item?.isCheckListLai == 1 && (
+  return (
+    // <TouchableOpacity key={index} onPress={() => toggleTodo(item)}>
+    //   <DataTable.Row style={[styles.row, { backgroundColor }]}>
+    //     {/* {headerList.map((header, i) => ( */}
+    //       <DataTable.Cell
+    //         key={i}
+    //         style={{ width: header.width, justifyContent: "center" }}
+    //       >
+    //         <Text style={{ color: textColor }}>{getColumnData(item, i)}</Text>
+    //       </DataTable.Cell>
+    //     {/* ))} */}
+    //   </DataTable.Row>
+    // </TouchableOpacity>
+    <TouchableOpacity key={index} onPressIn={() => toggleTodo(item)}>
+        <DataTable.Row
+          style={{
+            gap: 20,
+            paddingVertical: 10,
+            backgroundColor: backgroundColor,
+          }}
+        >
+          <DataTable.Cell style={{ width: 120, justifyContent: "center" }}>
+            <Text
+              allowFontScaling={false}
+              style={{ color: isSelected ? "white" : "black" }}
+              numberOfLines={2}
+            >
+              {moment(item?.tb_checklistc?.Ngay).format("DD-MM-YYYY")}
+            </Text>
+          </DataTable.Cell>
+          <DataTable.Cell style={{ width: 200, justifyContent: "center" }}>
+            <Text
+              allowFontScaling={false}
+              style={{ color: isSelected ? "white" : "black" }}
+              numberOfLines={3}
+            >
+              {item?.ent_checklist?.Checklist}
+              {item?.isCheckListLai == 1 && (
               <Text style={{ color: "red" }}> (CheckList lại)</Text>
             )}
-          </Text>
-        );
-      case 2:
-        return item?.Gioht;
-      case 3:
-        return    item?.tb_checklistc?.ent_user?.Hoten
-            ? item?.tb_checklistc?.ent_user?.Hoten
-            : dataChecklistCa?.ent_user?.Hoten;
-      case 4:
-        return item?.Ketqua;
-      default:
-        return "";
-    }
-  };
-
-  return (
-    <TouchableOpacity key={index} onPress={() => toggleTodo(item)}>
-      <DataTable.Row style={[styles.row, { backgroundColor }]}>
-        {headerList.map((header, i) => (
-          <DataTable.Cell
-            key={i}
-            style={{ width: header.width, justifyContent: "center" }}
-          >
-            <Text style={{ color: textColor }}>{getColumnData(item, i)}</Text>
+            </Text>
           </DataTable.Cell>
-        ))}
-      </DataTable.Row>
-    </TouchableOpacity>
+          <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
+            <Text
+              allowFontScaling={false}
+              style={{ color: isSelected ? "white" : "black" }}
+              numberOfLines={2}
+            >
+              {item?.Gioht}
+            </Text>
+          </DataTable.Cell>
+          <DataTable.Cell style={{ width: 150, justifyContent: "center" }}>
+            <Text
+              allowFontScaling={false}
+              style={{ color: isSelected ? "white" : "black" }}
+              numberOfLines={2}
+            >
+              {item?.tb_checklistc?.ent_user?.Hoten}
+            </Text>
+          </DataTable.Cell>
+
+          <DataTable.Cell style={{ width: 100, justifyContent: "center" }}>
+            <Text
+              allowFontScaling={false}
+              style={{ color: isSelected ? "white" : "black" }}
+              numberOfLines={2}
+            >
+              {item?.Ketqua}
+            </Text>
+          </DataTable.Cell>
+        </DataTable.Row>
+      </TouchableOpacity>
   );
 }
 

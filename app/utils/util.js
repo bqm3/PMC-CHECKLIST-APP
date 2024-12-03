@@ -21,6 +21,13 @@ export const nowDate = () => {
   return nowDate;
 };
 
+export const getImageUrls = (key, item) => {
+  if (!item) return null;
+  return item.endsWith(".jpg") || item.endsWith(".jpeg") || item.endsWith(".png")
+    ? funcBaseUri_Image(key, item.trim())
+    : `https://drive.google.com/thumbnail?id=${item.trim()}`;
+};
+
 export const funcBaseUri_Image = (key, image) => {
   let uri = ""
   switch (key) {

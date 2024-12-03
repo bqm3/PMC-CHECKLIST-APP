@@ -376,8 +376,6 @@ const DetailChecklist = ({ route, navigation }) => {
       };
     }
 
-    console.log("newItem", newItem);
-
     handleSetData(status, updatedDataChecklist, newItem);
   };
 
@@ -735,7 +733,6 @@ const DetailChecklist = ({ route, navigation }) => {
   // api tb_checklistchitiet
   const handleDataChecklistFaild = async (arrData) => {
     try {
-      console.log("arrData", arrData);
       setLoadingSubmit(true);
       // Create a new FormData instance
       const formData = new FormData();
