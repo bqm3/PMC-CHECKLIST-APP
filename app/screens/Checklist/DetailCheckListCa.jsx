@@ -1,4 +1,10 @@
-import React, { useEffect, useState, useCallback, useMemo } from "react";
+import React, {
+  useEffect,
+  useState,
+  useCallback,
+  useMemo,
+  useRef,
+} from "react";
 import {
   View,
   Text,
@@ -10,40 +16,30 @@ import {
   TouchableOpacity,
   Modal,
   Image,
+  Platform,
 } from "react-native";
-import { TouchableWithoutFeedback } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Feather } from "@expo/vector-icons";
-import { DataTable } from "react-native-paper";
 import { BASE_URL } from "../../constants/config";
 import { COLORS, SIZES, marginBottomValue } from "../../constants/theme";
 import { useSelector } from "react-redux";
 import axios from "axios";
-import moment from "moment";
 import adjust from "../../adjust";
 import ItemDetailChecklistCa from "../../components/Item/ItemDetailChecklistCa";
 import { funcBaseUri_Image, getImageUrls } from "../../utils/util";
-
 const DetailCheckListCa = ({ route }) => {
   const headerList = [
     {
-      til: "Ngày kiểm tra",
-      width: 120,
+      title: "Checklist",
+      width: SIZES.width * 0.5,
     },
     {
-      til: "Checklist",
-      width: 200,
+      title: "Giờ hoàn thành",
+      width: SIZES.width * 0.3,
     },
     {
-      til: "Giờ hoàn thành",
-      width: 150,
-    },
-    {
-      til: "Nhân viên",
-      width: 150,
-    },
-    {
-      til: "Kết quả",
-      width: 100,
+      title: "Kết quả",
+      width: SIZES.width * 0.2,
     },
   ];
 
@@ -85,9 +81,13 @@ const DetailCheckListCa = ({ route }) => {
     fetchData();
   }, [ID_ChecklistC]);
 
-  const toggleTodo = (item) => {
+  const toggleTodo = (item, index) => {
     setNewActionCheckList((prev) =>
-     prev == null || prev?.ID_Checklist !== item.ID_Checklist ? item : null
+      prev == null ||
+      prev.ID_Checklist !== item.ID_Checklist ||
+      prev.index !== index
+        ? { ...item, index }
+        : null
     );
   };
 
@@ -112,17 +112,9 @@ const DetailCheckListCa = ({ route }) => {
   }
 
   const handleImagePress = (item) => {
-    setSelectedImage(getImageUrls(1,item));
+    setSelectedImage(getImageUrls(1, item));
     setImageModalVisible(true);
   };
-
-  // const getImageUrls = (item) => {
-  //   if (!item) return null;
-  //   return item.endsWith(".jpg")
-  //     ? funcBaseUri_Image(1, item.trim())
-  //     : `https://drive.google.com/thumbnail?id=${item.trim()}`;
-  // };
-
 
   const ImagePreviewModal = () => (
     <Modal
@@ -154,260 +146,279 @@ const DetailCheckListCa = ({ route }) => {
   );
 
   return (
-    <ImageBackground
-      source={require("../../../assets/bg.png")}
-      style={[styles.backgroundImage, { opacity: opacity }]}
-      resizeMode="cover"
-    >
-      {data && data?.length > 0 ? (
-        <DataTable
-          style={{
-            backgroundColor: "white",
-          }}
-        >
-          <ScrollView
-            horizontal
-            contentContainerStyle={{
-              flexDirection: "column",
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <ImageBackground
+        source={require("../../../assets/bg.png")}
+        style={[styles.backgroundImage, { opacity: opacity }]}
+        resizeMode="cover"
+      >
+        {data && data?.length > 0 ? (
+          <View
+            style={{
+              flex: 1,
+              backgroundColor: "white",
             }}
           >
-            <DataTable.Header
-              style={{
-                backgroundColor: "#eeeeee",
-                borderTopRightRadius: 8,
-                borderTopLeftRadius: 8,
-              }}
-            >
-              {headerList &&
-                headerList.map((item, index) => {
-                  return (
-                    <DataTable.Title
-                      key={index}
-                      style={{
-                        width: item?.width,
+            <>
+              <View style={styles.headerRow}>
+                {headerList.map((item, index) => (
+                  <View
+                    key={index}
+                    style={[
+                      styles.headerCell,
+                      {
+                        flex: item.width,
                         borderRightWidth:
-                          index === headerList.length - 1 ? 0 : 2,
+                          index === headerList.length - 1 ? 0 : 1,
                         borderRightColor: "white",
+                      },
+                    ]}
+                  >
+                    <Text style={[styles.text, { color: "black" }]}>
+                      {item.title}
+                    </Text>
+                  </View>
+                ))}
+              </View>
+
+              {data?.length > 0 && (
+                <FlatList
+                  horizontal={false}
+                  contentContainerStyle={{
+                    paddingBottom:
+                      Platform.OS === "android" ? adjust(50) : adjust(0),
+                  }}
+                  data={data}
+                  keyExtractor={(item, index) =>
+                    `${item.ID_Checklist}_${index}`
+                  }
+                  scrollEventThrottle={16}
+                  showsVerticalScrollIndicator={false}
+                  ListFooterComponent={() => (
+                    <View
+                      style={{
+                        height: adjust(50),
                         justifyContent: "center",
+                        alignItems: "center",
                       }}
-                      numberOfLines={2}
                     >
                       <Text
-                        allowFontScaling={false}
-                        style={[styles.text, { color: "black" }]}
+                        style={{
+                          color: "gray",
+                          fontSize: 12,
+                        }}
                       >
-                        {item?.til}
+                        Đã hiển thị {data.length} mục
                       </Text>
-                    </DataTable.Title>
-                  );
-                })}
-            </DataTable.Header>
-
-            {data && data?.length > 0 ? (
-              <FlatList
-                keyExtractor={(item, index) =>
-                  index
-                }
-                ItemSeparatorComponent={() => <View style={{ height: 4 }} />}
-                scrollEnabled={true}
-                data={data}
-                renderItem={({ item, index }) => (
-                  <ItemDetailChecklistCa
-                    key={index}
-                    item={item}
-                    toggleTodo={toggleTodo}
-                    newActionCheckList={newActionCheckList}
-                  />
-                )}
-              />
-            ) : null}
-          </ScrollView>
-        </DataTable>
-      ) : (
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-            padding: 20,
-          }}
-        >
-          {/* <ImageBackground
-            source={require("../../../assets/bg.png")}
-            style={[styles.backgroundImage]}
-            resizeMode="cover"
-          > */}
-          <Text style={{ fontSize: 16, fontWeight: "600", color: "white" }}>
-            Không có dữ liệu
-          </Text>
-          {/* </ImageBackground> */}
-        </View>
-      )}
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(!modalVisible)}
-      >
-        <View style={styles.modalBackground}>
-          <View style={styles.centeredView}>
-            <View style={styles.modalView}>
-              <Text allowFontScaling={false} style={styles.modalText}>
-                Thông tin Checklist
-              </Text>
-
-              <ScrollView showsVerticalScrollIndicator={false}>
-                {newActionCheckList?.Anh !== null &&
-                  newActionCheckList?.Anh !== "" &&
-                  newActionCheckList?.Anh !== undefined && (
-                    <FlatList
-                      data={
-                        newActionCheckList?.Anh
-                          ? newActionCheckList?.Anh.split(",")
-                          : []
-                      }
-                      renderItem={({ item, index }) => (
-                        <View style={styles.imageContainer} key={index}>
-                          <TouchableOpacity
-                            onPress={() => handleImagePress(item)}
-                          >
-                            <Image
-                              style={styles.image}
-                              source={{
-                                uri: getImageUrls(1 , item),
-                              }} 
-                            />
-                          </TouchableOpacity>
-                        </View>
-                      )}
-                      keyExtractor={(item, index) => index.toString()}
-                      horizontal={true}
-                      showsHorizontalScrollIndicator={false}
-                      contentContainerStyle={{
-                        justifyContent:
-                          newActionCheckList?.Anh?.split(",").length === 1
-                            ? "center"
-                            : "flex-start",
-                        flexGrow: 1,
-                      }}
+                    </View>
+                  )}
+                  renderItem={({ item, index }) => (
+                    <ItemDetailChecklistCa
+                      index={index}
+                      item={item}
+                      toggleTodo={toggleTodo}
+                      newActionCheckList={newActionCheckList}
                     />
                   )}
-
-                <View
-                  style={{
-                    flexDirection: "column",
-                    marginVertical: 15,
-                    gap: 4,
-                  }}
-                >
-                  <Text allowFontScaling={false} style={styles.textModal}>
-                    Tầng: {newActionCheckList?.ent_checklist?.ent_tang?.Tentang}
-                  </Text>
-                  <Text allowFontScaling={false} style={styles.textModal}>
-                    Hạng mục - Khu vực:{" "}
-                    {newActionCheckList?.ent_checklist?.ent_hangmuc?.Hangmuc} -
-                    {newActionCheckList?.ent_checklist?.ent_khuvuc?.Tenkhuvuc}
-                  </Text>
-                  <Text allowFontScaling={false} style={styles.textModal}>
-                    Tòa nhà:{" "}
-                    {
-                      newActionCheckList?.ent_checklist?.ent_khuvuc?.ent_toanha
-                        ?.Toanha
-                    }
-                  </Text>
-                  <Text allowFontScaling={false} style={styles.textModal}>
-                    Khối công việc:{" "}
-                    {newActionCheckList?.tb_checklistc?.ent_khoicv?.KhoiCV
-                      ? newActionCheckList?.tb_checklistc?.ent_khoicv?.KhoiCV
-                      : dataChecklistCa?.ent_khoicv?.KhoiCV}
-                  </Text>
-                  <Text allowFontScaling={false} style={styles.textModal}>
-                    Người checklist:{" "}
-                    {newActionCheckList?.tb_checklistc?.ent_user?.Hoten
-                      ? newActionCheckList?.tb_checklistc?.ent_user?.Hoten
-                      : dataChecklistCa?.ent_user?.Hoten}
-                    {/* {newActionCheckList?.tb_checklistc?.ent_user?.Hoten} */}
-                  </Text>
-
-                  <Text allowFontScaling={false} style={styles.textModal}>
-                    Ca làm việc:{" "}
-                    {newActionCheckList?.tb_checklistc?.ent_calv?.Tenca
-                      ? newActionCheckList?.tb_checklistc?.ent_calv?.Tenca
-                      : dataChecklistCa?.ent_calv?.Tenca}
-                    (
-                    {newActionCheckList?.tb_checklistc?.ent_calv?.Giobatdau
-                      ? newActionCheckList?.tb_checklistc?.ent_calv?.Giobatdau
-                      : dataChecklistCa?.ent_calv?.Giobatdau}{" "}
-                    -{" "}
-                    {newActionCheckList?.tb_checklistc?.ent_calv?.Gioketthuc
-                      ? newActionCheckList?.tb_checklistc?.ent_calv?.Gioketthuc
-                      : dataChecklistCa?.ent_calv?.Gioketthuc}
-                    )
-                  </Text>
-                  <Text allowFontScaling={false} style={styles.textModal}>
-                    Giờ checklist: {newActionCheckList?.Gioht}
-                  </Text>
-                  <Text allowFontScaling={false} style={styles.textModal}>
-                    Kết quả: {newActionCheckList?.Ketqua}{" "}
-                    {newActionCheckList?.ent_checklist?.isCheck == 0
-                      ? ""
-                      : `${newActionCheckList?.ent_checklist?.Giatrinhan}`}
-                  </Text>
-                  <Text allowFontScaling={false} style={styles.textModal}>
-                    Ghi chú: {newActionCheckList?.Ghichu}
-                  </Text>
-                </View>
-              </ScrollView>
-            </View>
-            <TouchableOpacity
-              onPress={() => handleModalShow(false, 1)}
-              style={styles.buttonImage}
-            >
-              <Text allowFontScaling={false} style={styles.textImage}>
-                Đóng
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-
-      <View
-        style={{
-          width: 60,
-          position: "absolute",
-          right: 20,
-          bottom: 50,
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          gap: 10,
-        }}
-      >
-        {newActionCheckList && (
-          <>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => handleModalShow(true, 0.2)}
-            >
-              {newActionCheckList?.Anh !== null &&
-              newActionCheckList?.Anh !== undefined &&
-              newActionCheckList?.Anh !== "" ? (
-                <Feather name="image" size={26} color="white" />
-              ) : (
-                <Feather name="eye" size={26} color="white" />
+                />
               )}
-            </TouchableOpacity>
-          </>
+            </>
+          </View>
+        ) : (
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "center",
+              alignItems: "center",
+              padding: 20,
+            }}
+          >
+            <Text style={{ fontSize: 16, fontWeight: "600", color: "white" }}>
+              Không có dữ liệu
+            </Text>
+          </View>
         )}
-      </View>
-      <ImagePreviewModal />
-    </ImageBackground>
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(!modalVisible)}
+        >
+          <View style={styles.modalBackground}>
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+                <Text allowFontScaling={false} style={styles.modalText}>
+                  Thông tin Checklist
+                </Text>
+
+                <ScrollView showsVerticalScrollIndicator={false}>
+                  {newActionCheckList?.Anh !== null &&
+                    newActionCheckList?.Anh !== "" &&
+                    newActionCheckList?.Anh !== undefined && (
+                      <FlatList
+                        data={
+                          newActionCheckList?.Anh
+                            ? newActionCheckList?.Anh.split(",")
+                            : []
+                        }
+                        renderItem={({ item, index }) => (
+                          <View style={styles.imageContainer} key={index}>
+                            <TouchableOpacity
+                              onPress={() => handleImagePress(item)}
+                            >
+                              <Image
+                                style={styles.image}
+                                source={{
+                                  uri: getImageUrls(1, item),
+                                }}
+                              />
+                            </TouchableOpacity>
+                          </View>
+                        )}
+                        keyExtractor={(item, index) => index.toString()}
+                        horizontal={true}
+                        showsHorizontalScrollIndicator={false}
+                        contentContainerStyle={{
+                          justifyContent:
+                            newActionCheckList?.Anh?.split(",").length === 1
+                              ? "center"
+                              : "flex-start",
+                          flexGrow: 1,
+                        }}
+                      />
+                    )}
+
+                  <View
+                    style={{
+                      flexDirection: "column",
+                      marginVertical: 15,
+                      gap: 4,
+                    }}
+                  >
+                    <Text allowFontScaling={false} style={styles.textModal}>
+                      Tầng:{" "}
+                      {newActionCheckList?.ent_checklist?.ent_tang?.Tentang}
+                    </Text>
+                    <Text allowFontScaling={false} style={styles.textModal}>
+                      Hạng mục - Khu vực:{" "}
+                      {newActionCheckList?.ent_checklist?.ent_hangmuc?.Hangmuc}{" "}
+                      -
+                      {newActionCheckList?.ent_checklist?.ent_khuvuc?.Tenkhuvuc}
+                    </Text>
+                    <Text allowFontScaling={false} style={styles.textModal}>
+                      Tòa nhà:{" "}
+                      {
+                        newActionCheckList?.ent_checklist?.ent_khuvuc
+                          ?.ent_toanha?.Toanha
+                      }
+                    </Text>
+                    <Text allowFontScaling={false} style={styles.textModal}>
+                      Khối công việc:{" "}
+                      {newActionCheckList?.tb_checklistc?.ent_khoicv?.KhoiCV
+                        ? newActionCheckList?.tb_checklistc?.ent_khoicv?.KhoiCV
+                        : dataChecklistCa?.ent_khoicv?.KhoiCV}
+                    </Text>
+                    <Text allowFontScaling={false} style={styles.textModal}>
+                      Người checklist:{" "}
+                      {newActionCheckList?.tb_checklistc?.ent_user?.Hoten
+                        ? newActionCheckList?.tb_checklistc?.ent_user?.Hoten
+                        : dataChecklistCa?.ent_user?.Hoten}
+                      {/* {newActionCheckList?.tb_checklistc?.ent_user?.Hoten} */}
+                    </Text>
+
+                    <Text allowFontScaling={false} style={styles.textModal}>
+                      Ca làm việc:{" "}
+                      {newActionCheckList?.tb_checklistc?.ent_calv?.Tenca
+                        ? newActionCheckList?.tb_checklistc?.ent_calv?.Tenca
+                        : dataChecklistCa?.ent_calv?.Tenca}
+                      (
+                      {newActionCheckList?.tb_checklistc?.ent_calv?.Giobatdau
+                        ? newActionCheckList?.tb_checklistc?.ent_calv?.Giobatdau
+                        : dataChecklistCa?.ent_calv?.Giobatdau}{" "}
+                      -{" "}
+                      {newActionCheckList?.tb_checklistc?.ent_calv?.Gioketthuc
+                        ? newActionCheckList?.tb_checklistc?.ent_calv
+                            ?.Gioketthuc
+                        : dataChecklistCa?.ent_calv?.Gioketthuc}
+                      )
+                    </Text>
+                    <Text allowFontScaling={false} style={styles.textModal}>
+                      Giờ checklist: {newActionCheckList?.Gioht}
+                    </Text>
+                    <Text allowFontScaling={false} style={styles.textModal}>
+                      Kết quả: {newActionCheckList?.Ketqua}{" "}
+                      {newActionCheckList?.ent_checklist?.isCheck == 0
+                        ? ""
+                        : `${newActionCheckList?.ent_checklist?.Giatrinhan}`}
+                    </Text>
+                    <Text allowFontScaling={false} style={styles.textModal}>
+                      Ghi chú: {newActionCheckList?.Ghichu}
+                    </Text>
+                  </View>
+                </ScrollView>
+              </View>
+              <TouchableOpacity
+                onPress={() => handleModalShow(false, 1)}
+                style={styles.buttonImage}
+              >
+                <Text allowFontScaling={false} style={styles.textImage}>
+                  Đóng
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+
+        <View
+          style={{
+            width: 60,
+            position: "absolute",
+            right: 20,
+            bottom: 50,
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: 10,
+          }}
+        >
+          {newActionCheckList && (
+            <>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => handleModalShow(true, 0.2)}
+              >
+                <Image
+                  source={require("../../../assets/icons/ic_detail.png")}
+                  style={{
+                    width: adjust(40),
+                    height: adjust(40),
+                    tintColor: "white",
+                  }}
+                  resizeMode="contain"
+                />
+              </TouchableOpacity>
+            </>
+          )}
+        </View>
+        <ImagePreviewModal />
+      </ImageBackground>
+    </GestureHandlerRootView>
   );
 };
 
 export default DetailCheckListCa;
 const styles = StyleSheet.create({
+  headerRow: {
+    flexDirection: "row",
+    width: "100%",
+    backgroundColor: "#eeeeee",
+  },
+  headerCell: {
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 10,
+  },
   loadingContainer: {
     flex: 1,
     justifyContent: "center",

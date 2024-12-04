@@ -381,7 +381,16 @@ export const ent_checklist_mul_hm = (dataHangmuc, ID_Calv, ID_ChecklistC, ID_Kho
         const processedData = data?.map((item) => {
           return {
             ...item,
-            Giatrinhan: item?.Giatrinhan?.split("/").map((item) => item.trim()),
+            Giatrinhan: item?.Giatrinhan?.split("/").map((item) => 
+              item
+            .split(" ") // Chia chuỗi thành mảng từ
+            .map(word => 
+              word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() // Viết hoa chữ cái đầu và viết thường các chữ còn lại
+            )
+            .join(" ") 
+            .trim() 
+            ),
+            Giatriloi: item?.Giatriloi ? item?.Giatriloi.split(" ").map((item) => (item?.charAt(0).toUpperCase() + item.slice(1).toLowerCase())).join(" ").trim() : null,
             valueCheck: null,
             GhichuChitiet: "",
             ID_ChecklistC: ID_ChecklistC,

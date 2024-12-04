@@ -29,8 +29,14 @@ import { Camera } from "expo-camera";
 import { Linking } from "react-native";
 
 const ThucHienHangmuc = ({ route, navigation }) => {
-  const { ID_ChecklistC, ID_KhoiCV, ID_Khuvuc, dataFilterHandler, Tenkv } =
-    route.params;
+  const {
+    ID_ChecklistC,
+    ID_KhoiCV,
+    ID_Khuvuc,
+    dataFilterHandler,
+    Tenkv,
+    ID_Hangmucs,
+  } = route.params;
   const { dataChecklists, setHangMuc, hangMuc, HangMucDefault } =
     useContext(DataContext);
 
@@ -58,7 +64,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
         );
 
         if (finalFilteredData.length == 0 && filteredByKhuvuc.length == 0) {
-          navigation.goBack();
+          // navigation.goBack();
         } else {
           setHangMuc(finalFilteredData);
         }
@@ -72,7 +78,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
         );
 
         if (finalFilteredData.length == 0 && filteredByKhuvuc.length == 0) {
-          navigation.goBack();
+          // navigation.goBack();
         } else {
           setHangMuc(finalFilteredData);
         }
@@ -81,10 +87,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
   }, [ID_Khuvuc, HangMucDefault, dataChecklists]);
 
   const handlePushDataFilterQr = async (value) => {
-    const cleanedValue = value
-      
-      .trim()
-      .toLowerCase();
+    const cleanedValue = value.trim().toLowerCase();
     try {
       const resData = hangMuc.filter(
         (item) => item.MaQrCode.trim().toLowerCase() === cleanedValue
@@ -96,7 +99,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
           ID_Hangmuc: resData[0].ID_Hangmuc,
           hangMuc: hangMuc,
           Hangmuc: resData[0],
-          isScan: null
+          isScan: null,
         });
         setIsScan(false);
         setModalVisibleQr(false);
@@ -182,7 +185,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
       hangMuc: hangMuc,
       ID_Khuvuc: ID_Khuvuc,
       Hangmuc: dataSelect[0],
-      isScan: 1
+      isScan: 1,
     });
     setDataSelect([]);
   };
@@ -232,14 +235,22 @@ const ThucHienHangmuc = ({ route, navigation }) => {
               {item?.MaQrCode}
             </Text>
           </View>
-          <View style={{ flexDirection: "row", alignItems: "center" ,gap:10, marginRight: adjust(10)}}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 10,
+              marginRight: adjust(10),
+            }}
+          >
             {item.Important === 1 && (
-                <Image
-                  source={require("../../../assets/icons/ic_star.png")}
-                  style={{
-                    tintColor:  dataSelect[0] === item ? "white" : COLORS.bg_button,
-                  }}
-                />
+              <Image
+                source={require("../../../assets/icons/ic_star.png")}
+                style={{
+                  tintColor:
+                    dataSelect[0] === item ? "white" : COLORS.bg_button,
+                }}
+              />
             )}
             {item.Tieuchuankt !== "" && item.Tieuchuankt !== null && (
               <TouchableOpacity onPress={() => handlePopupActive(item, index)}>
@@ -396,19 +407,37 @@ const ThucHienHangmuc = ({ route, navigation }) => {
                       marginBottom: 80,
                     }}
                   >
-                    <Image
-                      source={require("../../../assets/icons/delete_bg.png")}
-                      resizeMode="contain"
-                      style={{ height: 120, width: 120 }}
-                    />
-                    <Text
-                      allowFontScaling={false}
-                      style={[styles.danhmuc, { padding: 10 }]}
-                    >
-                      {isScan
-                        ? "Không thấy hạng mục cho khu vực này"
-                        : "Không còn hạng mục cho ca làm việc này !"}
-                    </Text>
+                    {isScan ? (
+                      <>
+                        <Image
+                          source={require("../../../assets/icons/delete_bg.png")}
+                          resizeMode="contain"
+                          style={{ height: 120, width: 120 }}
+                        />
+                        <Text
+                          allowFontScaling={false}
+                          style={[styles.danhmuc, { padding: 10 }]}
+                        >
+                          ? "Không thấy hạng mục cho khu vực này"
+                        </Text>
+                      </>
+                    ) : (
+                      <View
+                        style={{
+                          flex: 1,
+                          justifyContent: "center",
+                          alignItems: "center",
+                        }}
+                      >
+                        <ActivityIndicator
+                          style={{
+                            marginRight: 4,
+                          }}
+                          size="large"
+                          color={COLORS.bg_white}
+                        ></ActivityIndicator>
+                      </View>
+                    )}
                   </View>
                 )}
                 <View

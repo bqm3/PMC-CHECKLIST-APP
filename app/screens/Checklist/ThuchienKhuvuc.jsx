@@ -123,7 +123,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
   useEffect(() => {
     const ID_HangmucsArray = Array.isArray(ID_Hangmucs)
       ? ID_Hangmucs
-      : ID_Hangmucs.split(",").map(Number);
+      : ID_Hangmucs?.split(",")?.map(Number);
     setStepKhuvuc(1);
     // Kiểm tra xem mảng ent_khuvuc có dữ liệu không
     if (ent_khuvuc && ent_khuvuc.length > 0) {

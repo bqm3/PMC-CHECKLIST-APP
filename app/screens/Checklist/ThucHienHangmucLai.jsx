@@ -55,7 +55,7 @@ const ThucHienHangmucLai = ({ route, navigation }) => {
         );
 
         if (finalFilteredData.length == 0 && filteredByKhuvuc.length == 0) {
-          navigation.goBack();
+          // navigation.goBack();
         } else {
           setHangMuc(finalFilteredData);
         }
@@ -69,7 +69,7 @@ const ThucHienHangmucLai = ({ route, navigation }) => {
         );
 
         if (finalFilteredData.length == 0 && filteredByKhuvuc.length == 0) {
-          navigation.goBack();
+          // navigation.goBack();
         } else {
           setHangMuc(finalFilteredData);
         }
