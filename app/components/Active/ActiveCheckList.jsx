@@ -1,5 +1,5 @@
 import React from "react";
-import { Text, View, TouchableOpacity, StyleSheet } from "react-native";
+import { Text, View, TouchableOpacity, StyleSheet, Image } from "react-native";
 import { Entypo, Ionicons } from "@expo/vector-icons";
 import { COLORS } from "../../constants/theme";
 import adjust from "../../adjust";
@@ -13,9 +13,25 @@ const ActiveChecklist = ({ item, handleToggle, size, index }) => {
     >
       {item.valueCheck !== null &&
         (`${item?.valueCheck}` == `${item?.Giatriloi}` ? (
-          <Ionicons name="close" size={24} color="red" />
+          <Image
+            source={require("../../../assets/icons/ic_close.png")}
+            style={{
+              width: adjust(24),
+              height: adjust(24),
+              tintColor: "red",
+            }}
+            resizeMode="contain"
+          />
         ) : (
-          <Entypo name="check" size={adjust(24)} color={"green"} />
+          <Image
+          source={require("../../../assets/icons/ic_checkbox.png")}
+          style={{
+            width: adjust(24),
+            height: adjust(24),
+            tintColor: "green"
+          }}
+          resizeMode="contain"
+        />
         ))}
     </TouchableOpacity>
   );

@@ -35,6 +35,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
     ID_Khuvuc,
     dataFilterHandler,
     Tenkv,
+    ID_Calv,
     ID_Hangmucs,
   } = route.params;
   const { dataChecklists, setHangMuc, hangMuc, HangMucDefault } =
@@ -65,6 +66,12 @@ const ThucHienHangmuc = ({ route, navigation }) => {
 
         if (finalFilteredData.length == 0 && filteredByKhuvuc.length == 0) {
           // navigation.goBack();
+          navigation.navigate("Thực hiện khu vực", {
+            ID_ChecklistC: ID_ChecklistC,
+            ID_KhoiCV: ID_KhoiCV,
+            ID_ThietLapCa: ID_Calv,
+            ID_Hangmucs: ID_Hangmucs,
+          });
         } else {
           setHangMuc(finalFilteredData);
         }
@@ -79,6 +86,13 @@ const ThucHienHangmuc = ({ route, navigation }) => {
 
         if (finalFilteredData.length == 0 && filteredByKhuvuc.length == 0) {
           // navigation.goBack();
+
+          navigation.navigate("Thực hiện khu vực", {
+            ID_ChecklistC: ID_ChecklistC,
+            ID_KhoiCV: ID_KhoiCV,
+            ID_ThietLapCa: ID_Calv,
+            ID_Hangmucs: ID_Hangmucs,
+          });
         } else {
           setHangMuc(finalFilteredData);
         }
@@ -377,10 +391,15 @@ const ThucHienHangmuc = ({ route, navigation }) => {
                     />
                   </>
                 ) : (
-                  navigation.goBack()
+                  navigation.navigate("Thực hiện khu vực", {
+                    ID_ChecklistC: ID_ChecklistC,
+                    ID_KhoiCV: ID_KhoiCV,
+                    ID_ThietLapCa: ID_Calv,
+                    ID_Hangmucs: ID_Hangmucs,
+                  })
                 )}
 
-                {isLoadingDetail === true && hangMuc?.length == 0 && (
+                {/* {isLoadingDetail === true && hangMuc?.length == 0 && (
                   <View
                     style={{
                       flex: 1,
@@ -396,9 +415,9 @@ const ThucHienHangmuc = ({ route, navigation }) => {
                       color={COLORS.bg_white}
                     ></ActivityIndicator>
                   </View>
-                )}
+                )} */}
 
-                {isLoadingDetail === false && hangMuc?.length == 0 && (
+                {/* {isLoadingDetail === false && hangMuc?.length == 0 && (
                   <View
                     style={{
                       flex: 1,
@@ -407,39 +426,24 @@ const ThucHienHangmuc = ({ route, navigation }) => {
                       marginBottom: 80,
                     }}
                   >
-                    {isScan ? (
-                      <>
-                        <Image
-                          source={require("../../../assets/icons/delete_bg.png")}
-                          resizeMode="contain"
-                          style={{ height: 120, width: 120 }}
-                        />
-                        <Text
-                          allowFontScaling={false}
-                          style={[styles.danhmuc, { padding: 10 }]}
-                        >
-                          ? "Không thấy hạng mục cho khu vực này"
-                        </Text>
-                      </>
-                    ) : (
-                      <View
+                    <View
+                      style={{
+                        flex: 1,
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <ActivityIndicator
                         style={{
-                          flex: 1,
-                          justifyContent: "center",
-                          alignItems: "center",
+                          marginRight: 4,
                         }}
-                      >
-                        <ActivityIndicator
-                          style={{
-                            marginRight: 4,
-                          }}
-                          size="large"
-                          color={COLORS.bg_white}
-                        ></ActivityIndicator>
-                      </View>
-                    )}
+                        size="large"
+                        color={COLORS.bg_white}
+                      ></ActivityIndicator>
+                    </View>
                   </View>
-                )}
+                )} */}
+
                 <View
                   style={{
                     position: "absolute",
@@ -459,7 +463,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
                     />
                   )}
 
-                  {dataSelect[0] && (
+                  {dataSelect.length > 0 && (
                     <Button
                       text={"Vào Checklist"}
                       backgroundColor={COLORS.bg_button}

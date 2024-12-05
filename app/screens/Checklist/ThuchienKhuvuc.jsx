@@ -277,6 +277,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
           ID_Calv: ID_Calv,
           ID_Khuvuc: resDataKhuvuc[0].ID_Khuvuc,
           dataFilterHandler: dataFilterHandler,
+          ID_Hangmucs: ID_Hangmucs
         });
       } else if (resDataKhuvuc.length === 0 && resDataHangmuc.length === 0) {
         Alert.alert(
@@ -835,6 +836,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
       ID_Khuvuc: dataSelect[0].ID_Khuvuc,
       dataFilterHandler: dataFilterHandler,
       Tenkv: `${dataSelect[0]?.Tenkhuvuc} - ${dataSelect[0]?.ent_toanha?.Toanha}`,
+      ID_Hangmucs: ID_Hangmucs
     });
     setDataSelect([]);
   };

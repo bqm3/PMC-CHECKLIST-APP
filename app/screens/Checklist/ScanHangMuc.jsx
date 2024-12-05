@@ -47,7 +47,7 @@ const ScanHangMuc = ({ navigation, route }) => {
               dataSelect[0] === item
                 ? COLORS.bg_button
                 : item.items.some(
-                    (i) => i?.ent_checklist?.ent_hangmuc?.isScan == 1
+                    (i) => i?.isScan == 1
                   )
                 ? "silver"
                 : "white",
@@ -105,15 +105,15 @@ const ScanHangMuc = ({ navigation, route }) => {
             )}
 
             {item.items.some(
-              (i) => i?.ent_checklist?.ent_hangmuc?.isScan == 1
+              (i) => i?.isScan == 1
             ) && (
               <View style={styles.qrWrapper}>
-              <Image
-                source={require("../../../assets/icons/ic_qrcode_30x30.png")}
-              />
-              <View style={[styles.diagonalLine1]} />
-              <View style={[styles.diagonalLine2]} />
-            </View>
+                <Image
+                  source={require("../../../assets/icons/ic_qrcode_30x30.png")}
+                />
+                <View style={[styles.diagonalLine1]} />
+                <View style={[styles.diagonalLine2]} />
+              </View>
             )}
 
             {item?.items[0]?.ent_checklist?.ent_hangmuc?.Tieuchuankt !== "" &&

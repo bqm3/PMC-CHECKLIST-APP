@@ -157,6 +157,16 @@ const ThucHienChecklist = ({ navigation }) => {
     int_checklistc();
   }, []);
 
+  useFocusEffect(
+    useCallback(() => {
+      // init_ca();
+      loadData();
+      int_checklistc();
+
+      return () => {};
+    }, [dispath])
+  );
+
   // Xóa cache khi không còn ca đang mở
   const clearCacheDirectory = async (data) => {
     try {
@@ -173,18 +183,6 @@ const ThucHienChecklist = ({ navigation }) => {
       console.error("Lỗi khi xóa cache:", error);
     }
   };
-
-  useFocusEffect(
-    useCallback(() => {
-      // This will run every time the screen is focused
-      loadData();
-
-      // Optionally return a cleanup function if needed
-      return () => {
-        // Cleanup logic if necessary
-      };
-    }, []) // Dependencies for focus effect, keep it empty if you want it to run on every focus
-  );
 
   const toggleTodo = async (item, index) => {
     // setIsCheckbox(true);
