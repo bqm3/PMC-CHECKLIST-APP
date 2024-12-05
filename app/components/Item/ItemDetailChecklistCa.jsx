@@ -55,7 +55,7 @@ const ItemDetailChecklistCa = React.memo(({ item, index, toggleTodo, newActionCh
           </Text>
         </View>
       </View>
-    </TouchableOpacity>
+     </TouchableOpacity>
   );
 });
 

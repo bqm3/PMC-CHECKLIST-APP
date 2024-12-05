@@ -1458,7 +1458,8 @@ const DetailChecklistLai = ({ route, navigation }) => {
             transparent={true}
             visible={isBottomSheetOpen}
             onRequestClose={() => {
-              setIsBottomSheetOpen(!isBottomSheetOpen);
+              // setIsBottomSheetOpen(!isBottomSheetOpen);
+              handleClearBottom()
             }}
           >
             <View style={[styles.centeredView, { height: "100%" }]}>
@@ -1509,6 +1510,7 @@ const DetailChecklistLai = ({ route, navigation }) => {
             visible={modalVisibleTieuChuan}
             onRequestClose={() => {
               setModalVisibleTieuChuan(!modalVisibleTieuChuan);
+              setOpacity(1);
             }}
           >
             <View style={[styles.centeredView, { height: "100%" }]}>
@@ -1547,7 +1549,7 @@ const DetailChecklistLai = ({ route, navigation }) => {
             transparent={false}
             visible={show}
             onRequestClose={() => {
-              console.log("Modal has been closed.");
+              setShow(false)
             }}
           >
             <TouchableOpacity onPress={() => setShow(false)}>

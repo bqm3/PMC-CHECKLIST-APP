@@ -1516,7 +1516,9 @@ const DetailChecklist = ({ route, navigation }) => {
             transparent={true}
             visible={isBottomSheetOpen}
             onRequestClose={() => {
-              setIsBottomSheetOpen(!isBottomSheetOpen);
+            //  setIsBottomSheetOpen(!isBottomSheetOpen);
+            //  setOpacity(1);
+             handleClearBottom();
             }}
           >
             <View style={[styles.centeredView, { height: "100%" }]}>
@@ -1566,6 +1568,7 @@ const DetailChecklist = ({ route, navigation }) => {
             visible={modalVisible}
             onRequestClose={() => {
               setModalVisible(!modalVisible);
+              setOpacity(1);
             }}
           >
             <View style={[styles.centeredView, { height: "100%" }]}>
@@ -1604,7 +1607,7 @@ const DetailChecklist = ({ route, navigation }) => {
             transparent={false}
             visible={show}
             onRequestClose={() => {
-              console.log("Modal has been closed.");
+              setShow(false)
             }}
           >
             <TouchableOpacity onPress={() => setShow(false)}>
