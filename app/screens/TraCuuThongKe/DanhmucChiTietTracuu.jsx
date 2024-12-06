@@ -35,12 +35,6 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Feather } from "@expo/vector-icons";
 import { DataTable } from "react-native-paper";
 import { COLORS, SIZES } from "../../constants/theme";
-import {
-  ent_tang_get,
-  ent_khuvuc_get,
-  ent_toanha_get,
-  ent_khoicv_get,
-} from "../../redux/actions/entActions";
 import axios from "axios";
 import { BASE_URL } from "../../constants/config";
 import moment from "moment";

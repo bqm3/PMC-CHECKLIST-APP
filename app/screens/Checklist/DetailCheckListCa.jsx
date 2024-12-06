@@ -100,7 +100,6 @@ const DetailCheckListCa = ({ route }) => {
   }, [ID_ChecklistC]);
 
   const toggleTodo = (item, index) => {
-    console.log('index')
     setNewActionCheckList((prev) =>
       prev == null ||
       prev.ID_Checklist !== item.ID_Checklist ||

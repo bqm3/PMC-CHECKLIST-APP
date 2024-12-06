@@ -89,6 +89,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
     await dispath(ent_checklist_mul_hm(ID_Hangmucs, ID_Calv, ID_ChecklistC));
     setIsLoadingDetail(false);
   };
+  console.log('ID_ChecklistC', ID_ChecklistC)
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("beforeRemove", (e) => {
