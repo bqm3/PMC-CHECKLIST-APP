@@ -56,54 +56,86 @@ const ThucHienHangmuc = ({ route, navigation }) => {
         (item) => item.ID_Khuvuc == ID_Khuvuc
       );
 
-      if (dataFilterHandler.length > 0) {
-        const checklistIDs = dataFilterHandler?.map((item) => item.ID_Hangmuc);
+      const checklistIDs = dataChecklists?.map((item) => item.ID_Hangmuc);
+      const finalFilteredData = filteredByKhuvuc?.filter((item) =>
+        checklistIDs.includes(item.ID_Hangmuc)
+      );
 
-        // Lọc filteredByKhuvuc để chỉ giữ lại các mục có ID_Hangmuc tồn tại trong checklistIDs
-        const finalFilteredData = filteredByKhuvuc?.filter((item) =>
-          checklistIDs.includes(item.ID_Hangmuc)
-        );
-
-        if (finalFilteredData.length == 0 && filteredByKhuvuc.length == 0) {
-          // navigation.navigate("Thực hiện khu vực", {
-          //   ID_ChecklistC: ID_ChecklistC,
-          //   ID_KhoiCV: ID_KhoiCV,
-          //   ID_ThietLapCa: ID_Calv,
-          //   ID_Hangmucs: ID_Hangmucs,
-          // });
-          // setTimeout(() => {
-          //   navigation.goBack();
-          // }, 10000);
-          navigation.goBack();
-        } else {
-          setHangMuc(finalFilteredData);
+      if (finalFilteredData.length == 0) {
+        if (finalFilteredData.length === 0) {
+          setTimeout(() => {
+            if (navigation.canGoBack()) {
+              navigation.goBack();
+            }
+          }, 500); // Thử thêm độ trễ nhỏ
         }
+        
       } else {
-        // Lấy danh sách ID_Hangmuc từ dataChecklists
-        const checklistIDs = dataChecklists?.map((item) => item.ID_Hangmuc);
-
-        // Lọc filteredByKhuvuc để chỉ giữ lại các mục có ID_Hangmuc tồn tại trong checklistIDs
-        const finalFilteredData = filteredByKhuvuc?.filter((item) =>
-          checklistIDs.includes(item.ID_Hangmuc)
-        );
-
-        if (finalFilteredData.length == 0 && filteredByKhuvuc.length == 0) {
-          // navigation.navigate("Thực hiện khu vực", {
-          //   ID_ChecklistC: ID_ChecklistC,
-          //   ID_KhoiCV: ID_KhoiCV,
-          //   ID_ThietLapCa: ID_Calv,
-          //   ID_Hangmucs: ID_Hangmucs,
-          // });
-          // setTimeout(() => {
-          //   navigation.goBack();
-          // }, 10000);
-          navigation.goBack();
-        } else {
-          setHangMuc(finalFilteredData);
-        }
+        setHangMuc(finalFilteredData);
       }
     }
   }, [ID_Khuvuc, HangMucDefault, dataChecklists]);
+  // useEffect(() => {
+  //   if (HangMucDefault && dataChecklists) {
+  //     // Lọc các mục có ID_Khuvuc trùng khớp
+  //     const filteredByKhuvuc = HangMucDefault?.filter(
+  //       (item) => item.ID_Khuvuc == ID_Khuvuc
+  //     );
+
+  //     console.log('dataFilterHandler', dataFilterHandler)
+  //     if (dataFilterHandler.length > 0) {
+  //       const checklistIDs = dataFilterHandler?.map((item) => item.ID_Hangmuc);
+
+  //       // Lọc filteredByKhuvuc để chỉ giữ lại các mục có ID_Hangmuc tồn tại trong checklistIDs
+  //       const finalFilteredData = filteredByKhuvuc?.filter((item) =>
+  //         checklistIDs.includes(item.ID_Hangmuc)
+  //       );
+
+  //       if (finalFilteredData.length == 0 && filteredByKhuvuc.length == 0) {
+  //         // navigation.navigate("Thực hiện khu vực", {
+  //         //   ID_ChecklistC: ID_ChecklistC,
+  //         //   ID_KhoiCV: ID_KhoiCV,
+  //         //   ID_ThietLapCa: ID_Calv,
+  //         //   ID_Hangmucs: ID_Hangmucs,
+  //         // });
+  //         // setTimeout(() => {
+  //         //   navigation.goBack();
+  //         // }, 10000);
+  //         console.log('riun 1')
+  //         navigation.goBack();
+  //       } else {
+  //         console.log('riun 1-1')
+  //         setHangMuc(finalFilteredData);
+  //       }
+  //     } else {
+  //       // Lấy danh sách ID_Hangmuc từ dataChecklists
+  //       const checklistIDs = dataChecklists?.map((item) => item.ID_Hangmuc);
+
+  //       // Lọc filteredByKhuvuc để chỉ giữ lại các mục có ID_Hangmuc tồn tại trong checklistIDs
+  //       const finalFilteredData = filteredByKhuvuc?.filter((item) =>
+  //         checklistIDs.includes(item.ID_Hangmuc)
+  //       );
+
+  //       if (finalFilteredData.length == 0 && filteredByKhuvuc.length == 0) {
+  //         // navigation.navigate("Thực hiện khu vực", {
+  //         //   ID_ChecklistC: ID_ChecklistC,
+  //         //   ID_KhoiCV: ID_KhoiCV,
+  //         //   ID_ThietLapCa: ID_Calv,
+  //         //   ID_Hangmucs: ID_Hangmucs,
+  //         // });
+  //         // setTimeout(() => {
+  //         //   navigation.goBack();
+  //         // }, 10000);
+  //         console.log('riun 2')
+  //         navigation.goBack();
+  //       } else {
+  //         console.log('riun 2-2')
+  //         console.log('finalFilteredData',finalFilteredData, filteredByKhuvuc)
+  //         setHangMuc(finalFilteredData);
+  //       }
+  //     }
+  //   }
+  // }, [ID_Khuvuc, HangMucDefault, dataChecklists]);
 
   const handlePushDataFilterQr = async (value) => {
     const cleanedValue = value.trim().toLowerCase();
@@ -375,28 +407,30 @@ const ThucHienHangmuc = ({ route, navigation }) => {
                   </View>
                 </View>
 
-                {isLoadingDetail === false && hangMuc && hangMuc?.length > 0 && (
-                  <>
-                    <FlatList
-                      style={{
-                        margin: 12,
-                        flex: 1,
-                        marginBottom: 100,
-                      }}
-                      data={hangMuc}
-                      renderItem={({ item, index, separators }) =>
-                        renderItem(item, index)
-                      }
-                      ItemSeparatorComponent={() => (
-                        <View style={{ height: 16 }} />
-                      )}
-                      keyExtractor={(item, index) =>
-                        `${item?.ID_Checklist}_${index}`
-                      }
-                      showsVerticalScrollIndicator={false}
-                    />
-                  </>
-                )}
+                {isLoadingDetail === false &&
+                  hangMuc &&
+                  hangMuc?.length > 0 && (
+                    <>
+                      <FlatList
+                        style={{
+                          margin: 12,
+                          flex: 1,
+                          marginBottom: 100,
+                        }}
+                        data={hangMuc}
+                        renderItem={({ item, index, separators }) =>
+                          renderItem(item, index)
+                        }
+                        ItemSeparatorComponent={() => (
+                          <View style={{ height: 16 }} />
+                        )}
+                        keyExtractor={(item, index) =>
+                          `${item?.ID_Checklist}_${index}`
+                        }
+                        showsVerticalScrollIndicator={false}
+                      />
+                    </>
+                  )}
 
                 {/* {isLoadingDetail === true && hangMuc?.length == 0 && (
                   <View

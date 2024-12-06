@@ -34,8 +34,8 @@ const ItemDetailChecklistCa = React.memo(({ item, index, toggleTodo, newActionCh
           )}
         </View>
 
-        <View style={styles.textContainer}>
-          <Text allowFontScaling={false} style={[styles.text, { color: textColor }]} numberOfLines={3}>
+        <View style={[styles.textContainer]}>
+          <Text allowFontScaling={false} style={[styles.text, { color: textColor }]} numberOfLines={4}>
             {item?.ent_checklist?.Checklist}
           </Text>
           {item?.isCheckListLai === 1 && (
@@ -49,7 +49,7 @@ const ItemDetailChecklistCa = React.memo(({ item, index, toggleTodo, newActionCh
           </Text>
         </View>
 
-        <View style={styles.centeredContainer}>
+        <View style={[styles.centeredContainer]}>
           <Text allowFontScaling={false} style={[styles.text, { color: textColor }]} numberOfLines={2}>
             {item?.Ketqua}
           </Text>
@@ -83,6 +83,7 @@ const styles = StyleSheet.create({
   },
   text: {
     flexWrap: "wrap",
+    textAlign: 'center'
   },
   redText: {
     color: "red",

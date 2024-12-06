@@ -444,7 +444,6 @@ const ThucHienChecklist = ({ navigation }) => {
   const handleClosePopUp = () => {
     setOpacity(1);
     setModalVisible(false);
-    console.log(opacity);
   };
 
   const handleOpenPopUp = () => {

@@ -36,12 +36,12 @@ const DetailCheckListCa = ({ route }) => {
       width: SIZES.width * 0.5,
     },
     {
-      title: "Giờ hoàn thành",
-      width: SIZES.width * 0.3,
+      title: "Giờ",
+      width: SIZES.width * 0.25,
     },
     {
       title: "Kết quả",
-      width: SIZES.width * 0.2,
+      width: SIZES.width * 0.25,
     },
   ];
 
@@ -58,7 +58,6 @@ const DetailCheckListCa = ({ route }) => {
 
   useEffect(() => {
     const backAction = () => {
-      console.log("modalVisible",modalVisible)
       if (modalVisible) {
         handleModalShow(false, 1);
         return true;
@@ -101,6 +100,7 @@ const DetailCheckListCa = ({ route }) => {
   }, [ID_ChecklistC]);
 
   const toggleTodo = (item, index) => {
+    console.log('index')
     setNewActionCheckList((prev) =>
       prev == null ||
       prev.ID_Checklist !== item.ID_Checklist ||
@@ -165,11 +165,10 @@ const DetailCheckListCa = ({ route }) => {
   );
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <ImageBackground
           source={require("../../../assets/bg.png")}
-          style={[styles.backgroundImage, { opacity: opacity }]}
+          style={[styles.backgroundImage]}
           resizeMode="cover"
         >
           {data && data?.length > 0 ? (
@@ -177,6 +176,7 @@ const DetailCheckListCa = ({ route }) => {
               style={{
                 flex: 1,
                 backgroundColor: "white",
+                opacity: opacity 
               }}
             >
               <>
@@ -217,7 +217,7 @@ const DetailCheckListCa = ({ route }) => {
                     }
                     contentContainerStyle={{
                       paddingBottom:
-                        Platform.OS === "ios" ? adjust(100) : adjust(50),
+                        Platform.OS === "ios" ? adjust(80) : adjust(60),
                     }}
                     onScrollToIndexFailed={(info) => {
                       // Ngăn chặn việc tự động cuộn khi click item cuối
@@ -411,7 +411,10 @@ const DetailCheckListCa = ({ route }) => {
             </View>
           </Modal>
 
-          {newActionCheckList && (
+        
+          <ImagePreviewModal />
+        </ImageBackground>
+        {newActionCheckList && (
             <View
               style={{
                 width: 60,
@@ -422,6 +425,7 @@ const DetailCheckListCa = ({ route }) => {
                 justifyContent: "center",
                 alignItems: "center",
                 gap: 10,
+                zIndex:1000
               }}
             >
               <>
@@ -442,10 +446,7 @@ const DetailCheckListCa = ({ route }) => {
               </>
             </View>
           )}
-          <ImagePreviewModal />
-        </ImageBackground>
       </GestureHandlerRootView>
-    </SafeAreaView>
   );
 };
 

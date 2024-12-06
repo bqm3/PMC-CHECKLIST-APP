@@ -174,7 +174,6 @@ const XulySuco = ({ navigation }) => {
         });
 
         setUserPhone(response.data.data);
-        console.log("userPhone",userPhone)
       } catch (error) {
         console.error("Error fetching user phone:", error);
         Alert.alert("PMC Thông báo", "Có lỗi xảy ra!", [

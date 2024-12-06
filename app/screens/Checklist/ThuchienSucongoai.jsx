@@ -46,7 +46,6 @@ import ModalCallSucongoai from "../../components/Modal/ModalCallSucongoai";
 const ThuchienSucongoai = ({ navigation, route }) => {
   const dispath = useDispatch();
   const { userPhone } = route.params;
-  console.log("userPhone",userPhone)
   const { user, authToken } = useSelector((state) => state.authReducer);
   const { ent_khuvuc, ent_khoicv, ent_toanha, ent_hangmuc } = useSelector(
     (state) => state.entReducer
