@@ -46,33 +46,22 @@ const ThucHienHangmucLai = ({ route, navigation }) => {
         (item) => item.ID_Khuvuc == ID_Khuvuc
       );
 
-      if (dataFilterHandler.length > 0) {
-        const checklistIDs = dataFilterHandler?.map((item) => item.ID_Hangmuc);
+      const checklistIDs = dataChecklists?.map((item) => item.ID_Hangmuc);
+      const finalFilteredData = filteredByKhuvuc?.filter((item) =>
+        checklistIDs.includes(item.ID_Hangmuc)
+      );
 
-        // Lọc filteredByKhuvuc để chỉ giữ lại các mục có ID_Hangmuc tồn tại trong checklistIDs
-        const finalFilteredData = filteredByKhuvuc?.filter((item) =>
-          checklistIDs.includes(item.ID_Hangmuc)
-        );
-
-        if (finalFilteredData.length == 0 && filteredByKhuvuc.length == 0) {
-          navigation.goBack();
-        } else {
-          setHangMuc(finalFilteredData);
+      if (finalFilteredData.length == 0) {
+        if (finalFilteredData.length === 0) {
+          setTimeout(() => {
+            if (navigation.canGoBack()) {
+              navigation.goBack();
+            }
+          }, 500); // Thử thêm độ trễ nhỏ
         }
+        
       } else {
-        // Lấy danh sách ID_Hangmuc từ dataChecklists
-        const checklistIDs = dataChecklists?.map((item) => item.ID_Hangmuc);
-
-        // Lọc filteredByKhuvuc để chỉ giữ lại các mục có ID_Hangmuc tồn tại trong checklistIDs
-        const finalFilteredData = filteredByKhuvuc?.filter((item) =>
-          checklistIDs.includes(item.ID_Hangmuc)
-        );
-
-        if (finalFilteredData.length == 0 && filteredByKhuvuc.length == 0) {
-          navigation.goBack();
-        } else {
-          setHangMuc(finalFilteredData);
-        }
+        setHangMuc(finalFilteredData);
       }
     }
   }, [ID_Khuvuc, HangMucDefault, dataChecklists]);
@@ -253,7 +242,7 @@ const ThucHienHangmucLai = ({ route, navigation }) => {
                   </Text>
                 </View>
 
-                {isLoadingDetail === false && hangMuc?.length > 0 ? (
+                {isLoadingDetail === false && hangMuc?.length > 0 && (
                   <FlatList
                     style={{ margin: 12, flex: 1, marginBottom: 100 }}
                     data={hangMuc}
@@ -264,9 +253,8 @@ const ThucHienHangmucLai = ({ route, navigation }) => {
                     keyExtractor={(item, index) =>
                       `${item?.ID_Checklist}_${index}`
                     }
+                    showsVerticalScrollIndicator={false}
                   />
-                ) : (
-                  navigation.goBack()
                 )}
 
                 {isLoadingDetail && (

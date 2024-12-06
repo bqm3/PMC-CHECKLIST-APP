@@ -40,8 +40,8 @@ export default function ItemCaChecklist({
             { fontWeight: "500", color: isExistIndex ? "black" : "white" },
           ]}
         >
-          : {moment(item.Giobd, "HH:mm:ss").format("HH:mm")} -{" "}
-          {item.Giokt && moment(item?.Giokt, "HH:mm:ss").format("HH:mm")} (
+          : {moment(item.Giobd, "HH:mm:ss").format("HH:mm")}
+          {item.Giokt ? ` - ${moment(item?.Giokt, "HH:mm:ss").format("HH:mm")}` : ""} (
           {moment(item?.Ngay).format("DD-MM")})
         </Text>
         <Image

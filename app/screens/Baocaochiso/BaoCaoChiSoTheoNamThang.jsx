@@ -1,17 +1,13 @@
 import {
   StyleSheet,
-  Text,
   View,
   ImageBackground,
   Platform,
-  Keyboard,
   TouchableWithoutFeedback,
   KeyboardAvoidingView,
-  TouchableOpacity,
   FlatList,
-  ActivityIndicator,
-  Alert,
-  Dimensions
+  Dimensions,
+  BackHandler
 } from "react-native";
 import React, { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
@@ -43,6 +39,23 @@ const BaoCaoChiSoTheoNamThang = ({ navigation, route }) => {
   const handleCloseBottomSheet = useCallback(() => {
     bottomSheetModalRef.current.close();
   }, []);
+
+  useEffect(() => {
+    const backAction = () => {
+      if (opacity == 0.2) {
+        handleCloseBottomSheet();
+        return true;
+      }
+      return false;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, [opacity]);
 
   const toggleTodo = async (item, index) => {
     setItem(item)

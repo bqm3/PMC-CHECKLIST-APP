@@ -28,6 +28,7 @@ import { BASE_URL } from "../../constants/config";
 import moment from "moment";
 import ModalTraCuu from "../../components/Modal/ModalTracuu";
 import ItemCaChecklist from "../../components/Item/ItemCaChecklist";
+import { el } from "date-fns/locale";
 
 const numberOfItemsPerPage = 20;
 const DanhmucTraCuu = ({ setOpacity, opacity, navigation }) => {
@@ -204,7 +205,14 @@ const DanhmucTraCuu = ({ setOpacity, opacity, navigation }) => {
     fetchData(filterReset, true, true);
   };
 
+  // const handleLoadMore = () => {
+  //   if (hasMoreData && !isLoading) {
+  //     setPage((prevPage) => prevPage + 1); // Tăng trang lên 1
+  //   }
+  // };
+
   const handleLoadMore = () => {
+    if (data.length < 20 || isLoading) { return; }
     if (hasMoreData && !isLoading) {
       setPage((prevPage) => prevPage + 1); // Tăng trang lên 1
     }
@@ -276,7 +284,7 @@ const DanhmucTraCuu = ({ setOpacity, opacity, navigation }) => {
     if (number === 0) return `0`;
     return number;
   };
-  
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <KeyboardAvoidingView

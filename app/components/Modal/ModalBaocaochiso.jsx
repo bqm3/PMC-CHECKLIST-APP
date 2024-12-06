@@ -51,7 +51,6 @@ const ModalBaocaochiso = ({
   };
 
   const handleSubmit = () => {
-    
     const chisoFloat = parseFloat(selectedItemData.Chiso);
 
     if (isNaN(chisoFloat)) {
@@ -127,7 +126,7 @@ const ModalBaocaochiso = ({
         setIsLoadingImage(false);
         setOpacity(1);
         console.error("Image upload error:", error);
-        showAlert("Có lỗi xảy ra vui lòng thử lại")
+        showAlert("Có lỗi xảy ra vui lòng thử lại");
       }
     }
   };
@@ -146,7 +145,10 @@ const ModalBaocaochiso = ({
     <GestureHandlerRootView style={[styles.container]}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View>
-          <View style={[styles.content, , { opacity: opacity}]}  pointerEvents={isLoadingImage ? "none" : "auto"}>
+          <View
+            style={[styles.content, , { opacity: opacity }]}
+            pointerEvents={isLoadingImage ? "none" : "auto"}
+          >
             <Text style={styles.text}>Chụp ảnh</Text>
             <View style={styles.imageSection}>
               <TouchableOpacity style={styles.cameraButton} onPress={pickImage}>
@@ -154,6 +156,7 @@ const ModalBaocaochiso = ({
               </TouchableOpacity>
               {selectedItemData?.Image?.uri && (
                 <Image
+                  key={selectedItemData.Image.uri}
                   source={{ uri: selectedItemData?.Image?.uri }}
                   style={styles.image}
                 />
@@ -167,7 +170,7 @@ const ModalBaocaochiso = ({
               placeholderTextColor="gray"
               onChangeText={handleChiso}
               style={styles.textInput}
-              editable={selectedItemData?.Image?.uri !== undefined }
+              editable={selectedItemData?.Image?.uri !== undefined}
             />
             <Text style={styles.text}>Ghi chú</Text>
             <TextInput
@@ -177,7 +180,6 @@ const ModalBaocaochiso = ({
               multiline
               onChangeText={handleGhichu}
               style={[styles.textInput, styles.multilineTextInput]}
-            
             />
             <View style={styles.buttonContainer}>
               <Button

@@ -15,7 +15,7 @@ import {
   TouchableHighlight,
   Alert,
   BackHandler,
-  Image
+  Image,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { Provider, useDispatch, useSelector } from "react-redux";
@@ -90,7 +90,6 @@ const XulySuco = ({ navigation }) => {
     return unsubscribe;
   }, [navigation]);
 
-
   const handleChangeStatus = (key, val) => {
     setChangeStatus((prevStatus) => {
       const updatedStatus = Object.keys(prevStatus).reduce(
@@ -123,7 +122,6 @@ const XulySuco = ({ navigation }) => {
     }
     setLoading(false);
   }, [tb_sucongoai]);
-
 
   useEffect(() => {
     const backAction = () => {
@@ -170,11 +168,11 @@ const XulySuco = ({ navigation }) => {
         const response = await axios.get(`${BASE_URL}/ent_user/getPhone`, {
           headers: {
             Accept: "application/json",
-            Authorization: `Bearer ${authToken}`, 
+            Authorization: `Bearer ${authToken}`,
           },
-          timeout: 10000, 
+          timeout: 10000,
         });
-  
+
         setUserPhone(response.data.data);
       } catch (error) {
         console.error("Error fetching user phone:", error);
@@ -190,8 +188,7 @@ const XulySuco = ({ navigation }) => {
     };
 
     fetchData();
-  }, []); 
-  
+  }, []);
 
   const hanldeDetailSuco = async (data) => {
     try {
@@ -240,7 +237,6 @@ const XulySuco = ({ navigation }) => {
     setIsBottomSheetOpen(false);
   };
 
-
   useEffect(() => {
     let height = 300;
     if (hangmuc === undefined) {
@@ -257,7 +253,6 @@ const XulySuco = ({ navigation }) => {
 
     setModalHeight(height);
   }, [hangmuc, changeStatus]);
-
 
   const handleChangeText = (key, value) => {
     setDataInput((data) => ({
@@ -301,7 +296,7 @@ const XulySuco = ({ navigation }) => {
             }
 
             const result = await ImagePicker.launchCameraAsync({
-              mediaTypes: ['images'],
+              mediaTypes: ["images"],
               aspect: [4, 3],
               quality: 0.8, // Adjust image quality (0 to 1)
             });
@@ -324,7 +319,7 @@ const XulySuco = ({ navigation }) => {
             }
 
             const result = await ImagePicker.launchImageLibraryAsync({
-              mediaTypes: ['images'],
+              mediaTypes: ["images"],
               aspect: [4, 3],
               quality: 0.8, // Adjust image quality (0 to 1)
             });
@@ -578,12 +573,16 @@ const XulySuco = ({ navigation }) => {
                   <View></View>
                   <TouchableOpacity
                     style={styles.action}
-                    onPress={() => navigation.navigate("Thực hiện sự cố ngoài", {userPhone: userPhone})}
+                    onPress={() =>
+                      navigation.navigate("Thực hiện sự cố ngoài", {
+                        userPhone: userPhone,
+                      })
+                    }
                   >
-                                              <Image
-                            source={require("../../../assets/icons/ic_plus.png")}
-                            style={styles.closeIcon}
-                          />
+                    <Image
+                      source={require("../../../assets/icons/ic_plus.png")}
+                      style={styles.closeIcon}
+                    />
                     <Text
                       style={{
                         fontSize: adjust(16),

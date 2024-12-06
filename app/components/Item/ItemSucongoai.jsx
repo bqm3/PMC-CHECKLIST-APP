@@ -14,7 +14,7 @@ export default function ItemSucongoai({
     (existingItem) => existingItem.ID_Suco === item.ID_Suco
   );
 
-  const formattedTime = item?.Giosuco.slice(0,5)
+  const formattedTime = item?.Giosuco.slice(0, 5);
   return (
     <TouchableOpacity
       style={[
@@ -31,7 +31,7 @@ export default function ItemSucongoai({
             allowFontScaling={false}
             style={[styles.title, { color: isExistIndex ? "black" : "white" }]}
           >
-            Ngày sự cố
+            Ngày
           </Text>
         </View>
         <Text
@@ -41,8 +41,27 @@ export default function ItemSucongoai({
             { fontWeight: "500", color: isExistIndex ? "black" : "white" },
           ]}
         >
-          : {formattedTime} {moment(item?.Ngaysuco).format("DD/MM/YYYY")}
+          : {moment(item?.Ngaysuco).format("DD/MM/YYYY")}{" "}
+          {item?.Ngayxuly
+            ? `- ${moment(item.Ngayxuly).format("DD/MM/YYYY")}`
+            : ""}
         </Text>
+        <Image
+          source={
+            item.Tinhtrangxuly === 0
+              ? require("../../../assets/icons/ic_circle_close.png")
+              : item.Tinhtrangxuly == 1
+              ? require("../../../assets/icons/ic_warning2.png")
+              : require("../../../assets/icons/ic_done.png")
+          }
+          style={{
+            width: adjust(26),
+            height: adjust(26),
+            marginStart: "auto",
+            marginRight: adjust(10),
+          }}
+          resizeMode="contain"
+        />
       </View>
       <View style={styles.row}>
         <View style={{ width: 100 }}>
@@ -58,13 +77,20 @@ export default function ItemSucongoai({
             allowFontScaling={false}
             style={[
               styles.title,
-          //    { fontWeight: "500", color: isExistIndex ? "black" : "white", },
-              { fontWeight: "500",   color: isExistIndex
-                ? item?.ent_hangmuc?.Hangmuc ? "black" : "red"
-                : item?.ent_hangmuc?.Hangmuc ? "white" : "red", },
+              //    { fontWeight: "500", color: isExistIndex ? "black" : "white", },
+              {
+                fontWeight: "500",
+                color: isExistIndex
+                  ? item?.ent_hangmuc?.Hangmuc
+                    ? "black"
+                    : "red"
+                  : item?.ent_hangmuc?.Hangmuc
+                  ? "white"
+                  : "red",
+              },
             ]}
           >
-            : {item?.ent_hangmuc?.Hangmuc || 'Chưa có hạng mục'}
+            : {item?.ent_hangmuc?.Hangmuc || "Chưa có hạng mục"}
           </Text>
         </View>
       </View>
@@ -87,7 +113,31 @@ export default function ItemSucongoai({
           : {item?.ent_user?.Hoten}
         </Text>
       </View>
-      <View style={styles.row}>
+      {item?.ID_Handler != null && (
+        <View style={styles.row}>
+          <View style={{ width: 100 }}>
+            <Text
+              allowFontScaling={false}
+              style={[
+                styles.title,
+                { color: isExistIndex ? "black" : "white" },
+              ]}
+            >
+              Người xử lý
+            </Text>
+          </View>
+          <Text
+            allowFontScaling={false}
+            style={[
+              styles.title,
+              { fontWeight: "500", color: isExistIndex ? "black" : "white" },
+            ]}
+          >
+            : {item?.ent_handler?.Hoten}
+          </Text>
+        </View>
+      )}
+      {/* <View style={styles.row}>
         <View style={{ width: 100 }}>
           <Text
             allowFontScaling={false}
@@ -114,7 +164,7 @@ export default function ItemSucongoai({
             (item?.Tinhtrangxuly == 1 && "Đang xử lý") ||
             (item?.Tinhtrangxuly == 2 && "Đã xử lý")}
         </Text>
-      </View>
+      </View> */}
     </TouchableOpacity>
   );
 }
