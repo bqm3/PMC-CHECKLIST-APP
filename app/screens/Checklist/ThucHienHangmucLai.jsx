@@ -55,7 +55,7 @@ const ThucHienHangmucLai = ({ route, navigation }) => {
         );
 
         if (finalFilteredData.length == 0 && filteredByKhuvuc.length == 0) {
-          // navigation.goBack();
+          navigation.goBack();
         } else {
           setHangMuc(finalFilteredData);
         }
@@ -69,7 +69,7 @@ const ThucHienHangmucLai = ({ route, navigation }) => {
         );
 
         if (finalFilteredData.length == 0 && filteredByKhuvuc.length == 0) {
-          // navigation.goBack();
+          navigation.goBack();
         } else {
           setHangMuc(finalFilteredData);
         }
@@ -253,7 +253,7 @@ const ThucHienHangmucLai = ({ route, navigation }) => {
                   </Text>
                 </View>
 
-                {isLoadingDetail === false && hangMuc?.length > 0 ? (
+                {isLoadingDetail === false && hangMuc?.length > 0 && (
                   <FlatList
                     style={{ margin: 12, flex: 1, marginBottom: 100 }}
                     data={hangMuc}
@@ -264,9 +264,8 @@ const ThucHienHangmucLai = ({ route, navigation }) => {
                     keyExtractor={(item, index) =>
                       `${item?.ID_Checklist}_${index}`
                     }
+                    showsVerticalScrollIndicator={false}
                   />
-                ) : (
-                  navigation.goBack()
                 )}
 
                 {isLoadingDetail && (

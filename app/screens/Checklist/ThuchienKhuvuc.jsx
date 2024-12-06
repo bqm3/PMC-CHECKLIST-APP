@@ -1022,6 +1022,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
                         keyExtractor={(item, index) =>
                           `${item?.ID_Checklist}_${index}`
                         }
+                        showsVerticalScrollIndicator={false}
                       />
                     </>
                   )}

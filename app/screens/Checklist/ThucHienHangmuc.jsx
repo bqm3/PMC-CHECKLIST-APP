@@ -65,13 +65,16 @@ const ThucHienHangmuc = ({ route, navigation }) => {
         );
 
         if (finalFilteredData.length == 0 && filteredByKhuvuc.length == 0) {
-          // navigation.goBack();
-          navigation.navigate("Thực hiện khu vực", {
-            ID_ChecklistC: ID_ChecklistC,
-            ID_KhoiCV: ID_KhoiCV,
-            ID_ThietLapCa: ID_Calv,
-            ID_Hangmucs: ID_Hangmucs,
-          });
+          // navigation.navigate("Thực hiện khu vực", {
+          //   ID_ChecklistC: ID_ChecklistC,
+          //   ID_KhoiCV: ID_KhoiCV,
+          //   ID_ThietLapCa: ID_Calv,
+          //   ID_Hangmucs: ID_Hangmucs,
+          // });
+          // setTimeout(() => {
+          //   navigation.goBack();
+          // }, 10000);
+          navigation.goBack();
         } else {
           setHangMuc(finalFilteredData);
         }
@@ -85,14 +88,16 @@ const ThucHienHangmuc = ({ route, navigation }) => {
         );
 
         if (finalFilteredData.length == 0 && filteredByKhuvuc.length == 0) {
-          // navigation.goBack();
-
-          navigation.navigate("Thực hiện khu vực", {
-            ID_ChecklistC: ID_ChecklistC,
-            ID_KhoiCV: ID_KhoiCV,
-            ID_ThietLapCa: ID_Calv,
-            ID_Hangmucs: ID_Hangmucs,
-          });
+          // navigation.navigate("Thực hiện khu vực", {
+          //   ID_ChecklistC: ID_ChecklistC,
+          //   ID_KhoiCV: ID_KhoiCV,
+          //   ID_ThietLapCa: ID_Calv,
+          //   ID_Hangmucs: ID_Hangmucs,
+          // });
+          // setTimeout(() => {
+          //   navigation.goBack();
+          // }, 10000);
+          navigation.goBack();
         } else {
           setHangMuc(finalFilteredData);
         }
@@ -370,7 +375,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
                   </View>
                 </View>
 
-                {isLoadingDetail === false && hangMuc && hangMuc?.length > 0 ? (
+                {isLoadingDetail === false && hangMuc && hangMuc?.length > 0 && (
                   <>
                     <FlatList
                       style={{
@@ -388,15 +393,9 @@ const ThucHienHangmuc = ({ route, navigation }) => {
                       keyExtractor={(item, index) =>
                         `${item?.ID_Checklist}_${index}`
                       }
+                      showsVerticalScrollIndicator={false}
                     />
                   </>
-                ) : (
-                  navigation.navigate("Thực hiện khu vực", {
-                    ID_ChecklistC: ID_ChecklistC,
-                    ID_KhoiCV: ID_KhoiCV,
-                    ID_ThietLapCa: ID_Calv,
-                    ID_Hangmucs: ID_Hangmucs,
-                  })
                 )}
 
                 {/* {isLoadingDetail === true && hangMuc?.length == 0 && (
