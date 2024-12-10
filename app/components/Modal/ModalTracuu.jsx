@@ -163,7 +163,7 @@ const ModalTracuu = ({
               </View>
             </View>
             <View>
-              {user?.ent_chucvu?.Role !== 3 ? (
+              {user?.ent_chucvu?.Role === 1 ? (
                 ent_khoicv && ent_khoicv.length > 0 ? (
                   <View>
                     <Text allowFontScaling={false} style={styles.text}>

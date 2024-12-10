@@ -104,7 +104,7 @@ const ModalPopupDetailChecklist = ({
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <View
           style={{
-            width: "100%",
+            width: SIZES.width * 0.8,
             height: "auto",
             justifyContent: "center",
             alignContent: "center",
@@ -233,7 +233,7 @@ const ModalPopupDetailChecklist = ({
             <>
               <View
                 style={{
-                  width: SIZES.width * 0.85,
+                  width: SIZES.width * 0.8,
                   height: "auto",
                   justifyContent: "center",
                   alignContent: "center",

@@ -50,11 +50,11 @@ const DetailSucongoai = ({ navigation, route }) => {
   //     ? funcBaseUri_Image(3, item.trim())
   //     : `https://drive.google.com/thumbnail?id=${item.trim()}&sz=w1000`;
   // };
-  
-    const [isLoading, setIsLoading] = useState(true);
 
-    console.log('data', data)
-    console.log('imagesHandle',imagesHandle)
+  const [isLoading, setIsLoading] = useState(true);
+
+  console.log("data", data);
+  console.log("imagesHandle", imagesHandle);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -130,7 +130,9 @@ const DetailSucongoai = ({ navigation, route }) => {
                         <View style={styles.action}>
                           <TextInput
                             allowFontScaling={false}
-                            value={data?.ent_hangmuc?.Hangmuc || "Chưa có hạng mục"}
+                            value={
+                              data?.ent_hangmuc?.Hangmuc || "Chưa có hạng mục"
+                            }
                             editable={false}
                             placeholder="Hạng mục"
                             placeholderTextColor="gray"
@@ -145,6 +147,54 @@ const DetailSucongoai = ({ navigation, route }) => {
                           />
                         </View>
                       </View>
+                      <View style={{ width: "100%" }}>
+                        <Text allowFontScaling={false} style={styles.text}>
+                          Người gửi
+                        </Text>
+
+                        <View style={styles.action}>
+                          <TextInput
+                            allowFontScaling={false}
+                            value={`${data?.ent_user?.Hoten} - ${data?.ent_user?.ent_chucvu?.Chucvu}`}
+                            editable={false}
+                            placeholder="Hạng mục"
+                            placeholderTextColor="gray"
+                            style={{
+                              paddingLeft: 12,
+                              color: "#05375a",
+                              width: "75%",
+                              fontSize: adjust(16),
+                              height: adjust(50),
+                            }}
+                            pointerEvents="none"
+                          />
+                        </View>
+                      </View>
+                      {data?.ID_Handler != null && (
+                        <View style={{ width: "100%" }}>
+                          <Text allowFontScaling={false} style={styles.text}>
+                            Người xử lý
+                          </Text>
+
+                          <View style={styles.action}>
+                            <TextInput
+                              allowFontScaling={false}
+                              value={`${data?.ent_handler?.Hoten} - ${data?.ent_handler?.ent_chucvu?.Chucvu}`}
+                              editable={false}
+                              placeholder="Hạng mục"
+                              placeholderTextColor="gray"
+                              style={{
+                                paddingLeft: 12,
+                                color: "#05375a",
+                                width: "75%",
+                                fontSize: adjust(16),
+                                height: adjust(50),
+                              }}
+                              pointerEvents="none"
+                            />
+                          </View>
+                        </View>
+                      )}
                       <View style={{ width: "100%" }}>
                         <Text allowFontScaling={false} style={styles.text}>
                           Ngày giờ sự cố
@@ -206,7 +256,7 @@ const DetailSucongoai = ({ navigation, route }) => {
                               {
                                 paddingHorizontal: 10,
                                 height: 70,
-                                textAlignVertical: 'top',
+                                textAlignVertical: "top",
                               },
                             ]}
                             autoCapitalize="sentences"
@@ -288,7 +338,7 @@ const DetailSucongoai = ({ navigation, route }) => {
                                     height: 70,
                                     paddingHorizontal: 10,
                                     paddingLeft: 10,
-                                    textAlignVertical: 'top',
+                                    textAlignVertical: "top",
                                   },
                                 ]}
                                 autoCapitalize="sentences"

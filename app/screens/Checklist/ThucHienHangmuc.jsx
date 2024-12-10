@@ -29,8 +29,15 @@ import { Camera } from "expo-camera";
 import { Linking } from "react-native";
 
 const ThucHienHangmuc = ({ route, navigation }) => {
-  const { ID_ChecklistC, ID_KhoiCV, ID_Khuvuc, dataFilterHandler, Tenkv } =
-    route.params;
+  const {
+    ID_ChecklistC,
+    ID_KhoiCV,
+    ID_Khuvuc,
+    dataFilterHandler,
+    Tenkv,
+    ID_Calv,
+    ID_Hangmucs,
+  } = route.params;
   const { dataChecklists, setHangMuc, hangMuc, HangMucDefault } =
     useContext(DataContext);
 
@@ -49,42 +56,89 @@ const ThucHienHangmuc = ({ route, navigation }) => {
         (item) => item.ID_Khuvuc == ID_Khuvuc
       );
 
-      if (dataFilterHandler.length > 0) {
-        const checklistIDs = dataFilterHandler?.map((item) => item.ID_Hangmuc);
+      const checklistIDs = dataChecklists?.map((item) => item.ID_Hangmuc);
+      const finalFilteredData = filteredByKhuvuc?.filter((item) =>
+        checklistIDs.includes(item.ID_Hangmuc)
+      );
 
-        // Lọc filteredByKhuvuc để chỉ giữ lại các mục có ID_Hangmuc tồn tại trong checklistIDs
-        const finalFilteredData = filteredByKhuvuc?.filter((item) =>
-          checklistIDs.includes(item.ID_Hangmuc)
-        );
-
-        if (finalFilteredData.length == 0 && filteredByKhuvuc.length == 0) {
-          navigation.goBack();
-        } else {
-          setHangMuc(finalFilteredData);
+      if (finalFilteredData.length == 0) {
+        if (finalFilteredData.length === 0) {
+          setTimeout(() => {
+            if (navigation.canGoBack()) {
+              navigation.goBack();
+            }
+          }, 500); // Thử thêm độ trễ nhỏ
         }
+        
       } else {
-        // Lấy danh sách ID_Hangmuc từ dataChecklists
-        const checklistIDs = dataChecklists?.map((item) => item.ID_Hangmuc);
-
-        // Lọc filteredByKhuvuc để chỉ giữ lại các mục có ID_Hangmuc tồn tại trong checklistIDs
-        const finalFilteredData = filteredByKhuvuc?.filter((item) =>
-          checklistIDs.includes(item.ID_Hangmuc)
-        );
-
-        if (finalFilteredData.length == 0 && filteredByKhuvuc.length == 0) {
-          navigation.goBack();
-        } else {
-          setHangMuc(finalFilteredData);
-        }
+        setHangMuc(finalFilteredData);
       }
     }
   }, [ID_Khuvuc, HangMucDefault, dataChecklists]);
+  // useEffect(() => {
+  //   if (HangMucDefault && dataChecklists) {
+  //     // Lọc các mục có ID_Khuvuc trùng khớp
+  //     const filteredByKhuvuc = HangMucDefault?.filter(
+  //       (item) => item.ID_Khuvuc == ID_Khuvuc
+  //     );
+
+  //     console.log('dataFilterHandler', dataFilterHandler)
+  //     if (dataFilterHandler.length > 0) {
+  //       const checklistIDs = dataFilterHandler?.map((item) => item.ID_Hangmuc);
+
+  //       // Lọc filteredByKhuvuc để chỉ giữ lại các mục có ID_Hangmuc tồn tại trong checklistIDs
+  //       const finalFilteredData = filteredByKhuvuc?.filter((item) =>
+  //         checklistIDs.includes(item.ID_Hangmuc)
+  //       );
+
+  //       if (finalFilteredData.length == 0 && filteredByKhuvuc.length == 0) {
+  //         // navigation.navigate("Thực hiện khu vực", {
+  //         //   ID_ChecklistC: ID_ChecklistC,
+  //         //   ID_KhoiCV: ID_KhoiCV,
+  //         //   ID_ThietLapCa: ID_Calv,
+  //         //   ID_Hangmucs: ID_Hangmucs,
+  //         // });
+  //         // setTimeout(() => {
+  //         //   navigation.goBack();
+  //         // }, 10000);
+  //         console.log('riun 1')
+  //         navigation.goBack();
+  //       } else {
+  //         console.log('riun 1-1')
+  //         setHangMuc(finalFilteredData);
+  //       }
+  //     } else {
+  //       // Lấy danh sách ID_Hangmuc từ dataChecklists
+  //       const checklistIDs = dataChecklists?.map((item) => item.ID_Hangmuc);
+
+  //       // Lọc filteredByKhuvuc để chỉ giữ lại các mục có ID_Hangmuc tồn tại trong checklistIDs
+  //       const finalFilteredData = filteredByKhuvuc?.filter((item) =>
+  //         checklistIDs.includes(item.ID_Hangmuc)
+  //       );
+
+  //       if (finalFilteredData.length == 0 && filteredByKhuvuc.length == 0) {
+  //         // navigation.navigate("Thực hiện khu vực", {
+  //         //   ID_ChecklistC: ID_ChecklistC,
+  //         //   ID_KhoiCV: ID_KhoiCV,
+  //         //   ID_ThietLapCa: ID_Calv,
+  //         //   ID_Hangmucs: ID_Hangmucs,
+  //         // });
+  //         // setTimeout(() => {
+  //         //   navigation.goBack();
+  //         // }, 10000);
+  //         console.log('riun 2')
+  //         navigation.goBack();
+  //       } else {
+  //         console.log('riun 2-2')
+  //         console.log('finalFilteredData',finalFilteredData, filteredByKhuvuc)
+  //         setHangMuc(finalFilteredData);
+  //       }
+  //     }
+  //   }
+  // }, [ID_Khuvuc, HangMucDefault, dataChecklists]);
 
   const handlePushDataFilterQr = async (value) => {
-    const cleanedValue = value
-      
-      .trim()
-      .toLowerCase();
+    const cleanedValue = value.trim().toLowerCase();
     try {
       const resData = hangMuc.filter(
         (item) => item.MaQrCode.trim().toLowerCase() === cleanedValue
@@ -96,7 +150,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
           ID_Hangmuc: resData[0].ID_Hangmuc,
           hangMuc: hangMuc,
           Hangmuc: resData[0],
-          isScan: null
+          isScan: null,
         });
         setIsScan(false);
         setModalVisibleQr(false);
@@ -182,7 +236,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
       hangMuc: hangMuc,
       ID_Khuvuc: ID_Khuvuc,
       Hangmuc: dataSelect[0],
-      isScan: 1
+      isScan: 1,
     });
     setDataSelect([]);
   };
@@ -232,14 +286,22 @@ const ThucHienHangmuc = ({ route, navigation }) => {
               {item?.MaQrCode}
             </Text>
           </View>
-          <View style={{ flexDirection: "row", alignItems: "center" ,gap:10, marginRight: adjust(10)}}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 10,
+              marginRight: adjust(10),
+            }}
+          >
             {item.Important === 1 && (
-                <Image
-                  source={require("../../../assets/icons/ic_star.png")}
-                  style={{
-                    tintColor:  dataSelect[0] === item ? "white" : COLORS.bg_button,
-                  }}
-                />
+              <Image
+                source={require("../../../assets/icons/ic_star.png")}
+                style={{
+                  tintColor:
+                    dataSelect[0] === item ? "white" : COLORS.bg_button,
+                }}
+              />
             )}
             {item.Tieuchuankt !== "" && item.Tieuchuankt !== null && (
               <TouchableOpacity onPress={() => handlePopupActive(item, index)}>
@@ -345,31 +407,32 @@ const ThucHienHangmuc = ({ route, navigation }) => {
                   </View>
                 </View>
 
-                {isLoadingDetail === false && hangMuc && hangMuc?.length > 0 ? (
-                  <>
-                    <FlatList
-                      style={{
-                        margin: 12,
-                        flex: 1,
-                        marginBottom: 100,
-                      }}
-                      data={hangMuc}
-                      renderItem={({ item, index, separators }) =>
-                        renderItem(item, index)
-                      }
-                      ItemSeparatorComponent={() => (
-                        <View style={{ height: 16 }} />
-                      )}
-                      keyExtractor={(item, index) =>
-                        `${item?.ID_Checklist}_${index}`
-                      }
-                    />
-                  </>
-                ) : (
-                  navigation.goBack()
-                )}
+                {isLoadingDetail === false &&
+                  hangMuc &&
+                  hangMuc?.length > 0 && (
+                    <>
+                      <FlatList
+                        style={{
+                          margin: 12,
+                          flex: 1,
+                          marginBottom: 100,
+                        }}
+                        data={hangMuc}
+                        renderItem={({ item, index, separators }) =>
+                          renderItem(item, index)
+                        }
+                        ItemSeparatorComponent={() => (
+                          <View style={{ height: 16 }} />
+                        )}
+                        keyExtractor={(item, index) =>
+                          `${item?.ID_Checklist}_${index}`
+                        }
+                        showsVerticalScrollIndicator={false}
+                      />
+                    </>
+                  )}
 
-                {isLoadingDetail === true && hangMuc?.length == 0 && (
+                {/* {isLoadingDetail === true && hangMuc?.length == 0 && (
                   <View
                     style={{
                       flex: 1,
@@ -385,9 +448,9 @@ const ThucHienHangmuc = ({ route, navigation }) => {
                       color={COLORS.bg_white}
                     ></ActivityIndicator>
                   </View>
-                )}
+                )} */}
 
-                {isLoadingDetail === false && hangMuc?.length == 0 && (
+                {/* {isLoadingDetail === false && hangMuc?.length == 0 && (
                   <View
                     style={{
                       flex: 1,
@@ -396,21 +459,24 @@ const ThucHienHangmuc = ({ route, navigation }) => {
                       marginBottom: 80,
                     }}
                   >
-                    <Image
-                      source={require("../../../assets/icons/delete_bg.png")}
-                      resizeMode="contain"
-                      style={{ height: 120, width: 120 }}
-                    />
-                    <Text
-                      allowFontScaling={false}
-                      style={[styles.danhmuc, { padding: 10 }]}
+                    <View
+                      style={{
+                        flex: 1,
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
                     >
-                      {isScan
-                        ? "Không thấy hạng mục cho khu vực này"
-                        : "Không còn hạng mục cho ca làm việc này !"}
-                    </Text>
+                      <ActivityIndicator
+                        style={{
+                          marginRight: 4,
+                        }}
+                        size="large"
+                        color={COLORS.bg_white}
+                      ></ActivityIndicator>
+                    </View>
                   </View>
-                )}
+                )} */}
+
                 <View
                   style={{
                     position: "absolute",
@@ -430,7 +496,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
                     />
                   )}
 
-                  {dataSelect[0] && (
+                  {dataSelect.length > 0 && (
                     <Button
                       text={"Vào Checklist"}
                       backgroundColor={COLORS.bg_button}

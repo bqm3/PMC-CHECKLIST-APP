@@ -11,6 +11,7 @@ import {
   Alert,
   ActivityIndicator,
   Keyboard,
+  BackHandler
 } from "react-native";
 import { useSelector } from "react-redux";
 import React, {
@@ -92,12 +93,27 @@ const DanhmucHangMucChiSo = ({ navigation }) => {
     [isBottomSheetOpen]
   );
 
+  useEffect(() => {
+    const backAction = () => {
+      if (opacity == 0.2) {
+        handleCloseBottomSheet();
+        return true;
+      }
+      return false;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, [opacity]);
+
   const handlePresentModalPress = (item) => {
     const existingItemData = arrayItem.find(
       (data) => data.ID_Hangmuc_Chiso === item.ID_Hangmuc_Chiso
     );
-
-    console.log(arrayItem.includes(item.ID_Hangmuc_Chiso));
 
     if (existingItemData) {
       setSelectedItemData(existingItemData);

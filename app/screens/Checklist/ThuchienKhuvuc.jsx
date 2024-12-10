@@ -14,6 +14,7 @@ import {
   Keyboard,
   Image,
   Linking,
+  RefreshControl
 } from "react-native";
 import { Camera } from "expo-camera";
 import React, { useState, useEffect, useContext } from "react";
@@ -123,7 +124,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
   useEffect(() => {
     const ID_HangmucsArray = Array.isArray(ID_Hangmucs)
       ? ID_Hangmucs
-      : ID_Hangmucs.split(",").map(Number);
+      : ID_Hangmucs?.split(",")?.map(Number);
     setStepKhuvuc(1);
     // Kiểm tra xem mảng ent_khuvuc có dữ liệu không
     if (ent_khuvuc && ent_khuvuc.length > 0) {
@@ -277,6 +278,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
           ID_Calv: ID_Calv,
           ID_Khuvuc: resDataKhuvuc[0].ID_Khuvuc,
           dataFilterHandler: dataFilterHandler,
+          ID_Hangmucs: ID_Hangmucs
         });
       } else if (resDataKhuvuc.length === 0 && resDataHangmuc.length === 0) {
         Alert.alert(
@@ -835,6 +837,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
       ID_Khuvuc: dataSelect[0].ID_Khuvuc,
       dataFilterHandler: dataFilterHandler,
       Tenkv: `${dataSelect[0]?.Tenkhuvuc} - ${dataSelect[0]?.ent_toanha?.Toanha}`,
+      ID_Hangmucs: ID_Hangmucs
     });
     setDataSelect([]);
   };
@@ -1019,6 +1022,14 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
                         )}
                         keyExtractor={(item, index) =>
                           `${item?.ID_Checklist}_${index}`
+                        }
+                        showsVerticalScrollIndicator={false}
+                        refreshControl={
+                          <RefreshControl
+                            refreshing={isLoadingDetail} 
+                            tintColor="transparent"
+                            onRefresh={init_checklist} 
+                          />
                         }
                       />
                     </>
