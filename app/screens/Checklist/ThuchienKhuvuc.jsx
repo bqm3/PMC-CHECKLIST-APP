@@ -14,6 +14,7 @@ import {
   Keyboard,
   Image,
   Linking,
+  RefreshControl
 } from "react-native";
 import { Camera } from "expo-camera";
 import React, { useState, useEffect, useContext } from "react";
@@ -1023,6 +1024,13 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
                           `${item?.ID_Checklist}_${index}`
                         }
                         showsVerticalScrollIndicator={false}
+                        refreshControl={
+                          <RefreshControl
+                            refreshing={isLoadingDetail} 
+                            tintColor="transparent"
+                            onRefresh={init_checklist} 
+                          />
+                        }
                       />
                     </>
                   )}

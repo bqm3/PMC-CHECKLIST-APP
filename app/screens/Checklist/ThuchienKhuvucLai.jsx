@@ -14,6 +14,7 @@ import {
   Keyboard,
   Image,
   Linking,
+  RefreshControl
 } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
 import { Provider, useDispatch, useSelector } from "react-redux";
@@ -1031,6 +1032,12 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
                             `${item?.ID_Checklist}_${index}`
                           }
                           showsVerticalScrollIndicator={false}
+                          refreshControl={
+                            <RefreshControl
+                              refreshing={isLoadingDetail} 
+                              onRefresh={init_checklist} 
+                            />
+                          }
                         />
                       </>
                     )}
