@@ -276,6 +276,7 @@ const HomeScreen = ({ navigation }) => {
 
   useEffect(() => {
     const dataRes = async () => {
+      
       await axios
         .post(
           BASE_URL + "/ent_user/device-token",
@@ -291,8 +292,11 @@ const HomeScreen = ({ navigation }) => {
         .then((response) => {})
         .catch((err) => console.log("err device", err));
     };
-    dataRes();
-  }, [authToken]);
+    if(expoPushToken){
+      dataRes();
+    }
+    
+  }, [authToken, expoPushToken]);
 
   // useEffect(() => {
   //   const dataRes = async () => {

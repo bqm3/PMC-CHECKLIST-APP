@@ -89,7 +89,6 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
     await dispath(ent_checklist_mul_hm(ID_Hangmucs, ID_Calv, ID_ChecklistC));
     setIsLoadingDetail(false);
   };
-  console.log('ID_ChecklistC', ID_ChecklistC)
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("beforeRemove", (e) => {
@@ -1071,30 +1070,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
                   </View>
                 )}
 
-                {isLoadingDetail === false && ent_khuvuc?.length == 0 && (
-                  <View
-                    style={{
-                      flex: 1,
-                      justifyContent: "center",
-                      alignItems: "center",
-                      marginBottom: 80,
-                    }}
-                  >
-                    <Image
-                      source={require("../../../assets/icons/delete_bg.png")}
-                      resizeMode="contain"
-                      style={{ height: 120, width: 120 }}
-                    />
-                    <Text
-                      allowFontScaling={false}
-                      style={[styles.danhmuc, { padding: 10 }]}
-                    >
-                      {isScan
-                        ? "Không thấy khu vực này"
-                        : "Khu vực của ca này đã hoàn thành !"}
-                    </Text>
-                  </View>
-                )}
+               
                 <View
                   style={{
                     position: "absolute",
