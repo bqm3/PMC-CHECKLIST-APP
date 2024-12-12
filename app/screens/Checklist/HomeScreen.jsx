@@ -23,6 +23,7 @@ import {
   ent_tang_get,
   ent_toanha_get,
   ent_khoicv_get,
+  check_hsse,
 } from "../../redux/actions/entActions";
 import { Alert, Linking } from "react-native";
 import * as Device from "expo-device";
@@ -138,13 +139,18 @@ const dataDanhMuc = [
     path: "Báo cáo chỉ số",
     icon: require("../../../assets/icons/o-05.png"),
   },
+  {
+    id: 6,
+    status: "new",
+    path: "Báo cáo HSSE",
+    icon: require("../../../assets/icons/o-04.png"),
+  },
 ];
 
 const dataGD = [
   {
     id: 1,
     status: null,
-    // path: "Thông báo sự cố",
     path: "Xử lý sự cố",
     icon: require("../../../assets/icons/o-04.png"),
   },
@@ -153,6 +159,12 @@ const dataGD = [
     status: null,
     path: "Tra cứu",
     icon: require("../../../assets/icons/o-02.png"),
+  },
+  {
+    id: 6,
+    status: "new",
+    path: "Báo cáo HSSE",
+    icon: require("../../../assets/icons/o-04.png"),
   },
   {
     id: 5,
@@ -194,12 +206,19 @@ const dataKST = [
     path: "Báo cáo chỉ số",
     icon: require("../../../assets/icons/o-05.png"),
   },
+  {
+    id: 6,
+    status: "new",
+    path: "Báo cáo HSSE",
+    icon: require("../../../assets/icons/o-04.png"),
+  },
 ];
 
 // create a component
 const HomeScreen = ({ navigation }) => {
   const dispath = useDispatch();
   const { user, authToken } = useSelector((state) => state.authReducer);
+  const { data_check_hsse } = useSelector((state) => state.entReducer);
   const { setShowReport, showReport } = useContext(ReportContext);
 
   const [expoPushToken, setExpoPushToken] = useState("");
@@ -240,6 +259,10 @@ const HomeScreen = ({ navigation }) => {
     await dispath(ent_calv_get());
   };
 
+  const int_check_hsse = async () => {
+    await dispath(check_hsse());
+  };
+
   useEffect(() => {
     int_khuvuc();
     int_hangmuc();
@@ -247,6 +270,7 @@ const HomeScreen = ({ navigation }) => {
     init_khoicv();
     init_tang();
     int_calv();
+    int_check_hsse();
   }, []);
 
   useEffect(() => {
@@ -308,7 +332,6 @@ const HomeScreen = ({ navigation }) => {
   //   dataRes();
   // }, [authToken]);
   // console.log('show', showReport)
-
   return (
     <ImageBackground
       source={require("../../../assets/bg_new.png")}
@@ -371,19 +394,30 @@ const HomeScreen = ({ navigation }) => {
             }}
             numColumns={2}
             data={(() => {
-              const baseData =
+              let baseData =
                 user?.ent_chucvu?.Role == 3
                   ? dataDanhMuc
                   : user?.ent_chucvu?.Role == 1
                   ? dataGD
                   : user?.ent_chucvu?.Role == 2 && dataKST;
 
-              // Kiểm tra showReport.show để lọc dữ liệu
-              // return showReport?.show
-              //   ? baseData
-              //   : baseData?.filter((item) => item.path !== "Báo cáo chỉ số");
+              if (data_check_hsse == false && user?.ent_chucvu?.Role !== 1) {
+                baseData = baseData.filter(
+                  (item) => item.path !== "Báo cáo HSSE"
+                );
+              }
 
-                return baseData
+              const currentDate = new Date();
+              const targetDate = new Date("2025-01-01");
+
+              if (currentDate > targetDate) {
+                baseData = baseData.map((item) => ({
+                  ...item,
+                  status: null,
+                }));
+              }
+
+              return baseData;
             })()}
             renderItem={renderItem}
             ItemSeparatorComponent={() => <View style={{ height: 10 }} />}

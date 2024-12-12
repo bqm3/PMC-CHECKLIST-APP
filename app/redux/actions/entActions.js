@@ -432,7 +432,6 @@ export const ent_checklist_mul_hm_return = (dataHangmuc, ID_Calv, ID_ChecklistC)
     });
     try {
       const token = await AsyncStorage.getItem("tokenUser");
-      
       if (token !== null) {
         const response = await axios.put(
           `${BASE_URL}/ent_checklist/filter-return/${ID_ChecklistC}/${ID_Calv}`,
@@ -477,3 +476,30 @@ export const ent_checklist_mul_hm_return = (dataHangmuc, ID_Calv, ID_ChecklistC)
     }
   };
 }
+
+export const check_hsse = () => {
+  return async (dispatch) => {
+    try {
+      const token = await AsyncStorage.getItem("tokenUser");
+      if (token !== null) {
+        const response = await axios.post(BASE_URL + "/hsse/check",[], {
+          headers: {
+            Accept: "application/json",
+            Authorization: "Bearer " + token,
+          },
+        });
+        const data = response.data.data;
+        dispatch({
+          type: type.SET_CHECK_HSSE_SUCCESS,
+          payload: {
+            data_check_hsse: data,
+          },
+        });
+      } else {
+        console.error("initialized error");
+      }
+    } catch (err) {
+      console.log("err", err);
+    }
+  };
+};

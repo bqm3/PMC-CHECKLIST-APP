@@ -1,3 +1,4 @@
+import { check_hsse } from "../actions/entActions";
 import * as type from "../types";
 const initialState = {
   ent_khoicv: [],
@@ -15,6 +16,7 @@ const initialState = {
   isLoading: false,
   isLoadingDetail: false,
   message: null,
+  data_check_hsse: false,
 };
 
 export const entReducer = (state = initialState, action) => {
@@ -67,7 +69,7 @@ export const entReducer = (state = initialState, action) => {
         isLoading: true,
         message: null,
       };
-   
+
     case type.SET_ENT_KHUVUC_STATE:
       return {
         ...state,
@@ -236,55 +238,60 @@ export const entReducer = (state = initialState, action) => {
         isLoading: true,
         message: null,
       };
-      case type.SET_ENT_CHECKLIST_DETAIL_STATE:
-        return {
-          ...state,
-          ent_checklist_detail: action.payload.ent_checklist_detail,
-          error: false,
-          isLoadingDetail: action.payload.isLoading,
-          message: null,
-        };
-      case type.SET_ENT_CHECKLIST_DETAIL_SUCCESS:
-        return {
-          ...state,
-          ent_checklist_detail: action.payload.ent_checklist_detail,
-          error: false,
-          isLoadingDetail: action.payload.isLoading,
-          message: null,
-        };
-      case type.SET_ENT_CHECKLIST_DETAIL_FAIL:
-        return {
-          ...state,
-          ent_checklist_detail: action.payload.ent_checklist_detail,
-          error: false,
-          isLoadingDetail: action.payload.isLoading,
-          message: null,
-        };
-        case type.SET_ENT_HANGMUC_STATE:
-          return {
-            ...state,
-            ent_hangmuc: null,
-            error: false,
-            isLoading: true,
-            message: null,
-          };
-        case type.SET_ENT_HANGMUC_SUCCESS:
-          return {
-            ...state,
-            ent_hangmuc: action.payload.ent_hangmuc,
-            error: false,
-            isLoading: false,
-            message: null,
-          };
-        case type.SET_ENT_HANGMUC_FAIL:
-          return {
-            ...state,
-            ent_hangmuc: null,
-            error: false,
-            isLoading: true,
-            message: null,
-          };
-          
+    case type.SET_ENT_CHECKLIST_DETAIL_STATE:
+      return {
+        ...state,
+        ent_checklist_detail: action.payload.ent_checklist_detail,
+        error: false,
+        isLoadingDetail: action.payload.isLoading,
+        message: null,
+      };
+    case type.SET_ENT_CHECKLIST_DETAIL_SUCCESS:
+      return {
+        ...state,
+        ent_checklist_detail: action.payload.ent_checklist_detail,
+        error: false,
+        isLoadingDetail: action.payload.isLoading,
+        message: null,
+      };
+    case type.SET_ENT_CHECKLIST_DETAIL_FAIL:
+      return {
+        ...state,
+        ent_checklist_detail: action.payload.ent_checklist_detail,
+        error: false,
+        isLoadingDetail: action.payload.isLoading,
+        message: null,
+      };
+    case type.SET_ENT_HANGMUC_STATE:
+      return {
+        ...state,
+        ent_hangmuc: null,
+        error: false,
+        isLoading: true,
+        message: null,
+      };
+    case type.SET_ENT_HANGMUC_SUCCESS:
+      return {
+        ...state,
+        ent_hangmuc: action.payload.ent_hangmuc,
+        error: false,
+        isLoading: false,
+        message: null,
+      };
+    case type.SET_ENT_HANGMUC_FAIL:
+      return {
+        ...state,
+        ent_hangmuc: null,
+        error: false,
+        isLoading: true,
+        message: null,
+      };
+    case type.SET_CHECK_HSSE_SUCCESS:
+      console.log("vao day")
+      return {
+        ...state,
+        data_check_hsse: action.payload.data_check_hsse,
+      };
     case type.SET_LOGOUT:
       return {
         ...state,
