@@ -36,8 +36,8 @@ const NotKhuVuc = ({ route, navigation }) => {
   const {
     setDataChecklists,
     dataHangmuc,
-    hangMuc,
-    setHangMuc,
+    hangMucFilter,
+    setHangMucFilter,
     setStepKhuvuc,
     dataChecklists,
     HangMucDefault,
@@ -113,7 +113,7 @@ const NotKhuVuc = ({ route, navigation }) => {
         });
 
       // Cập nhật trạng thái hangMuc với danh sách đã lọc
-      setHangMuc(finalFilteredData);
+      setHangMucFilter(finalFilteredData);
       setDataKhuvuc(filteredHangMuc);
       setDataFilterHandler(finalFilteredData);
     }

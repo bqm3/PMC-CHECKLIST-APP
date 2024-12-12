@@ -21,8 +21,6 @@ import { Provider, useDispatch, useSelector } from "react-redux";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import {
-  ent_khuvuc_get,
-  ent_toanha_get,
   ent_checklist_mul_hm_return,
 } from "../../redux/actions/entActions";
 import { COLORS, SIZES } from "../../constants/theme";
@@ -45,8 +43,8 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
   const {
     setDataChecklists,
     dataHangmuc,
-    hangMuc,
-    setHangMuc,
+    hangMucFilter,
+    setHangMucFilter,
     setStepKhuvuc,
     dataChecklists,
     HangMucDefault,
@@ -174,7 +172,6 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
         });
 
       // Cập nhật trạng thái hangMuc với danh sách đã lọc
-      setHangMuc(finalFilteredData);
       setDataKhuvuc(filteredHangMuc);
     }
 
@@ -246,7 +243,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
         (item) => item.MaQrCode.trim().toLowerCase() === cleanedValue
       );
 
-      const resDataHangmuc = hangMuc.filter(
+      const resDataHangmuc = hangMucFilter.filter(
         (item) => item.MaQrCode.trim().toLowerCase() === cleanedValue
       );
 
@@ -254,7 +251,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
         navigation.navigate("Chi tiết Checklist lại", {
           ID_ChecklistC: ID_ChecklistC,
           ID_KhoiCV: ID_KhoiCV,
-          hangMuc: hangMuc,
+          hangMucFilter: hangMucFilter,
           Hangmuc: resDataHangmuc[0],
           ID_Hangmuc: resDataHangmuc[0].ID_Hangmuc,
         });
@@ -792,7 +789,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
           };
         });
 
-      setHangMuc(finalFilteredData);
+      setHangMucFilter(finalFilteredData);
       setDataKhuvuc(filteredHangMuc);
       setDataFilterHandler(finalFilteredData);
     }

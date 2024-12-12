@@ -53,12 +53,12 @@ import { useHeaderHeight } from "@react-navigation/elements";
 import ModalBottomSheet from "../../components/Modal/ModalBottomSheet";
 
 const DetailChecklist = ({ route, navigation }) => {
-  const { ID_ChecklistC, ID_KhoiCV, ID_Hangmuc, hangMuc, Hangmuc, isScan } =
+  const { ID_ChecklistC, ID_KhoiCV, ID_Hangmuc, hangMucFilter, Hangmuc, isScan } =
     route.params;
 
   const dispath = useDispatch();
   const { isLoadingDetail } = useSelector((state) => state.entReducer);
-  const { setHangMuc, HangMucDefault, setHangMucDefault } =
+  const { setHangMucFilter, HangMucDefault, setHangMucDefault } =
     useContext(DataContext);
 
   const { isConnect, saveConnect } = useContext(ConnectContext);
@@ -87,7 +87,6 @@ const DetailChecklist = ({ route, navigation }) => {
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  const [isOpen, setIsOpen] = useState(-1);
 
   const headerHeight = useHeaderHeight();
   const [isConnected, setConnected] = useState(true);
@@ -1078,15 +1077,14 @@ const DetailChecklist = ({ route, navigation }) => {
       (item) => !idsToRemove.has(item.ID_Checklist)
     );
     if (dataChecklistFilter?.length === newActionDataChecklist?.length) {
-      const filteredData = hangMuc.filter(
+      const filteredData = hangMucFilter.filter(
         (item) => item.ID_Hangmuc !== ID_Hangmuc
       );
       const filteredDataDefault = HangMucDefault.filter(
         (item) => item.ID_Hangmuc !== ID_Hangmuc
       );
       setHangMucDefault(filteredDataDefault);
-
-      setHangMuc(filteredData);
+      setHangMucFilter(filteredData);
       navigation.goBack();
     }
     const dataChecklist = dataChecklistFilterContextReset?.filter(

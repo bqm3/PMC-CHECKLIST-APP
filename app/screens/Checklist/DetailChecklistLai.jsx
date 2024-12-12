@@ -54,10 +54,10 @@ import { useHeaderHeight } from "@react-navigation/elements";
 import ModalBottomSheet from "../../components/Modal/ModalBottomSheet";
 
 const DetailChecklistLai = ({ route, navigation }) => {
-  const { ID_ChecklistC, ID_Hangmuc, hangMuc, Hangmuc,isScan } = route.params;
+  const { ID_ChecklistC, ID_Hangmuc, hangMucFilter, Hangmuc,isScan } = route.params;
   const dispath = useDispatch();
   const { isLoadingDetail } = useSelector((state) => state.entReducer);
-  const { setHangMuc, HangMucDefault, setHangMucDefault } =
+  const { setHangMucFilter, HangMucDefault, setHangMucDefault } =
     useContext(DataContext);
 
   const { isConnect, saveConnect } = useContext(ConnectContext);
@@ -1002,7 +1002,7 @@ const DetailChecklistLai = ({ route, navigation }) => {
       (item) => !idsToRemove.has(item.ID_Checklist)
     );
     if (dataChecklistFilter?.length === newActionDataChecklist?.length) {
-      const filteredData = hangMuc.filter(
+      const filteredData = hangMucFilter.filter(
         (item) => item.ID_Hangmuc !== ID_Hangmuc
       );
       const filteredDataDefault = HangMucDefault.filter(
@@ -1010,7 +1010,7 @@ const DetailChecklistLai = ({ route, navigation }) => {
       );
       setHangMucDefault(filteredDataDefault);
 
-      setHangMuc(filteredData);
+      setHangMucFilter(filteredData);
       navigation.goBack();
     }
     const dataChecklist = dataChecklistFilterContextReset?.filter(

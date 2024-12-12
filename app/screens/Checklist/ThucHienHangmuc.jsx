@@ -33,12 +33,9 @@ const ThucHienHangmuc = ({ route, navigation }) => {
     ID_ChecklistC,
     ID_KhoiCV,
     ID_Khuvuc,
-    dataFilterHandler,
     Tenkv,
-    ID_Calv,
-    ID_Hangmucs,
   } = route.params;
-  const { dataChecklists, setHangMuc, hangMuc, HangMucDefault } =
+  const { dataChecklists, setHangMucFilter, hangMucFilter, HangMucDefault } =
     useContext(DataContext);
 
   const [opacity, setOpacity] = useState(1);
@@ -50,6 +47,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
   const [dataSelect, setDataSelect] = useState([]);
 
   useEffect(() => {
+    console.log('run vao day')
     if (HangMucDefault && dataChecklists) {
       // Lọc các mục có ID_Khuvuc trùng khớp
       const filteredByKhuvuc = HangMucDefault?.filter(
@@ -62,85 +60,21 @@ const ThucHienHangmuc = ({ route, navigation }) => {
       );
 
       if (finalFilteredData.length == 0) {
-        if (finalFilteredData.length === 0) {
           setTimeout(() => {
             if (navigation.canGoBack()) {
               navigation.goBack();
             }
-          }, 500); // Thử thêm độ trễ nhỏ
-        }
+          }, 250); 
         
       } else {
-        setHangMuc(finalFilteredData);
+        setHangMucFilter(finalFilteredData);
       }
     }
   }, [ID_Khuvuc, HangMucDefault, dataChecklists]);
-  // useEffect(() => {
-  //   if (HangMucDefault && dataChecklists) {
-  //     // Lọc các mục có ID_Khuvuc trùng khớp
-  //     const filteredByKhuvuc = HangMucDefault?.filter(
-  //       (item) => item.ID_Khuvuc == ID_Khuvuc
-  //     );
-
-  //     console.log('dataFilterHandler', dataFilterHandler)
-  //     if (dataFilterHandler.length > 0) {
-  //       const checklistIDs = dataFilterHandler?.map((item) => item.ID_Hangmuc);
-
-  //       // Lọc filteredByKhuvuc để chỉ giữ lại các mục có ID_Hangmuc tồn tại trong checklistIDs
-  //       const finalFilteredData = filteredByKhuvuc?.filter((item) =>
-  //         checklistIDs.includes(item.ID_Hangmuc)
-  //       );
-
-  //       if (finalFilteredData.length == 0 && filteredByKhuvuc.length == 0) {
-  //         // navigation.navigate("Thực hiện khu vực", {
-  //         //   ID_ChecklistC: ID_ChecklistC,
-  //         //   ID_KhoiCV: ID_KhoiCV,
-  //         //   ID_ThietLapCa: ID_Calv,
-  //         //   ID_Hangmucs: ID_Hangmucs,
-  //         // });
-  //         // setTimeout(() => {
-  //         //   navigation.goBack();
-  //         // }, 10000);
-  //         console.log('riun 1')
-  //         navigation.goBack();
-  //       } else {
-  //         console.log('riun 1-1')
-  //         setHangMuc(finalFilteredData);
-  //       }
-  //     } else {
-  //       // Lấy danh sách ID_Hangmuc từ dataChecklists
-  //       const checklistIDs = dataChecklists?.map((item) => item.ID_Hangmuc);
-
-  //       // Lọc filteredByKhuvuc để chỉ giữ lại các mục có ID_Hangmuc tồn tại trong checklistIDs
-  //       const finalFilteredData = filteredByKhuvuc?.filter((item) =>
-  //         checklistIDs.includes(item.ID_Hangmuc)
-  //       );
-
-  //       if (finalFilteredData.length == 0 && filteredByKhuvuc.length == 0) {
-  //         // navigation.navigate("Thực hiện khu vực", {
-  //         //   ID_ChecklistC: ID_ChecklistC,
-  //         //   ID_KhoiCV: ID_KhoiCV,
-  //         //   ID_ThietLapCa: ID_Calv,
-  //         //   ID_Hangmucs: ID_Hangmucs,
-  //         // });
-  //         // setTimeout(() => {
-  //         //   navigation.goBack();
-  //         // }, 10000);
-  //         console.log('riun 2')
-  //         navigation.goBack();
-  //       } else {
-  //         console.log('riun 2-2')
-  //         console.log('finalFilteredData',finalFilteredData, filteredByKhuvuc)
-  //         setHangMuc(finalFilteredData);
-  //       }
-  //     }
-  //   }
-  // }, [ID_Khuvuc, HangMucDefault, dataChecklists]);
-
   const handlePushDataFilterQr = async (value) => {
     const cleanedValue = value.trim().toLowerCase();
     try {
-      const resData = hangMuc.filter(
+      const resData = hangMucFilter.filter(
         (item) => item.MaQrCode.trim().toLowerCase() === cleanedValue
       );
       if (resData.length >= 1) {
@@ -148,7 +82,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
           ID_ChecklistC: ID_ChecklistC,
           ID_KhoiCV: ID_KhoiCV,
           ID_Hangmuc: resData[0].ID_Hangmuc,
-          hangMuc: hangMuc,
+          hangMucFilter: hangMucFilter,
           Hangmuc: resData[0],
           isScan: null,
         });
@@ -233,7 +167,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
       ID_ChecklistC: ID_ChecklistC,
       ID_KhoiCV: ID_KhoiCV,
       ID_Hangmuc: dataSelect[0].ID_Hangmuc,
-      hangMuc: hangMuc,
+      hangMucFilter: hangMucFilter,
       ID_Khuvuc: ID_Khuvuc,
       Hangmuc: dataSelect[0],
       isScan: 1,
@@ -400,7 +334,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
                         }}
                       >
                         <Text allowFontScaling={false} style={styles.text}>
-                          Số lượng: {decimalNumber(hangMuc?.length)} hạng mục
+                          Số lượng: {decimalNumber(hangMucFilter?.length)} hạng mục
                         </Text>
                       </View>
                     </View>
@@ -408,8 +342,8 @@ const ThucHienHangmuc = ({ route, navigation }) => {
                 </View>
 
                 {isLoadingDetail === false &&
-                  hangMuc &&
-                  hangMuc?.length > 0 && (
+                  hangMucFilter &&
+                  hangMucFilter?.length > 0 && (
                     <>
                       <FlatList
                         style={{
@@ -417,7 +351,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
                           flex: 1,
                           marginBottom: 100,
                         }}
-                        data={hangMuc}
+                        data={hangMucFilter}
                         renderItem={({ item, index, separators }) =>
                           renderItem(item, index)
                         }
@@ -432,51 +366,6 @@ const ThucHienHangmuc = ({ route, navigation }) => {
                     </>
                   )}
 
-                {/* {isLoadingDetail === true && hangMuc?.length == 0 && (
-                  <View
-                    style={{
-                      flex: 1,
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <ActivityIndicator
-                      style={{
-                        marginRight: 4,
-                      }}
-                      size="large"
-                      color={COLORS.bg_white}
-                    ></ActivityIndicator>
-                  </View>
-                )} */}
-
-                {/* {isLoadingDetail === false && hangMuc?.length == 0 && (
-                  <View
-                    style={{
-                      flex: 1,
-                      justifyContent: "center",
-                      alignItems: "center",
-                      marginBottom: 80,
-                    }}
-                  >
-                    <View
-                      style={{
-                        flex: 1,
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <ActivityIndicator
-                        style={{
-                          marginRight: 4,
-                        }}
-                        size="large"
-                        color={COLORS.bg_white}
-                      ></ActivityIndicator>
-                    </View>
-                  </View>
-                )} */}
-
                 <View
                   style={{
                     position: "absolute",
@@ -487,7 +376,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
                     width: "100%",
                   }}
                 >
-                  {hangMuc.length > 0 && (
+                  {hangMucFilter.length > 0 && (
                     <Button
                       text={"Quét Qrcode"}
                       backgroundColor={"white"}

@@ -297,21 +297,7 @@ const HomeScreen = ({ navigation }) => {
     }
     
   }, [authToken, expoPushToken]);
-
-  // useEffect(() => {
-  //   const dataRes = async () => {
-  //     await axios
-  //       .post(BASE_URL + "/date", {
-  //         ID_Duan: user.ID_Duan
-  //       })
-  //       .then((response) => {
-  //         setShowReport(response.data.data);
-  //       })
-  //       .catch((err) => console.log("err device", err));
-  //   };
-  //   dataRes();
-  // }, [authToken]);
-  // console.log('show', showReport)
+  
 
   return (
     <ImageBackground

@@ -24,7 +24,7 @@ import adjust from "../../adjust";
 const NotHangMuc = ({ route, navigation }) => {
   const { ID_ChecklistC, ID_KhoiCV, ID_Khuvuc, dataFilterHandler} =
     route.params;
-  const { dataChecklists, setHangMuc, hangMuc, HangMucDefault } =
+  const { dataChecklists, setHangMucFilter, hangMucFilter, HangMucDefault } =
     useContext(DataContext);
 
   const [opacity, setOpacity] = useState(1);
@@ -51,7 +51,7 @@ const NotHangMuc = ({ route, navigation }) => {
         if (finalFilteredData.length == 0 && filteredByKhuvuc.length == 0) {
           navigation.goBack();
         } else {
-          setHangMuc(finalFilteredData);
+          setHangMucFilter(finalFilteredData);
         }
       } else {
         // Lấy danh sách ID_Hangmuc từ dataChecklists
@@ -65,7 +65,7 @@ const NotHangMuc = ({ route, navigation }) => {
         if (finalFilteredData.length == 0 && filteredByKhuvuc.length == 0) {
           navigation.goBack();
         } else {
-          setHangMuc(finalFilteredData);
+          setHangMucFilter(finalFilteredData);
         }
       }
     }
@@ -79,12 +79,11 @@ const NotHangMuc = ({ route, navigation }) => {
 
   // toggle Data select
   const toggleTodo = async (item) => {
-    console.log("item",item)
     navigation.navigate("Checklist chưa kiểm tra", {
       ID_ChecklistC: ID_ChecklistC,
       ID_KhoiCV: ID_KhoiCV,
       ID_Hangmuc: item.ID_Hangmuc,
-      hangMuc: hangMuc,
+      hangMucFilter: hangMucFilter,
       ID_Khuvuc: ID_Khuvuc,
       Hangmuc: item,
       isScan: 1,
@@ -259,13 +258,13 @@ const NotHangMuc = ({ route, navigation }) => {
                         }}
                       >
                         <Text allowFontScaling={false} style={styles.text}>
-                          Số lượng: {decimalNumber(hangMuc?.length)} hạng mục
+                          Số lượng: {decimalNumber(hangMucFilter?.length)} hạng mục
                         </Text>
                       </View>
                     </View>
                   </View>
                 </View>
-                {isLoadingDetail === false && hangMuc && hangMuc?.length > 0 ? (
+                {isLoadingDetail === false && hangMucFilter && hangMucFilter?.length > 0 ? (
                   <>
                     <FlatList
                       style={{
@@ -273,7 +272,7 @@ const NotHangMuc = ({ route, navigation }) => {
                         flex: 1,
                         marginBottom: 100,
                       }}
-                      data={hangMuc}
+                      data={hangMucFilter}
                       renderItem={({ item, index, separators }) =>
                         renderItem(item, index)
                       }

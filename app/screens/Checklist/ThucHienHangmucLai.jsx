@@ -29,7 +29,7 @@ import { Camera } from "expo-camera";
 const ThucHienHangmucLai = ({ route, navigation }) => {
   const { ID_ChecklistC, ID_KhoiCV, ID_Khuvuc, dataFilterHandler, Tenkv } =
     route.params;
-  const { dataChecklists, setHangMuc, hangMuc, HangMucDefault } =
+  const { dataChecklists, setHangMucFilter, hangMucFilter, HangMucDefault } =
     useContext(DataContext);
 
   const [opacity, setOpacity] = useState(1);
@@ -61,7 +61,7 @@ const ThucHienHangmucLai = ({ route, navigation }) => {
         }
         
       } else {
-        setHangMuc(finalFilteredData);
+        setHangMucFilter(finalFilteredData);
       }
     }
   }, [ID_Khuvuc, HangMucDefault, dataChecklists]);
@@ -72,7 +72,7 @@ const ThucHienHangmucLai = ({ route, navigation }) => {
       .trim()
       .toLowerCase();
     try {
-      const resData = hangMuc.filter(
+      const resData = hangMucFilter.filter(
         (item) => item.MaQrCode.trim().toLowerCase() === cleanedValue
       );
       if (resData.length >= 1) {
@@ -80,7 +80,7 @@ const ThucHienHangmucLai = ({ route, navigation }) => {
           ID_ChecklistC,
           ID_KhoiCV,
           ID_Hangmuc: resData[0].ID_Hangmuc,
-          hangMuc,
+          hangMucFilter,
           Hangmuc: resData[0],
           isScan: null
         });
@@ -117,7 +117,7 @@ const ThucHienHangmucLai = ({ route, navigation }) => {
       ID_ChecklistC,
       ID_KhoiCV,
       ID_Hangmuc: dataSelect[0].ID_Hangmuc,
-      hangMuc,
+      hangMucFilter,
       ID_Khuvuc,
       Hangmuc: dataSelect[0],
       isScan: 1
@@ -238,14 +238,14 @@ const ThucHienHangmucLai = ({ route, navigation }) => {
               <View style={{ flex: 1, opacity }}>
                 <View style={{ margin: 12 }}>
                   <Text allowFontScaling={false} style={styles.text}>
-                    Số lượng: {hangMuc?.length} hạng mục
+                    Số lượng: {hangMucFilter?.length} hạng mục
                   </Text>
                 </View>
 
-                {isLoadingDetail === false && hangMuc?.length > 0 && (
+                {isLoadingDetail === false && hangMucFilter?.length > 0 && (
                   <FlatList
                     style={{ margin: 12, flex: 1, marginBottom: 100 }}
-                    data={hangMuc}
+                    data={hangMucFilter}
                     renderItem={({ item, index }) => renderItem(item, index)}
                     ItemSeparatorComponent={() => (
                       <View style={{ height: 16 }} />
@@ -269,7 +269,7 @@ const ThucHienHangmucLai = ({ route, navigation }) => {
                   </View>
                 )}
 
-                {isLoadingDetail === false && hangMuc?.length === 0 && (
+                {isLoadingDetail === false && hangMucFilter?.length === 0 && (
                   <View
                     style={{
                       flex: 1,
@@ -304,7 +304,7 @@ const ThucHienHangmucLai = ({ route, navigation }) => {
                     width: "100%",
                   }}
                 >
-                  {hangMuc.length > 0 && (
+                  {hangMucFilter.length > 0 && (
                     <Button
                       text={"Quét Qrcode"}
                       backgroundColor={"white"}

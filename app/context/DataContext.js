@@ -1,8 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
-import { useColorScheme } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Provider, useDispatch, useSelector } from "react-redux";
-import { ent_khuvuc_get, ent_hangmuc_get } from "../redux/actions/entActions";
+import {  useSelector } from "react-redux";
 
 const DataContext = createContext();
 
@@ -12,7 +9,7 @@ export const DataProvider = ({ children }) => {
   const [dataChecklists, setDataChecklists] = useState([]);
   const [dataHangmuc, setDataHangmuc] = useState([]);
   const [khuVuc, setKhuvuc] = useState([]);
-  const [hangMuc, setHangMuc] = useState(ent_hangmuc);
+  const [hangMucFilter, setHangMucFilter] = useState(ent_hangmuc);
   const [HangMucDefault, setHangMucDefault] = useState();
   const [stepKhuvuc, setStepKhuvuc] = useState(0);
 
@@ -29,8 +26,8 @@ export const DataProvider = ({ children }) => {
         dataChecklists,
         dataHangmuc,
         setDataHangmuc,
-        setHangMuc,
-        hangMuc,
+        setHangMucFilter,
+        hangMucFilter,
         setStepKhuvuc,
         stepKhuvuc,
         khuVuc,

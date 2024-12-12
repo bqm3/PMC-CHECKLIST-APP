@@ -25,7 +25,7 @@ import WebView from "react-native-webview";
 import { useHeaderHeight } from "@react-navigation/elements";
 
 const NotCheckList = ({ route, navigation }) => {
-  const { ID_ChecklistC, ID_KhoiCV, ID_Hangmuc, hangMuc, Hangmuc, isScan } =
+  const { ID_ChecklistC, ID_KhoiCV, ID_Hangmuc, hangMucFilter, Hangmuc, isScan } =
     route.params;
 
   const { isLoadingDetail } = useSelector((state) => state.entReducer);

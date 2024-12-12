@@ -19,7 +19,7 @@ const ModalChecklistFilter = ({
   toggleSwitch,
   filters,
   isEnabled,
-  hangMuc,
+  hangMucFilter,
   ent_calv,
 }) => {
   const defaultKhuvuc = ent_khuvuc.find(
@@ -30,7 +30,7 @@ const ModalChecklistFilter = ({
     (Tang) => Tang.ID_Tang === isFilterData?.ID_Tang
   );
 
-  const defaultHangmuc = hangMuc?.find(
+  const defaultHangmuc = hangMucFilter?.find(
     (Hangmuc) => Hangmuc.ID_Hangmuc === isFilterData?.ID_Hangmuc
   );
 
@@ -233,7 +233,7 @@ const ModalChecklistFilter = ({
         />
         <SelectDropdown
           disabled={!filters?.ID_Hangmuc}
-          data={hangMuc ? hangMuc : []}
+          data={hangMucFilter ? hangMucFilter : []}
           buttonStyle={styles.select}
           dropdownStyle={{
             borderRadius: 8,

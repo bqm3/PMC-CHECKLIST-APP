@@ -43,8 +43,8 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
   const {
     setDataChecklists,
     dataHangmuc,
-    hangMuc,
-    setHangMuc,
+    hangMucFilter,
+    setHangMucFilter,
     setStepKhuvuc,
     dataChecklists,
     HangMucDefault,
@@ -136,6 +136,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
       // Cập nhật dữ liệu sau khi lọc
       setDataKhuvuc(matchingEntKhuvuc);
     } else {
+      console.log('running')
     }
   }, [ID_Hangmucs, ent_khuvuc]);
 
@@ -143,7 +144,6 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
     if (HangMucDefault && dataChecklists) {
       // Lấy danh sách ID_Hangmuc từ dataChecklists
       const checklistIDs = dataChecklists.map((item) => item.ID_Hangmuc);
-
       // Lọc filteredByKhuvuc để chỉ giữ lại các mục có ID_Hangmuc tồn tại trong checklistIDs
       const finalFilteredData = HangMucDefault.filter((item) =>
         checklistIDs.includes(item.ID_Hangmuc)
@@ -165,13 +165,9 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
             hangMucCount,
           };
         });
-
       // Cập nhật trạng thái hangMuc với danh sách đã lọc
-      setHangMuc(finalFilteredData);
       setDataKhuvuc(filteredHangMuc);
     }
-
-    // }
   }, [HangMucDefault, dataChecklists]);
 
   useEffect(() => {
@@ -258,7 +254,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
         (item) => item.MaQrCode.trim().toLowerCase() === cleanedValue
       );
 
-      const resDataHangmuc = hangMuc.filter(
+      const resDataHangmuc = hangMucFilter.filter(
         (item) => item.MaQrCode.trim().toLowerCase() === cleanedValue
       );
 
@@ -267,7 +263,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
           ID_ChecklistC: ID_ChecklistC,
           ID_KhoiCV: ID_KhoiCV,
           ID_Calv: ID_Calv,
-          hangMuc: hangMuc,
+          hangMucFilter: hangMucFilter,
           Hangmuc: resDataHangmuc[0],
           ID_Hangmuc: resDataHangmuc[0].ID_Hangmuc,
         });
@@ -809,7 +805,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
           };
         });
 
-      setHangMuc(finalFilteredData);
+      // setHangMucFilter(finalFilteredData);
       setDataKhuvuc(filteredHangMuc);
       setDataFilterHandler(finalFilteredData);
     }
