@@ -7,6 +7,7 @@ const initialState = {
   error: false,
   isLoading: false,
   message: null,
+  hsse: null,
 };
 
 export const tbReducer = (state = initialState, action) => {
@@ -83,6 +84,11 @@ export const tbReducer = (state = initialState, action) => {
         isLoading: true,
         message: null,
       };
+      case type.SET_HSSE_SUCCESS:
+        return {
+          ...state,
+          hsse: action.payload.hsse
+        };
     default:
       return state;
   }

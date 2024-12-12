@@ -125,3 +125,31 @@ export const baocaochiso_get = () => {
     };
 };
 
+
+export const hsse_get = () => {
+  return async (dispatch) => {
+      try {
+        const token = await AsyncStorage.getItem("tokenUser");
+     if (token !== null) {
+          const response = await axios.get(BASE_URL + `/hsse/all`, {
+            headers: {
+              Accept: "application/json",
+              Authorization: "Bearer " + token,
+            },
+          });
+          const data = response.data.data;
+          dispatch({
+            type: type.SET_HSSE_SUCCESS,
+            payload: {
+              hsse: data,
+            },
+          });
+        } else {
+          console.error("initialized error");
+        }
+      } catch (error) {
+        console.log("err baocaochiso_get", error.response.data.message);
+      }
+    };
+};
+

@@ -811,7 +811,7 @@ const ThuchienSucongoai = ({ navigation, route }) => {
                         style={{ alignItems: "flex-end", marginBottom: 10 }}
                       >
                         <Image
-                          source={require("../../../assets/icons/ic_phone.png")}
+                          source={require("../../../assets/icons/ic_phone_green_2.png")}
                           style={{
                             width: adjust(80) * 0.8,
                             height: adjust(80) * 0.8,
