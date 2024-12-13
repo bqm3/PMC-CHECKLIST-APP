@@ -10,71 +10,59 @@ import {
   Pressable,
   View,
 } from "react-native";
+import { COLORS } from "../constants/theme";
+import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
+import adjust from '../adjust'
 import {
   ThucHienChecklist,
-  HomeScreen,
-  DanhmucCalamviec,
-  DanhmucKhuvuc,
   DetailChecklist,
-  Profile,
-  DanhmucChecklist,
-  ChecklistLaiScreen,
-  ThuchienKhuvucLai,
-  DetailCheckListCa,
+  ThucHienHangmuc,
+  ThucHienKhuvuc,
+} from "../screens/Checklist";
+
+import {
+  ThucHienChecklistLai,
+  ThucHienKhuvucLai,
   ThucHienHangmucLai,
   DetailChecklistLai,
-  ScanKhuVuc,
-  ScanHangMuc,
-} from "../screens/Checklist";
+} from "../screens/ChecklistLai";
+
 import {
+  DanhmucToanhaScreen,
+  DanhmucUserScreen,
+  DanhmucDuanScreen,
+} from "../screens/PSH";
+
+import {
+  Sucongoai,
+  DetailSucongoai,
+  ThuchienSucongoai,
+  XulySuco,
+} from "../screens/SuCo";
+
+import {
+  DanhmucChiTietTracuu,
+  DanhmucThongKe,
   DanhmucTracuuVsThongke,
   NotKhuVuc,
   NotHangMuc,
   NotCheckList,
+  DetailCheckListCa,
+  ScanHangMuc,
+  ScanKhuVuc,
 } from "../screens/TraCuuThongKe";
+import {
+  BaoCaoChiSoTheoNamThang,
+  DanhMucBaoCaoChiSo,
+  DanhmucHangMucChiSo,
+} from "../screens/Baocaochiso"
+
 import { DanhMucBaoCaoHSSE, TaoBaoCaoHSSE, DetailHSSE } from "../screens/HSSE";
-import { COLORS } from "../constants/theme";
-import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
-import DanhmucToanhaScreen from "../screens/PSH/DanhmucToanhaScreen";
-import DanhmucDuanScreen from "../screens/PSH/DanhmucDuanScreen";
-import DanhmucUserScreen from "../screens/PSH/DanhmucUserScreen";
-import DanhmucHangmuc from "../screens/Checklist/DanhmucHangmuc";
-import ThucHienHangmuc from "../screens/Checklist/ThucHienHangmuc";
-import ThucHienKhuvuc from "../screens/Checklist/ThuchienKhuvuc";
-import adjust from "../adjust";
-import ChecklistHangNgay from "../screens/Checklist/ChecklistHangNgay";
-import Sucongoai from "../screens/Checklist/Sucongoai";
-import ThuchienSucongoai from "../screens/Checklist/ThuchienSucongoai";
-import DetailSucongoai from "../screens/Checklist/DetailSucongoai";
-import XulySuco from "../screens/Checklist/XulySuco";
-import DanhMucBaoCaoChiSo from "../screens/Baocaochiso/DanhMucBaoCaoChiSo";
-import BaoCaoChiSoTheoNamThang from "../screens/Baocaochiso/BaoCaoChiSoTheoNamThang";
-import DanhmucHangMucChiSo from "../screens/Baocaochiso/DanhmucHangMucChiSo";
+import HomeScreen from '../screens/HomeScreen.jsx'
+import Profile from '../screens/Profile.jsx'
+
 
 const Stack = createNativeStackNavigator();
-
-const Back = ({ navigation, title }) => {
-  return (
-    <TouchableOpacity
-      style={{ backgroundColor: "red", width: adjust(40), height: adjust(40) }}
-      onPressIn={() => {
-        console.log("vao day");
-        title ? navigation.navigate("Profile") : navigation.goBack();
-      }}
-    >
-      {/* <FontAwesome5 name="user-alt" size={adjust(28)} color="white" /> */}
-
-      <Image
-        source={require("../../assets/icons/ic_person.png")}
-        style={{
-          width: adjust(40),
-          height: adjust(40),
-          tintColor: "white",
-        }}
-      />
-    </TouchableOpacity>
-  );
-};
 
 const headerLeft = (navigation) => {
   return (
@@ -286,38 +274,10 @@ const HomeStack = ({ navigation }) => {
           headerBackTitleVisible: false,
         })}
       />
-      {/* Checklist hàng ngày */}
-      <Stack.Screen
-        name="Checklist hàng ngày"
-        component={ChecklistHangNgay}
-        lazy={false}
-        options={({ navigation, route }) => ({
-          headerShown: true,
-
-          headerTitle: () => (
-            <Text
-              allowFontScaling={false}
-              style={{
-                fontSize: adjust(20),
-                fontWeight: "700",
-                color: "white",
-              }}
-            >
-              Thực hiện Checklist
-            </Text>
-          ),
-          headerLeft: () => headerLeft(navigation),
-          headerTitleAlign: "center",
-          headerStyle: {
-            backgroundColor: COLORS.bg_button,
-          },
-          headerBackTitleVisible: false,
-        })}
-      />
 
       <Stack.Screen
         name="Checklist Lại"
-        component={ChecklistLaiScreen}
+        component={ThucHienChecklistLai}
         lazy={false}
         options={({ navigation, route }) => ({
           headerShown: true,
@@ -532,7 +492,7 @@ const HomeStack = ({ navigation }) => {
 
       <Stack.Screen
         name="Thực hiện khu vực lại"
-        component={ThuchienKhuvucLai}
+        component={ThucHienKhuvucLai}
         lazy={false}
         options={({ navigation, route }) => ({
           headerShown: true,
@@ -547,88 +507,6 @@ const HomeStack = ({ navigation }) => {
               }}
             >
               Khu vực
-            </Text>
-          ),
-          headerLeft: () => headerLeft(navigation),
-          headerTitleAlign: "center",
-          headerStyle: {
-            backgroundColor: COLORS.bg_button,
-          },
-          headerBackTitleVisible: false,
-        })}
-      />
-
-      <Stack.Screen
-        name="Danh mục Hạng mục"
-        component={DanhmucHangmuc}
-        lazy={false}
-        options={({ navigation, route }) => ({
-          headerShown: true,
-
-          headerTitle: () => (
-            <Text
-              allowFontScaling={false}
-              style={{
-                fontSize: adjust(20),
-                fontWeight: "700",
-                color: "white",
-              }}
-            >
-              Hạng mục
-            </Text>
-          ),
-          headerLeft: () => headerLeft(navigation),
-          headerTitleAlign: "center",
-          headerStyle: {
-            backgroundColor: COLORS.bg_button,
-          },
-          headerBackTitleVisible: false,
-        })}
-      />
-      <Stack.Screen
-        name="Danh mục Khu vực"
-        component={DanhmucKhuvuc}
-        lazy={false}
-        options={({ navigation, route }) => ({
-          headerShown: true,
-
-          headerTitle: () => (
-            <Text
-              allowFontScaling={false}
-              style={{
-                fontSize: adjust(20),
-                fontWeight: "700",
-                color: "white",
-              }}
-            >
-              Danh mục Khu vực
-            </Text>
-          ),
-          headerLeft: () => headerLeft(navigation),
-          headerTitleAlign: "center",
-          headerStyle: {
-            backgroundColor: COLORS.bg_button,
-          },
-          headerBackTitleVisible: false,
-        })}
-      />
-      <Stack.Screen
-        name="Danh mục Check list"
-        component={DanhmucChecklist}
-        lazy={false}
-        options={({ navigation, route }) => ({
-          headerShown: true,
-
-          headerTitle: () => (
-            <Text
-              allowFontScaling={false}
-              style={{
-                fontSize: adjust(20),
-                fontWeight: "700",
-                color: "white",
-              }}
-            >
-              Danh mục Check list
             </Text>
           ),
           headerLeft: () => headerLeft(navigation),
@@ -805,61 +683,7 @@ const HomeStack = ({ navigation }) => {
         })}
       />
 
-      <Stack.Screen
-        name="Danh mục Ca làm việc"
-        component={DanhmucCalamviec}
-        lazy={false}
-        options={({ navigation, route }) => ({
-          headerShown: true,
-
-          headerTitle: () => (
-            <Text
-              allowFontScaling={false}
-              style={{
-                fontSize: adjust(20),
-                fontWeight: "700",
-                color: "white",
-              }}
-            >
-              Danh mục Ca làm việc
-            </Text>
-          ),
-          headerLeft: () => headerLeft(navigation),
-          headerTitleAlign: "center",
-          headerStyle: {
-            backgroundColor: COLORS.bg_button,
-          },
-          headerBackTitleVisible: false,
-        })}
-      />
-
-      <Stack.Screen
-        name="Danh mục tòa nhà"
-        component={DanhmucToanhaScreen}
-        lazy={false}
-        options={({ navigation, route }) => ({
-          headerShown: true,
-
-          headerTitle: () => (
-            <Text
-              allowFontScaling={false}
-              style={{
-                fontSize: adjust(20),
-                fontWeight: "700",
-                color: "white",
-              }}
-            >
-              Danh mục tòa nhà
-            </Text>
-          ),
-          headerLeft: () => headerLeft(navigation),
-          headerTitleAlign: "center",
-          headerStyle: {
-            backgroundColor: COLORS.bg_button,
-          },
-          headerBackTitleVisible: false,
-        })}
-      />
+    
 
       <Stack.Screen
         name="Quản lý người dùng"
@@ -1070,7 +894,21 @@ const HomeStack = ({ navigation }) => {
               Tạo báo cáo HSSE
             </Text>
           ),
-          headerLeft: () => headerLeft(navigation),
+          headerLeft: () => (
+            <TouchableOpacity onPressIn={() => navigation.navigate("Báo cáo HSSE", { isReload: true })}>
+            {Platform.OS === "ios" && (
+              <Image
+                source={require("../../assets/icons/ic_button_back.png")}
+                resizeMode="contain"
+                style={{
+                  height: adjust(22),
+                  width: adjust(22),
+                  tintColor: "white",
+                }}
+              />
+            )}
+          </TouchableOpacity>
+          ),
           headerTitleAlign: "center",
           headerStyle: {
             backgroundColor: COLORS.bg_button,

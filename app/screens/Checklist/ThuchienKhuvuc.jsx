@@ -178,6 +178,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
         const savedData = await AsyncStorage.getItem(
           `dataChecklistStorage_${ID_ChecklistC}`
         );
+        console.log('savedData1',savedData)
         if (
           (network === "close" && isConnect) ||
           (savedData !== null && savedData !== undefined && savedData !== "")
@@ -279,8 +280,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
       } else if (resDataKhuvuc.length === 0 && resDataHangmuc.length === 0) {
         Alert.alert(
           "PMC Thông báo",
-          // `Khu vực hoặc hạng mục có qrcode: "${cleanedValue}" không thuộc ca làm việc này`,
-          `Khu vực hoặc hạng mục có qrcode: "${cleanedValue}" không thuộc ca làm việc này`,
+          `Khu vực hoặc hạng mục có qrcode: "${cleanedValue}" không thuộc ca làm việc hoặc đã kiểm tra`,
           [
             {
               text: "Hủy",
@@ -887,7 +887,9 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
               fontSize: adjust(16),
               color: dataSelect[0] === item ? "black" : "white",
               fontWeight: "600",
+              
             }}
+            allowFontScaling={false}
           >
             {item?.hangMucCount}
           </Text>

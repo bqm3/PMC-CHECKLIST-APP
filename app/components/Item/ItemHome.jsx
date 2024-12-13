@@ -45,7 +45,10 @@ export default function ItemHome({ item, index, roleUser, showReport }) {
             color: roleUser !== 1 && item?.role === 1 ? 'white' : 'black',
             fontSize: adjust(16),
             fontWeight: "600",
-            padding: 6,
+            paddingTop: 4,
+            paddingBottom: 4,
+            paddingLeft: 10,
+            paddingRight: 10,
             textAlign: "center",
           }}
         >

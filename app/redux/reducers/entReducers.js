@@ -287,7 +287,6 @@ export const entReducer = (state = initialState, action) => {
         message: null,
       };
     case type.SET_CHECK_HSSE_SUCCESS:
-      console.log("vao day")
       return {
         ...state,
         data_check_hsse: action.payload.data_check_hsse,

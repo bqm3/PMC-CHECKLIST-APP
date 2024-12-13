@@ -20,6 +20,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { useFocusEffect } from "@react-navigation/native";
 import adjust from "../../adjust";
 import { hsse_get } from "../../redux/actions/tbActions";
+import { check_hsse } from "../../redux/actions/entActions";
 import { BASE_URL } from "../../constants/config";
 import { COLORS, SIZES } from "../../constants/theme";
 import axios from "axios";
@@ -28,6 +29,7 @@ const DanhMucBaoCaoHSSE = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const isReload = route.params?.isReload ?? undefined;
   const { user, authToken } = useSelector((state) => state.authReducer);
+  const { data_check_hsse } = useSelector((state) => state.entReducer);
   const { hsse } = useSelector((state) => state.tbReducer);
 
   const [dataHsse, setDataHsse] = useState([]);
@@ -39,8 +41,14 @@ const DanhMucBaoCaoHSSE = ({ navigation, route }) => {
     await dispatch(hsse_get());
   };
 
+  const init_check_hsse = async () => {
+    setLoading(true);
+    await dispatch(check_hsse());
+  };
+  
   useEffect(() => {
     init_hsse();
+    init_check_hsse();
   }, [dispatch]);
 
   useEffect(() => {
@@ -91,26 +99,28 @@ const DanhMucBaoCaoHSSE = ({ navigation, route }) => {
         onPress={() => toggleTodo(item)}
       >
         <View style={styles.row}>
-          <View style={{ width: SIZES.width - 160 }}>
+          <View style={{ width: SIZES.width -60}}>
             <Text
               allowFontScaling={false}
+              numberOfLines={1}
               style={[styles.title, { color: "black" }]}
             >
-              Ngày gửi : {item?.Ngay_ghi_nhan}
+              Ngày gửi: <Text style={{fontWeight: "500"}}>{item?.Ngay_ghi_nhan}</Text>
             </Text>
           </View>
-          <View style={{ width: SIZES.width }}>
+          <View style={{ width: SIZES.width -60}}>
             <Text
               allowFontScaling={false}
+              numberOfLines={1}
               style={[styles.title, { color: "black" }]}
             >
-              Người gửi : {item?.Nguoi_tao}
+              Người gửi: <Text style={{fontWeight: "500"}}>{item?.Nguoi_tao}</Text>
             </Text>
           </View>
 
           <View
             style={{
-              width: SIZES.width - 100,
+              width: SIZES.width - 60,
               justifyContent: "space-between",
               flexDirection: "row",
             }}
@@ -126,19 +136,19 @@ const DanhMucBaoCaoHSSE = ({ navigation, route }) => {
                 allowFontScaling={false}
                 style={[styles.title, { color: "black" }]}
               >
-                Điện cư dân : {item?.Dien_cu_dan}
+                Điện CD: <Text style={{fontWeight: "500"}}>{item?.Dien_cu_dan}</Text>
               </Text>
               <Text
                 allowFontScaling={false}
                 style={[styles.title, { color: "black" }]}
               >
-                Nước cư dân : {item?.Nuoc_cu_dan}
+                Nước CD: <Text style={{fontWeight: "500"}}>{item?.Nuoc_cu_dan}</Text>
               </Text>
               <Text
                 allowFontScaling={false}
                 style={[styles.title, { color: "black" }]}
               >
-                Xả thải : {item?.Xa_thai}
+                Xả thải: <Text style={{fontWeight: "500"}}>{item?.Xa_thai}</Text>
               </Text>
             </View>
             <View
@@ -151,19 +161,19 @@ const DanhMucBaoCaoHSSE = ({ navigation, route }) => {
                 allowFontScaling={false}
                 style={[styles.title, { color: "black" }]}
               >
-                Điện chủ đầu tư : {item?.Dien_cdt}
+                Điện CĐT: <Text style={{fontWeight: "500"}}>{item?.Dien_cdt}</Text>
               </Text>
               <Text
                 allowFontScaling={false}
                 style={[styles.title, { color: "black" }]}
               >
-                Nước chủ đầu tư : {item?.Nuoc_cdt}
+                Nước CĐT: <Text style={{fontWeight: "500"}}>{item?.Nuoc_cdt}</Text>
               </Text>
               <Text
                 allowFontScaling={false}
                 style={[styles.title, { color: "black" }]}
               >
-                Rác : {item?.Rac_sh}
+                Rác: <Text style={{fontWeight: "500"}}>{item?.Rac_sh}</Text>
               </Text>
             </View>
           </View>
@@ -207,7 +217,7 @@ const DanhMucBaoCaoHSSE = ({ navigation, route }) => {
                 <>
                   <View style={{ flex: 1, width: "100%" }}>
                     <View style={[styles.container]}>
-                      {showReport && (
+                      {(showReport && data_check_hsse) && (
                         <View style={styles.header}>
                           <TouchableOpacity
                             style={styles.action}
@@ -258,6 +268,8 @@ const DanhMucBaoCaoHSSE = ({ navigation, route }) => {
                           style={{
                             tintColor: "white",
                             marginBottom: adjust(10),
+                            width: 120,
+                            height: 120,
                           }}
                         />
                         <Text

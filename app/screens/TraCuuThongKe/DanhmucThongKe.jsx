@@ -2,52 +2,23 @@ import {
   View,
   Text,
   StyleSheet,
-  Alert,
   FlatList,
-  ImageBackground,
   Image,
-  KeyboardAvoidingView,
-  Platform,
   ScrollView,
   TouchableOpacity,
   ActivityIndicator,
-  Modal,
-  TouchableHighlight,
-  TouchableWithoutFeedback,
 } from "react-native";
 import React, {
-  useRef,
   useState,
   useEffect,
-  useMemo,
-  useCallback,
   memo,
 } from "react";
 import { Provider, useDispatch, useSelector } from "react-redux";
-import {
-  BottomSheetModal,
-  BottomSheetView,
-  BottomSheetModalProvider,
-  BottomSheetScrollView,
-} from "@gorhom/bottom-sheet";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { AntDesign, Ionicons, Feather } from "@expo/vector-icons";
 import { DataTable } from "react-native-paper";
-import ButtonChecklist from "../../components/Button/ButtonCheckList";
 import { COLORS, SIZES } from "../../constants/theme";
 import { ent_calv_get } from "../../redux/actions/entActions";
 import { tb_checklistc_get } from "../../redux/actions/tbActions";
-import axios from "axios";
-import { BASE_URL } from "../../constants/config";
-import moment from "moment";
-import ModalChecklistC from "../../components/Modal/ModalChecklistC";
-import ModalChecklistCImage from "../../components/Modal/ModalChecklistCImage";
-import WebView from "react-native-webview";
-import adjust from "../../adjust";
-import DetailCheckListCa from "../Checklist/DetailCheckListCa";
 import ItemChecklistCa from "../../components/Item/ItemChecklistCa";
-
-// import mime from "mime";
 
 const numberOfItemsPerPageList = [20, 30, 50];
 

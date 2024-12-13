@@ -1,39 +1,11 @@
-// const ThucHienChecklist = require('./ThucHienChecklist')
-import ThucHienChecklist from "./ThucHienChecklist"
-import ThuchienKhuvucLai from "./ThuchienKhuvucLai"
-import HomeScreen from "./HomeScreen"
-import DanhmucCalamviec from "./DanhmucCalamviec"
-import DanhmucKhuvuc from "./DanhmucKhuvuc"
-import DetailChecklist from "./DetailChecklist"
-import Profile from "../Profile"
-import DanhmucChecklist from "./DanhmucChecklist"
-import ChecklistLaiScreen from "./ChecklistLaiScreen"
-import ChecklistHangNgay from "./ChecklistHangNgay"
-import Sucongoai from "./Sucongoai"
-import DetailCheckListCa from "./DetailCheckListCa"
-import ThucHienHangmucLai from "./ThucHienHangmucLai"
-import DetailChecklistLai from "./DetailChecklistLai"
-
-import ScanKhuVuc from "./ScanKhuVuc"
-import ScanHangMuc from "./ScanHangMuc"
-
-
+import ThucHienChecklist from "./ThucHienChecklist";
+import DetailChecklist from "./DetailChecklist";
+import ThucHienHangmuc from "./ThucHienHangmuc";
+import ThucHienKhuvuc from "./ThucHienKhuvuc";
 
 module.exports = {
-    ThucHienChecklist,
-    HomeScreen,
-    DanhmucCalamviec,
-    DanhmucKhuvuc,
-    DetailChecklist,
-    Profile,
-    DanhmucChecklist,
-    ChecklistLaiScreen,
-    ThuchienKhuvucLai,
-    ChecklistHangNgay,
-    Sucongoai,
-    DetailCheckListCa,
-    ThucHienHangmucLai,
-    DetailChecklistLai,
-    ScanKhuVuc,
-    ScanHangMuc,
-}
+  ThucHienChecklist,
+  DetailChecklist,
+  ThucHienHangmuc,
+  ThucHienKhuvuc,
+};

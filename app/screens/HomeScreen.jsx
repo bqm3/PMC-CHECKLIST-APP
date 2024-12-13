@@ -24,16 +24,16 @@ import {
   ent_toanha_get,
   ent_khoicv_get,
   check_hsse,
-} from "../../redux/actions/entActions";
+} from "../redux/actions/entActions";
 import { Alert, Linking } from "react-native";
 import * as Device from "expo-device";
 import Constants from "expo-constants";
 import axios from "axios";
 import * as Notifications from "expo-notifications";
-import { BASE_URL } from "../../constants/config";
-import ItemHome from "../../components/Item/ItemHome";
-import adjust from "../../adjust";
-import ReportContext from "../../context/ReportContext";
+import { BASE_URL } from "../constants/config";
+import ItemHome from "../components/Item/ItemHome";
+import adjust from "../adjust";
+import ReportContext from "../context/ReportContext";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -112,38 +112,38 @@ const dataDanhMuc = [
     id: 1,
     status: null,
     path: "Thực hiện Checklist",
-    icon: require("../../../assets/icons/o-01.png"),
+    icon: require("../../assets/icons/o-01.png"),
   },
   {
     id: 2,
     status: null,
     path: "Tra cứu",
-    icon: require("../../../assets/icons/o-02.png"),
+    icon: require("../../assets/icons/o-02.png"),
   },
 
   {
     id: 3,
     status: null,
     path: "Checklist Lại",
-    icon: require("../../../assets/icons/o-01.png"),
+    icon: require("../../assets/icons/o-01.png"),
   },
   {
     id: 4,
     status: null,
     path: "Xử lý sự cố",
-    icon: require("../../../assets/icons/o-04.png"),
+    icon: require("../../assets/icons/o-01.png"),
   },
   {
     id: 5,
     status: "new",
     path: "Báo cáo chỉ số",
-    icon: require("../../../assets/icons/o-05.png"),
+    icon: require("../../assets/icons/o-04.png"),
   },
   {
     id: 6,
     status: "new",
     path: "Báo cáo HSSE",
-    icon: require("../../../assets/icons/o-04.png"),
+    icon: require("../../assets/icons/o-04.png"),
   },
 ];
 
@@ -152,25 +152,25 @@ const dataGD = [
     id: 1,
     status: null,
     path: "Xử lý sự cố",
-    icon: require("../../../assets/icons/o-04.png"),
+    icon: require("../../assets/icons/o-01.png"),
   },
   {
     id: 2,
     status: null,
     path: "Tra cứu",
-    icon: require("../../../assets/icons/o-02.png"),
+    icon: require("../../assets/icons/o-02.png"),
   },
   {
     id: 6,
     status: "new",
     path: "Báo cáo HSSE",
-    icon: require("../../../assets/icons/o-04.png"),
+    icon: require("../../assets/icons/o-04.png"),
   },
   {
     id: 5,
     status: "new",
     path: "Báo cáo chỉ số",
-    icon: require("../../../assets/icons/o-05.png"),
+    icon: require("../../assets/icons/o-04.png"),
   },
 ];
 
@@ -179,38 +179,38 @@ const dataKST = [
     id: 1,
     status: null,
     path: "Thực hiện Checklist",
-    icon: require("../../../assets/icons/o-01.png"),
+    icon: require("../../assets/icons/o-01.png"),
   },
   {
     id: 2,
     status: null,
     path: "Tra cứu",
-    icon: require("../../../assets/icons/o-02.png"),
+    icon: require("../../assets/icons/o-02.png"),
   },
   {
     id: 4,
     status: null,
     path: "Checklist Lại",
-    icon: require("../../../assets/icons/o-01.png"),
+    icon: require("../../assets/icons/o-01.png"),
   },
 
   {
     id: 3,
     status: null,
     path: "Xử lý sự cố",
-    icon: require("../../../assets/icons/o-04.png"),
+    icon: require("../../assets/icons/o-01.png"),
   },
   {
     id: 5,
     status: "new",
     path: "Báo cáo chỉ số",
-    icon: require("../../../assets/icons/o-05.png"),
+    icon: require("../../assets/icons/o-04.png"),
   },
   {
     id: 6,
     status: "new",
     path: "Báo cáo HSSE",
-    icon: require("../../../assets/icons/o-04.png"),
+    icon: require("../../assets/icons/o-04.png"),
   },
 ];
 
@@ -218,7 +218,7 @@ const dataKST = [
 const HomeScreen = ({ navigation }) => {
   const dispath = useDispatch();
   const { user, authToken } = useSelector((state) => state.authReducer);
-  const { data_check_hsse } = useSelector((state) => state.entReducer);
+  
   const { setShowReport, showReport } = useContext(ReportContext);
 
   const [expoPushToken, setExpoPushToken] = useState("");
@@ -259,9 +259,7 @@ const HomeScreen = ({ navigation }) => {
     await dispath(ent_calv_get());
   };
 
-  const int_check_hsse = async () => {
-    await dispath(check_hsse());
-  };
+ 
 
   useEffect(() => {
     int_khuvuc();
@@ -270,7 +268,6 @@ const HomeScreen = ({ navigation }) => {
     init_khoicv();
     init_tang();
     int_calv();
-    int_check_hsse();
   }, []);
 
   useEffect(() => {
@@ -325,7 +322,7 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <ImageBackground
-      source={require("../../../assets/bg_new.png")}
+      source={require("../../assets/bg_new.png")}
       resizeMode="stretch"
       style={{ flex: 1, width: "100%" }}
     >
@@ -339,7 +336,7 @@ const HomeScreen = ({ navigation }) => {
             />
           ) : (
             <Image
-              source={require("../../../assets/pmc_logo.png")}
+              source={require("../../assets/pmc_logo.png")}
               resizeMode="contain"
               style={{ height: adjust(80), width: adjust(200) }}
             />
@@ -392,11 +389,7 @@ const HomeScreen = ({ navigation }) => {
                   ? dataGD
                   : user?.ent_chucvu?.Role == 2 && dataKST;
 
-              if (data_check_hsse == false && user?.ent_chucvu?.Role !== 1) {
-                baseData = baseData.filter(
-                  (item) => item.path !== "Báo cáo HSSE"
-                );
-              }
+          
 
               const currentDate = new Date();
               const targetDate = new Date("2025-01-01");

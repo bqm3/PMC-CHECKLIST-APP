@@ -47,7 +47,6 @@ const ThucHienHangmuc = ({ route, navigation }) => {
   const [dataSelect, setDataSelect] = useState([]);
 
   useEffect(() => {
-    console.log('run vao day')
     if (HangMucDefault && dataChecklists) {
       // Lọc các mục có ID_Khuvuc trùng khớp
       const filteredByKhuvuc = HangMucDefault?.filter(
@@ -92,7 +91,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
       } else if (resData.length === 0) {
         Alert.alert(
           "PMC Thông báo",
-          `Hạng mục có QrCode: "${cleanedValue}" không thuộc khu vực "${Tenkv}"`,
+          `Hạng mục có QrCode: "${cleanedValue}" không thuộc khu vực "${Tenkv}" hoặc đã kiểm tra`,
           [
             {
               text: "Hủy",
