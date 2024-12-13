@@ -4,36 +4,30 @@ import {  useSelector } from "react-redux";
 const DataContext = createContext();
 
 export const DataProvider = ({ children }) => {
-  const { ent_hangmuc } = useSelector((state) => state.entReducer);
+  const { ent_hangmuc, ent_khuvuc } = useSelector((state) => state.entReducer);
 
-  const [dataChecklists, setDataChecklists] = useState([]);
-  const [dataHangmuc, setDataHangmuc] = useState([]);
-  const [khuVuc, setKhuvuc] = useState([]);
-  const [hangMucFilter, setHangMucFilter] = useState(ent_hangmuc);
-  const [HangMucDefault, setHangMucDefault] = useState();
-  const [stepKhuvuc, setStepKhuvuc] = useState(0);
+  const [dataChecklists, setDataChecklists] = useState([]); //Oke
 
-  useEffect(() => {
-    if (ent_hangmuc) {
-      setHangMucDefault(ent_hangmuc);
-    }
-  }, [ent_hangmuc]);
+  const [hangMucFilterByIDChecklistC, setHangMucFilterByIDChecklistC] = useState();
+  const [khuVucFilterByIDChecklistC, setKhuVucFilterByIDChecklistC] = useState();
+  
+// Lọc chi tiết 1 khu vực lấy ra danh sách hạng mục
+  const [hangMucByKhuVuc, setHangMucByKhuVuc] = useState()
+  const [dataChecklistSize, setDataChecklistSize] = useState(0)
 
   return (
     <DataContext.Provider
       value={{
         setDataChecklists,
         dataChecklists,
-        dataHangmuc,
-        setDataHangmuc,
-        setHangMucFilter,
-        hangMucFilter,
-        setStepKhuvuc,
-        stepKhuvuc,
-        khuVuc,
-        setKhuvuc,
-        HangMucDefault,
-        setHangMucDefault,
+        setHangMucFilterByIDChecklistC,
+        hangMucFilterByIDChecklistC,
+        khuVucFilterByIDChecklistC,
+        setKhuVucFilterByIDChecklistC,
+        setHangMucByKhuVuc,
+        hangMucByKhuVuc,
+        setDataChecklistSize,
+        dataChecklistSize
       }}
     >
       {children}

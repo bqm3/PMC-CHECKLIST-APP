@@ -14,10 +14,11 @@ import {
   Keyboard,
   Image,
   Linking,
-  RefreshControl
+  RefreshControl,
 } from "react-native";
 import { Camera } from "expo-camera";
 import React, { useState, useEffect, useContext } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -37,26 +38,22 @@ import ConnectContext from "../../context/ConnectContext";
 import axiosClient from "../../api/axiosClient";
 
 const ThucHienKhuvuc = ({ route, navigation }) => {
-  const { ID_ChecklistC, ID_KhoiCV, ID_Calv, ID_Hangmucs, ID_Hangmuc } =
-    route.params;
+  const { ID_ChecklistC, ID_KhoiCV, ID_Calv, ID_Hangmucs } = route.params;
 
   const {
     setDataChecklists,
-    dataHangmuc,
-    hangMucFilter,
-    setHangMucFilter,
-    setStepKhuvuc,
     dataChecklists,
-    HangMucDefault,
+    setHangMucFilterByIDChecklistC,
+    hangMucFilterByIDChecklistC,
+    khuVucFilterByIDChecklistC,
+    setKhuVucFilterByIDChecklistC,
+    hangMucByKhuVuc,
   } = useContext(DataContext);
-  const {
-    setDataChecklistFilterContext,
-    dataChecklistFilterContext,
-    localtionContext,
-  } = useContext(ChecklistContext);
+  const { setDataChecklistFilterContext, dataChecklistFilterContext } =
+    useContext(ChecklistContext);
 
   const dispath = useDispatch();
-  const { ent_khuvuc, ent_checklist_detail, ent_toanha } = useSelector(
+  const { ent_khuvuc, ent_checklist_detail, ent_hangmuc } = useSelector(
     (state) => state.entReducer
   );
   const { isConnect, saveConnect } = useContext(ConnectContext);
@@ -69,14 +66,15 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [isScan, setIsScan] = useState(false);
   const [modalVisibleQr, setModalVisibleQr] = useState(false);
-  const [dataKhuvuc, setDataKhuvuc] = useState([]);
+  const [dataKhuvuc, setDataKhuvuc] = useState([]); // Lưu khu vực hiển thị
   const [dataSelect, setDataSelect] = useState([]);
 
+  // Checklist context
   const [defaultActionDataChecklist, setDataChecklistDefault] = useState([]);
   const [dataChecklistFaild, setDataChecklistFaild] = useState([]);
-  const [dataFilterHandler, setDataFilterHandler] = useState([]);
 
   const [isConnected, setConnected] = useState(true);
+
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener((state) => {
       setConnected(state.isConnected);
@@ -84,12 +82,6 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
 
     return () => unsubscribe();
   }, []);
-
-  const init_checklist = async () => {
-    setIsLoadingDetail(true);
-    await dispath(ent_checklist_mul_hm(ID_Hangmucs, ID_Calv, ID_ChecklistC));
-    setIsLoadingDetail(false);
-  };
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("beforeRemove", (e) => {
@@ -121,54 +113,45 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
     return unsubscribe;
   }, [navigation, dataChecklistFilterContext]);
 
-  useEffect(() => {
-    const ID_HangmucsArray = Array.isArray(ID_Hangmucs)
-      ? ID_Hangmucs
-      : ID_Hangmucs?.split(",")?.map(Number);
-    setStepKhuvuc(1);
-    // Kiểm tra xem mảng ent_khuvuc có dữ liệu không
-    if (ent_khuvuc && ent_khuvuc.length > 0) {
-      const matchingEntKhuvuc = ent_khuvuc.filter((item) =>
-        item.ent_hangmuc.some((hangmuc) =>
-          ID_HangmucsArray.includes(hangmuc.ID_Hangmuc)
-        )
-      );
-      // Cập nhật dữ liệu sau khi lọc
-      setDataKhuvuc(matchingEntKhuvuc);
-    } else {
-      console.log('running')
-    }
-  }, [ID_Hangmucs, ent_khuvuc]);
+  // Call API Checklist còn theo ID_ChecklistC
+  const init_checklist = async () => {
+    await dispath(ent_checklist_mul_hm(ID_Hangmucs, ID_Calv, ID_ChecklistC, ID_KhoiCV));
+  };
 
   useEffect(() => {
-    if (HangMucDefault && dataChecklists) {
+    if (dataChecklists) {
       // Lấy danh sách ID_Hangmuc từ dataChecklists
       const checklistIDs = dataChecklists.map((item) => item.ID_Hangmuc);
       // Lọc filteredByKhuvuc để chỉ giữ lại các mục có ID_Hangmuc tồn tại trong checklistIDs
-      const finalFilteredData = HangMucDefault.filter((item) =>
+      const filterDataHangMuc = ent_hangmuc.filter((item) =>
         checklistIDs.includes(item.ID_Hangmuc)
       );
-      const validKhuvucIDs = finalFilteredData.map((item) => item.ID_Khuvuc);
+      setHangMucFilterByIDChecklistC(filterDataHangMuc);
+      const validKhuvucIDs = filterDataHangMuc.map((item) => item.ID_Khuvuc);
+
+      const filterDataKhuVuc = ent_khuvuc.filter((item) =>
+        validKhuvucIDs.includes(item.ID_Khuvuc)
+      );
+
+      setKhuVucFilterByIDChecklistC(filterDataKhuVuc);
 
       // Lọc danh sách hạng mục dựa trên ID_Khuvuc có trong validKhuvucIDs
-      const filteredHangMuc = ent_khuvuc
-        .filter((item) => validKhuvucIDs.includes(item.ID_Khuvuc))
-        .map((khuvuc) => {
-          // Đếm số lượng hạng mục còn lại trong từng khu vực
-          const hangMucCount = finalFilteredData.filter(
-            (hangmuc) => hangmuc.ID_Khuvuc === khuvuc.ID_Khuvuc
-          ).length;
+      const filteredHangMuc = filterDataKhuVuc.map((khuvuc) => {
+        // Đếm số lượng hạng mục còn lại trong từng khu vực
+        const hangMucCount = filterDataHangMuc.filter(
+          (hangmuc) => hangmuc.ID_Khuvuc === khuvuc.ID_Khuvuc
+        ).length;
 
-          // Gắn số lượng hạng mục vào từng khu vực
-          return {
-            ...khuvuc,
-            hangMucCount,
-          };
-        });
+        // Gắn số lượng hạng mục vào từng khu vực
+        return {
+          ...khuvuc,
+          hangMucCount,
+        };
+      });
       // Cập nhật trạng thái hangMuc với danh sách đã lọc
       setDataKhuvuc(filteredHangMuc);
     }
-  }, [HangMucDefault, dataChecklists]);
+  }, [dataChecklists]);
 
   useEffect(() => {
     const fetchNetworkStatus = async () => {
@@ -178,7 +161,6 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
         const savedData = await AsyncStorage.getItem(
           `dataChecklistStorage_${ID_ChecklistC}`
         );
-        console.log('savedData1',savedData)
         if (
           (network === "close" && isConnect) ||
           (savedData !== null && savedData !== undefined && savedData !== "")
@@ -203,9 +185,14 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
     fetchNetworkStatus();
   }, [dataChecklistFilterContext, isConnect]);
 
-  useEffect(() => {
-    init_checklist();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      setIsLoadingDetail(true);
+      init_checklist();
+      setIsLoadingDetail(false);
+      return () => {};
+    }, [dispath])
+  );
 
   // Tải lại dữ liệu khi vào lại trang
   const loadData = async () => {
@@ -223,7 +210,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
 
   useEffect(() => {
     loadData();
-  }, [ID_Hangmucs, ent_checklist_detail]);
+  }, [ent_checklist_detail]);
 
   useEffect(() => {
     const dataChecklistAction = dataChecklistFilterContext?.filter(
@@ -251,11 +238,10 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
     const cleanedValue = value.trim().toLowerCase();
 
     try {
-      const resDataKhuvuc = ent_khuvuc.filter(
+      const resDataKhuvuc = khuVucFilterByIDChecklistC.filter(
         (item) => item.MaQrCode.trim().toLowerCase() === cleanedValue
       );
-
-      const resDataHangmuc = hangMucFilter.filter(
+      const resDataHangmuc = hangMucFilterByIDChecklistC.filter(
         (item) => item.MaQrCode.trim().toLowerCase() === cleanedValue
       );
 
@@ -264,7 +250,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
           ID_ChecklistC: ID_ChecklistC,
           ID_KhoiCV: ID_KhoiCV,
           ID_Calv: ID_Calv,
-          hangMucFilter: hangMucFilter,
+          hangMucFilterByIDChecklistC: hangMucFilterByIDChecklistC,
           Hangmuc: resDataHangmuc[0],
           ID_Hangmuc: resDataHangmuc[0].ID_Hangmuc,
         });
@@ -274,8 +260,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
           ID_KhoiCV: ID_KhoiCV,
           ID_Calv: ID_Calv,
           ID_Khuvuc: resDataKhuvuc[0].ID_Khuvuc,
-          dataFilterHandler: dataFilterHandler,
-          ID_Hangmucs: ID_Hangmucs
+          ID_Hangmucs: ID_Hangmucs,
         });
       } else if (resDataKhuvuc.length === 0 && resDataHangmuc.length === 0) {
         Alert.alert(
@@ -351,6 +336,9 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
           dataChecklistFaild.length === 0
         ) {
           await AsyncStorage.removeItem("checkNetwork");
+          await AsyncStorage.removeItem(
+            `dataChecklistStorage_${ID_ChecklistC}`
+          );
 
           // Hiển thị thông báo cho người dùng
           Alert.alert("PMC Thông báo", "Không có checklist để kiểm tra!", [
@@ -770,44 +758,41 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
     );
 
     setDataChecklistFilterContext(dataChecklistFilterContextReset);
-    await AsyncStorage.setItem(
-      `dataChecklistStorage_${ID_ChecklistC}`,
-      JSON.stringify(dataChecklistFilterContextReset)
-    );
+    await AsyncStorage.removeItem(`dataChecklistStorage_${ID_ChecklistC}`);
     setDataChecklistDefault([]);
     setDataChecklistFaild([]);
 
-    if (HangMucDefault && dataChecklistFilterContextReset) {
+    if (dataChecklistFilterContextReset) {
       // Lấy danh sách ID_Hangmuc từ dataChecklists
       const checklistIDs = dataChecklistFilterContextReset.map(
         (item) => item.ID_Hangmuc
       );
 
-      // Lọc filteredByKhuvuc để chỉ giữ lại các mục có ID_Hangmuc tồn tại trong checklistIDs
-      const finalFilteredData = HangMucDefault.filter((item) =>
+      const filterDataHangMuc = hangMucFilterByIDChecklistC.filter((item) =>
         checklistIDs.includes(item.ID_Hangmuc)
       );
-      const validKhuvucIDs = finalFilteredData.map((item) => item.ID_Khuvuc);
+      const validKhuvucIDs = filterDataHangMuc.map((item) => item.ID_Khuvuc);
+      setHangMucFilterByIDChecklistC(filterDataHangMuc);
 
+      const filterDataKhuVuc = khuVucFilterByIDChecklistC.filter((item) =>
+        validKhuvucIDs.includes(item.ID_Khuvuc)
+      );
+
+      setKhuVucFilterByIDChecklistC(filterDataKhuVuc);
       // Lọc danh sách hạng mục dựa trên ID_Khuvuc có trong validKhuvucIDs
-      const filteredHangMuc = ent_khuvuc
-        .filter((item) => validKhuvucIDs.includes(item.ID_Khuvuc))
-        .map((khuvuc) => {
-          // Đếm số lượng hạng mục còn lại trong từng khu vực
-          const hangMucCount = finalFilteredData.filter(
-            (hangmuc) => hangmuc.ID_Khuvuc === khuvuc.ID_Khuvuc
-          ).length;
+      const filteredHangMuc = filterDataKhuVuc.map((khuvuc) => {
+        // Đếm số lượng hạng mục còn lại trong từng khu vực
+        const hangMucCount = filterDataHangMuc.filter(
+          (hangmuc) => hangmuc.ID_Khuvuc === khuvuc.ID_Khuvuc
+        ).length;
 
-          // Gắn số lượng hạng mục vào từng khu vực
-          return {
-            ...khuvuc,
-            hangMucCount,
-          };
-        });
-
-      // setHangMucFilter(finalFilteredData);
+        // Gắn số lượng hạng mục vào từng khu vực
+        return {
+          ...khuvuc,
+          hangMucCount,
+        };
+      });
       setDataKhuvuc(filteredHangMuc);
-      setDataFilterHandler(finalFilteredData);
     }
   };
 
@@ -831,9 +816,8 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
       ID_KhoiCV: ID_KhoiCV,
       ID_Calv: ID_Calv,
       ID_Khuvuc: dataSelect[0].ID_Khuvuc,
-      dataFilterHandler: dataFilterHandler,
       Tenkv: `${dataSelect[0]?.Tenkhuvuc} - ${dataSelect[0]?.ent_toanha?.Toanha}`,
-      ID_Hangmucs: ID_Hangmucs
+      ID_Hangmucs: ID_Hangmucs,
     });
     setDataSelect([]);
   };
@@ -887,7 +871,6 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
               fontSize: adjust(16),
               color: dataSelect[0] === item ? "black" : "white",
               fontWeight: "600",
-              
             }}
             allowFontScaling={false}
           >
@@ -1024,9 +1007,9 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
                         showsVerticalScrollIndicator={false}
                         refreshControl={
                           <RefreshControl
-                            refreshing={isLoadingDetail} 
+                            refreshing={isLoadingDetail}
                             tintColor="transparent"
-                            onRefresh={init_checklist} 
+                            onRefresh={init_checklist}
                           />
                         }
                       />
@@ -1076,7 +1059,6 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
                   </View>
                 )}
 
-               
                 <View
                   style={{
                     position: "absolute",

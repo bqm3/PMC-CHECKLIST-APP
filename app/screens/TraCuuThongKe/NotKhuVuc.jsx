@@ -38,7 +38,6 @@ const NotKhuVuc = ({ route, navigation }) => {
     dataHangmuc,
     hangMucFilter,
     setHangMucFilter,
-    setStepKhuvuc,
     dataChecklists,
     HangMucDefault,
   } = useContext(DataContext);
@@ -64,7 +63,6 @@ const NotKhuVuc = ({ route, navigation }) => {
     const ID_HangmucsArray = Array.isArray(ID_Hangmucs)
       ? ID_Hangmucs
       : ID_Hangmucs.split(",").map(Number);
-    setStepKhuvuc(1);
 
     // Kiểm tra xem mảng ent_khuvuc có dữ liệu không
     if (ent_khuvuc && ent_khuvuc.length > 0) {
