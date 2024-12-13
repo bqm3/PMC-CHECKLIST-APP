@@ -506,7 +506,7 @@ const HomeStack = ({ navigation }) => {
                 color: "white",
               }}
             >
-              Khu vực
+              Khu vực lại
             </Text>
           ),
           headerLeft: () => headerLeft(navigation),
