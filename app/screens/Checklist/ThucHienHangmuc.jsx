@@ -76,10 +76,12 @@ const ThucHienHangmuc = ({ route, navigation }) => {
       );
 
       if (resDataHangmuc?.length == 0) {
-        const alertMessage = resDataHangmucAll.length >= 1
-            ? `Hạng mục có QR code: "${cleanedValue}" này đã kiểm tra`
+        console.log('==========================')
+        const alertMessage = resDataHangmucAll.length >= 1 
+            ? `Hạng mục có QR code: "${cleanedValue}" này đã kiểm tra 345`
             : `Hạng mục có QR code: "${cleanedValue}" này không thuộc ca làm việc`;
 
+          
         Alert.alert("PMC Thông báo", alertMessage, [
           { text: "Hủy", style: "cancel" },
           { text: "Xác nhận" },

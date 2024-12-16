@@ -41,7 +41,7 @@ import axios from "axios";
 import DataLicense from "../components/PrivacyPolicy";
 import Checkbox from "../components/Active/Checkbox";
 
-const version = "2.1.2";
+const version = "2.1.3";
 
 const LoginScreen = ({ navigation }) => {
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);

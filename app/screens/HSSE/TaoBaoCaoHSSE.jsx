@@ -94,7 +94,7 @@ const TaoBaoCaoHSSE = ({ navigation }) => {
   };
 
   const checkSubmit = async () => {
-    Alert.alert("PMC Thông báo", "Kiểm tra chính xác lại trước khi ấn gửi báo cáo", [
+    Alert.alert("PMC Thông báo", "Bạn có chắc chắn muốn gửi không?", [
       {
         text: "Hủy",
         onPress: () => {
@@ -102,7 +102,7 @@ const TaoBaoCaoHSSE = ({ navigation }) => {
         },
         style: "cancel",
       },
-      { text: "Gửi báo cáo", onPress: () => handleSubmit() },
+      { text: "Đồng ý", onPress: () => handleSubmit() },
     ]);
   }
 

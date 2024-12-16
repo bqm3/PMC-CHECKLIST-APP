@@ -267,10 +267,8 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
     setDataChecklistFaild(dataChecklistActionWithoutDefault);
   }, [dataChecklistFilterContext]);
 
-  const handlePushDataFilterQr = async (value) => {
+  const handlePushDataFilterQr = (value) => {
     const cleanedValue = value.trim().toLowerCase();
-
-    try {
       const resDataKhuvuc = dataChecklists.filter(
         (item) => item.ent_khuvuc.MaQrCode.trim().toLowerCase() === cleanedValue
       );
@@ -288,13 +286,13 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
         (item) =>
           item.ent_hangmuc.MaQrCode.trim().toLowerCase() === cleanedValue
       );
-
+      
       if (resDataKhuvuc?.length === 0 && resDataHangmuc?.length === 0) {
         const alertMessage =
           resDataKhuvucAll.length >= 1 || resDataHangmucAll.length >= 1
-            ? `Khu vực hoặc hạng mục có QR code: "${cleanedValue}" này đã kiểm tra`
+            ? `Khu vực hoặc hạng mục có QR code: "${cleanedValue}" này đã kiểm tra 123`
             : `Khu vực hoặc hạng mục có QR code: "${cleanedValue}" này không thuộc ca làm việc`;
-
+  
         Alert.alert("PMC Thông báo", alertMessage, [
           { text: "Hủy", style: "cancel" },
           { text: "Xác nhận" },
@@ -327,39 +325,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
       setIsScan(false);
       setModalVisibleQr(false);
       setOpacity(1);
-    } catch (error) {
-      if (error.response) {
-        // Lỗi từ phía server (có response từ server)
-        Alert.alert("PMC Thông báo", error.response.data.message, [
-          {
-            text: "Hủy",
-            onPress: () => console.log("Cancel Pressed"),
-            style: "cancel",
-          },
-          { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-        ]);
-      } else if (error.request) {
-        // Lỗi không nhận được phản hồi từ server
-        Alert.alert("PMC Thông báo", "Không nhận được phản hồi từ máy chủ", [
-          {
-            text: "Hủy",
-            onPress: () => console.log("Cancel Pressed"),
-            style: "cancel",
-          },
-          { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-        ]);
-      } else {
-        // Lỗi khi cấu hình request
-        Alert.alert("PMC Thông báo", "Lỗi khi gửi yêu cầu", [
-          {
-            text: "Hủy",
-            onPress: () => console.log("Cancel Pressed"),
-            style: "cancel",
-          },
-          { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-        ]);
-      }
-    }
+  
   };
 
   const handleSubmitChecklist = async () => {

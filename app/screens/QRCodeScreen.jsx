@@ -13,15 +13,6 @@ export default function QRCodeScreen({
   // const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
 
-  // useEffect(() => {
-  //   const getCameraPermissions = async () => {
-  //     const { status } = await Camera.requestCameraPermissionsAsync();
-  //     setHasPermission(status === "granted");
-  //   };
-
-  //   getCameraPermissions();
-  // }, []);
-
   const handleBarCodeScanned = ({ type, data }) => {
     setIsScan(true);
     setScanned(true);
@@ -29,13 +20,6 @@ export default function QRCodeScreen({
       handlePushDataFilterQr(data);
     }
   };
-
-  // if (hasPermission === null) {
-  //   return <Text allowFontScaling={false}>Requesting for camera permission</Text>;
-  // }
-  // if (hasPermission === false) {
-  //   return <Text allowFontScaling={false}>No access to camera</Text>;
-  // }
 
   return (
     <View style={styles.container}>
