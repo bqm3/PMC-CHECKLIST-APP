@@ -33,6 +33,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
     hangMucFilterByIDChecklistC,
     setHangMucByKhuVuc,
     hangMucByKhuVuc,
+    dataChecklistByCa,
   } = useContext(DataContext);
 
   const [opacity, setOpacity] = useState(1);
@@ -64,33 +65,35 @@ const ThucHienHangmuc = ({ route, navigation }) => {
   const handlePushDataFilterQr = async (value) => {
     const cleanedValue = value.trim().toLowerCase();
     try {
-      const resData = hangMucFilterByIDChecklistC.filter(
-        (item) => item.MaQrCode.trim().toLowerCase() === cleanedValue
+      const resDataHangmuc = hangMucFilterByIDChecklistC.filter(
+        (item) =>
+          item.MaQrCode.trim().toLowerCase() === cleanedValue
       );
-      if (resData?.length >= 1) {
+
+      const resDataHangmucAll = dataChecklistByCa.filter(
+        (item) =>
+          item.ent_hangmuc.MaQrCode.trim().toLowerCase() === cleanedValue
+      );
+
+      if (resDataHangmuc?.length == 0) {
+        const alertMessage = resDataHangmucAll.length >= 1
+            ? `Hạng mục có QR code: "${cleanedValue}" này đã kiểm tra`
+            : `Hạng mục có QR code: "${cleanedValue}" này không thuộc ca làm việc`;
+
+        Alert.alert("PMC Thông báo", alertMessage, [
+          { text: "Hủy", style: "cancel" },
+          { text: "Xác nhận" },
+        ]);
+      }
+
+      if (resDataHangmuc.length >= 1) {
         navigation.navigate("Chi tiết Checklist", {
           ID_ChecklistC: ID_ChecklistC,
           ID_KhoiCV: ID_KhoiCV,
-          ID_Hangmuc: resData[0].ID_Hangmuc,
-          Hangmuc: resData[0],
+          ID_Hangmuc: resDataHangmuc[0].ID_Hangmuc,
+          Hangmuc: resDataHangmuc[0],
           isScan: null,
         });
-        setIsScan(false);
-        setModalVisibleQr(false);
-        setOpacity(1);
-      } else if (resData?.length === 0) {
-        Alert.alert(
-          "PMC Thông báo",
-          `Hạng mục có QrCode: "${cleanedValue}" không thuộc khu vực "${Tenkv}" hoặc đã kiểm tra`,
-          [
-            {
-              text: "Hủy",
-              onPress: () => console.log("Cancel Pressed"),
-              style: "cancel",
-            },
-            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-          ]
-        );
         setIsScan(false);
         setModalVisibleQr(false);
         setOpacity(1);
