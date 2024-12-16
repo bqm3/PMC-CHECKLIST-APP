@@ -15,6 +15,7 @@ import {
   ScrollView,
   ActivityIndicator,
 } from "react-native";
+import * as Device from 'expo-device';
 import React, { useState, useEffect, useCallback } from "react";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -29,7 +30,6 @@ const DetailSucongoai = ({ navigation, route }) => {
   const data = route.params.data;
 
   const dispath = useDispatch();
-  const { user, authToken } = useSelector((state) => state.authReducer);
 
   const images = data?.Duongdancacanh ? data.Duongdancacanh.split(",") : [];
   const imagesHandle = data?.Anhkiemtra ? data.Anhkiemtra.split(",") : [];
@@ -43,19 +43,7 @@ const DetailSucongoai = ({ navigation, route }) => {
     setDataImage(img);
   };
 
-  // const getImageUrls = (item) => {
-  //   console.log('item', item)
-  //   if (!item) return null;
-  //   return item.endsWith(".jpg")
-  //     ? funcBaseUri_Image(3, item.trim())
-  //     : `https://drive.google.com/thumbnail?id=${item.trim()}&sz=w1000`;
-  // };
-
   const [isLoading, setIsLoading] = useState(true);
-
-  console.log("data", data);
-  console.log("imagesHandle", imagesHandle);
-
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <KeyboardAvoidingView
@@ -70,6 +58,7 @@ const DetailSucongoai = ({ navigation, route }) => {
               style={{ flex: 1, width: "100%" }}
             >
               <>
+              
                 {isShowImage ? (
                   <View style={styles.container}>
                     {isLoading && (

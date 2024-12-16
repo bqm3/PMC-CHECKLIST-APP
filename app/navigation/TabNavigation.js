@@ -34,7 +34,6 @@ import {
 } from "../screens/PSH";
 
 import {
-  Sucongoai,
   DetailSucongoai,
   ThuchienSucongoai,
   XulySuco,
@@ -507,34 +506,6 @@ const HomeStack = ({ navigation }) => {
               }}
             >
               Khu vực lại
-            </Text>
-          ),
-          headerLeft: () => headerLeft(navigation),
-          headerTitleAlign: "center",
-          headerStyle: {
-            backgroundColor: COLORS.bg_button,
-          },
-          headerBackTitleVisible: false,
-        })}
-      />
-
-      <Stack.Screen
-        name="Thông báo sự cố"
-        component={Sucongoai}
-        lazy={false}
-        options={({ navigation, route }) => ({
-          headerShown: true,
-
-          headerTitle: () => (
-            <Text
-              allowFontScaling={false}
-              style={{
-                fontSize: adjust(20),
-                fontWeight: "700",
-                color: "white",
-              }}
-            >
-              Thông báo sự cố ngoài
             </Text>
           ),
           headerLeft: () => headerLeft(navigation),

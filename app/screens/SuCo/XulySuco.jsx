@@ -17,7 +17,7 @@ import {
   BackHandler,
   Image,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -28,6 +28,8 @@ import { tb_sucongoai_get } from "../../redux/actions/tbActions";
 import { COLORS } from "../../constants/theme";
 import { Feather } from "@expo/vector-icons";
 import ModalChangeTinhTrangSuCo from "../../components/Modal/ModalChangeTinhTrangSuCo";
+import * as Device from 'expo-device';
+import ExpoTokenContext from "../../context/ExpoTokenContext";
 import axios from "axios";
 import { BASE_URL } from "../../constants/config";
 import moment from "moment";
@@ -40,6 +42,8 @@ const XulySuco = ({ navigation }) => {
 
   const { user, authToken } = useSelector((state) => state.authReducer);
   const { tb_sucongoai } = useSelector((state) => state.tbReducer);
+const { token } = useContext(ExpoTokenContext);
+
 
   const [dataSuCoNgoai, setDataSuCoNgoai] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -357,6 +361,8 @@ const XulySuco = ({ navigation }) => {
             Tinhtrangxuly: saveStatus,
             ngayXuLy: formatDate(ngayXuLy.date),
             ID_Hangmuc: dataInput.ID_Hangmuc,
+            deviceHandler: token,
+            deviceNameHandler: Device.modelName,
           },
           {
             headers: {
@@ -427,7 +433,6 @@ const XulySuco = ({ navigation }) => {
         });
     }
   };
-
   const handleSubmitStatusImage = async () => {
     let formData = new FormData();
     images.map((item, index) => {
@@ -446,6 +451,8 @@ const XulySuco = ({ navigation }) => {
     formData.append("Ghichu", dataInput.Noidungghichu);
     formData.append("ngayXuLy", formatDate(ngayXuLy.date));
     formData.append("ID_Hangmuc", dataInput.ID_Hangmuc);
+    formData.append("deviceHandler", token);
+    formData.append("deviceNameHandler", Device.modelName);
     if (saveStatus == null) {
       Alert.alert("PMC Thông báo", "Phải chọn trạng thái", [
         {

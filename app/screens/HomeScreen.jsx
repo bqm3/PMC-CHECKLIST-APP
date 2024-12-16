@@ -34,6 +34,7 @@ import { BASE_URL } from "../constants/config";
 import ItemHome from "../components/Item/ItemHome";
 import adjust from "../adjust";
 import ReportContext from "../context/ReportContext";
+import ExpoTokenContext from "../context/ExpoTokenContext";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -220,6 +221,7 @@ const HomeScreen = ({ navigation }) => {
   const { user, authToken } = useSelector((state) => state.authReducer);
   
   const { setShowReport, showReport } = useContext(ReportContext);
+  const { setToken, token } = useContext(ExpoTokenContext);
 
   const [expoPushToken, setExpoPushToken] = useState("");
   const [notification, setNotification] = useState(undefined);
@@ -315,6 +317,7 @@ const HomeScreen = ({ navigation }) => {
     };
     if(expoPushToken){
       dataRes();
+      setToken(expoPushToken)
     }
     
   }, [authToken, expoPushToken]);
@@ -338,7 +341,7 @@ const HomeScreen = ({ navigation }) => {
             <Image
               source={require("../../assets/pmc_logo.png")}
               resizeMode="contain"
-              style={{ height: adjust(80), width: adjust(200) }}
+              style={{ height: adjust(70), width: adjust(180) }}
             />
           )}
           <Text
@@ -409,7 +412,7 @@ const HomeScreen = ({ navigation }) => {
             columnWrapperStyle={{ gap: 10 }}
           />
         </View>
-        <View
+        {/* <View
           style={{
             flexDirection: "column",
             marginTop: 20,
@@ -435,7 +438,8 @@ const HomeScreen = ({ navigation }) => {
           >
             Giám đốc Tòa nhà toàn quyền sử dụng.
           </Text>
-        </View>
+        </View> */}
+        <View></View>
       </View>
     </ImageBackground>
   );
@@ -447,7 +451,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     justifyContent: "space-around",
-    paddingBottom: 40,
+    // paddingBottom: 40,
   },
   content: {
     width: "100%",

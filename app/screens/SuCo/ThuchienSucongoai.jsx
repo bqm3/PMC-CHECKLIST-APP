@@ -15,7 +15,8 @@ import {
   ScrollView,
   Modal,
 } from "react-native";
-import React, { useState, useEffect, useCallback } from "react";
+import * as Device from "expo-device";
+import React, { useState, useEffect, useCallback, useContext } from "react";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Entypo, AntDesign, FontAwesome } from "@expo/vector-icons";
@@ -42,6 +43,7 @@ import { BASE_URL } from "../../constants/config";
 import { axiosClient } from "../../api/axiosClient";
 import { nowDate } from "../../utils/util";
 import ModalCallSucongoai from "../../components/Modal/ModalCallSucongoai";
+import ExpoTokenContext from "../../context/ExpoTokenContext";
 
 const ThuchienSucongoai = ({ navigation, route }) => {
   const dispath = useDispatch();
@@ -50,6 +52,7 @@ const ThuchienSucongoai = ({ navigation, route }) => {
   const { ent_khuvuc, ent_khoicv, ent_toanha, ent_hangmuc } = useSelector(
     (state) => state.entReducer
   );
+  const { token } = useContext(ExpoTokenContext);
 
   const [dataKhuvuc, setDataKhuvuc] = useState([]);
   const [dataHangmuc, setDataHangmuc] = useState([]);
@@ -63,6 +66,8 @@ const ThuchienSucongoai = ({ navigation, route }) => {
     Giosuco: null,
     Noidungsuco: "",
     Duongdancacanh: [],
+    deviceUser: token,
+    deviceNameUser: Device.modelName,
   });
 
   const [dataCheckKhuvuc, setDataCheckKhuvuc] = useState({
@@ -248,6 +253,8 @@ const ThuchienSucongoai = ({ navigation, route }) => {
         formData.append("Giosuco", dataInput.Giosuco);
         formData.append("Noidungsuco", dataInput.Noidungsuco);
         formData.append("ID_User", user.ID_User);
+        formData.append("deviceUser", token);
+        formData.append("deviceNameUser", Device.modelName);
         formData.append("Tinhtrangxuly", 0);
         if (dataInput.Ngaysuco == null || dataInput.Giosuco == null) {
           Alert.alert("PMC Thông báo", "Vui lòng nhập đầy đủ thông tin", [
@@ -297,6 +304,8 @@ const ThuchienSucongoai = ({ navigation, route }) => {
           Ngaysuco: dataInput.Ngaysuco,
           Giosuco: dataInput.Giosuco,
           Noidungsuco: dataInput.Noidungsuco,
+          deviceUser: token,                                                                                                                                                                                                                                                                                                                                       
+          deviceNameUser: Device.modelName,
           ID_User: user.ID_User,
           Tinhtrangxuly: 0,
         };

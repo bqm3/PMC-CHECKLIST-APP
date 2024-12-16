@@ -41,9 +41,9 @@ export default function ItemSucongoai({
             { fontWeight: "500", color: isExistIndex ? "black" : "white" },
           ]}
         >
-          : {moment(item?.Ngaysuco).format("DD/MM/YYYY")}{" "}
+          : {moment(item?.Ngaysuco).format("DD/MM")}{" "}
           {item?.Ngayxuly
-            ? `- ${moment(item.Ngayxuly).format("DD/MM/YYYY")}`
+            ? `- ${moment(item.Ngayxuly).format("DD/MM")}`
             : ""}
         </Text>
         <Image

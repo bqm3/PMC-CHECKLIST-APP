@@ -9,6 +9,7 @@ import { LocationProvider } from "./app/context/LocationContext";
 import { ConnectProvider } from "./app/context/ConnectContext";
 import { UserProvider } from "./app/context/UserContext";
 import { ReportProvider } from "./app/context/ReportContext";
+import { ExpoTokenProvider } from "./app/context/ExpoTokenContext";
 import { DataProvider } from "./app/context/DataContext";
 import { ChecklistProvider } from "./app/context/ChecklistContext";
 import { ChecklistLaiProvider } from "./app/context/ChecklistLaiContext";
@@ -30,24 +31,26 @@ export default function App() {
       <PaperProvider theme={customTheme}>
         <LoginProvider>
           <LocationProvider>
-            <ConnectProvider>
-              <ThemeProvider>
-                <UserProvider>
-                  <DataProvider>
-                  <ReportProvider>
-                    <ChecklistProvider>
-                      <ChecklistLaiProvider>
-                        <NavigationContainer>
-                          <StatusBar />
-                          <CheckNavigation />
-                        </NavigationContainer>
-                      </ChecklistLaiProvider>
-                    </ChecklistProvider>
-                  </ReportProvider>
-                  </DataProvider>
-                </UserProvider>
-              </ThemeProvider>
-            </ConnectProvider>
+            <ExpoTokenProvider>
+              <ConnectProvider>
+                <ThemeProvider>
+                  <UserProvider>
+                    <DataProvider>
+                      <ReportProvider>
+                        <ChecklistProvider>
+                          <ChecklistLaiProvider>
+                            <NavigationContainer>
+                              <StatusBar />
+                              <CheckNavigation />
+                            </NavigationContainer>
+                          </ChecklistLaiProvider>
+                        </ChecklistProvider>
+                      </ReportProvider>
+                    </DataProvider>
+                  </UserProvider>
+                </ThemeProvider>
+              </ConnectProvider>
+            </ExpoTokenProvider>
           </LocationProvider>
         </LoginProvider>
       </PaperProvider>
