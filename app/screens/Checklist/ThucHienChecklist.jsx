@@ -54,6 +54,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import NetInfo from "@react-native-community/netinfo";
 import CustomAlertModal from "../../components/CustomAlertModal";
 import RenderHTML from 'react-native-render-html';
+import ChecklistContext from "../../context/ChecklistContext";
 
 const ThucHienChecklist = ({ navigation }) => {
   const ref = useRef(null);
@@ -61,7 +62,15 @@ const ThucHienChecklist = ({ navigation }) => {
   const { ent_calv, ent_hangmuc } = useSelector((state) => state.entReducer);
   const { tb_checklistc } = useSelector((state) => state.tbReducer);
   const { user, authToken } = useSelector((state) => state.authReducer);
-  const { setDataHangmuc, stepKhuvuc } = useContext(DataContext);
+  const {
+    setDataChecklists,
+    setKhuVucFilterByIDChecklistC,
+    setHangMucFilterByIDChecklistC
+  } = useContext(DataContext);
+
+  const {
+    setDataChecklistFilterContext
+  } = useContext(ChecklistContext)
 
   const date = new Date();
   const dateDay = moment(date).format("YYYY-MM-DD");
@@ -131,13 +140,6 @@ const ThucHienChecklist = ({ navigation }) => {
       }
     }
   }, [tb_checklistc]);
-
-  useEffect(() => {
-    if (ent_hangmuc) {
-      const hangmucIds = ent_hangmuc.map((item) => item.ID_Hangmuc);
-      setDataHangmuc(hangmucIds);
-    }
-  }, [ent_hangmuc]);
 
   const init_ca = async () => {
     await dispath(ent_calv_get());
@@ -394,15 +396,6 @@ const ThucHienChecklist = ({ navigation }) => {
       } catch (error) {
         setLoadingSubmit(false);
         if (error.response) {
-          // Lỗi từ phía server (có response từ server)
-          // Alert.alert("PMC Thông báo", error.response.data.message, [
-          //   {
-          //     text: "Hủy",
-          //     onPress: () => console.log("Cancel Pressed"),
-          //     style: "cancel",
-          //   },
-          //   { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-          // ]);
           setIsModalVisible(true);
           setMessage(error.response.data.message)
         } else if (error.request) {
@@ -486,6 +479,10 @@ const ThucHienChecklist = ({ navigation }) => {
   };
 
   const handleChecklistDetail = async (id1, id2, id3, id4) => {
+    setDataChecklists([])
+    setKhuVucFilterByIDChecklistC([])
+    setHangMucFilterByIDChecklistC([])
+    setDataChecklistFilterContext([])
     if (isConnected) {
       navigation.navigate("Thực hiện khu vực", {
         ID_ChecklistC: id1,

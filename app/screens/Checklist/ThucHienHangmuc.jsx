@@ -16,8 +16,6 @@ import {
   ScrollView,
 } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
-import { Provider, useDispatch, useSelector } from "react-redux";
-import { MaterialIcons } from "@expo/vector-icons";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { COLORS, SIZES } from "../../constants/theme";
@@ -29,14 +27,13 @@ import { Camera } from "expo-camera";
 import { Linking } from "react-native";
 
 const ThucHienHangmuc = ({ route, navigation }) => {
+  const { ID_ChecklistC, ID_KhoiCV, ID_Khuvuc, Tenkv } = route.params;
   const {
-    ID_ChecklistC,
-    ID_KhoiCV,
-    ID_Khuvuc,
-    Tenkv,
-  } = route.params;
-  const { dataChecklists, setHangMucFilter, hangMucFilter, HangMucDefault } =
-    useContext(DataContext);
+    dataChecklists,
+    hangMucFilterByIDChecklistC,
+    setHangMucByKhuVuc,
+    hangMucByKhuVuc,
+  } = useContext(DataContext);
 
   const [opacity, setOpacity] = useState(1);
   const [isLoadingDetail, setIsLoadingDetail] = useState(false);
@@ -47,48 +44,41 @@ const ThucHienHangmuc = ({ route, navigation }) => {
   const [dataSelect, setDataSelect] = useState([]);
 
   useEffect(() => {
-    if (HangMucDefault && dataChecklists) {
+    if (hangMucFilterByIDChecklistC) {
       // Lọc các mục có ID_Khuvuc trùng khớp
-      const filteredByKhuvuc = HangMucDefault?.filter(
+      const filteredByKhuvuc = hangMucFilterByIDChecklistC?.filter(
         (item) => item.ID_Khuvuc == ID_Khuvuc
       );
-
-      const checklistIDs = dataChecklists?.map((item) => item.ID_Hangmuc);
-      const finalFilteredData = filteredByKhuvuc?.filter((item) =>
-        checklistIDs.includes(item.ID_Hangmuc)
-      );
-
-      if (finalFilteredData.length == 0) {
-          setTimeout(() => {
-            if (navigation.canGoBack()) {
-              navigation.goBack();
-            }
-          }, 250); 
-        
+      if (filteredByKhuvuc?.length == 0) {
+        setTimeout(() => {
+          if (navigation.canGoBack()) {
+            navigation.goBack();
+          }
+        }, 250);
       } else {
-        setHangMucFilter(finalFilteredData);
+        setHangMucByKhuVuc(filteredByKhuvuc);
       }
     }
-  }, [ID_Khuvuc, HangMucDefault, dataChecklists]);
+  }, [ID_Khuvuc, hangMucFilterByIDChecklistC]);
+
   const handlePushDataFilterQr = async (value) => {
     const cleanedValue = value.trim().toLowerCase();
     try {
-      const resData = hangMucFilter.filter(
+      const resData = hangMucFilterByIDChecklistC.filter(
         (item) => item.MaQrCode.trim().toLowerCase() === cleanedValue
       );
-      if (resData.length >= 1) {
+      if (resData?.length >= 1) {
         navigation.navigate("Chi tiết Checklist", {
           ID_ChecklistC: ID_ChecklistC,
           ID_KhoiCV: ID_KhoiCV,
           ID_Hangmuc: resData[0].ID_Hangmuc,
-          hangMucFilter: hangMucFilter,
           Hangmuc: resData[0],
           isScan: null,
         });
         setIsScan(false);
         setModalVisibleQr(false);
         setOpacity(1);
-      } else if (resData.length === 0) {
+      } else if (resData?.length === 0) {
         Alert.alert(
           "PMC Thông báo",
           `Hạng mục có QrCode: "${cleanedValue}" không thuộc khu vực "${Tenkv}" hoặc đã kiểm tra`,
@@ -166,7 +156,6 @@ const ThucHienHangmuc = ({ route, navigation }) => {
       ID_ChecklistC: ID_ChecklistC,
       ID_KhoiCV: ID_KhoiCV,
       ID_Hangmuc: dataSelect[0].ID_Hangmuc,
-      hangMucFilter: hangMucFilter,
       ID_Khuvuc: ID_Khuvuc,
       Hangmuc: dataSelect[0],
       isScan: 1,
@@ -333,7 +322,8 @@ const ThucHienHangmuc = ({ route, navigation }) => {
                         }}
                       >
                         <Text allowFontScaling={false} style={styles.text}>
-                          Số lượng: {decimalNumber(hangMucFilter?.length)} hạng mục
+                          Số lượng: {decimalNumber(hangMucByKhuVuc?.length)}{" "}
+                          hạng mục
                         </Text>
                       </View>
                     </View>
@@ -341,8 +331,8 @@ const ThucHienHangmuc = ({ route, navigation }) => {
                 </View>
 
                 {isLoadingDetail === false &&
-                  hangMucFilter &&
-                  hangMucFilter?.length > 0 && (
+                  hangMucByKhuVuc &&
+                  hangMucByKhuVuc?.length > 0 && (
                     <>
                       <FlatList
                         style={{
@@ -350,7 +340,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
                           flex: 1,
                           marginBottom: 100,
                         }}
-                        data={hangMucFilter}
+                        data={hangMucByKhuVuc}
                         renderItem={({ item, index, separators }) =>
                           renderItem(item, index)
                         }
@@ -375,7 +365,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
                     width: "100%",
                   }}
                 >
-                  {hangMucFilter.length > 0 && (
+                  {hangMucByKhuVuc?.length > 0 && (
                     <Button
                       text={"Quét Qrcode"}
                       backgroundColor={"white"}
@@ -384,7 +374,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
                     />
                   )}
 
-                  {dataSelect.length > 0 && (
+                  {dataSelect?.length > 0 && (
                     <Button
                       text={"Vào Checklist"}
                       backgroundColor={COLORS.bg_button}

@@ -53,12 +53,20 @@ import { useHeaderHeight } from "@react-navigation/elements";
 import ModalBottomSheet from "../../components/Modal/ModalBottomSheet";
 
 const DetailChecklist = ({ route, navigation }) => {
-  const { ID_ChecklistC, ID_KhoiCV, ID_Hangmuc, hangMucFilter, Hangmuc, isScan } =
+  const { ID_ChecklistC, ID_KhoiCV, ID_Hangmuc, Hangmuc, isScan } =
     route.params;
 
   const dispath = useDispatch();
   const { isLoadingDetail } = useSelector((state) => state.entReducer);
-  const { setHangMucFilter, HangMucDefault, setHangMucDefault } =
+  const { 
+    setHangMucFilterByIDChecklistC,
+    hangMucFilterByIDChecklistC,
+    khuVucFilterByIDChecklistC,
+    setKhuVucFilterByIDChecklistC,
+    setHangMucByKhuVuc,
+    hangMucByKhuVuc,
+    setDataChecklistSize,
+  } =
     useContext(DataContext);
 
   const { isConnect, saveConnect } = useContext(ConnectContext);
@@ -78,11 +86,9 @@ const DetailChecklist = ({ route, navigation }) => {
   const [opacity, setOpacity] = useState(1);
   const [index, setIndex] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
-  const [visibleBottom, setVisibleBottom] = useState(false);
-  const [modalVisibleTieuChuan, setModalVisibleTieuChuan] = useState(false);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [activeAll, setActiveAll] = useState(false);
-  const [location, setLocation] = useState(123);
+  const [location, setLocation] = useState();
   const [show, setShow] = useState(false);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -681,7 +687,7 @@ const DetailChecklist = ({ route, navigation }) => {
           await AsyncStorage.setItem("checkNetwork", "close");
           Alert.alert(
             "Không có kết nối mạng",
-            "Vui lòng kiểm tra kết nối mạng của bạn."
+            "Vui lòng kiểm tra kết nối mạng của bạn. Checklist đã được lưu, ra ngoài khu vực để hoàn thành khi có mạng"
           );
           saveConnect(true);
 
@@ -1065,6 +1071,15 @@ const DetailChecklist = ({ route, navigation }) => {
     }
   };
 
+  // setDataChecklists,
+  //   dataChecklists,
+  //   setHangMucFilterByIDChecklistC,
+  //   hangMucFilterByIDChecklistC,
+  //   khuVucFilterByIDChecklistC,
+  //   setKhuVucFilterByIDChecklistC,
+  //   setHangMucByKhuVuc,
+  //   hangMucByKhuVuc,
+
   // Thiết lập lại dữ liệu sau khi hoàn thành xử lý API
   const postHandleSubmit = async () => {
     const idsToRemove = new Set([
@@ -1077,14 +1092,16 @@ const DetailChecklist = ({ route, navigation }) => {
       (item) => !idsToRemove.has(item.ID_Checklist)
     );
     if (dataChecklistFilter?.length === newActionDataChecklist?.length) {
-      const filteredData = hangMucFilter.filter(
+      // Lọc theo hạng mục thuộc khu vực trong ca
+      const filteredData = hangMucByKhuVuc.filter(
         (item) => item.ID_Hangmuc !== ID_Hangmuc
       );
-      const filteredDataDefault = HangMucDefault.filter(
+      // Lọc theo hạng mục tất cả trong ca
+      const filteredDataDefault = hangMucFilterByIDChecklistC.filter(
         (item) => item.ID_Hangmuc !== ID_Hangmuc
       );
-      setHangMucDefault(filteredDataDefault);
-      setHangMucFilter(filteredData);
+      setHangMucFilterByIDChecklistC(filteredDataDefault);
+      setHangMucByKhuVuc(filteredData);
       navigation.goBack();
     }
     const dataChecklist = dataChecklistFilterContextReset?.filter(
@@ -1093,7 +1110,7 @@ const DetailChecklist = ({ route, navigation }) => {
 
     setDataChecklistFilter(dataChecklist);
     setDataChecklistFilterContext(dataChecklistFilterContextReset);
-
+    setDataChecklistSize(dataChecklistFilterContextReset?.length)
     setNewActionDataChecklist([]);
     setDataChecklistDefault([]);
     setDataChecklistFaild([]);
@@ -1104,7 +1121,6 @@ const DetailChecklist = ({ route, navigation }) => {
   const handlePopupActiveTieuChuan = useCallback((item, index) => {
     setOpacity(0.2);
     setTieuchuan(item.Tieuchuan);
-    setModalVisibleTieuChuan(true);
     setIndex(index);
   }, []);
 
@@ -1127,23 +1143,16 @@ const DetailChecklist = ({ route, navigation }) => {
   };
 
   const handleBottom = useCallback((item, index) => {
-    setVisibleBottom(true);
     setIsBottomSheetOpen(true);
     setDataItem(item);
     setIndex(index);
     setOpacity(0.2);
-    // if (visibleBottom == false) {
-    //   setOpacity(0.2);
-    // } else {
-    //   setOpacity(1);
-    // }
   }, []);
 
   const handleClearBottom = useCallback((item, index) => {
     setOpacity(1);
     setDataItem(null);
     setIndex(null);
-    setVisibleBottom(false);
     setIsBottomSheetOpen(false);
   }, []);
 
@@ -1592,7 +1601,6 @@ const DetailChecklist = ({ route, navigation }) => {
                   backgroundColor={COLORS.bg_button}
                   color={"white"}
                   onPress={() => {
-                    setModalVisibleTieuChuan(false);
                     setOpacity(1);
                   }}
                 />

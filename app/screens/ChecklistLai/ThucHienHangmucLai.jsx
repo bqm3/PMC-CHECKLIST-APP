@@ -13,168 +13,217 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Image,
-  Linking,
+  ScrollView,
 } from "react-native";
 import React, { useState, useEffect, useContext } from "react";
-import { MaterialIcons } from "@expo/vector-icons";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { COLORS } from "../../constants/theme";
+import { COLORS, SIZES } from "../../constants/theme";
 import Button from "../../components/Button/Button";
 import QRCodeScreen from "../QRCodeScreen";
 import DataContext from "../../context/DataContext";
 import adjust from "../../adjust";
 import { Camera } from "expo-camera";
+import { Linking } from "react-native";
 
 const ThucHienHangmucLai = ({ route, navigation }) => {
-  const { ID_ChecklistC, ID_KhoiCV, ID_Khuvuc, dataFilterHandler, Tenkv } =
-    route.params;
-  const { dataChecklists, setHangMucFilter, hangMucFilter, HangMucDefault } =
-    useContext(DataContext);
+  const { ID_ChecklistC, ID_KhoiCV, ID_Khuvuc, Tenkv } = route.params;
+  const {
+    dataChecklists,
+    hangMucFilterByIDChecklistC,
+    setHangMucByKhuVuc,
+    hangMucByKhuVuc,
+  } = useContext(DataContext);
 
   const [opacity, setOpacity] = useState(1);
   const [isLoadingDetail, setIsLoadingDetail] = useState(false);
   const [isScan, setIsScan] = useState(false);
   const [modalVisibleQr, setModalVisibleQr] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
+  const [tieuChuan, setTieuChuan] = useState();
   const [dataSelect, setDataSelect] = useState([]);
 
   useEffect(() => {
-    if (HangMucDefault && dataChecklists) {
+    if (hangMucFilterByIDChecklistC) {
       // Lọc các mục có ID_Khuvuc trùng khớp
-      const filteredByKhuvuc = HangMucDefault?.filter(
+      const filteredByKhuvuc = hangMucFilterByIDChecklistC?.filter(
         (item) => item.ID_Khuvuc == ID_Khuvuc
       );
-
-      const checklistIDs = dataChecklists?.map((item) => item.ID_Hangmuc);
-      const finalFilteredData = filteredByKhuvuc?.filter((item) =>
-        checklistIDs.includes(item.ID_Hangmuc)
-      );
-
-      if (finalFilteredData.length == 0) {
-        if (finalFilteredData.length === 0) {
-          setTimeout(() => {
-            if (navigation.canGoBack()) {
-              navigation.goBack();
-            }
-          }, 500); // Thử thêm độ trễ nhỏ
-        }
-        
+      if (filteredByKhuvuc?.length == 0) {
+        setTimeout(() => {
+          if (navigation.canGoBack()) {
+            navigation.goBack();
+          }
+        }, 250);
       } else {
-        setHangMucFilter(finalFilteredData);
+        setHangMucByKhuVuc(filteredByKhuvuc);
       }
     }
-  }, [ID_Khuvuc, HangMucDefault, dataChecklists]);
+  }, [ID_Khuvuc, hangMucFilterByIDChecklistC]);
 
   const handlePushDataFilterQr = async (value) => {
-    const cleanedValue = value
-      
-      .trim()
-      .toLowerCase();
+    const cleanedValue = value.trim().toLowerCase();
     try {
-      const resData = hangMucFilter.filter(
+      const resData = hangMucFilterByIDChecklistC.filter(
         (item) => item.MaQrCode.trim().toLowerCase() === cleanedValue
       );
-      if (resData.length >= 1) {
-        navigation.navigate("Chi tiết Checklist", {
-          ID_ChecklistC,
-          ID_KhoiCV,
+      if (resData?.length >= 1) {
+        navigation.navigate("Chi tiết Checklist lại", {
+          ID_ChecklistC: ID_ChecklistC,
+          ID_KhoiCV: ID_KhoiCV,
           ID_Hangmuc: resData[0].ID_Hangmuc,
-          hangMucFilter,
           Hangmuc: resData[0],
-          isScan: null
+          isScan: null,
         });
         setIsScan(false);
         setModalVisibleQr(false);
         setOpacity(1);
-      } else {
+      } else if (resData?.length === 0) {
         Alert.alert(
           "PMC Thông báo",
-          `Hạng mục có QrCode: "${cleanedValue}" không thuộc khu vực "${Tenkv}"`,
+          `Hạng mục có QrCode: "${cleanedValue}" không thuộc khu vực "${Tenkv}" hoặc đã kiểm tra`,
+          [
+            {
+              text: "Hủy",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel",
+            },
+            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+          ]
         );
         setIsScan(false);
         setModalVisibleQr(false);
         setOpacity(1);
       }
     } catch (error) {
-      Alert.alert("PMC Thông báo", "Lỗi khi gửi yêu cầu");
+      if (error.response) {
+        // Lỗi từ phía server (có response từ server)
+        Alert.alert("PMC Thông báo", error.response.data.message, [
+          {
+            text: "Hủy",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel",
+          },
+          { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+        ]);
+      } else if (error.request) {
+        // Lỗi không nhận được phản hồi từ server
+        Alert.alert("PMC Thông báo", "Không nhận được phản hồi từ máy chủ", [
+          {
+            text: "Hủy",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel",
+          },
+          { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+        ]);
+      } else {
+        // Lỗi khi cấu hình request
+        Alert.alert("PMC Thông báo", "Lỗi khi gửi yêu cầu", [
+          {
+            text: "Hủy",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel",
+          },
+          { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+        ]);
+      }
     }
   };
 
-  const toggleTodo = (item) => {
+  const handlePopupActive = (item, index) => {
+    setModalVisible(true);
+    setOpacity(0.2);
+    setTieuChuan(item.Tieuchuankt);
+  };
+
+  // toggle Data select
+  const toggleTodo = async (item) => {
     const isExistIndex = dataSelect.find(
       (existingItem) => existingItem === item
     );
+
+    // Nếu item đã tồn tại, xóa item đó đi
     if (isExistIndex) {
       setDataSelect([]);
     } else {
+      // Nếu item chưa tồn tại, thêm vào mảng mới
       setDataSelect([item]);
     }
   };
 
   const handleSubmit = () => {
     navigation.navigate("Chi tiết Checklist lại", {
-      ID_ChecklistC,
-      ID_KhoiCV,
+      ID_ChecklistC: ID_ChecklistC,
+      ID_KhoiCV: ID_KhoiCV,
       ID_Hangmuc: dataSelect[0].ID_Hangmuc,
-      hangMucFilter,
-      ID_Khuvuc,
+      ID_Khuvuc: ID_Khuvuc,
       Hangmuc: dataSelect[0],
-      isScan: 1
+      isScan: 1,
     });
     setDataSelect([]);
   };
 
-  const renderItem = (item, index) => (
-    <TouchableOpacity
-      onPress={() => toggleTodo(item)}
-      style={[
-        styles.content,
-        {
-          backgroundColor: dataSelect[0] === item ? COLORS.bg_button : "white",
-        },
-      ]}
-      key={index}
-    >
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          width: "100%",
-          justifyContent: "space-between",
-        }}
+  // view item flatlist
+  const renderItem = (item, index) => {
+    return (
+      <TouchableOpacity
+        onPress={() => toggleTodo(item)}
+        style={[
+          styles.content,
+          {
+            backgroundColor:
+              dataSelect[0] === item ? COLORS.bg_button : "white",
+          },
+        ]}
+        key={index}
       >
-        <View style={{ width: "80%" }}>
-          <Text
-            allowFontScaling={false}
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            width: "100%",
+            justifyContent: "space-between",
+          }}
+        >
+          <View style={{ width: "80%" }}>
+            <Text
+              allowFontScaling={false}
+              style={{
+                fontSize: adjust(18),
+                color: dataSelect[0] === item ? "white" : "black",
+                fontWeight: "600",
+              }}
+              numberOfLines={5}
+            >
+              {item?.Hangmuc}
+            </Text>
+            <Text
+              allowFontScaling={false}
+              style={{
+                fontSize: adjust(16),
+                color: dataSelect[0] === item ? "white" : "black",
+                fontWeight: "500",
+              }}
+            >
+              {item?.MaQrCode}
+            </Text>
+          </View>
+          <View
             style={{
-              fontSize: adjust(18),
-              color: dataSelect[0] === item ? "white" : "black",
-              fontWeight: "600",
-            }}
-            numberOfLines={5}
-          >
-            {item?.Hangmuc}
-          </Text>
-          <Text
-            allowFontScaling={false}
-            style={{
-              fontSize: adjust(16),
-              color: dataSelect[0] === item ? "white" : "black",
-              fontWeight: "500",
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 10,
+              marginRight: adjust(10),
             }}
           >
-            {item?.MaQrCode}
-          </Text>
-        </View>
-        <View style={{ flexDirection: "row", alignItems: "center" ,gap:10, marginRight: adjust(10)}}>
             {item.Important === 1 && (
-                <Image
-                  source={require("../../../assets/icons/ic_star.png")}
-                  style={{
-                    tintColor:  dataSelect[0] === item ? "white" : COLORS.bg_button,
-                  }}
-                />
+              <Image
+                source={require("../../../assets/icons/ic_star.png")}
+                style={{
+                  tintColor:
+                    dataSelect[0] === item ? "white" : COLORS.bg_button,
+                }}
+              />
             )}
             {item.Tieuchuankt !== "" && item.Tieuchuankt !== null && (
               <TouchableOpacity onPress={() => handlePopupActive(item, index)}>
@@ -187,9 +236,17 @@ const ThucHienHangmucLai = ({ route, navigation }) => {
               </TouchableOpacity>
             )}
           </View>
-      </View>
-    </TouchableOpacity>
-  );
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
+  // format number
+  const decimalNumber = (number) => {
+    if (number < 10 && number >= 1) return `0${number}`;
+    if (number == 0) return `0`;
+    return number;
+  };
 
   const handleOpenQrCode = async () => {
     const { status } = await Camera.requestCameraPermissionsAsync();
@@ -235,64 +292,68 @@ const ThucHienHangmucLai = ({ route, navigation }) => {
               resizeMode="cover"
               style={{ flex: 1 }}
             >
-              <View style={{ flex: 1, opacity }}>
+              <View
+                style={{
+                  flex: 1,
+                  opacity: opacity,
+                }}
+              >
                 <View style={{ margin: 12 }}>
-                  <Text allowFontScaling={false} style={styles.text}>
-                    Số lượng: {hangMucFilter?.length} hạng mục
-                  </Text>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignContent: "center",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <View
+                      // onPress={() => handleFilterData(true, 0.5)}
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: 8,
+                      }}
+                    >
+                      <View
+                        style={{
+                          flexDirection: "cloumn",
+                          gap: 8,
+                        }}
+                      >
+                        <Text allowFontScaling={false} style={styles.text}>
+                          Số lượng: {decimalNumber(hangMucByKhuVuc?.length)}{" "}
+                          hạng mục
+                        </Text>
+                      </View>
+                    </View>
+                  </View>
                 </View>
 
-                {isLoadingDetail === false && hangMucFilter?.length > 0 && (
-                  <FlatList
-                    style={{ margin: 12, flex: 1, marginBottom: 100 }}
-                    data={hangMucFilter}
-                    renderItem={({ item, index }) => renderItem(item, index)}
-                    ItemSeparatorComponent={() => (
-                      <View style={{ height: 16 }} />
-                    )}
-                    keyExtractor={(item, index) =>
-                      `${item?.ID_Checklist}_${index}`
-                    }
-                    showsVerticalScrollIndicator={false}
-                  />
-                )}
-
-                {isLoadingDetail && (
-                  <View
-                    style={{
-                      flex: 1,
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <ActivityIndicator size="large" color={COLORS.bg_white} />
-                  </View>
-                )}
-
-                {isLoadingDetail === false && hangMucFilter?.length === 0 && (
-                  <View
-                    style={{
-                      flex: 1,
-                      justifyContent: "center",
-                      alignItems: "center",
-                      marginBottom: 80,
-                    }}
-                  >
-                    <Image
-                      source={require("../../../assets/icons/delete_bg.png")}
-                      resizeMode="contain"
-                      style={{ height: 120, width: 120 }}
-                    />
-                    <Text
-                      allowFontScaling={false}
-                      style={[styles.danhmuc, { padding: 10 }]}
-                    >
-                      {isScan
-                        ? "Không thấy hạng mục cho khu vực này"
-                        : "Không còn hạng mục cho ca làm việc này !"}
-                    </Text>
-                  </View>
-                )}
+                {isLoadingDetail === false &&
+                  hangMucByKhuVuc &&
+                  hangMucByKhuVuc?.length > 0 && (
+                    <>
+                      <FlatList
+                        style={{
+                          margin: 12,
+                          flex: 1,
+                          marginBottom: 100,
+                        }}
+                        data={hangMucByKhuVuc}
+                        renderItem={({ item, index, separators }) =>
+                          renderItem(item, index)
+                        }
+                        ItemSeparatorComponent={() => (
+                          <View style={{ height: 16 }} />
+                        )}
+                        keyExtractor={(item, index) =>
+                          `${item?.ID_Checklist}_${index}`
+                        }
+                        showsVerticalScrollIndicator={false}
+                      />
+                    </>
+                  )}
 
                 <View
                   style={{
@@ -304,7 +365,7 @@ const ThucHienHangmucLai = ({ route, navigation }) => {
                     width: "100%",
                   }}
                 >
-                  {hangMucFilter.length > 0 && (
+                  {hangMucByKhuVuc?.length > 0 && (
                     <Button
                       text={"Quét Qrcode"}
                       backgroundColor={"white"}
@@ -312,12 +373,13 @@ const ThucHienHangmucLai = ({ route, navigation }) => {
                       onPress={() => handleOpenQrCode()}
                     />
                   )}
-                  {dataSelect[0] && (
+
+                  {dataSelect?.length > 0 && (
                     <Button
                       text={"Vào Checklist"}
                       backgroundColor={COLORS.bg_button}
                       color={"white"}
-                      onPress={handleSubmit}
+                      onPress={() => handleSubmit()}
                     />
                   )}
                 </View>
@@ -348,12 +410,55 @@ const ThucHienHangmucLai = ({ route, navigation }) => {
                 </View>
               </View>
             </Modal>
+
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={modalVisible}
+              onRequestClose={() => {
+                setModalVisible(!modalVisible);
+                setOpacity(1);
+              }}
+            >
+              <View
+                style={[styles.centeredView, { width: "100%", height: "80%" }]}
+              >
+                <View
+                  style={[
+                    styles.modalView,
+                    {
+                      width: "80%",
+                      height: "auto",
+                      maxHeight: "70%",
+                      justifyContent: "space-between",
+                    },
+                  ]}
+                >
+                  <ScrollView>
+                    <Text allowFontScaling={false} style={styles.modalText}>
+                      {tieuChuan}{" "}
+                    </Text>
+                  </ScrollView>
+                  <Button
+                    text={"Đóng"}
+                    backgroundColor={COLORS.bg_button}
+                    color={"white"}
+                    onPress={() => {
+                      setModalVisible(false);
+                      setOpacity(1);
+                    }}
+                  />
+                </View>
+              </View>
+            </Modal>
           </BottomSheetModalProvider>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
     </GestureHandlerRootView>
   );
 };
+
+export default ThucHienHangmucLai;
 
 const styles = StyleSheet.create({
   container: {
@@ -364,7 +469,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "white",
   },
-  text: { fontSize: adjust(15), color: "white", fontWeight: "600" },
+  text: { fontSize: adjust(18), color: "white", fontWeight: "600" },
   headerTable: {
     color: "white",
   },
@@ -409,8 +514,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   modalText: {
-    fontSize: adjust(20),
-    fontWeight: "600",
+    fontSize: adjust(16),
     paddingVertical: 10,
   },
   content: {
@@ -431,5 +535,3 @@ const styles = StyleSheet.create({
     gap: 10,
   },
 });
-
-export default ThucHienHangmucLai;

@@ -309,8 +309,7 @@ export const ent_users_get = () => {
   };
 };
 
-export const ent_checklist_mul_hm = (dataHangmuc, ID_Calv, ID_ChecklistC, ID_KhoiCV) => {
-  
+export const ent_checklist_mul_hm = (ID_Hangmucs, ID_Calv, ID_ChecklistC, ID_KhoiCV) => {
   return async (dispatch) => {
     dispatch({
       type: type.SET_ENT_CHECKLIST_STATE,
@@ -320,12 +319,13 @@ export const ent_checklist_mul_hm = (dataHangmuc, ID_Calv, ID_ChecklistC, ID_Kho
       },
     });
     try {
+     
       const token = await AsyncStorage.getItem("tokenUser");
-      
+
       if (token !== null) {
         const response = await axios.put(
           `${BASE_URL}/ent_checklist/filter-mul/${ID_ChecklistC}/${ID_Calv}`,
-          { dataHangmuc: dataHangmuc, ID_KhoiCV: ID_KhoiCV },
+          { ID_KhoiCV: ID_KhoiCV, dataHangmuc: ID_Hangmucs },
           {
             headers: {
               Accept: "application/json",
@@ -371,7 +371,7 @@ export const ent_checklist_mul_hm = (dataHangmuc, ID_Calv, ID_ChecklistC, ID_Kho
           isLoading: false
         },
       });
-      console.log("ent_checklist_get_detail 2", err.response);
+      console.log("ent_checklist_get_detail 2", err.response.data.message);
     }
   };
 }

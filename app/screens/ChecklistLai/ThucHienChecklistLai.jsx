@@ -50,8 +50,6 @@ const ThucHienChecklist = ({ navigation }) => {
   const { ent_calv, ent_hangmuc } = useSelector((state) => state.entReducer);
   const { tb_checklistc } = useSelector((state) => state.tbReducer);
   const { user, authToken } = useSelector((state) => state.authReducer);
-  const { setDataHangmuc, stepKhuvuc } = useContext(DataContext);
-
   const [data, setData] = useState([]);
 
   const [newActionCheckList, setNewActionCheckList] = useState([]);
@@ -73,12 +71,6 @@ const ThucHienChecklist = ({ navigation }) => {
     }
   }, [tb_checklistc]);
 
-  useEffect(() => {
-    if (ent_hangmuc) {
-      const hangmucIds = ent_hangmuc.map((item) => item.ID_Hangmuc);
-      setDataHangmuc(hangmucIds);
-    }
-  }, [ent_hangmuc]);
 
   const int_checklistc = async () => {
     await dispath(tb_checklistc_get({ page: 0, limit: 20 }));
@@ -97,13 +89,6 @@ const ThucHienChecklist = ({ navigation }) => {
   const int_hangmuc = async () => {
     await dispath(ent_hangmuc_get());
   };
-
-  useEffect(() => {
-    if (ent_hangmuc) {
-      const hangmucIds = ent_hangmuc.map((item) => item.ID_Hangmuc);
-      setDataHangmuc(hangmucIds);
-    }
-  }, [ent_hangmuc]);
 
   const toggleTodo = async (item) => {
     // setIsCheckbox(true);
