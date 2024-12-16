@@ -56,7 +56,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
     useContext(ChecklistContext);
 
   const dispath = useDispatch();
-  const { ent_khuvuc, ent_checklist_detail, ent_hangmuc } = useSelector(
+  const { ent_khuvuc, ent_checklist_detail_return, ent_hangmuc } = useSelector(
     (state) => state.entReducer
   );
   const { isConnect, saveConnect } = useContext(ConnectContext);
@@ -173,13 +173,13 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
 
   // Tải lại dữ liệu khi vào lại trang
   const loadData = async () => {
-    setDataChecklists(ent_checklist_detail);
-    setDataChecklistFilterContext(ent_checklist_detail);
+    setDataChecklists(ent_checklist_detail_return);
+    setDataChecklistFilterContext(ent_checklist_detail_return);
   };
 
   useEffect(() => {
     loadData();
-  }, [ent_checklist_detail]);
+  }, [ent_checklist_detail_return]);
 
   useEffect(() => {
     const dataChecklistAction = dataChecklistFilterContext?.filter(

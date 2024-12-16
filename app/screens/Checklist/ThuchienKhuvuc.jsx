@@ -22,7 +22,7 @@ import { useFocusEffect } from "@react-navigation/native";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { ent_checklist_mul_hm } from "../../redux/actions/entActions";
+import { ent_checklist_mul_hm, ent_checklist_mul_hm_return } from "../../redux/actions/entActions";
 import { COLORS, SIZES } from "../../constants/theme";
 import Button from "../../components/Button/Button";
 import axios from "axios";
@@ -48,12 +48,16 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
     khuVucFilterByIDChecklistC,
     setKhuVucFilterByIDChecklistC,
     hangMucByKhuVuc,
+    setHangMucByKhuVuc,
+    dataChecklistByCa,
+    setDataChecklistByCa
   } = useContext(DataContext);
   const { setDataChecklistFilterContext, dataChecklistFilterContext } =
     useContext(ChecklistContext);
+    console.log('dataChecklists',dataChecklists.length, dataChecklistByCa.length)
 
   const dispath = useDispatch();
-  const { ent_khuvuc, ent_checklist_detail, ent_hangmuc } = useSelector(
+  const { ent_khuvuc, ent_checklist_detail,ent_checklist_detail_return, ent_hangmuc } = useSelector(
     (state) => state.entReducer
   );
   const { isConnect, saveConnect } = useContext(ConnectContext);
@@ -208,9 +212,35 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
     }
   };
 
+   const init_checklist_return = async () => {
+      await dispath(
+        ent_checklist_mul_hm_return(
+          ID_Hangmucs,
+          ID_Calv,
+          ID_ChecklistC
+        )
+      );
+    };
+
   useEffect(() => {
     loadData();
   }, [ent_checklist_detail]);
+
+  useFocusEffect(
+      React.useCallback(() => {
+        init_checklist_return();
+        return () => {};
+      }, [dispath])
+    );
+  
+    // Tải lại dữ liệu khi vào lại trang
+    const loadDataReturn = async () => {
+    setDataChecklistByCa(ent_checklist_detail_return)
+    };
+  
+    useEffect(() => {
+      loadDataReturn();
+    }, [ent_checklist_detail_return]);
 
   useEffect(() => {
     const dataChecklistAction = dataChecklistFilterContext?.filter(
@@ -246,6 +276,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
       );
 
       if (resDataHangmuc.length >= 1) {
+        setHangMucByKhuVuc(resDataHangmuc);
         navigation.navigate("Chi tiết Checklist", {
           ID_ChecklistC: ID_ChecklistC,
           ID_KhoiCV: ID_KhoiCV,

@@ -839,8 +839,8 @@ const DetailChecklist = ({ route, navigation }) => {
     const ID_Checklists = arrData.map((item) => item.ID_Checklist);
     const valueChecks = arrData.map((item) => item.valueCheck);
     const Gioht = arrData.map((item) => item.Gioht);
-
-    const requestDone = axios.post(
+    console.log('sf', descriptions)
+    const requestDone = await axios.post(
       BASE_URL + "/tb_checklistchitietdone/create",
       {
         Description: descriptions,
@@ -954,7 +954,7 @@ const DetailChecklist = ({ route, navigation }) => {
         const valueChecks = dataDefault.map((item) => item.valueCheck);
 
         // Tạo các yêu cầu API
-        const requestFaild = axios.post(
+        const requestFaild = await axios.post(
           `${BASE_URL}/tb_checklistchitiet/create`,
           formData,
           {
@@ -965,7 +965,7 @@ const DetailChecklist = ({ route, navigation }) => {
           }
         );
 
-        const requestDone = axios.post(
+        const requestDone = await axios.post(
           `${BASE_URL}/tb_checklistchitietdone/create`,
           {
             Description: descriptions,
@@ -1071,15 +1071,6 @@ const DetailChecklist = ({ route, navigation }) => {
     }
   };
 
-  // setDataChecklists,
-  //   dataChecklists,
-  //   setHangMucFilterByIDChecklistC,
-  //   hangMucFilterByIDChecklistC,
-  //   khuVucFilterByIDChecklistC,
-  //   setKhuVucFilterByIDChecklistC,
-  //   setHangMucByKhuVuc,
-  //   hangMucByKhuVuc,
-
   // Thiết lập lại dữ liệu sau khi hoàn thành xử lý API
   const postHandleSubmit = async () => {
     const idsToRemove = new Set([
@@ -1091,13 +1082,13 @@ const DetailChecklist = ({ route, navigation }) => {
     const dataChecklistFilterContextReset = dataChecklistFilterContext.filter(
       (item) => !idsToRemove.has(item.ID_Checklist)
     );
-    if (dataChecklistFilter?.length === newActionDataChecklist?.length) {
+    if (dataChecklistFilter?.length == newActionDataChecklist?.length) {
       // Lọc theo hạng mục thuộc khu vực trong ca
       const filteredData = hangMucByKhuVuc.filter(
         (item) => item.ID_Hangmuc !== ID_Hangmuc
       );
       // Lọc theo hạng mục tất cả trong ca
-      const filteredDataDefault = hangMucFilterByIDChecklistC.filter(
+      const filteredDataDefault = hangMucFilterByIDChecklistC?.filter(
         (item) => item.ID_Hangmuc !== ID_Hangmuc
       );
       setHangMucFilterByIDChecklistC(filteredDataDefault);

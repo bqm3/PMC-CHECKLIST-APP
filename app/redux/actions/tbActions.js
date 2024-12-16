@@ -31,44 +31,6 @@ export const tb_checklistc_get = (pag) => {
       };
 };
 
-export const tb_checklist_get_lai = (id) => {
-  return async (dispatch) => {
-      try {
-        const token = await AsyncStorage.getItem("tokenUser");
-     if (token !== null) {
-          const response = await axios.get(BASE_URL + `/tb_checklistc/ca/${id}`, {
-            headers: {
-              Accept: "application/json",
-              Authorization: "Bearer " + token,
-            },
-          });
-          const data = response.data.data;
-          const processedData = data?.map((item) => {
-            return {
-              ...item,
-              Giatrinhan: item?.Giatrinhan?.split("/").map((item) => item.trim()),
-              valueCheck: null,
-              GhichuChitiet: "",
-              ID_ChecklistC: ID_ChecklistC,
-              Anh: null,
-              Gioht: moment().format("LTS"),
-            };
-          });
-          dispatch({
-            type: type.SET_ENT_CHECKLIST_DETAIL_SUCCESS,
-            payload: {
-              ent_checklist_detail: processedData,
-              isLoading: false
-            },
-          });
-        } else {
-          console.error("initialized error");
-        }
-      } catch (error) {
-        console.log("errd", error.response.data.message);
-      }
-    };
-};
 
 export const tb_sucongoai_get = () => {
   return async (dispatch) => {

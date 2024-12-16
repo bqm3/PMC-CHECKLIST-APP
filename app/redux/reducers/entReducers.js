@@ -8,6 +8,7 @@ const initialState = {
   ent_khuvuc: [],
   ent_checklist: [],
   ent_checklist_detail: [],
+  ent_checklist_detail_return: [],
   ent_tang: [],
   ent_toanha: [],
   ent_users: [],
@@ -262,6 +263,31 @@ export const entReducer = (state = initialState, action) => {
         isLoadingDetail: action.payload.isLoading,
         message: null,
       };
+
+      case type.SET_ENT_CHECKLIST_DETAIL_RETURN_STATE:
+        return {
+          ...state,
+          ent_checklist_detail_return: action.payload.ent_checklist_detail_return,
+          error: false,
+          isLoadingDetail: action.payload.isLoading,
+          message: null,
+        };
+      case type.SET_ENT_CHECKLIST_DETAIL_RETURN_SUCCESS:
+        return {
+          ...state,
+          ent_checklist_detail_return: action.payload.ent_checklist_detail_return,
+          error: false,
+          isLoadingDetail: action.payload.isLoading,
+          message: null,
+        };
+      case type.SET_ENT_CHECKLIST_DETAIL_RETURN_FAIL:
+        return {
+          ...state,
+          ent_checklist_detail_return: action.payload.ent_checklist_detail_return,
+          error: false,
+          isLoadingDetail: action.payload.isLoading,
+          message: null,
+        };
     case type.SET_ENT_HANGMUC_STATE:
       return {
         ...state,

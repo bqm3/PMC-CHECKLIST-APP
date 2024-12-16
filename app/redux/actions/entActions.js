@@ -380,9 +380,9 @@ export const ent_checklist_mul_hm_return = (dataHangmuc, ID_Calv, ID_ChecklistC)
   
   return async (dispatch) => {
     dispatch({
-      type: type.SET_ENT_CHECKLIST_STATE,
+      type: type.SET_ENT_CHECKLIST_DETAIL_RETURN_STATE,
       payload: {
-        ent_checklist_detail: [],
+        ent_checklist_detail_return: [],
         isLoading: true
       },
     });
@@ -413,18 +413,18 @@ export const ent_checklist_mul_hm_return = (dataHangmuc, ID_Calv, ID_ChecklistC)
           };
         });
         dispatch({
-          type: type.SET_ENT_CHECKLIST_DETAIL_SUCCESS,
+          type: type.SET_ENT_CHECKLIST_DETAIL_RETURN_SUCCESS,
           payload: {
-            ent_checklist_detail: processedData,
+            ent_checklist_detail_return: processedData,
             isLoading: false
           },
         });
       } 
     } catch (err) {
       dispatch({
-        type: type.SET_ENT_CHECKLIST_FAIL,
+        type: type.SET_ENT_CHECKLIST_DETAIL_RETURN_FAIL,
         payload: {
-          ent_checklist_detail: [],
+          ent_checklist_detail_return: [],
           isLoading: false
         },
       });

@@ -4,12 +4,11 @@ import {  useSelector } from "react-redux";
 const DataContext = createContext();
 
 export const DataProvider = ({ children }) => {
-  const { ent_hangmuc, ent_khuvuc } = useSelector((state) => state.entReducer);
+  const [dataChecklistByCa, setDataChecklistByCa] = useState([])
+  const [dataChecklists, setDataChecklists] = useState([]); // Checklist còn lại trong ca 
 
-  const [dataChecklists, setDataChecklists] = useState([]); //Oke
-
-  const [hangMucFilterByIDChecklistC, setHangMucFilterByIDChecklistC] = useState();
-  const [khuVucFilterByIDChecklistC, setKhuVucFilterByIDChecklistC] = useState();
+  const [hangMucFilterByIDChecklistC, setHangMucFilterByIDChecklistC] = useState(); // Lọc hạng mục theo ca
+  const [khuVucFilterByIDChecklistC, setKhuVucFilterByIDChecklistC] = useState(); // Lọc khu vực theo ca
   
 // Lọc chi tiết 1 khu vực lấy ra danh sách hạng mục
   const [hangMucByKhuVuc, setHangMucByKhuVuc] = useState()
@@ -27,7 +26,9 @@ export const DataProvider = ({ children }) => {
         setHangMucByKhuVuc,
         hangMucByKhuVuc,
         setDataChecklistSize,
-        dataChecklistSize
+        dataChecklistSize,
+        dataChecklistByCa, 
+        setDataChecklistByCa
       }}
     >
       {children}
