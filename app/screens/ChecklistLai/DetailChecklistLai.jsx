@@ -1074,15 +1074,6 @@ const DetailChecklistLai = ({ route, navigation }) => {
     }
   };
 
-  // setDataChecklists,
-  //   dataChecklists,
-  //   setHangMucFilterByIDChecklistC,
-  //   hangMucFilterByIDChecklistC,
-  //   khuVucFilterByIDChecklistC,
-  //   setKhuVucFilterByIDChecklistC,
-  //   setHangMucByKhuVuc,
-  //   hangMucByKhuVuc,
-
   // Thiết lập lại dữ liệu sau khi hoàn thành xử lý API
   const postHandleSubmit = async () => {
     const idsToRemove = new Set([
@@ -1096,11 +1087,11 @@ const DetailChecklistLai = ({ route, navigation }) => {
     );
     if (dataChecklistFilter?.length === newActionDataChecklist?.length) {
       // Lọc theo hạng mục thuộc khu vực trong ca
-      const filteredData = hangMucByKhuVuc.filter(
+      const filteredData = hangMucByKhuVuc?.filter(
         (item) => item.ID_Hangmuc !== ID_Hangmuc
       );
       // Lọc theo hạng mục tất cả trong ca
-      const filteredDataDefault = hangMucFilterByIDChecklistC.filter(
+      const filteredDataDefault = hangMucFilterByIDChecklistC?.filter(
         (item) => item.ID_Hangmuc !== ID_Hangmuc
       );
       setHangMucFilterByIDChecklistC(filteredDataDefault);

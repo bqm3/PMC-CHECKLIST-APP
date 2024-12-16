@@ -54,7 +54,6 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
   } = useContext(DataContext);
   const { setDataChecklistFilterContext, dataChecklistFilterContext } =
     useContext(ChecklistContext);
-    console.log('dataChecklists',dataChecklists.length, dataChecklistByCa.length)
 
   const dispath = useDispatch();
   const { ent_khuvuc, ent_checklist_detail,ent_checklist_detail_return, ent_hangmuc } = useSelector(

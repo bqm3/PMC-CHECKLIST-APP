@@ -1084,7 +1084,7 @@ const DetailChecklist = ({ route, navigation }) => {
     );
     if (dataChecklistFilter?.length == newActionDataChecklist?.length) {
       // Lọc theo hạng mục thuộc khu vực trong ca
-      const filteredData = hangMucByKhuVuc.filter(
+      const filteredData = hangMucByKhuVuc?.filter(
         (item) => item.ID_Hangmuc !== ID_Hangmuc
       );
       // Lọc theo hạng mục tất cả trong ca
