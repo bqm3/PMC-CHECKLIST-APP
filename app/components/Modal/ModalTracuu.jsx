@@ -44,6 +44,7 @@ const ModalTracuu = ({
   const defaultKhoi = ent_khoicv?.find(
     (Khoi) => Khoi.ID_KhoiCV == filters?.ID_KhoiCV
   );
+  const arr_Duan_Array = user?.arr_Duan?.split(',').map(item => item.trim());
 
   return (
     <GestureHandlerRootView style={{ height: adjust(400) }}>
@@ -163,7 +164,7 @@ const ModalTracuu = ({
               </View>
             </View>
             <View>
-              {user?.ent_chucvu?.Role === 1 ? (
+              {(user?.ent_chucvu?.Role === 1 || user?.ent_chucvu?.Role === 5 && arr_Duan_Array.includes(String(user.ID_Duan))) ? (
                 ent_khoicv && ent_khoicv.length > 0 ? (
                   <View>
                     <Text allowFontScaling={false} style={styles.text}>
