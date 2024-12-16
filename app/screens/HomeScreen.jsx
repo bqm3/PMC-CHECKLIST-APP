@@ -384,7 +384,7 @@ const HomeScreen = ({ navigation }) => {
       setIsLoading(true);
       const response = await axios.put(
         `${BASE_URL}/ent_user/duan/update/${ID_Duan}`,
-        {}, // Nếu không có dữ liệu trong body, thì truyền rỗng vào đây
+        {},
         {
           headers: {
             Accept: "application/json",
@@ -482,11 +482,12 @@ const HomeScreen = ({ navigation }) => {
             {(user?.ent_chucvu?.Role === 5 || user?.ent_chucvu?.Role === 1) && (
               <SelectDropdown
                 data={duan.map((item) => item.Duan)} // Dữ liệu dự án
-                style={{ alignItems: "center" }}
+                style={{ alignItems: "center" , height: "auto"}}
                 buttonStyle={styles.select}
                 dropdownStyle={styles.dropdown}
                 defaultButtonText={user?.ent_duan?.Duan}
                 buttonTextStyle={styles.customText}
+                searchable={true}
                 onSelect={(selectedItem, index) => {
                   const selectedProject = duan[index]?.ID_Duan;
                   funcHandleDuan(selectedProject);
@@ -495,7 +496,7 @@ const HomeScreen = ({ navigation }) => {
                   <FontAwesome
                     name={isOpened ? "chevron-up" : "chevron-down"}
                     color={"#637381"}
-                    size={18} // Tăng kích thước icon để dễ nhìn hơn
+                    size={18}
                     style={{ marginRight: 10 }}
                   />
                 )}
@@ -506,7 +507,6 @@ const HomeScreen = ({ navigation }) => {
                     style={{
                       justifyContent: "center",
                       alignItems: "center",
-                      height: 50,
                     }}
                   >
                     <Text allowFontScaling={false} style={styles.selectedText}>
@@ -519,23 +519,7 @@ const HomeScreen = ({ navigation }) => {
                     <Text style={styles.dropdownItemText}>{item}</Text>
                   </View>
                 )}
-                search 
-                renderSearchInput={(searchText, setSearchText) => (
-                  <View style={styles.searchContainer}>
-                    <FontAwesome
-                      name="search"
-                      color="#888"
-                      size={16}
-                      style={styles.searchIcon}
-                    />
-                    <TextInput
-                      style={styles.searchInput}
-                      placeholder="Tìm kiếm dự án..."
-                      value={searchText}
-                      onChangeText={setSearchText}
-                    />
-                  </View>
-                )}
+                search
               />
             )}
           </View>
@@ -631,8 +615,8 @@ const styles = StyleSheet.create({
   },
   select: {
     height: 50,
-    justifyContent: 'center',
-    backgroundColor: '#f0f0f0',
+    justifyContent: "center",
+    backgroundColor: "#f0f0f0",
     borderRadius: 10,
     marginTop: adjust(10),
   },
@@ -645,8 +629,8 @@ const styles = StyleSheet.create({
     maxHeight: 300,
     borderWidth: 1,
     borderColor: "#e0e0e0",
-    backgroundColor: "#fff",
     marginTop: 5,
+    height: "auto",
   },
   selectedText: {
     fontSize: 16,
@@ -654,23 +638,25 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   dropdownItem: {
-    paddingVertical: 10,
-    paddingHorizontal: 15,
+    paddingHorizontal: 10,
+    height: "auto",
   },
   dropdownItemText: {
+    height: "auto",
     fontSize: 16,
     color: "#333",
   },
   searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
     padding: 5,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#f5f5f5",
     borderRadius: 10,
   },
   searchIcon: {
     marginLeft: 10,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   searchInput: {
     flex: 1,
@@ -678,9 +664,8 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     paddingHorizontal: 10,
     borderRadius: 10,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
-
 });
 
 //make this component available to the app

@@ -81,7 +81,7 @@ const ThucHienHangmucLai = ({ route, navigation }) => {
       } else if (resData?.length === 0) {
         Alert.alert(
           "PMC Thông báo",
-          `Hạng mục có QrCode: "${cleanedValue}" không thuộc khu vực "${Tenkv}" hoặc đã kiểm tra`,
+          `Hạng mục có QrCode: "${cleanedValue}" không thuộc khu vực "${Tenkv}"`,
           [
             {
               text: "Hủy",

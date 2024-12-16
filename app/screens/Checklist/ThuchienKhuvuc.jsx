@@ -22,7 +22,10 @@ import { useFocusEffect } from "@react-navigation/native";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { ent_checklist_mul_hm, ent_checklist_mul_hm_return } from "../../redux/actions/entActions";
+import {
+  ent_checklist_mul_hm,
+  ent_checklist_mul_hm_return,
+} from "../../redux/actions/entActions";
 import { COLORS, SIZES } from "../../constants/theme";
 import Button from "../../components/Button/Button";
 import axios from "axios";
@@ -50,15 +53,18 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
     hangMucByKhuVuc,
     setHangMucByKhuVuc,
     dataChecklistByCa,
-    setDataChecklistByCa
+    setDataChecklistByCa,
   } = useContext(DataContext);
   const { setDataChecklistFilterContext, dataChecklistFilterContext } =
     useContext(ChecklistContext);
 
   const dispath = useDispatch();
-  const { ent_khuvuc, ent_checklist_detail,ent_checklist_detail_return, ent_hangmuc } = useSelector(
-    (state) => state.entReducer
-  );
+  const {
+    ent_khuvuc,
+    ent_checklist_detail,
+    ent_checklist_detail_return,
+    ent_hangmuc,
+  } = useSelector((state) => state.entReducer);
   const { isConnect, saveConnect } = useContext(ConnectContext);
 
   const { user, authToken } = useSelector((state) => state.authReducer);
@@ -118,7 +124,9 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
 
   // Call API Checklist còn theo ID_ChecklistC
   const init_checklist = async () => {
-    await dispath(ent_checklist_mul_hm(ID_Hangmucs, ID_Calv, ID_ChecklistC, ID_KhoiCV));
+    await dispath(
+      ent_checklist_mul_hm(ID_Hangmucs, ID_Calv, ID_ChecklistC, ID_KhoiCV)
+    );
   };
 
   useEffect(() => {
@@ -211,35 +219,31 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
     }
   };
 
-   const init_checklist_return = async () => {
-      await dispath(
-        ent_checklist_mul_hm_return(
-          ID_Hangmucs,
-          ID_Calv,
-          ID_ChecklistC
-        )
-      );
-    };
+  const init_checklist_return = async () => {
+    await dispath(
+      ent_checklist_mul_hm_return(ID_Hangmucs, ID_Calv, ID_ChecklistC)
+    );
+  };
 
   useEffect(() => {
     loadData();
   }, [ent_checklist_detail]);
 
   useFocusEffect(
-      React.useCallback(() => {
-        init_checklist_return();
-        return () => {};
-      }, [dispath])
-    );
-  
-    // Tải lại dữ liệu khi vào lại trang
-    const loadDataReturn = async () => {
-    setDataChecklistByCa(ent_checklist_detail_return)
-    };
-  
-    useEffect(() => {
-      loadDataReturn();
-    }, [ent_checklist_detail_return]);
+    React.useCallback(() => {
+      init_checklist_return();
+      return () => {};
+    }, [dispath])
+  );
+
+  // Tải lại dữ liệu khi vào lại trang
+  const loadDataReturn = async () => {
+    setDataChecklistByCa(ent_checklist_detail_return);
+  };
+
+  useEffect(() => {
+    loadDataReturn();
+  }, [ent_checklist_detail_return]);
 
   useEffect(() => {
     const dataChecklistAction = dataChecklistFilterContext?.filter(
@@ -267,45 +271,59 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
     const cleanedValue = value.trim().toLowerCase();
 
     try {
-      const resDataKhuvuc = khuVucFilterByIDChecklistC.filter(
-        (item) => item.MaQrCode.trim().toLowerCase() === cleanedValue
+      const resDataKhuvuc = dataChecklists.filter(
+        (item) => item.ent_khuvuc.MaQrCode.trim().toLowerCase() === cleanedValue
       );
-      const resDataHangmuc = hangMucFilterByIDChecklistC.filter(
-        (item) => item.MaQrCode.trim().toLowerCase() === cleanedValue
+
+      const resDataKhuvucAll = dataChecklistByCa.filter(
+        (item) => item.ent_khuvuc.MaQrCode.trim().toLowerCase() === cleanedValue
       );
+
+      const resDataHangmuc = dataChecklists.filter(
+        (item) =>
+          item.ent_hangmuc.MaQrCode.trim().toLowerCase() === cleanedValue
+      );
+
+      const resDataHangmucAll = dataChecklistByCa.filter(
+        (item) =>
+          item.ent_hangmuc.MaQrCode.trim().toLowerCase() === cleanedValue
+      );
+
+      if (resDataKhuvuc?.length === 0 && resDataHangmuc?.length === 0) {
+        const alertMessage =
+          resDataKhuvucAll.length >= 1 || resDataHangmucAll.length >= 1
+            ? `Khu vực hoặc hạng mục có QR code: "${cleanedValue}" này đã kiểm tra`
+            : `Khu vực hoặc hạng mục có QR code: "${cleanedValue}" này không thuộc ca làm việc`;
+
+        Alert.alert("PMC Thông báo", alertMessage, [
+          { text: "Hủy", style: "cancel" },
+          { text: "Xác nhận" },
+        ]);
+      }
+
+      if (resDataKhuvuc.length >= 1) {
+        navigation.navigate("Thực hiện hạng mục", {
+          ID_ChecklistC,
+          ID_KhoiCV,
+          ID_Calv,
+          ID_Khuvuc: resDataKhuvuc[0].ID_Khuvuc,
+          ID_Hangmucs,
+        });
+      }
+
 
       if (resDataHangmuc.length >= 1) {
         setHangMucByKhuVuc(resDataHangmuc);
         navigation.navigate("Chi tiết Checklist", {
-          ID_ChecklistC: ID_ChecklistC,
-          ID_KhoiCV: ID_KhoiCV,
-          ID_Calv: ID_Calv,
-          hangMucFilterByIDChecklistC: hangMucFilterByIDChecklistC,
+          ID_ChecklistC,
+          ID_KhoiCV,
+          ID_Calv,
+          hangMucFilterByIDChecklistC,
           Hangmuc: resDataHangmuc[0],
           ID_Hangmuc: resDataHangmuc[0].ID_Hangmuc,
         });
-      } else if (resDataKhuvuc.length >= 1) {
-        navigation.navigate("Thực hiện hạng mục", {
-          ID_ChecklistC: ID_ChecklistC,
-          ID_KhoiCV: ID_KhoiCV,
-          ID_Calv: ID_Calv,
-          ID_Khuvuc: resDataKhuvuc[0].ID_Khuvuc,
-          ID_Hangmucs: ID_Hangmucs,
-        });
-      } else if (resDataKhuvuc.length === 0 && resDataHangmuc.length === 0) {
-        Alert.alert(
-          "PMC Thông báo",
-          `Khu vực hoặc hạng mục có qrcode: "${cleanedValue}" không thuộc ca làm việc hoặc đã kiểm tra`,
-          [
-            {
-              text: "Hủy",
-              onPress: () => console.log("Cancel Pressed"),
-              style: "cancel",
-            },
-            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-          ]
-        );
       }
+
       setIsScan(false);
       setModalVisibleQr(false);
       setOpacity(1);

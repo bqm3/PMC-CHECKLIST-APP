@@ -93,6 +93,19 @@ const TaoBaoCaoHSSE = ({ navigation }) => {
     ]);
   };
 
+  const checkSubmit = async () => {
+    Alert.alert("PMC Thông báo", "Kiểm tra chính xác lại trước khi ấn gửi báo cáo", [
+      {
+        text: "Hủy",
+        onPress: () => {
+          console.log("Cancel Pressed");
+        },
+        style: "cancel",
+      },
+      { text: "Gửi báo cáo", onPress: () => handleSubmit() },
+    ]);
+  }
+
   const handleSubmit = async () => {
     const filteredReport = hsseData.reduce((acc, item) => {
       const floatValue = parseFloat(item.value.replace(",", "."));
@@ -196,7 +209,7 @@ const TaoBaoCaoHSSE = ({ navigation }) => {
             style={styles.submitButton}
             onPress={() => {
               Keyboard.dismiss();
-              handleSubmit();
+              checkSubmit();
             }}
           >
             <Text style={styles.submitButtonText}>Gửi báo cáo</Text>
