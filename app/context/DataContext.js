@@ -14,6 +14,18 @@ export const DataProvider = ({ children }) => {
   const [hangMucByKhuVuc, setHangMucByKhuVuc] = useState()
   const [dataChecklistSize, setDataChecklistSize] = useState(0)
 
+  //notkhuvuc 
+  const { ent_hangmuc, ent_khuvuc } = useSelector((state) => state.entReducer);
+  const [hangMucFilter, setHangMucFilter] = useState(ent_hangmuc);
+  const [HangMucDefault, setHangMucDefault] = useState();
+
+  
+  useEffect(() => {
+    if (ent_hangmuc) {
+      setHangMucDefault(ent_hangmuc);
+    }
+  }, [ent_hangmuc]);
+
   return (
     <DataContext.Provider
       value={{
@@ -28,7 +40,10 @@ export const DataProvider = ({ children }) => {
         setDataChecklistSize,
         dataChecklistSize,
         dataChecklistByCa, 
-        setDataChecklistByCa
+        setDataChecklistByCa,
+        setHangMucFilter,
+        hangMucFilter,
+        HangMucDefault,
       }}
     >
       {children}
