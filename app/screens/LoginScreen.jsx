@@ -222,8 +222,7 @@ const LoginScreen = ({ navigation }) => {
   }, []);
 
   const handleCloseBottomSheet = () => {
-    bottomSheetModalRef.current.close();
-    setIsBottomSheetOpen(-1); // Close bottomsheet
+      setIsBottomSheetOpen(-1); 
   };
 
   useEffect(() => {
