@@ -44,11 +44,12 @@ const HSSE = [
   { id: 28, title: "Clo", key: "clo", value: "0" },
   { id: 29, title: "Nồng độ PH", key: "PH", value: "0" },
   { id: 30, title: "Poolblock", key: "Poolblock", value: "0" },
-  { id: 31, title: "Chất thải", key: "trat_thai", value: "0" },
+  { id: 31, title: "Trạt thải", key: "trat_thai", value: "0" },
   { id: 32, title: "pH Minus", key: "pHMINUS", value: "0" },
   { id: 33, title: "Axit", key: "axit", value: "0" },
   { id: 34, title: "PN180", key: "PN180", value: "0" },
   { id: 35, title: "Chỉ số CO2", key: "chiSoCO2", value: "0" },
+  { id: 36, title: "Clorin", key: "clorin", value: "0" },
 ];
 
 const DetailHSSE = ({ navigation, route }) => {
