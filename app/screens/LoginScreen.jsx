@@ -221,10 +221,10 @@ const LoginScreen = ({ navigation }) => {
     setIsBottomSheetOpen(0); // Open bottomsheet
   }, []);
 
-  const handleCloseBottomSheet = useCallback(() => {
+  const handleCloseBottomSheet = () => {
     bottomSheetModalRef.current.close();
     setIsBottomSheetOpen(-1); // Close bottomsheet
-  }, []);
+  };
 
   useEffect(() => {
     if (statusLocation === 0) {
