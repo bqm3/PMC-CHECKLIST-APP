@@ -58,6 +58,7 @@ const HSSE = [
   { id: 34, title: "PN180", key: "PN180", value: "0" },
   { id: 35, title: "Chỉ số CO2", key: "chiSoCO2", value: "0" },
   { id: 36, title: "Clorin", key: "clorin", value: "0" },
+  { id: 37, title: "NaOCL", key: "NaOCL", value: "0" },
 ];
 
 const TaoBaoCaoHSSE = ({ navigation }) => {
