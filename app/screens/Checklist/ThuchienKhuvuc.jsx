@@ -187,7 +187,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
         }
       } catch (error) {
         // Handle any errors that occur
-        console.log("Error fetching network status 123:", error);
+        console.log("Error fetching network status:", error);
         setSubmit(false);
       }
     };
@@ -290,7 +290,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
       if (resDataKhuvuc?.length === 0 && resDataHangmuc?.length === 0) {
         const alertMessage =
           resDataKhuvucAll.length >= 1 || resDataHangmucAll.length >= 1
-            ? `Khu vực hoặc hạng mục có QR code: "${cleanedValue}" này đã kiểm tra 123`
+            ? `Khu vực hoặc hạng mục có QR code: "${cleanedValue}" này đã kiểm tra`
             : `Khu vực hoặc hạng mục có QR code: "${cleanedValue}" này không thuộc ca làm việc`;
   
         Alert.alert("PMC Thông báo", alertMessage, [

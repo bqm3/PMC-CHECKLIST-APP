@@ -76,9 +76,8 @@ const ThucHienHangmuc = ({ route, navigation }) => {
       );
 
       if (resDataHangmuc?.length == 0) {
-        console.log('==========================')
         const alertMessage = resDataHangmucAll.length >= 1 
-            ? `Hạng mục có QR code: "${cleanedValue}" này đã kiểm tra 345`
+            ? `Hạng mục có QR code: "${cleanedValue}" này đã kiểm tra`
             : `Hạng mục có QR code: "${cleanedValue}" này không thuộc ca làm việc`;
 
           
