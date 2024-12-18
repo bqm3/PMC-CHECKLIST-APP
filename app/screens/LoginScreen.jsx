@@ -221,10 +221,9 @@ const LoginScreen = ({ navigation }) => {
     setIsBottomSheetOpen(0); // Open bottomsheet
   }, []);
 
-  const handleCloseBottomSheet = useCallback(() => {
-    bottomSheetModalRef.current.close();
-    setIsBottomSheetOpen(-1); // Close bottomsheet
-  }, []);
+  const handleCloseBottomSheet = () => {
+      setIsBottomSheetOpen(-1); 
+  };
 
   useEffect(() => {
     if (statusLocation === 0) {

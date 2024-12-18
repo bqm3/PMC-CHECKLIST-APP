@@ -398,7 +398,6 @@ const HomeScreen = ({ navigation }) => {
         const UserName = await AsyncStorage.getItem("UserName");
         const Password = await AsyncStorage.getItem("Password");
         dispath(login(UserName, Password));
-        console.log("Dự án đã được cập nhật thành công", response.data);
         Alert.alert("Thông báo", "Cập nhật dự án thành công!");
         setRefreshScreen(true);
       }
