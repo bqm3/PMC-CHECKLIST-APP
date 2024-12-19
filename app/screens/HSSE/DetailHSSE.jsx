@@ -7,10 +7,21 @@ import {
   Platform,
   KeyboardAvoidingView,
   ImageBackground,
+  TouchableOpacity,
+  Keyboard,
+  ActivityIndicator,
+  Alert
 } from "react-native";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { useSelector } from "react-redux";
+import {
+  GestureHandlerRootView,
+  TextInput,
+} from "react-native-gesture-handler";
 import adjust from "../../adjust";
+import moment from "moment";
+import axios from "axios";
 import { COLORS } from "../../constants/theme";
+import { BASE_URL } from "../../constants/config";
 
 const HSSE = [
   { id: 0, title: "Điện cư dân", key: "Dien_cu_dan", value: "0" },
@@ -54,8 +65,11 @@ const HSSE = [
 ];
 
 const DetailHSSE = ({ navigation, route }) => {
-  const { data } = route.params;
+  const { data, setIsReload } = route.params;
+  const { authToken } = useSelector((state) => state.authReducer);
   const [hsseData, setHsseData] = useState(HSSE);
+  const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
+  const isToday = moment(data?.Ngay_ghi_nhan).isSame(moment(), "day");
 
   useEffect(() => {
     const updatedHSSE = HSSE.map((item) => ({
@@ -66,6 +80,12 @@ const DetailHSSE = ({ navigation, route }) => {
     setHsseData(updatedHSSE);
   }, [data]);
 
+  const handleInputChange = (key, value) => {
+    setHsseData((prev) =>
+      prev.map((item) => (item.key === key ? { ...item, value } : item))
+    );
+  };
+
   const groupedData = useMemo(() => {
     const result = [];
     for (let i = 0; i < hsseData.length; i += 2) {
@@ -73,6 +93,74 @@ const DetailHSSE = ({ navigation, route }) => {
     }
     return result;
   }, [hsseData]);
+
+  const showAlert = (message, key = false) => {
+    Alert.alert("PMC Thông báo", message, [
+      {
+        text: "Xác nhận",
+        onPress: () =>
+          key
+            ? navigation.navigate("Báo cáo HSSE")
+            : console.log("Cancel Pressed"),
+        style: "cancel",
+      },
+    ]);
+  };
+
+  const handleUpdate = async () => {
+    const filteredReport = hsseData.reduce((acc, item) => {
+      const floatValue = parseFloat(item.value.replace(",", "."));
+      acc[item.key] = floatValue;
+      return acc;
+    }, {});
+
+    console.log("filteredReport",JSON.stringify(filteredReport,null,2))
+
+    const dataReq = {
+      data: filteredReport,
+      Ngay: data?.Ngay_ghi_nhan,
+    };
+
+    setIsLoadingSubmit(true);
+    try {
+      const response = await axios.put(
+        `${BASE_URL}/hsse/update/${data.ID}`,
+        dataReq,
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+
+      // Kiểm tra response status
+      if (response.status == 200 || response.status == 201) {
+        showAlert("Cập nhật thành công", true);
+        setIsReload(true)
+      } else {
+        showAlert("Có lỗi xảy ra khi cập nhật", false);
+      }
+    } catch (error) {
+      if (error.response) {
+        showAlert(
+          error.response.data?.message || "Lỗi từ máy chủ. Vui lòng thử lại",
+          false
+        );
+      } else if (error.request) {
+        // Lỗi kết nối
+        showAlert(
+          "Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối",
+          false
+        );
+      } else {
+        // Lỗi khác
+        showAlert("Đã có lỗi xảy ra. Vui lòng thử lại", false);
+      }
+    } finally {
+      setIsLoadingSubmit(false);
+    }
+  };
 
   const renderItem = useCallback(
     ({ item }) => (
@@ -82,7 +170,14 @@ const DetailHSSE = ({ navigation, route }) => {
           return (
             <View key={subItem.id} style={styles.itemContainer}>
               <Text style={styles.itemTitle}>{subItem.title}</Text>
-              <Text style={styles.input}>{subItem.value.toString()}</Text>
+              <TextInput
+                style={[styles.input]}
+                editable={isToday}
+                value={subItem.value}
+                onChangeText={(text) => handleInputChange(subItem.key, text)}
+                keyboardType="numeric"
+                returnKeyType="done"
+              />
             </View>
           );
         })}
@@ -104,6 +199,11 @@ const DetailHSSE = ({ navigation, route }) => {
           resizeMode="cover"
           style={styles.flex}
         >
+          {isLoadingSubmit && (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="small" color={COLORS.bg_white} />
+            </View>
+          )}
           <FlatList
             data={groupedData}
             renderItem={renderItem}
@@ -111,6 +211,17 @@ const DetailHSSE = ({ navigation, route }) => {
             contentContainerStyle={styles.listContent}
             showsVerticalScrollIndicator={false}
           />
+          {isToday && (
+            <TouchableOpacity
+              style={styles.submitButton}
+              onPress={() => {
+                Keyboard.dismiss();
+                handleUpdate();
+              }}
+            >
+              <Text style={styles.submitButtonText}>Cập nhật</Text>
+            </TouchableOpacity>
+          )}
         </ImageBackground>
       </KeyboardAvoidingView>
     </GestureHandlerRootView>

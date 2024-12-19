@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { COLORS } from "../constants/theme";
 import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
-import adjust from '../adjust'
+import adjust from "../adjust";
 import {
   ThucHienChecklist,
   DetailChecklist,
@@ -33,11 +33,7 @@ import {
   DanhmucDuanScreen,
 } from "../screens/PSH";
 
-import {
-  DetailSucongoai,
-  ThuchienSucongoai,
-  XulySuco,
-} from "../screens/SuCo";
+import { DetailSucongoai, ThuchienSucongoai, XulySuco } from "../screens/SuCo";
 
 import {
   DanhmucChiTietTracuu,
@@ -49,17 +45,19 @@ import {
   DetailCheckListCa,
   ScanHangMuc,
   ScanKhuVuc,
+  NotKhuVucTracuuCa,
+  NotHangMucTracuuCa,
+  NotCheckListTracuuCa,
 } from "../screens/TraCuuThongKe";
 import {
   BaoCaoChiSoTheoNamThang,
   DanhMucBaoCaoChiSo,
   DanhmucHangMucChiSo,
-} from "../screens/Baocaochiso"
+} from "../screens/Baocaochiso";
 
 import { DanhMucBaoCaoHSSE, TaoBaoCaoHSSE, DetailHSSE } from "../screens/HSSE";
-import HomeScreen from '../screens/HomeScreen.jsx'
-import Profile from '../screens/Profile.jsx'
-
+import HomeScreen from "../screens/HomeScreen.jsx";
+import Profile from "../screens/Profile.jsx";
 
 const Stack = createNativeStackNavigator();
 
@@ -490,6 +488,120 @@ const HomeStack = ({ navigation }) => {
       />
 
       <Stack.Screen
+        name="Tổng khu vực chưa checklist"
+        component={NotKhuVucTracuuCa}
+        lazy={false}
+        options={({ navigation, route }) => ({
+          headerShown: true,
+          gestureEnabled: false,
+          headerTitle: () => (
+            <Text
+              allowFontScaling={false}
+              style={{
+                fontSize: 20, // Adjust font size as needed
+                fontWeight: "700",
+                color: "white",
+              }}
+            >
+              Khu vực chưa checklist
+            </Text>
+          ),
+          headerLeft: () => (
+            <TouchableOpacity
+              onPressIn={() => {
+                navigation.goBack();
+              }}
+            >
+              {Platform.OS === "ios" && (
+                <Ionicons name="chevron-back" size={28} color="white" />
+              )}
+            </TouchableOpacity>
+          ),
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: COLORS.bg_button, // Replace with your color
+          },
+          headerBackTitleVisible: false,
+        })}
+      />
+
+      <Stack.Screen
+        name="Tổng hạng mục chưa checklist"
+        component={NotHangMucTracuuCa}
+        lazy={false}
+        options={({ navigation, route }) => ({
+          headerShown: true,
+          gestureEnabled: false,
+          headerTitle: () => (
+            <Text
+              allowFontScaling={false}
+              style={{
+                fontSize: 20, // Adjust font size as needed
+                fontWeight: "700",
+                color: "white",
+              }}
+            >
+              Hạng mục chưa checklist
+            </Text>
+          ),
+          headerLeft: () => (
+            <TouchableOpacity
+              onPressIn={() => {
+                navigation.goBack();
+              }}
+            >
+              {Platform.OS === "ios" && (
+                <Ionicons name="chevron-back" size={28} color="white" />
+              )}
+            </TouchableOpacity>
+          ),
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: COLORS.bg_button, // Replace with your color
+          },
+          headerBackTitleVisible: false,
+        })}
+      />
+
+<Stack.Screen
+        name="Tổng checklist chưa checklist"
+        component={NotCheckListTracuuCa}
+        lazy={false}
+        options={({ navigation, route }) => ({
+          headerShown: true,
+          gestureEnabled: false,
+          headerTitle: () => (
+            <Text
+              allowFontScaling={false}
+              style={{
+                fontSize: 20, // Adjust font size as needed
+                fontWeight: "700",
+                color: "white",
+              }}
+            >
+              Checklist chưa checklist
+            </Text>
+          ),
+          headerLeft: () => (
+            <TouchableOpacity
+              onPressIn={() => {
+                navigation.goBack();
+              }}
+            >
+              {Platform.OS === "ios" && (
+                <Ionicons name="chevron-back" size={28} color="white" />
+              )}
+            </TouchableOpacity>
+          ),
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: COLORS.bg_button, // Replace with your color
+          },
+          headerBackTitleVisible: false,
+        })}
+      />
+
+      <Stack.Screen
         name="Thực hiện khu vực lại"
         component={ThucHienKhuvucLai}
         lazy={false}
@@ -653,8 +765,6 @@ const HomeStack = ({ navigation }) => {
           headerBackTitleVisible: false,
         })}
       />
-
-    
 
       <Stack.Screen
         name="Quản lý người dùng"
@@ -866,19 +976,23 @@ const HomeStack = ({ navigation }) => {
             </Text>
           ),
           headerLeft: () => (
-            <TouchableOpacity onPressIn={() => navigation.navigate("Báo cáo HSSE", { isReload: true })}>
-            {Platform.OS === "ios" && (
-              <Image
-                source={require("../../assets/icons/ic_button_back.png")}
-                resizeMode="contain"
-                style={{
-                  height: adjust(22),
-                  width: adjust(22),
-                  tintColor: "white",
-                }}
-              />
-            )}
-          </TouchableOpacity>
+            <TouchableOpacity
+              onPressIn={() =>
+                navigation.navigate("Báo cáo HSSE", { isReload: true })
+              }
+            >
+              {Platform.OS === "ios" && (
+                <Image
+                  source={require("../../assets/icons/ic_button_back.png")}
+                  resizeMode="contain"
+                  style={{
+                    height: adjust(22),
+                    width: adjust(22),
+                    tintColor: "white",
+                  }}
+                />
+              )}
+            </TouchableOpacity>
           ),
           headerTitleAlign: "center",
           headerStyle: {

@@ -61,7 +61,8 @@ const HSSE = [
   { id: 37, title: "NaOCL", key: "NaOCL", value: "0" },
 ];
 
-const TaoBaoCaoHSSE = ({ navigation }) => {
+const TaoBaoCaoHSSE = ({ navigation, route }) => {
+  const { setIsReload } = route.params;
   const { authToken } = useSelector((state) => state.authReducer);
   const [hsseData, setHsseData] = useState(HSSE);
   const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
@@ -88,7 +89,7 @@ const TaoBaoCaoHSSE = ({ navigation }) => {
         text: "Xác nhận",
         onPress: () =>
           key
-            ? navigation.navigate("Báo cáo HSSE", { isReload: true })
+            ? navigation.navigate("Báo cáo HSSE")
             : console.log("Cancel Pressed"),
         style: "cancel",
       },
@@ -131,6 +132,7 @@ const TaoBaoCaoHSSE = ({ navigation }) => {
       // Kiểm tra response status
       if (response.status == 200 || response.status == 201) {
         showAlert("Gửi báo cáo thành công", true);
+        setIsReload(true);
         setHsseData(HSSE);
       } else {
         showAlert("Có lỗi xảy ra khi gửi báo cáo", false);
