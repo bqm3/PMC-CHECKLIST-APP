@@ -56,6 +56,7 @@ import {
 } from "../screens/Baocaochiso";
 
 import { DanhMucBaoCaoHSSE, TaoBaoCaoHSSE, DetailHSSE } from "../screens/HSSE";
+import { DanhMucBaoCaoP0, TaoBaoCaoP0, DetailP0 } from "../screens/P0";
 import HomeScreen from "../screens/HomeScreen.jsx";
 import Profile from "../screens/Profile.jsx";
 
@@ -1018,6 +1019,105 @@ const HomeStack = ({ navigation }) => {
               }}
             >
               Chi tiết dữ liệu ngày {route?.params?.data?.Ngay_ghi_nhan}
+            </Text>
+          ),
+          headerLeft: () => headerLeft(navigation),
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: COLORS.bg_button,
+          },
+          headerBackTitleVisible: false,
+        })}
+      />
+
+      <Stack.Screen
+        name="Báo cáo P0"
+        component={DanhMucBaoCaoP0}
+        lazy={false}
+        options={({ route, navigation }) => ({
+          headerShown: true,
+          headerTitle: () => (
+            <Text
+              allowFontScaling={false}
+              style={{
+                fontSize: adjust(20),
+                fontWeight: "700",
+                color: "white",
+              }}
+            >
+              Dữ liệu P0
+            </Text>
+          ),
+          headerLeft: () => headerLeft(navigation),
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: COLORS.bg_button,
+          },
+          headerBackTitleVisible: false,
+        })}
+      />
+
+      <Stack.Screen
+        name="Tạo báo cáo P0"
+        component={TaoBaoCaoP0}
+        lazy={false}
+        options={({ route, navigation }) => ({
+          headerShown: true,
+          headerTitle: () => (
+            <Text
+              allowFontScaling={false}
+              style={{
+                fontSize: adjust(20),
+                fontWeight: "700",
+                color: "white",
+              }}
+            >
+              Tạo báo cáo P0
+            </Text>
+          ),
+          headerLeft: () => (
+            <TouchableOpacity
+              onPressIn={() =>
+                navigation.navigate("Báo cáo P0", { isReload: true })
+              }
+            >
+              {Platform.OS === "ios" && (
+                <Image
+                  source={require("../../assets/icons/ic_button_back.png")}
+                  resizeMode="contain"
+                  style={{
+                    height: adjust(22),
+                    width: adjust(22),
+                    tintColor: "white",
+                  }}
+                />
+              )}
+            </TouchableOpacity>
+          ),
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: COLORS.bg_button,
+          },
+          headerBackTitleVisible: false,
+        })}
+      />
+
+      <Stack.Screen
+        name="Chi tiết dữ liệu P0"
+        component={DetailP0}
+        lazy={false}
+        options={({ route, navigation }) => ({
+          headerShown: true,
+          headerTitle: () => (
+            <Text
+              allowFontScaling={false}
+              style={{
+                fontSize: adjust(20),
+                fontWeight: "700",
+                color: "white",
+              }}
+            >
+              Chi tiết dữ liệu P0 ngày {route?.params?.data?.Ngaybc}
             </Text>
           ),
           headerLeft: () => headerLeft(navigation),

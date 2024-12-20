@@ -153,6 +153,12 @@ const dataDanhMuc = [
     path: "Báo cáo HSSE",
     icon: require("../../assets/icons/o-04.png"),
   },
+  {
+    id: 7,
+    status: "new",
+    path: "Báo cáo P0",
+    icon: require("../../assets/icons/o-04.png"),
+  },
 ];
 
 const dataGD = [
@@ -178,6 +184,12 @@ const dataGD = [
     id: 5,
     status: "new",
     path: "Báo cáo chỉ số",
+    icon: require("../../assets/icons/o-04.png"),
+  },
+  {
+    id: 7,
+    status: "new",
+    path: "Báo cáo P0",
     icon: require("../../assets/icons/o-04.png"),
   },
 ];
@@ -220,6 +232,12 @@ const dataKST = [
     path: "Báo cáo HSSE",
     icon: require("../../assets/icons/o-04.png"),
   },
+  {
+    id: 7,
+    status: "new",
+    path: "Báo cáo P0",
+    icon: require("../../assets/icons/o-04.png"),
+  },
 ];
 
 //ban quản trị khối
@@ -246,6 +264,12 @@ const dataBQTKhoi = [
     id: 6,
     status: "new",
     path: "Báo cáo HSSE",
+    icon: require("../../assets/icons/o-04.png"),
+  },
+  {
+    id: 7,
+    status: "new",
+    path: "Báo cáo P0",
     icon: require("../../assets/icons/o-04.png"),
   },
 ];

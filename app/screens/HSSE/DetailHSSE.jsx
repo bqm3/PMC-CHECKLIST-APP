@@ -10,13 +10,15 @@ import {
   TouchableOpacity,
   Keyboard,
   ActivityIndicator,
-  Alert
+  Alert,
 } from "react-native";
 import { useSelector } from "react-redux";
 import {
   GestureHandlerRootView,
   TextInput,
 } from "react-native-gesture-handler";
+import CustomAlertModal from "../../components/CustomAlertModal";
+import RenderHTML from "react-native-render-html";
 import adjust from "../../adjust";
 import moment from "moment";
 import axios from "axios";
@@ -70,6 +72,8 @@ const DetailHSSE = ({ navigation, route }) => {
   const [hsseData, setHsseData] = useState(HSSE);
   const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
   const isToday = moment(data?.Ngay_ghi_nhan).isSame(moment(), "day");
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     const updatedHSSE = HSSE.map((item) => ({
@@ -114,8 +118,6 @@ const DetailHSSE = ({ navigation, route }) => {
       return acc;
     }, {});
 
-    console.log("filteredReport",JSON.stringify(filteredReport,null,2))
-
     const dataReq = {
       data: filteredReport,
       Ngay: data?.Ngay_ghi_nhan,
@@ -136,10 +138,16 @@ const DetailHSSE = ({ navigation, route }) => {
 
       // Kiểm tra response status
       if (response.status == 200 || response.status == 201) {
-        showAlert("Cập nhật thành công", true);
-        setIsReload(true)
+        setIsReload(true);
+        setMessage(response.data.htmlResponse);
+        if (response.data.htmlResponse == "") {
+          showAlert("Gửi báo cáo thành công", true);
+          setHsseData(HSSE);
+        } else {
+          setIsModalVisible(true);
+        }
       } else {
-        showAlert("Có lỗi xảy ra khi cập nhật", false);
+        showAlert("Có lỗi xảy ra khi gửi báo cáo", false);
       }
     } catch (error) {
       if (error.response) {
@@ -222,6 +230,18 @@ const DetailHSSE = ({ navigation, route }) => {
               <Text style={styles.submitButtonText}>Cập nhật</Text>
             </TouchableOpacity>
           )}
+
+          <CustomAlertModal
+            isVisible={isModalVisible}
+            title="PMC Thông báo"
+            message={
+              <RenderHTML contentWidth={300} source={{ html: message }} />
+            }
+            onConfirm={() => {
+              setIsModalVisible(false);
+              navigation.navigate("Báo cáo HSSE");
+            }}
+          />
         </ImageBackground>
       </KeyboardAvoidingView>
     </GestureHandlerRootView>
