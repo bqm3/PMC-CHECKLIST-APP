@@ -5,10 +5,12 @@ import {
   View,
   TouchableOpacity,
   ImageBackground,
+  ScrollView,
 } from "react-native";
 import { COLORS } from "../../constants/theme";
 import DanhmucThongkeDashBoard from "./DanhmucThongkeDashboard";
 import DanhmucTraCuu from "./DanhmucTraCuu";
+import DanhmucTraCuuCa from "./DanhmucTracuuCa";
 
 const TabButtons = ({
   tabButtonType,
@@ -18,26 +20,28 @@ const TabButtons = ({
 }) => {
   return (
     <View style={[styles.container, { opacity: opacity }]}>
-      {tabButtonType.map((tab, index) => (
-        <TouchableOpacity
-          disabled={opacity == 1 ? false : true}
-          key={index}
-          style={[
-            styles.tabButton,
-            selectedTab === tab.title && styles.selectedTabButton,
-          ]}
-          onPress={() => setSelectedTab(tab.title)}
-        >
-          <Text
+      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        {tabButtonType.map((tab, index) => (
+          <TouchableOpacity
+            disabled={opacity == 1 ? false : true}
+            key={index}
             style={[
-              styles.tabText,
-              selectedTab === tab.title && styles.selectedTabText,
+              styles.tabButton,
+              selectedTab === tab.title && styles.selectedTabButton,
             ]}
+            onPress={() => setSelectedTab(tab.title)}
           >
-            {tab.title}
-          </Text>
-        </TouchableOpacity>
-      ))}
+            <Text
+              style={[
+                styles.tabText,
+                selectedTab === tab.title && styles.selectedTabText,
+              ]}
+            >
+              {tab.title}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
     </View>
   );
 };
@@ -46,8 +50,12 @@ const DanhmucTracuuVsThongke = ({ route, navigation }) => {
   const [selectedTab, setSelectedTab] = useState("Tra cứu");
   const [opacity, setOpacity] = useState(1);
 
-  const TabButtonType = [{ title: "Tra cứu" }, { title: "Thống kê" }];
-  
+  const TabButtonType = [
+    { title: "Tra cứu" },
+    { title: "Tra cứu ca" },
+    { title: "Thống kê" },
+  ];
+
   const renderContent = () => {
     switch (selectedTab) {
       case "Tra cứu":
@@ -59,8 +67,14 @@ const DanhmucTracuuVsThongke = ({ route, navigation }) => {
           />
         );
       case "Thống kê":
+        return <DanhmucThongkeDashBoard />;
+      case "Tra cứu ca":
         return (
-          <DanhmucThongkeDashBoard />
+          <DanhmucTraCuuCa
+            opacity={opacity}
+            setOpacity={setOpacity}
+            navigation={navigation}
+          />
         );
       default:
         return (
@@ -105,7 +119,7 @@ const styles = StyleSheet.create({
   },
   tabButton: {
     width: 150,
-    marginHorizontal: 20,
+    marginHorizontal: 10,
     paddingVertical: 8,
     paddingHorizontal: 20,
     backgroundColor: "#e0e0e0",

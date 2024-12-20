@@ -28,9 +28,9 @@ const HSSE = [
   { id: 4, title: "Nước xả thải", key: "Xa_thai", value: "0" },
   { id: 5, title: "Rác sinh hoạt", key: "Rac_sh", value: "0" },
   { id: 6, title: "Muối điện phân", key: "Muoi_dp", value: "0" },
-  { id: 7, title: "PAC", key: "PAC", value: "0" },
-  { id: 8, title: "NaHSO3", key: "NaHSO3", value: "0" },
-  { id: 9, title: "NaOH", key: "NaOH", value: "0" },
+  { id: 7, title: "PAC", key: "PAC", value: "0" }, 
+  { id: 8, title: "NaHSO3", key: "NaHSO3", value: "0" }, 
+  { id: 9, title: "NaOH", key: "NaOH", value: "0" }, 
   { id: 10, title: "Mật rỉ đường", key: "Mat_rd", value: "0" },
   { id: 11, title: "Polymer Anion", key: "Polymer_Anion", value: "0" },
   { id: 12, title: "Chlorine bột", key: "Chlorine_bot", value: "0" },
@@ -42,7 +42,7 @@ const HSSE = [
   { id: 18, title: "Túi rác 20L", key: "Tui_rac20", value: "0" },
   { id: 19, title: "Túi rác 10L", key: "Tui_rac10", value: "0" },
   { id: 20, title: "Túi rác 5L", key: "Tui_rac5", value: "0" },
-  { id: 21, title: "Giấy vệ sinh 235mm", key: "giayvs_235", value: "0" },
+  { id: 21, title: "Giấy vệ sinh 235mm", key: "giayvs_235", value: "0" }, 
   { id: 22, title: "Giấy vệ sinh 120mm", key: "giaivs_120", value: "0" },
   { id: 23, title: "Giấy lau tay", key: "giay_lau_tay", value: "0" },
   { id: 24, title: "Hóa chất làm sạch", key: "hoa_chat", value: "0" },
@@ -52,14 +52,17 @@ const HSSE = [
   { id: 28, title: "Clo", key: "clo", value: "0" },
   { id: 29, title: "Nồng độ PH", key: "PH", value: "0" },
   { id: 30, title: "Poolblock", key: "Poolblock", value: "0" },
-  { id: 31, title: "Chất thải", key: "trat_thai", value: "0" },
+  { id: 31, title: "Trạt thải", key: "trat_thai", value: "0" },  
   { id: 32, title: "pH Minus", key: "pHMINUS", value: "0" },
   { id: 33, title: "Axit", key: "axit", value: "0" },
   { id: 34, title: "PN180", key: "PN180", value: "0" },
   { id: 35, title: "Chỉ số CO2", key: "chiSoCO2", value: "0" },
+  { id: 36, title: "Clorin", key: "clorin", value: "0" },
+  { id: 37, title: "NaOCL", key: "NaOCL", value: "0" },
 ];
 
-const TaoBaoCaoHSSE = ({ navigation }) => {
+const TaoBaoCaoHSSE = ({ navigation, route }) => {
+  const { setIsReload } = route.params;
   const { authToken } = useSelector((state) => state.authReducer);
   const [hsseData, setHsseData] = useState(HSSE);
   const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
@@ -86,7 +89,7 @@ const TaoBaoCaoHSSE = ({ navigation }) => {
         text: "Xác nhận",
         onPress: () =>
           key
-            ? navigation.navigate("Báo cáo HSSE", { isReload: true })
+            ? navigation.navigate("Báo cáo HSSE")
             : console.log("Cancel Pressed"),
         style: "cancel",
       },
@@ -129,6 +132,7 @@ const TaoBaoCaoHSSE = ({ navigation }) => {
       // Kiểm tra response status
       if (response.status == 200 || response.status == 201) {
         showAlert("Gửi báo cáo thành công", true);
+        setIsReload(true);
         setHsseData(HSSE);
       } else {
         showAlert("Có lỗi xảy ra khi gửi báo cáo", false);

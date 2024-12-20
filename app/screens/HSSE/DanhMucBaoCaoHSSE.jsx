@@ -27,7 +27,6 @@ import axios from "axios";
 
 const DanhMucBaoCaoHSSE = ({ navigation, route }) => {
   const dispatch = useDispatch();
-  const isReload = route.params?.isReload ?? undefined;
   const { user, authToken } = useSelector((state) => state.authReducer);
   const { data_check_hsse } = useSelector((state) => state.entReducer);
   const { hsse } = useSelector((state) => state.tbReducer);
@@ -35,6 +34,8 @@ const DanhMucBaoCaoHSSE = ({ navigation, route }) => {
   const [dataHsse, setDataHsse] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showReport, setShowReport] = useState(false);
+
+  const [isReload, setIsReload] = useState(false);
 
   const init_hsse = async () => {
     setLoading(true);
@@ -88,7 +89,16 @@ const DanhMucBaoCaoHSSE = ({ navigation, route }) => {
   const toggleTodo = async (item, index) => {
     navigation.navigate("Chi tiết dữ liệu HSSE", {
       data: item,
+      setIsReload,
     });
+    setIsReload(false)
+  };
+
+  const handleCreate = async () => {
+    navigation.navigate("Tạo báo cáo HSSE", {
+      setIsReload,
+    });
+    setIsReload(false)
   };
 
   const renderItem = useCallback(
@@ -222,7 +232,7 @@ const DanhMucBaoCaoHSSE = ({ navigation, route }) => {
                           <TouchableOpacity
                             style={styles.action}
                             onPress={() =>
-                              navigation.navigate("Tạo báo cáo HSSE")
+                              handleCreate()
                             }
                           >
                             <Image
