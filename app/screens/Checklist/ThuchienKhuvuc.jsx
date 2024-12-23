@@ -50,7 +50,6 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
     hangMucFilterByIDChecklistC,
     khuVucFilterByIDChecklistC,
     setKhuVucFilterByIDChecklistC,
-    hangMucByKhuVuc,
     setHangMucByKhuVuc,
     dataChecklistByCa,
     setDataChecklistByCa,
@@ -71,12 +70,13 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
 
   const [opacity, setOpacity] = useState(1);
   const [submit, setSubmit] = useState(false);
-  const [isLoadingDetail, setIsLoadingDetail] = useState(false);
+  const [isLoadingDetail, setIsLoadingDetail] = useState(true);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [isScan, setIsScan] = useState(false);
   const [modalVisibleQr, setModalVisibleQr] = useState(false);
   const [dataKhuvuc, setDataKhuvuc] = useState([]); // Lưu khu vực hiển thị
   const [dataSelect, setDataSelect] = useState([]);
+  
 
   // Checklist context
   const [defaultActionDataChecklist, setDataChecklistDefault] = useState([]);
@@ -91,6 +91,16 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
 
     return () => unsubscribe();
   }, []);
+
+  useEffect(() => {
+    if (isLoadingDetail) {
+      const timer = setTimeout(() => {
+        setIsLoadingDetail(false); 
+      }, 1500);
+
+      return () => clearTimeout(timer); 
+    }
+  }, [isLoadingDetail]);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("beforeRemove", (e) => {
@@ -198,9 +208,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
 
   useFocusEffect(
     React.useCallback(() => {
-      setIsLoadingDetail(true);
       init_checklist();
-      setIsLoadingDetail(false);
       return () => {};
     }, [dispath])
   );

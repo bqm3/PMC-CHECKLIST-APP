@@ -455,11 +455,11 @@ const HomeScreen = ({ navigation }) => {
       if (response.status === 200) {
         setCheckP0(response.data.data);
       } else {
-        showAlert("Đã có lỗi xảy ra, vui lòng thử lại");
+        // showAlert("Đã có lỗi xảy ra, vui lòng thử lại");
       }
     } catch (error) {
-      console.error("error", error.message);
-      showAlert("Đã có lỗi xảy ra, vui lòng thử lại");
+      // console.error("error", error.message);
+      // showAlert("Đã có lỗi xảy ra, vui lòng thử lại");
     } finally {
       setIsLoading(false);
     }
@@ -475,10 +475,6 @@ const HomeScreen = ({ navigation }) => {
     ]);
   };
   
-
-  const filteredProjects = duan.filter((item) =>
-    item.Duan.toLowerCase().includes(searchText.toLowerCase())
-  );
 
   return (
     <ImageBackground

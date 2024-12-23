@@ -839,7 +839,6 @@ const DetailChecklist = ({ route, navigation }) => {
     const ID_Checklists = arrData.map((item) => item.ID_Checklist);
     const valueChecks = arrData.map((item) => item.valueCheck);
     const Gioht = arrData.map((item) => item.Gioht);
-    console.log('sf', descriptions)
     const requestDone = await axios.post(
       BASE_URL + "/tb_checklistchitietdone/create",
       {
