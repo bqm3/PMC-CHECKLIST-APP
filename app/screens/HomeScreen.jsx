@@ -289,6 +289,8 @@ const HomeScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [searchText, setSearchText] = useState("");
 
+  const [checkP0, setCheckP0] = useState(false)
+
   const notificationListener = useRef();
   const responseListener = useRef();
 
@@ -353,6 +355,7 @@ const HomeScreen = ({ navigation }) => {
     init_tang();
     int_calv();
     funcDuan();
+    funcCheckP0();
   }, [refreshScreen]);
 
   useEffect(() => {
@@ -438,6 +441,40 @@ const HomeScreen = ({ navigation }) => {
       setIsLoading(false);
     }
   };
+
+  const funcCheckP0 = async () => {
+    try {
+      setIsLoading(true);
+      const response = await axios.get(`${BASE_URL}/p0/check`, {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+  
+      if (response.status === 200) {
+        setCheckP0(response.data.data);
+      } else {
+        showAlert("Đã có lỗi xảy ra, vui lòng thử lại");
+      }
+    } catch (error) {
+      console.error("error", error.message);
+      showAlert("Đã có lỗi xảy ra, vui lòng thử lại");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  const showAlert = (message) => {
+    Alert.alert("PMC Thông báo", message, [
+      {
+        text: "Xác nhận",
+        onPress: () => console.log("Alert dismissed"),
+        style: "cancel",
+      },
+    ]);
+  };
+  
 
   const filteredProjects = duan.filter((item) =>
     item.Duan.toLowerCase().includes(searchText.toLowerCase())
@@ -571,6 +608,10 @@ const HomeScreen = ({ navigation }) => {
                     : user?.ent_chucvu?.Role == 1
                     ? dataGD
                     : user?.ent_chucvu?.Role == 2 && dataKST;
+
+                if (!checkP0) {
+                  baseData = baseData.filter(item => item.id !== 7);
+                }
 
                 const currentDate = new Date();
                 const targetDate = new Date("2025-01-01");
