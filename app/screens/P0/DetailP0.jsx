@@ -43,22 +43,22 @@ const P0 = [
     key: "Slxeotodien",
     value: "0",
   },
-  { id: 2, title: "Xe máy điện", key: "Slxemaydien", value: "0"},
+  { id: 2, title: "Xe máy điện", key: "Slxemaydien", value: "0" },
   {
     id: 3,
     title: "Xe máy thường",
     key: "Slxemay",
     value: "0",
   },
-  { id: 4, title: "Xe đạp điện", key: "Slxedapdien", value: "0"},
+  { id: 4, title: "Xe đạp điện", key: "Slxedapdien", value: "0" },
   {
     id: 5,
     title: "Xe đạp thường",
     key: "Slxedap",
     value: "0",
   },
-  { id: 6, title: "Thẻ xe ô tô", key: "Sltheoto", value: "0"},
-  { id: 7, title: "Thẻ xe máy", key: "Slthexemay", value: "0"},
+  { id: 6, title: "Thẻ xe ô tô", key: "Sltheoto", value: "0" },
+  { id: 7, title: "Thẻ xe máy", key: "Slthexemay", value: "0" },
   {
     id: 8,
     title: "Sự cố xe ô tô thường",
@@ -114,7 +114,7 @@ const DetailP0 = ({ navigation, route }) => {
   const { user, authToken } = useSelector((state) => state.authReducer);
   const [p0_Data, setP0_Data] = useState(P0);
   const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
-  const isToday = moment(data?.Ngay_ghi_nhan).isSame(moment(), "day");
+  const isToday = moment(data?.Ngaybc).isSame(moment(), "day");
   const [ghichu, setGhichu] = useState(data?.Ghichu);
 
   const scrollViewRef = useRef(null);
@@ -157,8 +157,6 @@ const DetailP0 = ({ navigation, route }) => {
       prev.map((item) => (item.key == key ? { ...item, value } : item))
     );
   };
-
-  console.log("p0_Data", p0_Data);
 
   const groupedData = useMemo(() => {
     const result = [];
@@ -267,9 +265,7 @@ const DetailP0 = ({ navigation, route }) => {
               style={[
                 styles.input,
                 {
-                  backgroundColor: editable(subItem.id)
-                    ? "white"
-                    : "gray",
+                  backgroundColor: editable(subItem.id) ? "white" : "gray",
                 },
               ]}
               value={subItem.value.toString()}
