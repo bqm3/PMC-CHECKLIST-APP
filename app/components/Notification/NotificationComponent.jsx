@@ -50,24 +50,41 @@ const NotificationComponent = ({
       duration={1000} // Thời gian animation xuất hiện
       useNativeDriver
     >
-      <TouchableOpacity style={styles.banner_noti} onPress={onActionPress}>
+      <TouchableOpacity
+        style={styles.banner_noti}
+        onPress={notification?.data?.type === "NEW" ? onActionPress : null}
+      >
         <View style={styles.noti}>
           <View style={styles.innerContainer}>
-            <Image
-              source={require("../../../assets/icons/ic_new3.png")}
-              style={{
-                width: adjust(30),
-                height: adjust(30),
-                marginRight: adjust(5),
-                tintColor: "green",
-              }}
-              resizeMode="contain"
-            />
+            {notification?.data?.type === "NEW" ? (
+              <Image
+                source={require("../../../assets/icons/ic_new3.png")}
+                style={{
+                  width: adjust(30),
+                  height: adjust(30),
+                  marginRight: adjust(5),
+                  tintColor: "green",
+                }}
+                resizeMode="contain"
+              />
+            ) : (
+              <Image
+                source={require("../../../assets/icons/ic_warning2.png")}
+                style={{
+                  width: adjust(30),
+                  height: adjust(30),
+                  marginRight: adjust(5),
+                }}
+                resizeMode="contain"
+              />
+            )}
             <Text style={styles.title}>{notification?.data?.textTitle}</Text>
           </View>
-
           <Text style={styles.body}>
-            {notification?.data?.textBody} (Ấn vào thông báo để cập nhật)
+            {notification?.data?.textBody}
+            {notification?.data?.type === "NEW"
+              ? "Ấn vào thông báo để cập nhật"
+              : ""}
           </Text>
         </View>
       </TouchableOpacity>
