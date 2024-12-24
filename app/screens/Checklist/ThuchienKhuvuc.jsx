@@ -440,15 +440,15 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
                   Platform.OS === "android"
                     ? image.uri
                     : image.uri.replace("file://", ""),
-                  [{ resize: { width: image.width * 0.8 } }], // Resize nhỏ hơn 50%
-                  { compress: 0.8, format: ImageManipulator.SaveFormat.PNG } // Nén ảnh
+                  [{ resize: { width: image.width * 0.6 } }], // Resize nhỏ hơn 50%
+                  { compress: 1, format: ImageManipulator.SaveFormat.PNG } // Nén ảnh
                 );
 
                 const file = {
                   uri: resizedImage.uri,
                   name:
                     image.fileName ||
-                    `${Math.floor(Math.random() * 9999999)}_${
+                    `${Math.floor(Math.random() * 999999999)}_${
                       item.ID_Checklist
                     }_${imgIndex}.png`,
                   type: "image/png",
@@ -618,35 +618,33 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
 
           // Nếu có hình ảnh, thêm vào FormData
           if (item.Anh && Array.isArray(item.Anh)) {
-            for (const [imgIndex, image] of item.Anh.entries()) {
-              try {
-                // Resize và nén ảnh trước khi append vào formData
-                const resizedImage = await ImageManipulator.manipulateAsync(
-                  Platform.OS === "android"
-                    ? image.uri
-                    : image.uri.replace("file://", ""),
-                  [{ resize: { width: image.width * 0.8 } }], // Resize nhỏ hơn 50%
-                  { compress: 0.8, format: ImageManipulator.SaveFormat.PNG } // Nén ảnh
-                );
-
-                const file = {
-                  uri: resizedImage.uri,
-                  name:
-                    image.fileName ||
-                    `${Math.floor(Math.random() * 9999999)}_${
-                      item.ID_Checklist
-                    }_${imgIndex}.png`,
-                  type: "image/png",
-                };
-
-                formData.append(
-                  `Images_${index}_${item.ID_Checklist}_${imgIndex}`,
-                  file
-                );
-              } catch (error) {
-                console.error("Error resizing image: ", error);
-              }
-            }
+             for (const [imgIndex, image] of item.Anh.entries()) {
+                        try {
+                          // Resize và nén ảnh trước khi append vào formData
+                          const resizedImage = await ImageManipulator.manipulateAsync(
+                            Platform.OS === "android"
+                              ? image.uri
+                              : image.uri.replace("file://", ""),
+                            [{ resize: { width: image.width * 0.8 } }], // Resize nhỏ hơn 50%
+                            { compress: 1, format: ImageManipulator.SaveFormat.PNG } // Nén ảnh
+                          );
+              
+                          const file = {
+                            uri: resizedImage.uri,
+                            name:
+                              image.fileName ||
+                              `${Math.floor(Math.random() * 9999999)}_${item.ID_Checklist}_${imgIndex}.png`,
+                            type: "image/png",
+                          };
+              
+                          formData.append(
+                            `Images_${index}_${item.ID_Checklist}_${imgIndex}`,
+                            file
+                          );
+                        } catch (error) {
+                          console.error("Error resizing image: ", error);
+                        }
+                      }
           }
         });
         // Tạo các yêu cầu API
