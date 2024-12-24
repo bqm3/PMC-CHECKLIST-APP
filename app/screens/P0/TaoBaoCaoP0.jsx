@@ -94,12 +94,30 @@ const P0 = [
   },
   {
     id: 14,
+    title: "Sự cố khác",
+    key: "Slsucokhac",
+    value: "0",
+  },
+  {
+    id: 15,
     title: "Công tơ điện",
     key: "Slcongto",
     value: "0",
   },
   {
-    id: 15,
+    id: 16,
+    title: "Quân số thực tế",
+    key: "QuansoTT",
+    value: "0",
+  },
+  {
+    id: 17,
+    title: "Quân số định biên",
+    key: "QuansoDB",
+    value: "0",
+  },
+  {
+    id: 18,
     title: "Doanh thu từ 6 đến 18h",
     key: "Doanhthu",
     value: "0",
