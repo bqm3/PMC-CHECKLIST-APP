@@ -475,7 +475,7 @@ const { token } = useContext(ExpoTokenContext);
       const resizedImage = await ImageManipulator.manipulateAsync(
         item, // The URI of the image to resize
         [{ resize: { width: 800, height: 600 } }], // Set desired width and height (adjust as needed)
-        { compress: 0.8, format: ImageManipulator.SaveFormat.JPEG } // Set compression quality and format
+        { compress: 1, format: ImageManipulator.SaveFormat.JPEG } // Set compression quality and format
       );
   
       const file = {

@@ -776,7 +776,7 @@ const DetailChecklist = ({ route, navigation }) => {
                   ? image.uri
                   : image.uri.replace("file://", ""),
                 [{ resize: { width: image.width * 0.6 } }], // Resize nhỏ hơn 50%
-                { compress: 0.8, format: ImageManipulator.SaveFormat.PNG } // Nén ảnh
+                { compress: 1, format: ImageManipulator.SaveFormat.PNG } // Nén ảnh
               );
   
               const file = {
@@ -944,7 +944,7 @@ const DetailChecklist = ({ route, navigation }) => {
                     ? image.uri
                     : image.uri.replace("file://", ""),
                   [{ resize: { width: image.width * 0.6 } }], // Resize nhỏ hơn 50%
-                  { compress: 0.8, format: ImageManipulator.SaveFormat.PNG } // Nén ảnh
+                  { compress: 1, format: ImageManipulator.SaveFormat.PNG } // Nén ảnh
                 );
     
                 const file = {
