@@ -278,12 +278,20 @@ const DetailP0 = ({ navigation, route }) => {
               },
             ]}
           >
-            <Text style={styles.itemTitle}>{subItem.title}</Text>
+            <Text
+              style={[
+                styles.itemTitle,
+                { color: editable(subItem.id) ? "black" : "white" },
+              ]}
+            >
+              {subItem.title}
+            </Text>
             <TextInput
               style={[
                 styles.input,
                 {
                   backgroundColor: editable(subItem.id) ? "white" : "gray",
+                  color: editable(subItem.id) ? "black" : "white",
                 },
               ]}
               value={subItem.value.toString()}
@@ -291,7 +299,7 @@ const DetailP0 = ({ navigation, route }) => {
               placeholderTextColor="#888"
               keyboardType="numeric"
               returnKeyType="done"
-              editable={editable(subItem.id)}
+              editable={editable(subItem.id) && isToday}
             />
           </View>
         );
@@ -394,7 +402,6 @@ const styles = StyleSheet.create({
   },
   itemTitle: {
     fontSize: adjust(14),
-    color: "#333",
     marginBottom: 8,
     fontWeight: "600",
     textAlign: "center",
@@ -405,7 +412,6 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 8,
     textAlign: "center",
-    color: "#333",
     backgroundColor: "#f9f9f9",
   },
   submitButton: {

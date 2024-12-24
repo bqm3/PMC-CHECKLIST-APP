@@ -252,9 +252,9 @@ const TaoBaoCaoP0 = ({ navigation, route }) => {
 
   const editable = (id) => {
     let check = false;
-    if (user?.ID_KhoiCV == 4 && id == 15) {
+    if (user?.ID_KhoiCV == 4 && id == 18) {
       check = true;
-    } else if (user?.ID_KhoiCV == 3 && id != 15) {
+    } else if (user?.ID_KhoiCV == 3 && id != 18) {
       check = true;
     } else if (user?.ID_KhoiCV == null) {
       check = true;
@@ -277,12 +277,20 @@ const TaoBaoCaoP0 = ({ navigation, route }) => {
                 },
               ]}
             >
-              <Text style={styles.itemTitle}>{subItem.title}</Text>
+              <Text
+                style={[
+                  styles.itemTitle,
+                  { color: editable(subItem.id) ? "black" : "white" },
+                ]}
+              >
+                {subItem.title}
+              </Text>
               <TextInput
                 style={[
                   styles.input,
                   {
                     backgroundColor: editable(subItem.id) ? "white" : "gray",
+                    color: editable(subItem.id) ? "black" : "white",
                   },
                 ]}
                 value={subItem.value.toString()}
