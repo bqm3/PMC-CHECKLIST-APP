@@ -60,7 +60,7 @@ const ModalPopupDetailChecklist = ({
         // Resize and compress the image
         const resizedImage = await ImageManipulator.manipulateAsync(
           originalImage.uri,
-          [{ resize: { width: originalImage.width / 5 } }], // Resize width
+          [{ resize: { width: originalImage.width / 5 } }], // Resize to 70% width
           { compress: 0.8, format: "png"  } // Compress further
         );
   
