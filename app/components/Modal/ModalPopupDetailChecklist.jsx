@@ -292,6 +292,7 @@ const ModalPopupDetailChecklist = ({
                         alignItems: "center",
                         justifyContent: "center",
                         height: 60,
+                        marginEnd: 10  
                       }}
                       onPress={() => pickImage()}
                     >
@@ -299,7 +300,7 @@ const ModalPopupDetailChecklist = ({
                     </TouchableOpacity>
                     <ScrollView horizontal>
                       {images.map((img, index) => (
-                        <View key={index} style={{ marginLeft: 10 }}>
+                        <View key={index} style={{ marginEnd: 10 }}>
                           <Image
                             source={{ uri: img.uri }}
                             style={{
