@@ -17,6 +17,7 @@ import {
   ActivityIndicator,
   TextInput,
 } from "react-native";
+import * as Device from "expo-device";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import {
   ent_calv_get,
@@ -30,7 +31,6 @@ import {
 import SelectDropdown from "react-native-select-dropdown";
 import { FontAwesome, AntDesign } from "@expo/vector-icons";
 import { Alert, Linking } from "react-native";
-import * as Device from "expo-device";
 import Constants from "expo-constants";
 import axios from "axios";
 import * as Notifications from "expo-notifications";
@@ -390,6 +390,7 @@ const HomeScreen = ({ navigation }) => {
           BASE_URL + "/ent_user/device-token",
           {
             deviceToken: expoPushToken,
+            deviceName: Device.modelName
           },
           {
             headers: {
@@ -404,7 +405,7 @@ const HomeScreen = ({ navigation }) => {
       dataRes();
       setToken(expoPushToken);
     }
-  }, [authToken, expoPushToken]);
+  }, [authToken, expoPushToken, Device]);
 
   const funcHandleDuan = async (ID_Duan) => {
     try {

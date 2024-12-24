@@ -26,6 +26,7 @@ import adjust from "../../adjust";
 import moment from "moment";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import * as ImagePicker from "expo-image-picker";
+import * as ImageManipulator from "expo-image-manipulator";
 import {
   ent_tang_get,
   ent_khuvuc_get,
@@ -143,7 +144,15 @@ const ThuchienSucongoai = ({ navigation, route }) => {
             });
 
             if (!result.canceled) {
-              setImages((prevImages) => [...prevImages, result.assets[0].uri]);
+              // Resize the image
+              const resizedImage = await ImageManipulator.manipulateAsync(
+                result.assets[0].uri,
+                [{ resize: { width: 800 } }], // Resize to a width of 800px
+                { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG } // Compress and save as JPEG
+              );
+
+              // Add the resized image URI to state
+              setImages((prevImages) => [...prevImages, resizedImage.uri]);
             }
           },
         },
@@ -166,7 +175,15 @@ const ThuchienSucongoai = ({ navigation, route }) => {
             });
 
             if (!result.canceled) {
-              setImages((prevImages) => [...prevImages, result.assets[0].uri]);
+              // Resize the image
+              const resizedImage = await ImageManipulator.manipulateAsync(
+                result.assets[0].uri,
+                [{ resize: { width: 800 } }], // Resize to a width of 800px
+                { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG } // Compress and save as JPEG
+              );
+
+              // Add the resized image URI to state
+              setImages((prevImages) => [...prevImages, resizedImage.uri]);
             }
           },
         },
@@ -230,24 +247,32 @@ const ThuchienSucongoai = ({ navigation, route }) => {
   };
 
   const handleSubmit = async () => {
+    console.log("running submit");
     setLoadingSubmit(true);
     let formData = new FormData();
     try {
       if (images.length > 0) {
-        images.map((item, index) => {
+        for (let index = 0; index < images.length; index++) {
+          let item = images[index];
+
+          // Resize the image using expo-image-manipulator
+          const resizedImage = await ImageManipulator.manipulateAsync(
+            item, // The URI of the image to resize
+            [{ resize: { width: 800, height: 600 } }], // Set desired width and height (adjust as needed)
+            { compress: 0.8, format: ImageManipulator.SaveFormat.JPEG } // Set compression quality and format
+          );
+
           const file = {
-            uri: Platform.OS === "android" ? item : item.replace("file://", ""),
-            name:
-              Math.floor(Math.random() * Math.floor(99999999999999)) +
-              index +
-              ".jpg",
+            uri:
+              Platform.OS === "android"
+                ? resizedImage.uri
+                : resizedImage.uri.replace("file://", ""),
+            name: Math.floor(Math.random() * 99999) + index + ".jpg", // Random filename
             type: "image/jpg",
           };
 
-          // Append image file to formData
           formData.append(`Images_${index}`, file);
-          // formData.append(`Anh1`, file?.name);
-        });
+        }
         formData.append("ID_Hangmuc", dataInput.ID_Hangmuc);
         formData.append("Ngaysuco", dataInput.Ngaysuco);
         formData.append("Giosuco", dataInput.Giosuco);
@@ -304,7 +329,7 @@ const ThuchienSucongoai = ({ navigation, route }) => {
           Ngaysuco: dataInput.Ngaysuco,
           Giosuco: dataInput.Giosuco,
           Noidungsuco: dataInput.Noidungsuco,
-          deviceUser: token,                                                                                                                                                                                                                                                                                                                                       
+          deviceUser: token,
           deviceNameUser: Device.modelName,
           ID_User: user.ID_User,
           Tinhtrangxuly: 0,

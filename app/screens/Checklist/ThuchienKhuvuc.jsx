@@ -16,6 +16,7 @@ import {
   Linking,
   RefreshControl,
 } from "react-native";
+import * as ImageManipulator from "expo-image-manipulator";
 import { Camera } from "expo-camera";
 import React, { useState, useEffect, useContext } from "react";
 import { useFocusEffect } from "@react-navigation/native";
@@ -76,7 +77,6 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
   const [modalVisibleQr, setModalVisibleQr] = useState(false);
   const [dataKhuvuc, setDataKhuvuc] = useState([]); // Lưu khu vực hiển thị
   const [dataSelect, setDataSelect] = useState([]);
-  
 
   // Checklist context
   const [defaultActionDataChecklist, setDataChecklistDefault] = useState([]);
@@ -95,10 +95,10 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
   useEffect(() => {
     if (isLoadingDetail) {
       const timer = setTimeout(() => {
-        setIsLoadingDetail(false); 
+        setIsLoadingDetail(false);
       }, 1500);
 
-      return () => clearTimeout(timer); 
+      return () => clearTimeout(timer);
     }
   }, [isLoadingDetail]);
 
@@ -277,63 +277,59 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
 
   const handlePushDataFilterQr = (value) => {
     const cleanedValue = value.trim().toLowerCase();
-      const resDataKhuvuc = dataChecklists.filter(
-        (item) => item.ent_khuvuc.MaQrCode.trim().toLowerCase() === cleanedValue
-      );
+    const resDataKhuvuc = dataChecklists.filter(
+      (item) => item.ent_khuvuc.MaQrCode.trim().toLowerCase() === cleanedValue
+    );
 
-      const resDataKhuvucAll = dataChecklistByCa.filter(
-        (item) => item.ent_khuvuc.MaQrCode.trim().toLowerCase() === cleanedValue
-      );
+    const resDataKhuvucAll = dataChecklistByCa.filter(
+      (item) => item.ent_khuvuc.MaQrCode.trim().toLowerCase() === cleanedValue
+    );
 
-      const resDataHangmuc = dataChecklists.filter(
-        (item) =>
-          item.ent_hangmuc.MaQrCode.trim().toLowerCase() === cleanedValue
-      );
+    const resDataHangmuc = dataChecklists.filter(
+      (item) => item.ent_hangmuc.MaQrCode.trim().toLowerCase() === cleanedValue
+    );
 
-      const resDataHangmucAll = dataChecklistByCa.filter(
-        (item) =>
-          item.ent_hangmuc.MaQrCode.trim().toLowerCase() === cleanedValue
-      );
-      
-      if (resDataKhuvuc?.length === 0 && resDataHangmuc?.length === 0) {
-        const alertMessage =
-          resDataKhuvucAll.length >= 1 || resDataHangmucAll.length >= 1
-            ? `Khu vực hoặc hạng mục có QR code: "${cleanedValue}" này đã kiểm tra`
-            : `Khu vực hoặc hạng mục có QR code: "${cleanedValue}" này không thuộc ca làm việc`;
-  
-        Alert.alert("PMC Thông báo", alertMessage, [
-          { text: "Hủy", style: "cancel" },
-          { text: "Xác nhận" },
-        ]);
-      }
+    const resDataHangmucAll = dataChecklistByCa.filter(
+      (item) => item.ent_hangmuc.MaQrCode.trim().toLowerCase() === cleanedValue
+    );
 
-      if (resDataKhuvuc.length >= 1) {
-        navigation.navigate("Thực hiện hạng mục", {
-          ID_ChecklistC,
-          ID_KhoiCV,
-          ID_Calv,
-          ID_Khuvuc: resDataKhuvuc[0].ID_Khuvuc,
-          ID_Hangmucs,
-        });
-      }
+    if (resDataKhuvuc?.length === 0 && resDataHangmuc?.length === 0) {
+      const alertMessage =
+        resDataKhuvucAll.length >= 1 || resDataHangmucAll.length >= 1
+          ? `Khu vực hoặc hạng mục có QR code: "${cleanedValue}" này đã kiểm tra`
+          : `Khu vực hoặc hạng mục có QR code: "${cleanedValue}" này không thuộc ca làm việc`;
 
+      Alert.alert("PMC Thông báo", alertMessage, [
+        { text: "Hủy", style: "cancel" },
+        { text: "Xác nhận" },
+      ]);
+    }
 
-      if (resDataHangmuc.length >= 1) {
-        setHangMucByKhuVuc(resDataHangmuc);
-        navigation.navigate("Chi tiết Checklist", {
-          ID_ChecklistC,
-          ID_KhoiCV,
-          ID_Calv,
-          hangMucFilterByIDChecklistC,
-          Hangmuc: resDataHangmuc[0],
-          ID_Hangmuc: resDataHangmuc[0].ID_Hangmuc,
-        });
-      }
+    if (resDataKhuvuc.length >= 1) {
+      navigation.navigate("Thực hiện hạng mục", {
+        ID_ChecklistC,
+        ID_KhoiCV,
+        ID_Calv,
+        ID_Khuvuc: resDataKhuvuc[0].ID_Khuvuc,
+        ID_Hangmucs,
+      });
+    }
 
-      setIsScan(false);
-      setModalVisibleQr(false);
-      setOpacity(1);
-  
+    if (resDataHangmuc.length >= 1) {
+      setHangMucByKhuVuc(resDataHangmuc);
+      navigation.navigate("Chi tiết Checklist", {
+        ID_ChecklistC,
+        ID_KhoiCV,
+        ID_Calv,
+        hangMucFilterByIDChecklistC,
+        Hangmuc: resDataHangmuc[0],
+        ID_Hangmuc: resDataHangmuc[0].ID_Hangmuc,
+      });
+    }
+
+    setIsScan(false);
+    setModalVisibleQr(false);
+    setOpacity(1);
   };
 
   const handleSubmitChecklist = async () => {
@@ -422,7 +418,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
         ]);
       } else {
         // Iterate over all items in dataChecklistFaild
-        dataChecklistFaild.forEach((item, index) => {
+        dataChecklistFaild.forEach(async (item, index) => {
           // Extract and append checklist details to formData
           formData.append("Key_Image", 1);
           formData.append("ID_ChecklistC", ID_ChecklistC);
@@ -437,24 +433,35 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
 
           // If there is an image, append it to formData
           if (item.Anh && Array.isArray(item.Anh)) {
-            item.Anh.forEach((image, imgIndex) => {
-              const file = {
-                uri:
+            for (const [imgIndex, image] of item.Anh.entries()) {
+              try {
+                // Resize và nén ảnh trước khi append vào formData
+                const resizedImage = await ImageManipulator.manipulateAsync(
                   Platform.OS === "android"
                     ? image.uri
                     : image.uri.replace("file://", ""),
-                name:
-                  image.fileName ||
-                  `${Math.floor(Math.random() * 999999999)}_${
-                    item.ID_Checklist
-                  }_${imgIndex}.jpg`,
-                type: "image/jpg",
-              };
-              formData.append(
-                `Images_${index}_${item.ID_Checklist}_${imgIndex}`,
-                file
-              );
-            });
+                  [{ resize: { width: image.width * 0.6 } }], // Resize nhỏ hơn 50%
+                  { compress: 0.8, format: ImageManipulator.SaveFormat.JPEG } // Nén ảnh
+                );
+
+                const file = {
+                  uri: resizedImage.uri,
+                  name:
+                    image.fileName ||
+                    `${Math.floor(Math.random() * 999999999)}_${
+                      item.ID_Checklist
+                    }_${imgIndex}.jpg`,
+                  type: "image/jpg",
+                };
+
+                formData.append(
+                  `Images_${index}_${item.ID_Checklist}_${imgIndex}`,
+                  file
+                );
+              } catch (error) {
+                console.error("Error resizing image: ", error);
+              }
+            }
           }
         });
 
@@ -597,7 +604,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
         ]);
       } else {
         // Lặp qua từng phần tử trong dataChecklistFaild để thêm vào FormData
-        dataChecklistFaild.forEach((item, index) => {
+        dataChecklistFaild.forEach(async (item, index) => {
           formData.append("Key_Image", 1);
           formData.append("ID_ChecklistC", ID_ChecklistC);
           formData.append("ID_Checklist", item.ID_Checklist);
@@ -611,24 +618,35 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
 
           // Nếu có hình ảnh, thêm vào FormData
           if (item.Anh && Array.isArray(item.Anh)) {
-            item.Anh.forEach((image, imgIndex) => {
-              const file = {
-                uri:
+            for (const [imgIndex, image] of item.Anh.entries()) {
+              try {
+                // Resize và nén ảnh trước khi append vào formData
+                const resizedImage = await ImageManipulator.manipulateAsync(
                   Platform.OS === "android"
                     ? image.uri
                     : image.uri.replace("file://", ""),
-                name:
-                  image.fileName ||
-                  `${Math.floor(Math.random() * 999999999)}_${
-                    item.ID_Checklist
-                  }_${imgIndex}.jpg`,
-                type: "image/jpg",
-              };
-              formData.append(
-                `Images_${index}_${item.ID_Checklist}_${imgIndex}`,
-                file
-              );
-            });
+                  [{ resize: { width: image.width * 0.6 } }], // Resize nhỏ hơn 50%
+                  { compress: 0.8, format: ImageManipulator.SaveFormat.JPEG } // Nén ảnh
+                );
+
+                const file = {
+                  uri: resizedImage.uri,
+                  name:
+                    image.fileName ||
+                    `${Math.floor(Math.random() * 999999999)}_${
+                      item.ID_Checklist
+                    }_${imgIndex}.jpg`,
+                  type: "image/jpg",
+                };
+
+                formData.append(
+                  `Images_${index}_${item.ID_Checklist}_${imgIndex}`,
+                  file
+                );
+              } catch (error) {
+                console.error("Error resizing image: ", error);
+              }
+            }
           }
         });
         // Tạo các yêu cầu API

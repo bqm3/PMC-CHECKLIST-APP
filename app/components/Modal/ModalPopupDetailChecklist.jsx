@@ -17,7 +17,8 @@ import { FontAwesome, Entypo } from "@expo/vector-icons";
 import VerticalSelect from "../Vertical/VerticalSelect";
 import Button from "../Button/Button";
 import { COLORS, SIZES } from "../../constants/theme";
-import * as ImagePicker from "expo-image-picker";
+import * as ImagePicker from 'expo-image-picker';
+import * as ImageManipulator from 'expo-image-manipulator';
 import { AntDesign } from "@expo/vector-icons";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import adjust from "../../adjust";
@@ -42,27 +43,38 @@ const ModalPopupDetailChecklist = ({
 
   const pickImage = async () => {
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
-
+  
     if (permissionResult.granted === false) {
       alert("You've refused to allow this app to access your camera!");
       return;
     }
-
+  
     try {
       const result = await ImagePicker.launchCameraAsync({
-        quality: 0.8,
+        quality: 0.5, // Compress during capture
       });
-
+  
       if (!result.canceled) {
-        const newImage = result?.assets[0];
-        setImages((prevImages) => [...prevImages, newImage]); // Thêm ảnh mới vào danh sách
-        newImageItem = [...images, newImage];
+        const originalImage = result.assets[0];
+  
+        // Resize and compress the image
+        const resizedImage = await ImageManipulator.manipulateAsync(
+          originalImage.uri,
+          [{ resize: { width: originalImage.width / 7 } }], // Resize to 70% width
+          { compress: 0.4, format: "jpeg"  } // Compress further
+        );
+  
+        // Update the state with the resized image
+        setImages((prevImages) => [...prevImages, resizedImage]);
+  
+        const newImageItem = [...images, resizedImage];
         handleItemClick(newImageItem, "option", "Anh", dataItem);
       }
     } catch (error) {
       console.error("Error capturing image: ", error);
     }
   };
+  
 
   const removeImage = (indexToRemove) => {
     setImages((prevImages) =>

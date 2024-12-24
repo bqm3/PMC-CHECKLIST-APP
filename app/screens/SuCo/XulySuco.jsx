@@ -36,6 +36,7 @@ import moment from "moment";
 import axiosClient from "../../api/axiosClient";
 import { formatDate } from "../../utils/util";
 import * as ImagePicker from "expo-image-picker";
+import * as ImageManipulator from 'expo-image-manipulator';
 
 const XulySuco = ({ navigation }) => {
   const dispath = useDispatch();
@@ -196,7 +197,7 @@ const { token } = useContext(ExpoTokenContext);
 
   const hanldeDetailSuco = async (data) => {
     try {
-      await axiosClient
+      await axios
         .get(
           BASE_URL + `/tb_sucongoai/getDetail/${newActionClick[0].ID_Suco}`,
           {
@@ -298,15 +299,23 @@ const { token } = useContext(ExpoTokenContext);
               );
               return;
             }
-
+  
             const result = await ImagePicker.launchCameraAsync({
               mediaTypes: ["images"],
               aspect: [4, 3],
               quality: 0.8, // Adjust image quality (0 to 1)
             });
-
+  
             if (!result.canceled) {
-              setImages((prevImages) => [...prevImages, result.assets[0].uri]);
+              // Resize the image
+              const resizedImage = await ImageManipulator.manipulateAsync(
+                result.assets[0].uri,
+                [{ resize: { width: 800 } }], // Resize to a width of 800px
+                { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG } // Compress and save as JPEG
+              );
+  
+              // Add the resized image URI to state
+              setImages((prevImages) => [...prevImages, resizedImage.uri]);
             }
           },
         },
@@ -321,15 +330,23 @@ const { token } = useContext(ExpoTokenContext);
               );
               return;
             }
-
+  
             const result = await ImagePicker.launchImageLibraryAsync({
               mediaTypes: ["images"],
               aspect: [4, 3],
               quality: 0.8, // Adjust image quality (0 to 1)
             });
-
+  
             if (!result.canceled) {
-              setImages((prevImages) => [...prevImages, result.assets[0].uri]);
+              // Resize the image
+              const resizedImage = await ImageManipulator.manipulateAsync(
+                result.assets[0].uri,
+                [{ resize: { width: 800 } }], // Resize to a width of 800px
+                { compress: 0.7, format: ImageManipulator.SaveFormat.JPEG } // Compress and save as JPEG
+              );
+  
+              // Add the resized image URI to state
+              setImages((prevImages) => [...prevImages, resizedImage.uri]);
             }
           },
         },
@@ -434,25 +451,6 @@ const { token } = useContext(ExpoTokenContext);
     }
   };
   const handleSubmitStatusImage = async () => {
-    let formData = new FormData();
-    images.map((item, index) => {
-      const file = {
-        uri: Platform.OS === "android" ? item : item.replace("file://", ""),
-        name:
-          Math.floor(Math.random() * Math.floor(99999999999999)) +
-          index +
-          ".jpg",
-        type: "image/jpg",
-      };
-
-      formData.append(`Images`, file);
-    });
-    formData.append("Tinhtrangxuly", saveStatus);
-    formData.append("Ghichu", dataInput.Noidungghichu);
-    formData.append("ngayXuLy", formatDate(ngayXuLy.date));
-    formData.append("ID_Hangmuc", dataInput.ID_Hangmuc);
-    formData.append("deviceHandler", token);
-    formData.append("deviceNameHandler", Device.modelName);
     if (saveStatus == null) {
       Alert.alert("PMC Thông báo", "Phải chọn trạng thái", [
         {
@@ -464,98 +462,134 @@ const { token } = useContext(ExpoTokenContext);
         },
         { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
       ]);
-    } else {
-      setLoadingStatus(true);
-      await axios
-        .put(
-          BASE_URL + `/tb_sucongoai/status/${newActionClick[0].ID_Suco}`,
-          formData,
+      return;
+    }
+  
+    let formData = new FormData();
+  
+    // Loop through images and resize each one before appending
+    for (let index = 0; index < images.length; index++) {
+      let item = images[index];
+  
+      // Resize the image using expo-image-manipulator
+      const resizedImage = await ImageManipulator.manipulateAsync(
+        item, // The URI of the image to resize
+        [{ resize: { width: 800, height: 600 } }], // Set desired width and height (adjust as needed)
+        { compress: 0.8, format: ImageManipulator.SaveFormat.JPEG } // Set compression quality and format
+      );
+  
+      const file = {
+        uri: Platform.OS === "android" ? resizedImage.uri : resizedImage.uri.replace("file://", ""),
+        name: Math.floor(Math.random() * 99999999999999) + index + ".jpg", // Random filename
+        type: "image/jpg",
+      };
+  
+      formData.append(`Images_${index}`, file);
+    }
+  
+    // Append other form data
+    formData.append("Tinhtrangxuly", saveStatus);
+    formData.append("Ghichu", dataInput.Noidungghichu);
+    formData.append("ngayXuLy", formatDate(ngayXuLy.date));
+    formData.append("ID_Hangmuc", dataInput.ID_Hangmuc);
+    formData.append("deviceHandler", token);
+    formData.append("deviceNameHandler", Device.modelName);
+  
+    setLoadingStatus(true);
+  
+    // Send the request to the server
+    try {
+      const response = await axios.put(
+        BASE_URL + `/tb_sucongoai/status/${newActionClick[0].ID_Suco}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: "Bearer " + authToken,
+          },
+        }
+      );
+  
+      // Success response handling
+      setLoadingStatus(false);
+      resetDataInput();
+      setChangeStatus({
+        status1: false,
+        status2: false,
+        status3: false,
+      });
+      setSaveStatus(null);
+      handleCloseTinhTrang();
+      init_sucongoai();
+      setNewActionClick([]);
+  
+      Alert.alert("PMC Thông báo", "Cập nhật trạng thái thành công", [
+        {
+          text: "Xác nhận",
+          onPress: () => {
+            console.log("OK Pressed");
+          },
+        },
+      ]);
+    } catch (error) {
+      // Error handling
+      setLoadingStatus(false);
+      resetDataInput();
+  
+      if (error.response) {
+        Alert.alert("PMC Thông báo", error.response.data.message, [
           {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              Authorization: "Bearer " + authToken,
+            text: "Hủy",
+            onPress: () => {
+              console.log("Cancel Pressed");
             },
-          }
-        )
-        .then(() => {
-          setLoadingStatus(false);
-          resetDataInput();
-          setChangeStatus({
-            status1: false,
-            status2: false,
-            status3: false,
-          });
-          setSaveStatus(null);
-          handleCloseTinhTrang();
-          init_sucongoai();
-          setNewActionClick([]);
-          Alert.alert("PMC Thông báo", "Cập nhật trạng thái thành công", [
+            style: "cancel",
+          },
+          {
+            text: "Xác nhận",
+            onPress: () => {
+              console.log("OK Pressed");
+            },
+          },
+        ]);
+      } else if (error.request) {
+        Alert.alert(
+          "PMC Thông báo",
+          "Không nhận được phản hồi từ máy chủ",
+          [
+            {
+              text: "Hủy",
+              onPress: () => {
+                console.log("Cancel Pressed");
+              },
+              style: "cancel",
+            },
             {
               text: "Xác nhận",
               onPress: () => {
                 console.log("OK Pressed");
               },
             },
-          ]);
-        })
-        .catch((error) => {
-          setLoadingStatus(false);
-          resetDataInput();
-          if (error.response) {
-            Alert.alert("PMC Thông báo", error.response.data.message, [
-              {
-                text: "Hủy",
-                onPress: () => {
-                  console.log("Cancel Pressed");
-                },
-                style: "cancel",
-              },
-              {
-                text: "Xác nhận",
-                onPress: () => {
-                  console.log("OK Pressed");
-                },
-              },
-            ]);
-          } else if (error.request) {
-            Alert.alert(
-              "PMC Thông báo",
-              "Không nhận được phản hồi từ máy chủ",
-              [
-                {
-                  text: "Hủy",
-                  onPress: () => {
-                    console.log("Cancel Pressed");
-                  },
-                  style: "cancel",
-                },
-                {
-                  text: "Xác nhận",
-                  onPress: () => {
-                    console.log("OK Pressed");
-                  },
-                },
-              ]
-            );
-          } else {
-            // Lỗi khi cấu hình request
-            Alert.alert("PMC Thông báo", "Lỗi khi gửi yêu cầu", [
-              {
-                text: "Hủy",
-                onPress: () => {
-                  console.log("Cancel Pressed");
-                },
-                style: "cancel",
-              },
-              {
-                text: "Xác nhận",
-                onPress: () => {
-                  console.log("OK Pressed");
-                },
-              },
-            ]);
-          }
-        });
+          ]
+        );
+      } else {
+        // Error during request configuration
+        Alert.alert("PMC Thông báo", "Lỗi khi gửi yêu cầu", [
+          {
+            text: "Hủy",
+            onPress: () => {
+              console.log("Cancel Pressed");
+            },
+            style: "cancel",
+          },
+          {
+            text: "Xác nhận",
+            onPress: () => {
+              console.log("OK Pressed");
+            },
+          },
+        ]);
+      }
     }
   };
 

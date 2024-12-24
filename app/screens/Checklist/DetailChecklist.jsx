@@ -33,6 +33,7 @@ import BottomSheet, {
 } from "@gorhom/bottom-sheet";
 import * as Location from "expo-location";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import * as ImageManipulator from "expo-image-manipulator";
 import NetInfo from "@react-native-community/netinfo";
 import { COLORS, SIZES } from "../../constants/theme";
 import ActiveChecklist from "../../components/Active/ActiveCheckList";
@@ -51,6 +52,7 @@ import ConnectContext from "../../context/ConnectContext";
 import WebView from "react-native-webview";
 import { useHeaderHeight } from "@react-navigation/elements";
 import ModalBottomSheet from "../../components/Modal/ModalBottomSheet";
+import axiosClient from "../../api/axiosClient";
 
 const DetailChecklist = ({ route, navigation }) => {
   const { ID_ChecklistC, ID_KhoiCV, ID_Hangmuc, Hangmuc, isScan } =
@@ -58,7 +60,7 @@ const DetailChecklist = ({ route, navigation }) => {
 
   const dispath = useDispatch();
   const { isLoadingDetail } = useSelector((state) => state.entReducer);
-  const { 
+  const {
     setHangMucFilterByIDChecklistC,
     hangMucFilterByIDChecklistC,
     khuVucFilterByIDChecklistC,
@@ -66,8 +68,7 @@ const DetailChecklist = ({ route, navigation }) => {
     setHangMucByKhuVuc,
     hangMucByKhuVuc,
     setDataChecklistSize,
-  } =
-    useContext(DataContext);
+  } = useContext(DataContext);
 
   const { isConnect, saveConnect } = useContext(ConnectContext);
   const { dataChecklistFilterContext, setDataChecklistFilterContext } =
@@ -92,7 +93,6 @@ const DetailChecklist = ({ route, navigation }) => {
   const [show, setShow] = useState(false);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [loading, setLoading] = useState(true);
-
 
   const headerHeight = useHeaderHeight();
   const [isConnected, setConnected] = useState(true);
@@ -328,7 +328,7 @@ const DetailChecklist = ({ route, navigation }) => {
       const updatedData2 = revertDataChecklist.filter(
         (item) => item.valueCheck !== null
       );
-    
+
       setNewActionDataChecklist(updatedData2);
       setDataChecklistFilterContext(updatedData1);
     }
@@ -734,91 +734,102 @@ const DetailChecklist = ({ route, navigation }) => {
       setLoadingSubmit(false);
     }
   };
-
   // api tb_checklistchitiet
   const handleDataChecklistFaild = async (arrData) => {
     try {
       setLoadingSubmit(true);
-      // Create a new FormData instance
+  
       const formData = new FormData();
+  
+      // Kiểm tra dữ liệu
       const isCheckValueCheck = arrData.some(
         (item) => item.valueCheck == null || item.valueCheck == ""
       );
-
+  
       if (isCheckValueCheck) {
         setLoadingSubmit(false);
         Alert.alert("PMC Thông báo", "Chưa có dữ liệu checklist", [
           { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
         ]);
-      } else {
-        // Iterate over all items in dataChecklistFaild
-        arrData.forEach((item, index) => {
-          // Extract and append checklist details to formData
-          formData.append("Key_Image", 1);
-          formData.append("ID_ChecklistC", ID_ChecklistC);
-          formData.append("ID_Checklist", item.ID_Checklist);
-          formData.append("Ketqua", item.valueCheck || "");
-          formData.append("Gioht", item.Gioht);
-          formData.append("Ghichu", item.GhichuChitiet || "");
-          formData.append("Vido", item.Vido || "");
-          formData.append("Kinhdo", item.Kinhdo || "");
-          formData.append("Docao", item.Docao || "");
-          formData.append("isScan", isScan || null);
-          if (item.Anh && Array.isArray(item.Anh)) {
-            item.Anh.forEach((image, imgIndex) => {
+        return;
+      }
+      const imageUploadPromises = []; // Create an array to store image upload promises
+  
+      // Duyệt qua tất cả các item
+      for (const [index, item] of arrData.entries()) {
+        formData.append("Key_Image", 1);
+        formData.append("ID_ChecklistC", ID_ChecklistC);
+        formData.append("ID_Checklist", item.ID_Checklist);
+        formData.append("Ketqua", item.valueCheck || "");
+        formData.append("Gioht", item.Gioht);
+        formData.append("Ghichu", item.GhichuChitiet || "");
+        formData.append("Vido", item.Vido || "");
+        formData.append("Kinhdo", item.Kinhdo || "");
+        formData.append("Docao", item.Docao || "");
+        formData.append("isScan", isScan || null);
+  
+        if (item.Anh && Array.isArray(item.Anh)) {
+          // Use a for...of loop to wait for asynchronous tasks
+          for (const [imgIndex, image] of item.Anh.entries()) {
+            try {
+              // Resize và nén ảnh trước khi append vào formData
+              const resizedImage = await ImageManipulator.manipulateAsync(
+                Platform.OS === "android"
+                  ? image.uri
+                  : image.uri.replace("file://", ""),
+                [{ resize: { width: image.width * 0.6 } }], // Resize nhỏ hơn 50%
+                { compress: 0.8, format: ImageManipulator.SaveFormat.JPEG } // Nén ảnh
+              );
+  
               const file = {
-                uri:
-                  Platform.OS === "android"
-                    ? image.uri
-                    : image.uri.replace("file://", ""),
+                uri: resizedImage.uri,
                 name:
                   image.fileName ||
-                  `${Math.floor(Math.random() * 999999999)}_${
-                    item.ID_Checklist
-                  }_${imgIndex}.jpg`,
+                  `${Math.floor(Math.random() * 999999999)}_${item.ID_Checklist}_${imgIndex}.jpg`,
                 type: "image/jpg",
               };
+  
               formData.append(
                 `Images_${index}_${item.ID_Checklist}_${imgIndex}`,
                 file
               );
-            });
+            } catch (error) {
+              console.error("Error resizing image: ", error);
+            }
           }
-        });
-
-        // Send the entire FormData in a single request
-        await axios
-          .post(BASE_URL + `/tb_checklistchitiet/create`, formData, {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              Authorization: `Bearer ${authToken}`,
-            },
-          })
-          .then((res) => {
-            postHandleSubmit();
-            setLoadingSubmit(false);
-            Alert.alert("PMC Thông báo", "Checklist thành công", [
-              {
-                text: "Hủy",
-                onPress: () => console.log("Cancel Pressed"),
-                style: "cancel",
-              },
-              { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-            ]);
-          })
-          .catch((err) => {
-            setLoadingSubmit(false);
-            Alert.alert(
-              "PMC Thông báo",
-              "Checklist thất bại. Vui lòng kiểm tra lại hình ảnh hoặc ghi chú!!!",
-              [{ text: "Xác nhận", onPress: () => console.log("OK Pressed") }]
-            );
-          });
+        }
       }
+  
+      // Upload tất cả ảnh và dữ liệu
+      await Promise.all(imageUploadPromises);
+  
+      // Gửi toàn bộ formData lên server
+      const response = await axios.post(
+        BASE_URL + `/tb_checklistchitiet/create`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+  
+      postHandleSubmit();
+      setLoadingSubmit(false);
+  
+      Alert.alert("PMC Thông báo", "Checklist thành công", [
+        {
+          text: "Hủy",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+        { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+      ]);
     } catch (error) {
       setLoadingSubmit(false);
+  
       if (error.response) {
-        // Handle error response from the server
         Alert.alert("PMC Thông báo", error.response.data.message, [
           {
             text: "Hủy",
@@ -827,9 +838,16 @@ const DetailChecklist = ({ route, navigation }) => {
           },
           { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
         ]);
+      } else {
+        Alert.alert(
+          "PMC Thông báo",
+          "Checklist thất bại. Vui lòng kiểm tra lại hình ảnh hoặc ghi chú!",
+          [{ text: "Xác nhận", onPress: () => console.log("OK Pressed") }]
+        );
       }
     }
   };
+  
 
   // api tb_checklistchitietdone
   const handleDefaultActionDataChecklist = async (arrData) => {
@@ -909,7 +927,7 @@ const DetailChecklist = ({ route, navigation }) => {
         ]);
       } else {
         // Lặp qua từng phần tử trong dataChecklistFaild để thêm vào FormData
-        dataFaild.forEach((item, index) => {
+        dataFaild.forEach(async (item, index) => {
           formData.append("Key_Image", 1);
           formData.append("ID_ChecklistC", ID_ChecklistC);
           formData.append("ID_Checklist", item.ID_Checklist);
@@ -923,27 +941,37 @@ const DetailChecklist = ({ route, navigation }) => {
 
           // Nếu có hình ảnh, thêm vào FormData
           if (item.Anh && Array.isArray(item.Anh)) {
-            item.Anh.forEach((image, imgIndex) => {
-              const file = {
-                uri:
+            for (const [imgIndex, image] of item.Anh.entries()) {
+              try {
+                // Resize và nén ảnh trước khi append vào formData
+                const resizedImage = await ImageManipulator.manipulateAsync(
                   Platform.OS === "android"
                     ? image.uri
                     : image.uri.replace("file://", ""),
-                name:
-                  image.fileName ||
-                  `${Math.floor(Math.random() * 999999999)}_${
-                    item.ID_Checklist
-                  }_${imgIndex}.jpg`,
-                type: "image/jpg",
-              };
-              formData.append(
-                `Images_${index}_${item.ID_Checklist}_${imgIndex}`,
-                file
-              );
-            });
+                    [{ resize: { width: image.width * 0.6 } }], // Resize nhỏ hơn 50%
+                    { compress: 0.8, format: ImageManipulator.SaveFormat.JPEG } // Nén ảnh
+                );
+
+                const file = {
+                  uri: resizedImage.uri,
+                  name:
+                    image.fileName ||
+                    `${Math.floor(Math.random() * 999999999)}_${
+                      item.ID_Checklist
+                    }_${imgIndex}.jpg`,
+                  type: "image/jpg",
+                };
+
+                formData.append(
+                  `Images_${index}_${item.ID_Checklist}_${imgIndex}`,
+                  file
+                );
+              } catch (error) {
+                console.error("Error resizing image: ", error);
+              }
+            }
           }
         });
-
         // Chuẩn bị dữ liệu cho yêu cầu thứ hai
         const descriptions = dataDefault
           .map((item) => item.ID_Checklist)
@@ -1100,7 +1128,7 @@ const DetailChecklist = ({ route, navigation }) => {
 
     setDataChecklistFilter(dataChecklist);
     setDataChecklistFilterContext(dataChecklistFilterContextReset);
-    setDataChecklistSize(dataChecklistFilterContextReset?.length)
+    setDataChecklistSize(dataChecklistFilterContextReset?.length);
     setNewActionDataChecklist([]);
     setDataChecklistDefault([]);
     setDataChecklistFaild([]);
@@ -1513,9 +1541,9 @@ const DetailChecklist = ({ route, navigation }) => {
             transparent={true}
             visible={isBottomSheetOpen}
             onRequestClose={() => {
-            //  setIsBottomSheetOpen(!isBottomSheetOpen);
-            //  setOpacity(1);
-             handleClearBottom();
+              //  setIsBottomSheetOpen(!isBottomSheetOpen);
+              //  setOpacity(1);
+              handleClearBottom();
             }}
           >
             <View style={[styles.centeredView, { height: "100%" }]}>
@@ -1603,7 +1631,7 @@ const DetailChecklist = ({ route, navigation }) => {
             transparent={false}
             visible={show}
             onRequestClose={() => {
-              setShow(false)
+              setShow(false);
             }}
           >
             <TouchableOpacity onPress={() => setShow(false)}>

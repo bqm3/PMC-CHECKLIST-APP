@@ -20,7 +20,7 @@ const headerList = [
   { til: "Kỹ thuật", width: 70 },
   { til: "Làm sạch", width: 70 },
   { til: "Dịch vụ", width: 70 },
-  { til: "Bảo vệ", width: 70 },
+  { til: "An ninh", width: 70 },
   { til: "F&B", width: 70 },
 ];
 
@@ -58,8 +58,8 @@ const DanhmucThongkeDashBoard = () => {
           "Khối dịch vụ": project.createdKhois["Khối dịch vụ"]?.completionRatio
             ? `${project.createdKhois["Khối dịch vụ"].completionRatio} %`
             : "",
-          "Khối bảo vệ": project.createdKhois["Khối bảo vệ"]?.completionRatio
-            ? `${project.createdKhois["Khối bảo vệ"].completionRatio} %`
+          "Khối an ninh": project.createdKhois["Khối an ninh"]?.completionRatio
+            ? `${project.createdKhois["Khối an ninh"].completionRatio} %`
             : "",
           "Khối F&B": project.createdKhois["Khối F&B"]?.completionRatio
             ? `${project.createdKhois["Khối F&B"].completionRatio} %`
@@ -154,7 +154,7 @@ const DanhmucThongkeDashBoard = () => {
                           justifyContent: "center",
                         }}
                       >
-                        {item["Khối bảo vệ"]}
+                        {item["Khối an ninh"]}
                       </DataTable.Cell>
                       <DataTable.Cell
                         style={{
