@@ -196,6 +196,26 @@ const DetailP0 = ({ navigation, route }) => {
       },
     ]);
   };
+  const handleAlertUpdate = () => {
+    Alert.alert(
+      "PMC Thông báo",
+      "Bạn có chắc muốn cập nhật báo cáo ngày " +
+        moment(data?.Ngaybc).format("DD/MM/YYYY") +
+        "?",
+      [
+        {
+          text: "Đồng ý",
+          onPress: () => handleUpdate(),
+          style: "default",
+        },
+        {
+          text: "Hủy",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+      ]
+    );
+  }
 
   const handleUpdate = async () => {
     const filteredReport = p0_Data.reduce((acc, item) => {
@@ -364,7 +384,8 @@ const DetailP0 = ({ navigation, route }) => {
               style={styles.submitButton}
               onPress={() => {
                 Keyboard.dismiss();
-                handleUpdate();
+                // handleUpdate();
+                handleAlertUpdate()
               }}
             >
               <Text style={styles.submitButtonText}>Cập nhật</Text>

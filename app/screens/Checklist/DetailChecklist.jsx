@@ -293,8 +293,6 @@ const DetailChecklist = ({ route, navigation }) => {
           return {
             ...item,
             valueCheck: null,
-            Gioht: moment().format("LTS"),
-            isScan: isScan,
           };
         } else if (
           item.Anh == null &&
@@ -386,6 +384,7 @@ const DetailChecklist = ({ route, navigation }) => {
 
   // set data checklist
   const handleSetData = async (status, dataChecklist, it) => {
+    console.log('status', status)
     let mergedArrDefault = [...defaultActionDataChecklist];
     let mergedArrOption = [...dataChecklistFaild];
 
@@ -553,10 +552,10 @@ const DetailChecklist = ({ route, navigation }) => {
         return {
           ...item,
           valueCheck: null, // Xóa giá trị của item này
-          Gioht: moment().format("LTS"),
-          isScan: null,
-          Anh: null,
-          Ghichu: "",
+          // Gioht: moment().format("LTS"),
+          // isScan: null,
+          // Anh: null,
+          // Ghichu: "",
         };
       }
       return item; // Giữ nguyên các item khác
@@ -696,8 +695,8 @@ const DetailChecklist = ({ route, navigation }) => {
             ...defaultActionDataChecklist,
             ...dataChecklistFaild,
           ];
-
-          // Cập nhật location cho dataChecklistFilterContext
+          
+          // Update location for each item in combinedData
           const updateLocation = combinedData.map((item) => {
             return {
               ...item,
@@ -707,19 +706,19 @@ const DetailChecklist = ({ route, navigation }) => {
               isScan: isScan,
             };
           });
-
-          // Tạo map từ updateLocation với ID_Checklist làm key
-          const data2Map = new Map(
-            updateLocation.map((item) => [item.ID_Checklist, item])
-          );
-
-          // Cập nhật dataChecklistFilterContext với các item có cùng ID_Checklist
-          const updatedData1 = dataChecklistFilterContext.map((item) =>
-            data2Map.has(item.ID_Checklist)
-              ? { ...data2Map.get(item.ID_Checklist), ...item }
-              : item
-          );
-
+          
+          // Create a Map from updateLocation with ID_Checklist as the key
+          const data2Map = new Map(updateLocation.map((item) => [item.ID_Checklist, item]));
+        
+          // Update dataChecklistFilterContext with items having the same ID_Checklist
+          const updatedData1 = dataChecklistFilterContext.map((item) => {
+            const updatedItem = data2Map.get(item.ID_Checklist);
+            if (updatedItem) {
+              return { ...item, ...updatedItem };
+            }
+            return item; // If no match in data2Map, keep the original item
+          });
+          
           // Lưu lại kết quả cập nhật
           setDataChecklistFilterContext(updatedData1);
           // Dùng trong trường hợp checklist bị văng rá

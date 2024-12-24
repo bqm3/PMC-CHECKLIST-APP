@@ -3,7 +3,7 @@ import React from "react";
 import { Feather, AntDesign } from "@expo/vector-icons";
 import adjust from "../../adjust";
 import moment from "moment";
-import { COLORS } from "../../constants/theme";
+import { COLORS, SIZES } from "../../constants/theme";
 
 export default function ItemTracuuCa({
   item,
@@ -25,7 +25,7 @@ export default function ItemTracuuCa({
       onPress={() => toggleTodo(item)}
     >
       <View style={styles.row}>
-        <View style={{ width: 110 }}>
+        <View style={{ width: SIZES.width * 0.3 }}>
           <Text
             allowFontScaling={false}
             style={[styles.title, { color: isExistIndex ? "black" : "white" }]}
@@ -57,7 +57,7 @@ export default function ItemTracuuCa({
         /> */}
       </View>
       <View style={styles.row}>
-        <View style={{ width: 110 }}>
+        <View style={{ width: SIZES.width * 0.3 }}>
           <Text
             allowFontScaling={false}
             style={[styles.title, { color: isExistIndex ? "black" : "white" }]}
@@ -76,7 +76,7 @@ export default function ItemTracuuCa({
         </Text>
       </View>
       <View style={styles.row}>
-        <View style={{ width: 110 }}>
+        <View style={{ width: SIZES.width * 0.3 }}>
           <Text
             allowFontScaling={false}
             style={[styles.title, { color: isExistIndex ? "black" : "white" }]}
@@ -95,7 +95,7 @@ export default function ItemTracuuCa({
         </Text>
       </View>
       <View style={styles.row}>
-        <View style={{ width: 110 }}>
+        <View style={{ width: SIZES.width * 0.3 }}>
           <Text
             allowFontScaling={false}
             style={[styles.title, { color: isExistIndex ? "black" : "white" }]}
