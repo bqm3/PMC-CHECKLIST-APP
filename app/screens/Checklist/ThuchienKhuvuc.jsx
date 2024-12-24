@@ -440,18 +440,18 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
                   Platform.OS === "android"
                     ? image.uri
                     : image.uri.replace("file://", ""),
-                  [{ resize: { width: image.width * 0.6 } }], // Resize nhỏ hơn 50%
-                  { compress: 0.8, format: ImageManipulator.SaveFormat.JPEG } // Nén ảnh
+                  [{ resize: { width: image.width * 0.8 } }], // Resize nhỏ hơn 50%
+                  { compress: 0.8, format: ImageManipulator.SaveFormat.PNG } // Nén ảnh
                 );
 
                 const file = {
                   uri: resizedImage.uri,
                   name:
                     image.fileName ||
-                    `${Math.floor(Math.random() * 999999999)}_${
+                    `${Math.floor(Math.random() * 9999999)}_${
                       item.ID_Checklist
-                    }_${imgIndex}.jpg`,
-                  type: "image/jpg",
+                    }_${imgIndex}.png`,
+                  type: "image/png",
                 };
 
                 formData.append(
@@ -625,18 +625,18 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
                   Platform.OS === "android"
                     ? image.uri
                     : image.uri.replace("file://", ""),
-                  [{ resize: { width: image.width * 0.6 } }], // Resize nhỏ hơn 50%
-                  { compress: 0.8, format: ImageManipulator.SaveFormat.JPEG } // Nén ảnh
+                  [{ resize: { width: image.width * 0.8 } }], // Resize nhỏ hơn 50%
+                  { compress: 0.8, format: ImageManipulator.SaveFormat.PNG } // Nén ảnh
                 );
 
                 const file = {
                   uri: resizedImage.uri,
                   name:
                     image.fileName ||
-                    `${Math.floor(Math.random() * 999999999)}_${
+                    `${Math.floor(Math.random() * 9999999)}_${
                       item.ID_Checklist
-                    }_${imgIndex}.jpg`,
-                  type: "image/jpg",
+                    }_${imgIndex}.png`,
+                  type: "image/png",
                 };
 
                 formData.append(

@@ -753,8 +753,6 @@ const DetailChecklist = ({ route, navigation }) => {
         ]);
         return;
       }
-      const imageUploadPromises = []; // Create an array to store image upload promises
-  
       // Duyệt qua tất cả các item
       for (const [index, item] of arrData.entries()) {
         formData.append("Key_Image", 1);
@@ -777,16 +775,16 @@ const DetailChecklist = ({ route, navigation }) => {
                 Platform.OS === "android"
                   ? image.uri
                   : image.uri.replace("file://", ""),
-                [{ resize: { width: image.width * 0.6 } }], // Resize nhỏ hơn 50%
-                { compress: 0.8, format: ImageManipulator.SaveFormat.JPEG } // Nén ảnh
+                [{ resize: { width: image.width * 0.8 } }], // Resize nhỏ hơn 50%
+                { compress: 0.8, format: ImageManipulator.SaveFormat.PNG } // Nén ảnh
               );
   
               const file = {
                 uri: resizedImage.uri,
                 name:
                   image.fileName ||
-                  `${Math.floor(Math.random() * 999999999)}_${item.ID_Checklist}_${imgIndex}.jpg`,
-                type: "image/jpg",
+                  `${Math.floor(Math.random() * 9999999)}_${item.ID_Checklist}_${imgIndex}.png`,
+                type: "image/png",
               };
   
               formData.append(
@@ -799,9 +797,6 @@ const DetailChecklist = ({ route, navigation }) => {
           }
         }
       }
-  
-      // Upload tất cả ảnh và dữ liệu
-      await Promise.all(imageUploadPromises);
   
       // Gửi toàn bộ formData lên server
       const response = await axios.post(
@@ -948,20 +943,18 @@ const DetailChecklist = ({ route, navigation }) => {
                   Platform.OS === "android"
                     ? image.uri
                     : image.uri.replace("file://", ""),
-                    [{ resize: { width: image.width * 0.6 } }], // Resize nhỏ hơn 50%
-                    { compress: 0.8, format: ImageManipulator.SaveFormat.JPEG } // Nén ảnh
+                  [{ resize: { width: image.width * 0.8 } }], // Resize nhỏ hơn 50%
+                  { compress: 0.8, format: ImageManipulator.SaveFormat.PNG } // Nén ảnh
                 );
-
+    
                 const file = {
                   uri: resizedImage.uri,
                   name:
                     image.fileName ||
-                    `${Math.floor(Math.random() * 999999999)}_${
-                      item.ID_Checklist
-                    }_${imgIndex}.jpg`,
-                  type: "image/jpg",
+                    `${Math.floor(Math.random() * 9999999)}_${item.ID_Checklist}_${imgIndex}.png`,
+                  type: "image/png",
                 };
-
+    
                 formData.append(
                   `Images_${index}_${item.ID_Checklist}_${imgIndex}`,
                   file
