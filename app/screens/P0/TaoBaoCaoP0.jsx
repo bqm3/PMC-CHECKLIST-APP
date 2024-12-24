@@ -40,22 +40,22 @@ const P0 = [
     key: "Slxeotodien",
     value: "0",
   },
-  { id: 2, title: "Xe máy điện", key: "Slxemaydien", value: "0"},
+  { id: 2, title: "Xe máy điện", key: "Slxemaydien", value: "0" },
   {
     id: 3,
     title: "Xe máy thường",
     key: "Slxemay",
     value: "0",
   },
-  { id: 4, title: "Xe đạp điện", key: "Slxedapdien", value: "0"},
+  { id: 4, title: "Xe đạp điện", key: "Slxedapdien", value: "0" },
   {
     id: 5,
     title: "Xe đạp thường",
     key: "Slxedap",
     value: "0",
   },
-  { id: 6, title: "Thẻ xe ô tô", key: "Sltheoto", value: "0"},
-  { id: 7, title: "Thẻ xe máy", key: "Slthexemay", value: "0"},
+  { id: 6, title: "Thẻ xe ô tô", key: "Sltheoto", value: "0" },
+  { id: 7, title: "Thẻ xe máy", key: "Slthexemay", value: "0" },
   {
     id: 8,
     title: "Sự cố xe ô tô thường",
@@ -94,12 +94,30 @@ const P0 = [
   },
   {
     id: 14,
+    title: "Sự cố khác",
+    key: "Slsucokhac",
+    value: "0",
+  },
+  {
+    id: 15,
     title: "Công tơ điện",
     key: "Slcongto",
     value: "0",
   },
   {
-    id: 15,
+    id: 16,
+    title: "Quân số thực tế",
+    key: "QuansoTT",
+    value: "0",
+  },
+  {
+    id: 17,
+    title: "Quân số định biên",
+    key: "QuansoDB",
+    value: "0",
+  },
+  {
+    id: 18,
     title: "Doanh thu từ 6 đến 18h",
     key: "Doanhthu",
     value: "0",
@@ -255,9 +273,7 @@ const TaoBaoCaoP0 = ({ navigation, route }) => {
               style={[
                 styles.itemContainer,
                 {
-                  backgroundColor: editable(subItem.id)
-                    ? "white"
-                    : "gray",
+                  backgroundColor: editable(subItem.id) ? "white" : "gray",
                 },
               ]}
             >
@@ -266,9 +282,7 @@ const TaoBaoCaoP0 = ({ navigation, route }) => {
                 style={[
                   styles.input,
                   {
-                    backgroundColor: editable(subItem.id)
-                      ? "white"
-                      : "gray",
+                    backgroundColor: editable(subItem.id) ? "white" : "gray",
                   },
                 ]}
                 value={subItem.value.toString()}
