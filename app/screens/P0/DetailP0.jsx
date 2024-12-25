@@ -376,6 +376,8 @@ const DetailP0 = ({ navigation, route }) => {
                 onFocus={handleNoteFocus}
                 onSubmitEditing={Keyboard.dismiss}
                 style={[styles.textInput, styles.multilineTextInput]}
+                editable={isToday}
+                
               />
             </TouchableOpacity>
           </ScrollView>
@@ -484,8 +486,9 @@ const styles = StyleSheet.create({
     textAlign: "left",
   },
   multilineTextInput: {
-    height: 80,
+    height: 70,
     marginBottom: 10,
+    textAlignVertical: 'top',
   },
 });
 

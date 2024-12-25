@@ -51,8 +51,6 @@ import Checkbox from "../../components/Active/Checkbox";
 import ConnectContext from "../../context/ConnectContext";
 import WebView from "react-native-webview";
 import { useHeaderHeight } from "@react-navigation/elements";
-import ModalBottomSheet from "../../components/Modal/ModalBottomSheet";
-import axiosClient from "../../api/axiosClient";
 
 const DetailChecklist = ({ route, navigation }) => {
   const { ID_ChecklistC, ID_KhoiCV, ID_Hangmuc, Hangmuc, isScan } =
@@ -384,7 +382,6 @@ const DetailChecklist = ({ route, navigation }) => {
 
   // set data checklist
   const handleSetData = async (status, dataChecklist, it) => {
-    console.log('status', status)
     let mergedArrDefault = [...defaultActionDataChecklist];
     let mergedArrOption = [...dataChecklistFaild];
 
@@ -689,8 +686,6 @@ const DetailChecklist = ({ route, navigation }) => {
             "Vui lòng kiểm tra kết nối mạng của bạn. Checklist đã được lưu, ra ngoài khu vực để hoàn thành khi có mạng"
           );
           saveConnect(true);
-
-          // Kết hợp dữ liệu từ newDataChecklistDefault và newDataChecklistFaild
           const combinedData = [
             ...defaultActionDataChecklist,
             ...dataChecklistFaild,

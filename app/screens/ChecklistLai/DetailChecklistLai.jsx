@@ -16,6 +16,7 @@ import {
   Image,
   BackHandler,
 } from "react-native";
+import * as ImageManipulator from "expo-image-manipulator";
 import React, {
   useRef,
   useState,
@@ -25,12 +26,7 @@ import React, {
   useContext,
 } from "react";
 import { Provider, useDispatch, useSelector } from "react-redux";
-import BottomSheet, {
-  BottomSheetModal,
-  BottomSheetView,
-  BottomSheetModalProvider,
-  BottomSheetScrollView,
-} from "@gorhom/bottom-sheet";
+import BottomSheet, { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import * as Location from "expo-location";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import NetInfo from "@react-native-community/netinfo";
@@ -50,7 +46,6 @@ import Checkbox from "../../components/Active/Checkbox";
 import ConnectContext from "../../context/ConnectContext";
 import WebView from "react-native-webview";
 import { useHeaderHeight } from "@react-navigation/elements";
-import ModalBottomSheet from "../../components/Modal/ModalBottomSheet";
 
 const DetailChecklistLai = ({ route, navigation }) => {
   const { ID_ChecklistC, ID_KhoiCV, ID_Hangmuc, Hangmuc, isScan } =
@@ -58,7 +53,7 @@ const DetailChecklistLai = ({ route, navigation }) => {
 
   const dispath = useDispatch();
   const { isLoadingDetail } = useSelector((state) => state.entReducer);
-  const { 
+  const {
     setHangMucFilterByIDChecklistC,
     hangMucFilterByIDChecklistC,
     khuVucFilterByIDChecklistC,
@@ -66,8 +61,7 @@ const DetailChecklistLai = ({ route, navigation }) => {
     setHangMucByKhuVuc,
     hangMucByKhuVuc,
     setDataChecklistSize,
-  } =
-    useContext(DataContext);
+  } = useContext(DataContext);
 
   const { isConnect, saveConnect } = useContext(ConnectContext);
   const { dataChecklistFilterContext, setDataChecklistFilterContext } =
@@ -92,7 +86,6 @@ const DetailChecklistLai = ({ route, navigation }) => {
   const [show, setShow] = useState(false);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [loading, setLoading] = useState(true);
-
 
   const headerHeight = useHeaderHeight();
   const [isConnected, setConnected] = useState(true);
@@ -328,7 +321,7 @@ const DetailChecklistLai = ({ route, navigation }) => {
       const updatedData2 = revertDataChecklist.filter(
         (item) => item.valueCheck !== null
       );
-    
+
       setNewActionDataChecklist(updatedData2);
       setDataChecklistFilterContext(updatedData1);
     }
@@ -553,10 +546,10 @@ const DetailChecklistLai = ({ route, navigation }) => {
         return {
           ...item,
           valueCheck: null, // Xóa giá trị của item này
-          Gioht: moment().format("LTS"),
-          isScan: null,
-          Anh: null,
-          Ghichu: "",
+          // Gioht: moment().format("LTS"),
+          // isScan: null,
+          // Anh: null,
+          // Ghichu: "",
         };
       }
       return item; // Giữ nguyên các item khác
@@ -713,20 +706,22 @@ const DetailChecklistLai = ({ route, navigation }) => {
             updateLocation.map((item) => [item.ID_Checklist, item])
           );
 
-          // Cập nhật dataChecklistFilterContext với các item có cùng ID_Checklist
-          const updatedData1 = dataChecklistFilterContext.map((item) =>
-            data2Map.has(item.ID_Checklist)
-              ? { ...data2Map.get(item.ID_Checklist), ...item }
-              : item
-          );
+          // Update dataChecklistFilterContext with items having the same ID_Checklist
+          const updatedData1 = dataChecklistFilterContext.map((item) => {
+            const updatedItem = data2Map.get(item.ID_Checklist);
+            if (updatedItem) {
+              return { ...item, ...updatedItem };
+            }
+            return item; // If no match in data2Map, keep the original item
+          });
 
           // Lưu lại kết quả cập nhật
           setDataChecklistFilterContext(updatedData1);
           // Dùng trong trường hợp checklist bị văng rá
-          await AsyncStorage.setItem(
-            `dataChecklistStorage_${ID_ChecklistC}`,
-            JSON.stringify(updatedData1)
-          );
+          // await AsyncStorage.setItem(
+          //   `dataChecklistStorage_Lai_${ID_ChecklistC}`,
+          //   JSON.stringify(updatedData1)
+          // );
         }
       }
     } catch (error) {
@@ -752,7 +747,7 @@ const DetailChecklistLai = ({ route, navigation }) => {
         ]);
       } else {
         // Iterate over all items in dataChecklistFaild
-        arrData.forEach((item, index) => {
+        arrData.forEach(async (item, index) => {
           // Extract and append checklist details to formData
           formData.append("Key_Image", 1);
           formData.append("ID_ChecklistC", ID_ChecklistC);
@@ -766,24 +761,36 @@ const DetailChecklistLai = ({ route, navigation }) => {
           formData.append("isScan", isScan || null);
           formData.append("isCheckListLai", 1);
           if (item.Anh && Array.isArray(item.Anh)) {
-            item.Anh.forEach((image, imgIndex) => {
-              const file = {
-                uri:
+            // Use a for...of loop to wait for asynchronous tasks
+            for (const [imgIndex, image] of item.Anh.entries()) {
+              try {
+                // Resize và nén ảnh trước khi append vào formData
+                const resizedImage = await ImageManipulator.manipulateAsync(
                   Platform.OS === "android"
                     ? image.uri
                     : image.uri.replace("file://", ""),
-                name:
-                  image.fileName ||
-                  `${Math.floor(Math.random() * 999999999)}_${
-                    item.ID_Checklist
-                  }_${imgIndex}.jpg`,
-                type: "image/jpg",
-              };
-              formData.append(
-                `Images_${index}_${item.ID_Checklist}_${imgIndex}`,
-                file
-              );
-            });
+                  [{ resize: { width: image.width * 0.6 } }], // Resize nhỏ hơn 50%
+                  { compress: 1, format: ImageManipulator.SaveFormat.PNG } // Nén ảnh
+                );
+
+                const file = {
+                  uri: resizedImage.uri,
+                  name:
+                    image.fileName ||
+                    `${Math.floor(Math.random() * 9999999)}_${
+                      item.ID_Checklist
+                    }_${imgIndex}.png`,
+                  type: "image/png",
+                };
+
+                formData.append(
+                  `Images_${index}_${item.ID_Checklist}_${imgIndex}`,
+                  file
+                );
+              } catch (error) {
+                console.error("Error resizing image: ", error);
+              }
+            }
           }
         });
 
@@ -912,7 +919,7 @@ const DetailChecklistLai = ({ route, navigation }) => {
         ]);
       } else {
         // Lặp qua từng phần tử trong dataChecklistFaild để thêm vào FormData
-        dataFaild.forEach((item, index) => {
+        dataFaild.forEach(async (item, index) => {
           formData.append("Key_Image", 1);
           formData.append("ID_ChecklistC", ID_ChecklistC);
           formData.append("ID_Checklist", item.ID_Checklist);
@@ -926,24 +933,35 @@ const DetailChecklistLai = ({ route, navigation }) => {
           formData.append("isCheckListLai", 1);
           // Nếu có hình ảnh, thêm vào FormData
           if (item.Anh && Array.isArray(item.Anh)) {
-            item.Anh.forEach((image, imgIndex) => {
-              const file = {
-                uri:
+            for (const [imgIndex, image] of item.Anh.entries()) {
+              try {
+                // Resize và nén ảnh trước khi append vào formData
+                const resizedImage = await ImageManipulator.manipulateAsync(
                   Platform.OS === "android"
                     ? image.uri
                     : image.uri.replace("file://", ""),
-                name:
-                  image.fileName ||
-                  `${Math.floor(Math.random() * 999999999)}_${
-                    item.ID_Checklist
-                  }_${imgIndex}.jpg`,
-                type: "image/jpg",
-              };
-              formData.append(
-                `Images_${index}_${item.ID_Checklist}_${imgIndex}`,
-                file
-              );
-            });
+                  [{ resize: { width: image.width * 0.6 } }], // Resize nhỏ hơn 50%
+                  { compress: 1, format: ImageManipulator.SaveFormat.PNG } // Nén ảnh
+                );
+
+                const file = {
+                  uri: resizedImage.uri,
+                  name:
+                    image.fileName ||
+                    `${Math.floor(Math.random() * 9999999)}_${
+                      item.ID_Checklist
+                    }_${imgIndex}.png`,
+                  type: "image/png",
+                };
+
+                formData.append(
+                  `Images_${index}_${item.ID_Checklist}_${imgIndex}`,
+                  file
+                );
+              } catch (error) {
+                console.error("Error resizing image: ", error);
+              }
+            }
           }
         });
 
@@ -1104,7 +1122,7 @@ const DetailChecklistLai = ({ route, navigation }) => {
 
     setDataChecklistFilter(dataChecklist);
     setDataChecklistFilterContext(dataChecklistFilterContextReset);
-    setDataChecklistSize(dataChecklistFilterContextReset?.length)
+    setDataChecklistSize(dataChecklistFilterContextReset?.length);
     setNewActionDataChecklist([]);
     setDataChecklistDefault([]);
     setDataChecklistFaild([]);
@@ -1517,9 +1535,9 @@ const DetailChecklistLai = ({ route, navigation }) => {
             transparent={true}
             visible={isBottomSheetOpen}
             onRequestClose={() => {
-            //  setIsBottomSheetOpen(!isBottomSheetOpen);
-            //  setOpacity(1);
-             handleClearBottom();
+              //  setIsBottomSheetOpen(!isBottomSheetOpen);
+              //  setOpacity(1);
+              handleClearBottom();
             }}
           >
             <View style={[styles.centeredView, { height: "100%" }]}>
@@ -1607,7 +1625,7 @@ const DetailChecklistLai = ({ route, navigation }) => {
             transparent={false}
             visible={show}
             onRequestClose={() => {
-              setShow(false)
+              setShow(false);
             }}
           >
             <TouchableOpacity onPress={() => setShow(false)}>

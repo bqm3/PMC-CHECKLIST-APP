@@ -367,7 +367,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
         ]);
       } else {
         // Iterate over all items in dataChecklistFaild
-        dataChecklistFaild.forEach((item, index) => {
+        dataChecklistFaild.forEach(async (item, index) => {
           // Extract and append checklist details to formData
           formData.append("Key_Image", 1);
           formData.append("ID_ChecklistC", ID_ChecklistC);
@@ -383,25 +383,37 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
 
           // If there is an image, append it to formData
           if (item.Anh && Array.isArray(item.Anh)) {
-            item.Anh.forEach((image, imgIndex) => {
-              const file = {
-                uri:
-                  Platform.OS === "android"
-                    ? image.uri
-                    : image.uri.replace("file://", ""),
-                name:
-                  image.fileName ||
-                  `${Math.floor(Math.random() * 999999999)}_${
-                    item.ID_Checklist
-                  }_${imgIndex}.jpg`,
-                type: "image/jpg",
-              };
-              formData.append(
-                `Images_${index}_${item.ID_Checklist}_${imgIndex}`,
-                file
-              );
-            });
-          }
+                     // Use a for...of loop to wait for asynchronous tasks
+                     for (const [imgIndex, image] of item.Anh.entries()) {
+                       try {
+                         // Resize và nén ảnh trước khi append vào formData
+                         const resizedImage = await ImageManipulator.manipulateAsync(
+                           Platform.OS === "android"
+                             ? image.uri
+                             : image.uri.replace("file://", ""),
+                           [{ resize: { width: image.width * 0.6 } }], // Resize nhỏ hơn 50%
+                           { compress: 1, format: ImageManipulator.SaveFormat.PNG } // Nén ảnh
+                         );
+         
+                         const file = {
+                           uri: resizedImage.uri,
+                           name:
+                             image.fileName ||
+                             `${Math.floor(Math.random() * 9999999)}_${
+                               item.ID_Checklist
+                             }_${imgIndex}.png`,
+                           type: "image/png",
+                         };
+         
+                         formData.append(
+                           `Images_${index}_${item.ID_Checklist}_${imgIndex}`,
+                           file
+                         );
+                       } catch (error) {
+                         console.error("Error resizing image: ", error);
+                       }
+                     }
+                   }
         });
 
         // Send the entire FormData in a single request
@@ -544,7 +556,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
         ]);
       } else {
         // Lặp qua từng phần tử trong dataChecklistFaild để thêm vào FormData
-        dataChecklistFaild.forEach((item, index) => {
+        dataChecklistFaild.forEach(async (item, index) => {
           formData.append("Key_Image", 1);
           formData.append("ID_ChecklistC", ID_ChecklistC);
           formData.append("ID_Checklist", item.ID_Checklist);
@@ -557,27 +569,38 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
           formData.append("isScan", item.isScan || null);
           formData.append("isCheckListLai", 1);
 
-          // Nếu có hình ảnh, thêm vào FormData
-          if (item.Anh && Array.isArray(item.Anh)) {
-            item.Anh.forEach((image, imgIndex) => {
-              const file = {
-                uri:
-                  Platform.OS === "android"
-                    ? image.uri
-                    : image.uri.replace("file://", ""),
-                name:
-                  image.fileName ||
-                  `${Math.floor(Math.random() * 999999999)}_${
-                    item.ID_Checklist
-                  }_${imgIndex}.jpg`,
-                type: "image/jpg",
-              };
-              formData.append(
-                `Images_${index}_${item.ID_Checklist}_${imgIndex}`,
-                file
-              );
-            });
-          }
+           if (item.Anh && Array.isArray(item.Anh)) {
+                      // Use a for...of loop to wait for asynchronous tasks
+                      for (const [imgIndex, image] of item.Anh.entries()) {
+                        try {
+                          // Resize và nén ảnh trước khi append vào formData
+                          const resizedImage = await ImageManipulator.manipulateAsync(
+                            Platform.OS === "android"
+                              ? image.uri
+                              : image.uri.replace("file://", ""),
+                            [{ resize: { width: image.width * 0.6 } }], // Resize nhỏ hơn 50%
+                            { compress: 1, format: ImageManipulator.SaveFormat.PNG } // Nén ảnh
+                          );
+          
+                          const file = {
+                            uri: resizedImage.uri,
+                            name:
+                              image.fileName ||
+                              `${Math.floor(Math.random() * 9999999)}_${
+                                item.ID_Checklist
+                              }_${imgIndex}.png`,
+                            type: "image/png",
+                          };
+          
+                          formData.append(
+                            `Images_${index}_${item.ID_Checklist}_${imgIndex}`,
+                            file
+                          );
+                        } catch (error) {
+                          console.error("Error resizing image: ", error);
+                        }
+                      }
+                    }
         });
         // Tạo các yêu cầu API
         const requestFaild = axios.post(
