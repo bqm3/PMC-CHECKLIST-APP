@@ -51,8 +51,6 @@ import Checkbox from "../../components/Active/Checkbox";
 import ConnectContext from "../../context/ConnectContext";
 import WebView from "react-native-webview";
 import { useHeaderHeight } from "@react-navigation/elements";
-import ModalBottomSheet from "../../components/Modal/ModalBottomSheet";
-import axiosClient from "../../api/axiosClient";
 
 const DetailChecklist = ({ route, navigation }) => {
   const { ID_ChecklistC, ID_KhoiCV, ID_Hangmuc, Hangmuc, isScan } =
@@ -181,6 +179,7 @@ const DetailChecklist = ({ route, navigation }) => {
 
   const handleCheckAll = (value) => {
     setActiveAll(value);
+    console.log('value',value)
     // value == false
     if (value) {
       const updateDataChecklist = dataChecklistFilter?.map((item, i) => {
@@ -293,8 +292,6 @@ const DetailChecklist = ({ route, navigation }) => {
           return {
             ...item,
             valueCheck: null,
-            Gioht: moment().format("LTS"),
-            isScan: isScan,
           };
         } else if (
           item.Anh == null &&
@@ -553,10 +550,10 @@ const DetailChecklist = ({ route, navigation }) => {
         return {
           ...item,
           valueCheck: null, // Xóa giá trị của item này
-          Gioht: moment().format("LTS"),
-          isScan: null,
-          Anh: null,
-          Ghichu: "",
+          // Gioht: moment().format("LTS"),
+          // isScan: null,
+          // Anh: null,
+          // Ghichu: "",
         };
       }
       return item; // Giữ nguyên các item khác
@@ -595,6 +592,8 @@ const DetailChecklist = ({ route, navigation }) => {
 
   // call api submit data checklsit
   const handleSubmit = async () => {
+    console.log('defaultActionDataChecklist',defaultActionDataChecklist.length)
+    console.log('dataChecklistFaild',dataChecklistFaild)
     try {
       saveConnect(true);
       if (location == null) {
@@ -690,14 +689,12 @@ const DetailChecklist = ({ route, navigation }) => {
             "Vui lòng kiểm tra kết nối mạng của bạn. Checklist đã được lưu, ra ngoài khu vực để hoàn thành khi có mạng"
           );
           saveConnect(true);
-
-          // Kết hợp dữ liệu từ newDataChecklistDefault và newDataChecklistFaild
           const combinedData = [
             ...defaultActionDataChecklist,
             ...dataChecklistFaild,
           ];
 
-          // Cập nhật location cho dataChecklistFilterContext
+          // Update location for each item in combinedData
           const updateLocation = combinedData.map((item) => {
             return {
               ...item,
@@ -708,17 +705,19 @@ const DetailChecklist = ({ route, navigation }) => {
             };
           });
 
-          // Tạo map từ updateLocation với ID_Checklist làm key
+          // Create a Map from updateLocation with ID_Checklist as the key
           const data2Map = new Map(
             updateLocation.map((item) => [item.ID_Checklist, item])
           );
 
-          // Cập nhật dataChecklistFilterContext với các item có cùng ID_Checklist
-          const updatedData1 = dataChecklistFilterContext.map((item) =>
-            data2Map.has(item.ID_Checklist)
-              ? { ...data2Map.get(item.ID_Checklist), ...item }
-              : item
-          );
+          // Update dataChecklistFilterContext with items having the same ID_Checklist
+          const updatedData1 = dataChecklistFilterContext.map((item) => {
+            const updatedItem = data2Map.get(item.ID_Checklist);
+            if (updatedItem) {
+              return { ...item, ...updatedItem };
+            }
+            return item; // If no match in data2Map, keep the original item
+          });
 
           // Lưu lại kết quả cập nhật
           setDataChecklistFilterContext(updatedData1);
@@ -738,14 +737,14 @@ const DetailChecklist = ({ route, navigation }) => {
   const handleDataChecklistFaild = async (arrData) => {
     try {
       setLoadingSubmit(true);
-  
+
       const formData = new FormData();
-  
+
       // Kiểm tra dữ liệu
       const isCheckValueCheck = arrData.some(
         (item) => item.valueCheck == null || item.valueCheck == ""
       );
-  
+
       if (isCheckValueCheck) {
         setLoadingSubmit(false);
         Alert.alert("PMC Thông báo", "Chưa có dữ liệu checklist", [
@@ -765,7 +764,7 @@ const DetailChecklist = ({ route, navigation }) => {
         formData.append("Kinhdo", item.Kinhdo || "");
         formData.append("Docao", item.Docao || "");
         formData.append("isScan", isScan || null);
-  
+        
         if (item.Anh && Array.isArray(item.Anh)) {
           // Use a for...of loop to wait for asynchronous tasks
           for (const [imgIndex, image] of item.Anh.entries()) {
@@ -778,15 +777,17 @@ const DetailChecklist = ({ route, navigation }) => {
                 [{ resize: { width: image.width * 0.6 } }], // Resize nhỏ hơn 50%
                 { compress: 1, format: ImageManipulator.SaveFormat.PNG } // Nén ảnh
               );
-  
+
               const file = {
                 uri: resizedImage.uri,
                 name:
                   image.fileName ||
-                  `${Math.floor(Math.random() * 9999999)}_${item.ID_Checklist}_${imgIndex}.png`,
+                  `${Math.floor(Math.random() * 9999999)}_${
+                    item.ID_Checklist
+                  }_${imgIndex}.png`,
                 type: "image/png",
               };
-  
+
               formData.append(
                 `Images_${index}_${item.ID_Checklist}_${imgIndex}`,
                 file
@@ -797,7 +798,7 @@ const DetailChecklist = ({ route, navigation }) => {
           }
         }
       }
-  
+
       // Gửi toàn bộ formData lên server
       const response = await axios.post(
         BASE_URL + `/tb_checklistchitiet/create`,
@@ -809,10 +810,10 @@ const DetailChecklist = ({ route, navigation }) => {
           },
         }
       );
-  
+
       postHandleSubmit();
       setLoadingSubmit(false);
-  
+
       Alert.alert("PMC Thông báo", "Checklist thành công", [
         {
           text: "Hủy",
@@ -823,7 +824,7 @@ const DetailChecklist = ({ route, navigation }) => {
       ]);
     } catch (error) {
       setLoadingSubmit(false);
-  
+
       if (error.response) {
         Alert.alert("PMC Thông báo", error.response.data.message, [
           {
@@ -842,7 +843,6 @@ const DetailChecklist = ({ route, navigation }) => {
       }
     }
   };
-  
 
   // api tb_checklistchitietdone
   const handleDefaultActionDataChecklist = async (arrData) => {
@@ -922,7 +922,7 @@ const DetailChecklist = ({ route, navigation }) => {
         ]);
       } else {
         // Lặp qua từng phần tử trong dataChecklistFaild để thêm vào FormData
-        dataFaild.forEach(async (item, index) => {
+        for (const [index, item] of dataFaild.entries()) {
           formData.append("Key_Image", 1);
           formData.append("ID_ChecklistC", ID_ChecklistC);
           formData.append("ID_Checklist", item.ID_Checklist);
@@ -933,9 +933,9 @@ const DetailChecklist = ({ route, navigation }) => {
           formData.append("Kinhdo", item.Kinhdo || "");
           formData.append("Docao", item.Docao || "");
           formData.append("isScan", isScan || null);
-
-          // Nếu có hình ảnh, thêm vào FormData
+          
           if (item.Anh && Array.isArray(item.Anh)) {
+            // Use a for...of loop to wait for asynchronous tasks
             for (const [imgIndex, image] of item.Anh.entries()) {
               try {
                 // Resize và nén ảnh trước khi append vào formData
@@ -946,15 +946,17 @@ const DetailChecklist = ({ route, navigation }) => {
                   [{ resize: { width: image.width * 0.6 } }], // Resize nhỏ hơn 50%
                   { compress: 1, format: ImageManipulator.SaveFormat.PNG } // Nén ảnh
                 );
-    
+  
                 const file = {
                   uri: resizedImage.uri,
                   name:
                     image.fileName ||
-                    `${Math.floor(Math.random() * 9999999)}_${item.ID_Checklist}_${imgIndex}.png`,
+                    `${Math.floor(Math.random() * 9999999)}_${
+                      item.ID_Checklist
+                    }_${imgIndex}.png`,
                   type: "image/png",
                 };
-    
+  
                 formData.append(
                   `Images_${index}_${item.ID_Checklist}_${imgIndex}`,
                   file
@@ -964,7 +966,7 @@ const DetailChecklist = ({ route, navigation }) => {
               }
             }
           }
-        });
+        }
         // Chuẩn bị dữ liệu cho yêu cầu thứ hai
         const descriptions = dataDefault
           .map((item) => item.ID_Checklist)

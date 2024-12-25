@@ -59,7 +59,7 @@ const DanhMucBaoCaoP0 = ({ navigation, route }) => {
     if (isLoading) return;
     setIsLoading(true);
     try {
-      const res = await axiosClient.get(
+      const res = await axios.get(
         `${BASE_URL}/p0/all-duan?page=${0}&limit=${30}`,
         {
           headers: {

@@ -51,7 +51,7 @@ const ModalPopupDetailChecklist = ({
   
     try {
       const result = await ImagePicker.launchCameraAsync({
-        quality: 0.5, // Compress during capture
+        quality: 0.8, 
       });
   
       if (!result.canceled) {
@@ -60,12 +60,17 @@ const ModalPopupDetailChecklist = ({
         // Resize and compress the image
         const resizedImage = await ImageManipulator.manipulateAsync(
           originalImage.uri,
-          [{ resize: { width: originalImage.width / 5 } }], // Resize to 70% width
-          { compress: 1, format: "png"  } // Compress further
+          [{ resize: { width: originalImage.width / 5 } }], 
+          { compress: 1, format: "png" }
         );
   
-        // Update the state with the resized image
-        setImages((prevImages) => [...prevImages, resizedImage]);
+        // Update the state with the resized image, ensuring no more than 5 images
+        setImages((prevImages) => {
+          if (prevImages.length < 5) {
+            return [...prevImages, resizedImage];
+          }
+          return prevImages; 
+        });
   
         const newImageItem = [...images, resizedImage];
         handleItemClick(newImageItem, "option", "Anh", dataItem);
@@ -74,6 +79,7 @@ const ModalPopupDetailChecklist = ({
       console.error("Error capturing image: ", error);
     }
   };
+  
   
 
   const removeImage = (indexToRemove) => {

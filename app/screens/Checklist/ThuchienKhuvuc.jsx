@@ -418,8 +418,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
         ]);
       } else {
         // Iterate over all items in dataChecklistFaild
-        dataChecklistFaild.forEach(async (item, index) => {
-          // Extract and append checklist details to formData
+        for (const [index, item] of dataChecklistFaild.entries()) {
           formData.append("Key_Image", 1);
           formData.append("ID_ChecklistC", ID_ChecklistC);
           formData.append("ID_Checklist", item.ID_Checklist);
@@ -429,26 +428,24 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
           formData.append("Vido", item.Vido || "");
           formData.append("Kinhdo", item.Kinhdo || "");
           formData.append("Docao", item.Docao || "");
-          formData.append("isScan", item.isScan || null);
+          formData.append("isScan", isScan || null);
 
-          // If there is an image, append it to formData
           if (item.Anh && Array.isArray(item.Anh)) {
             for (const [imgIndex, image] of item.Anh.entries()) {
               try {
-                // Resize và nén ảnh trước khi append vào formData
                 const resizedImage = await ImageManipulator.manipulateAsync(
                   Platform.OS === "android"
                     ? image.uri
                     : image.uri.replace("file://", ""),
-                  [{ resize: { width: image.width * 0.6 } }], // Resize nhỏ hơn 50%
-                  { compress: 1, format: ImageManipulator.SaveFormat.PNG } // Nén ảnh
+                  [{ resize: { width: image.width * 0.6 } }], 
+                  { compress: 1, format: ImageManipulator.SaveFormat.PNG } 
                 );
 
                 const file = {
                   uri: resizedImage.uri,
                   name:
                     image.fileName ||
-                    `${Math.floor(Math.random() * 999999999)}_${
+                    `${Math.floor(Math.random() * 9999999)}_${
                       item.ID_Checklist
                     }_${imgIndex}.png`,
                   type: "image/png",
@@ -463,7 +460,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
               }
             }
           }
-        });
+        }
 
         // Send the entire FormData in a single request
         await axios
@@ -604,49 +601,51 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
         ]);
       } else {
         // Lặp qua từng phần tử trong dataChecklistFaild để thêm vào FormData
-        dataChecklistFaild.forEach(async (item, index) => {
+        for (const [index, item] of dataChecklistFaild.entries()) {
           formData.append("Key_Image", 1);
           formData.append("ID_ChecklistC", ID_ChecklistC);
           formData.append("ID_Checklist", item.ID_Checklist);
           formData.append("Ketqua", item.valueCheck || "");
           formData.append("Gioht", item.Gioht);
           formData.append("Ghichu", item.GhichuChitiet || "");
-          formData.append("Vido", item?.Vido || null);
-          formData.append("Kinhdo", item?.Kinhdo || null);
-          formData.append("Docao", item?.Docao || null);
-          formData.append("isScan", item.isScan || null);
+          formData.append("Vido", item.Vido || "");
+          formData.append("Kinhdo", item.Kinhdo || "");
+          formData.append("Docao", item.Docao || "");
+          formData.append("isScan", isScan || null);
 
-          // Nếu có hình ảnh, thêm vào FormData
           if (item.Anh && Array.isArray(item.Anh)) {
-             for (const [imgIndex, image] of item.Anh.entries()) {
-                        try {
-                          // Resize và nén ảnh trước khi append vào formData
-                          const resizedImage = await ImageManipulator.manipulateAsync(
-                            Platform.OS === "android"
-                              ? image.uri
-                              : image.uri.replace("file://", ""),
-                            [{ resize: { width: image.width * 0.8 } }], // Resize nhỏ hơn 50%
-                            { compress: 1, format: ImageManipulator.SaveFormat.PNG } // Nén ảnh
-                          );
-              
-                          const file = {
-                            uri: resizedImage.uri,
-                            name:
-                              image.fileName ||
-                              `${Math.floor(Math.random() * 9999999)}_${item.ID_Checklist}_${imgIndex}.png`,
-                            type: "image/png",
-                          };
-              
-                          formData.append(
-                            `Images_${index}_${item.ID_Checklist}_${imgIndex}`,
-                            file
-                          );
-                        } catch (error) {
-                          console.error("Error resizing image: ", error);
-                        }
-                      }
+            // Use a for...of loop to wait for asynchronous tasks
+            for (const [imgIndex, image] of item.Anh.entries()) {
+              try {
+                // Resize và nén ảnh trước khi append vào formData
+                const resizedImage = await ImageManipulator.manipulateAsync(
+                  Platform.OS === "android"
+                    ? image.uri
+                    : image.uri.replace("file://", ""),
+                  [{ resize: { width: image.width * 0.6 } }], // Resize nhỏ hơn 50%
+                  { compress: 1, format: ImageManipulator.SaveFormat.PNG } // Nén ảnh
+                );
+
+                const file = {
+                  uri: resizedImage.uri,
+                  name:
+                    image.fileName ||
+                    `${Math.floor(Math.random() * 9999999)}_${
+                      item.ID_Checklist
+                    }_${imgIndex}.png`,
+                  type: "image/png",
+                };
+
+                formData.append(
+                  `Images_${index}_${item.ID_Checklist}_${imgIndex}`,
+                  file
+                );
+              } catch (error) {
+                console.error("Error resizing image: ", error);
+              }
+            }
           }
-        });
+        }
         // Tạo các yêu cầu API
         const requestFaild = axios.post(
           `${BASE_URL}/tb_checklistchitiet/create`,
@@ -768,7 +767,6 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
           });
       }
     } catch (error) {
-      console.log("error", error);
       setLoadingSubmit(false);
       Alert.alert(
         "PMC Thông báo",

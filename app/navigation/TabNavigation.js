@@ -1018,7 +1018,7 @@ const HomeStack = ({ navigation }) => {
                 color: "white",
               }}
             >
-              Chi tiết dữ liệu ngày {route?.params?.data?.Ngay_ghi_nhan}
+              Chi tiết ngày {route?.params?.data?.Ngay_ghi_nhan}
             </Text>
           ),
           headerLeft: () => headerLeft(navigation),
@@ -1117,7 +1117,7 @@ const HomeStack = ({ navigation }) => {
                 color: "white",
               }}
             >
-              Chi tiết dữ liệu P0 ngày {route?.params?.data?.Ngaybc}
+              Chi tiết ngày {route?.params?.data?.Ngaybc}
             </Text>
           ),
           headerLeft: () => headerLeft(navigation),
