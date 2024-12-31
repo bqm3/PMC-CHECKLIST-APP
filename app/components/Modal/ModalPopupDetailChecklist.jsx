@@ -51,7 +51,7 @@ const ModalPopupDetailChecklist = ({
   let newImageItem = [];
 
   const pickImage = async () => {
-    if (Platform.OS === "ios") {
+    if (Platform.OS === "android") {
       setWidthModal("100%")
       setHeightModal("90%")
       setCamera(true);
