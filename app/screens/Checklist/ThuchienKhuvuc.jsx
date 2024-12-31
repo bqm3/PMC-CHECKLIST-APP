@@ -474,7 +474,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
             await AsyncStorage.removeItem("checkNetwork");
 
             setSubmit(false);
-            postHandleSubmit();
+            await postHandleSubmit();
             setLoadingSubmit(false);
             Alert.alert("PMC Thông báo", "Checklist thành công", [
               {
@@ -699,7 +699,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
           .all([requestFaild, requestDone])
           .then(
             axios.spread(async (faildResponse, doneResponse) => {
-              postHandleSubmit();
+              await postHandleSubmit();
               setLoadingSubmit(false);
               await AsyncStorage.removeItem("checkNetwork");
 
@@ -1009,7 +1009,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
                       </View>
                       {submit === true && (
                         <Button
-                          text={"Hoàn thành tất cả"}
+                          text={"Hoàn thành"}
                           isLoading={loadingSubmit}
                           backgroundColor={COLORS.bg_button}
                           color={"white"}

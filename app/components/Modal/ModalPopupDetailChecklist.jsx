@@ -58,21 +58,21 @@ const ModalPopupDetailChecklist = ({
         const originalImage = result.assets[0];
   
         // Resize and compress the image
-        const resizedImage = await ImageManipulator.manipulateAsync(
-          originalImage.uri,
-          [{ resize: { width: originalImage.width / 5 } }], 
-          { compress: 1, format: "png" }
-        );
+        // const resizedImage = await ImageManipulator.manipulateAsync(
+        //   originalImage.uri,
+        //   [{ resize: { width: originalImage.width / 5 } }], 
+        //   { compress: 1, format: "png" }
+        // );
   
         // Update the state with the resized image, ensuring no more than 5 images
         setImages((prevImages) => {
           if (prevImages.length < 5) {
-            return [...prevImages, resizedImage];
+            return [...prevImages, originalImage];
           }
           return prevImages; 
         });
   
-        const newImageItem = [...images, resizedImage];
+        const newImageItem = [...images, originalImage];
         handleItemClick(newImageItem, "option", "Anh", dataItem);
       }
     } catch (error) {

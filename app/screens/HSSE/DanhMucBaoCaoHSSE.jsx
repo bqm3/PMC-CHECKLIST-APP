@@ -24,6 +24,7 @@ import { check_hsse } from "../../redux/actions/entActions";
 import { BASE_URL } from "../../constants/config";
 import { COLORS, SIZES } from "../../constants/theme";
 import axios from "axios";
+import { ReloadContext } from "../../context/ReloadContext";
 
 const DanhMucBaoCaoHSSE = ({ navigation, route }) => {
   const dispatch = useDispatch();
@@ -35,7 +36,9 @@ const DanhMucBaoCaoHSSE = ({ navigation, route }) => {
   const [loading, setLoading] = useState(true);
   const [showReport, setShowReport] = useState(false);
 
-  const [isReload, setIsReload] = useState(false);
+  // const [isReload, setIsReload] = useState(false);
+  const { isReload, setIsReload } = useContext(ReloadContext);
+
 
   const init_hsse = async () => {
     setLoading(true);

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo, useEffect } from "react";
+import React, { useState, useCallback, useMemo, useEffect, useContext } from "react";
 import {
   View,
   Text,
@@ -24,6 +24,7 @@ import moment from "moment";
 import axios from "axios";
 import { COLORS } from "../../constants/theme";
 import { BASE_URL } from "../../constants/config";
+import { ReloadContext } from "../../context/ReloadContext";
 
 const HSSE = [
   { id: 0, title: "Điện cư dân", key: "Dien_cu_dan", value: "0" },
@@ -67,7 +68,8 @@ const HSSE = [
 ];
 
 const DetailHSSE = ({ navigation, route }) => {
-  const { data, setIsReload } = route.params;
+  // const { data, setIsReload } = route.params;
+   const { isReload, setIsReload } = useContext(ReloadContext);
   const { authToken } = useSelector((state) => state.authReducer);
   const [hsseData, setHsseData] = useState(HSSE);
   const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);

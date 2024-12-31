@@ -4,6 +4,7 @@ import React, {
   useMemo,
   useRef,
   useEffect,
+  useContext,
 } from "react";
 import {
   View,
@@ -26,6 +27,7 @@ import adjust from "../../adjust";
 import axios from "axios";
 import { BASE_URL } from "../../constants/config";
 import { COLORS } from "../../constants/theme";
+import { ReloadContext } from "../../context/ReloadContext";
 
 const P0 = [
   {
@@ -125,7 +127,8 @@ const P0 = [
 ];
 
 const TaoBaoCaoP0 = ({ navigation, route }) => {
-  const { setIsReload } = route.params;
+  // const { setIsReload } = route.params;
+   const { isReload, setIsReload } = useContext(ReloadContext);
   const { user, authToken } = useSelector((state) => state.authReducer);
   const [p0_Data, setP0_Data] = useState(P0);
   const [ghichu, setGhichu] = useState("");

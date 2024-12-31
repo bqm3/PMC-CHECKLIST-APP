@@ -51,6 +51,7 @@ import Checkbox from "../../components/Active/Checkbox";
 import ConnectContext from "../../context/ConnectContext";
 import WebView from "react-native-webview";
 import { useHeaderHeight } from "@react-navigation/elements";
+import axiosClient from "../../api/axiosClient";
 
 const DetailChecklist = ({ route, navigation }) => {
   const { ID_ChecklistC, ID_KhoiCV, ID_Hangmuc, Hangmuc, isScan } =
@@ -179,7 +180,7 @@ const DetailChecklist = ({ route, navigation }) => {
 
   const handleCheckAll = (value) => {
     setActiveAll(value);
-    console.log('value',value)
+    console.log("value", value);
     // value == false
     if (value) {
       const updateDataChecklist = dataChecklistFilter?.map((item, i) => {
@@ -592,8 +593,6 @@ const DetailChecklist = ({ route, navigation }) => {
 
   // call api submit data checklsit
   const handleSubmit = async () => {
-    console.log('defaultActionDataChecklist',defaultActionDataChecklist.length)
-    console.log('dataChecklistFaild',dataChecklistFaild)
     try {
       saveConnect(true);
       if (location == null) {
@@ -764,22 +763,13 @@ const DetailChecklist = ({ route, navigation }) => {
         formData.append("Kinhdo", item.Kinhdo || "");
         formData.append("Docao", item.Docao || "");
         formData.append("isScan", isScan || null);
-        
+
         if (item.Anh && Array.isArray(item.Anh)) {
           // Use a for...of loop to wait for asynchronous tasks
           for (const [imgIndex, image] of item.Anh.entries()) {
             try {
-              // Resize và nén ảnh trước khi append vào formData
-              const resizedImage = await ImageManipulator.manipulateAsync(
-                Platform.OS === "android"
-                  ? image.uri
-                  : image.uri.replace("file://", ""),
-                [{ resize: { width: image.width * 0.6 } }], // Resize nhỏ hơn 50%
-                { compress: 1, format: ImageManipulator.SaveFormat.PNG } // Nén ảnh
-              );
-
               const file = {
-                uri: resizedImage.uri,
+                uri: image.uri,
                 name:
                   image.fileName ||
                   `${Math.floor(Math.random() * 9999999)}_${
@@ -800,7 +790,7 @@ const DetailChecklist = ({ route, navigation }) => {
       }
 
       // Gửi toàn bộ formData lên server
-      const response = await axios.post(
+      const res = await axiosClient.post(
         BASE_URL + `/tb_checklistchitiet/create`,
         formData,
         {
@@ -823,6 +813,7 @@ const DetailChecklist = ({ route, navigation }) => {
         { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
       ]);
     } catch (error) {
+      console.log("error", error.response.data.message);
       setLoadingSubmit(false);
 
       if (error.response) {
@@ -933,22 +924,22 @@ const DetailChecklist = ({ route, navigation }) => {
           formData.append("Kinhdo", item.Kinhdo || "");
           formData.append("Docao", item.Docao || "");
           formData.append("isScan", isScan || null);
-          
+
           if (item.Anh && Array.isArray(item.Anh)) {
             // Use a for...of loop to wait for asynchronous tasks
             for (const [imgIndex, image] of item.Anh.entries()) {
               try {
                 // Resize và nén ảnh trước khi append vào formData
-                const resizedImage = await ImageManipulator.manipulateAsync(
-                  Platform.OS === "android"
-                    ? image.uri
-                    : image.uri.replace("file://", ""),
-                  [{ resize: { width: image.width * 0.6 } }], // Resize nhỏ hơn 50%
-                  { compress: 1, format: ImageManipulator.SaveFormat.PNG } // Nén ảnh
-                );
-  
+                // const resizedImage = await ImageManipulator.manipulateAsync(
+                //   Platform.OS === "android"
+                //     ? image.uri
+                //     : image.uri.replace("file://", ""),
+                //   [{ resize: { width: image.width * 0.6 } }], // Resize nhỏ hơn 50%
+                //   { compress: 1, format: ImageManipulator.SaveFormat.PNG } // Nén ảnh
+                // );
+
                 const file = {
-                  uri: resizedImage.uri,
+                  uri: image.uri,
                   name:
                     image.fileName ||
                     `${Math.floor(Math.random() * 9999999)}_${
@@ -956,7 +947,7 @@ const DetailChecklist = ({ route, navigation }) => {
                     }_${imgIndex}.png`,
                   type: "image/png",
                 };
-  
+
                 formData.append(
                   `Images_${index}_${item.ID_Checklist}_${imgIndex}`,
                   file

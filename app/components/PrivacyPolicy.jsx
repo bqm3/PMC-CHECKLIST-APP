@@ -225,7 +225,7 @@ const PrivacyPolicy = () => {
           <Text allowFontScaling={false} style={styles.strong}>
             Email
           </Text>
-          : support@pmc.com.vn
+          : support.it@pmcweb.vn
         </Text>
       </View>
 
