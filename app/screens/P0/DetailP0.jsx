@@ -4,6 +4,7 @@ import React, {
   useMemo,
   useEffect,
   useRef,
+  useContext,
 } from "react";
 import {
   View,
@@ -29,6 +30,7 @@ import moment from "moment";
 import axios from "axios";
 import { COLORS } from "../../constants/theme";
 import { BASE_URL } from "../../constants/config";
+import { ReloadContext } from "../../context/ReloadContext";
 
 const P0 = [
   {
@@ -128,7 +130,8 @@ const P0 = [
 ];
 
 const DetailP0 = ({ navigation, route }) => {
-  const { data, setIsReload } = route.params;
+  const { data } = route.params;
+   const { isReload, setIsReload } = useContext(ReloadContext);
   const { user, authToken } = useSelector((state) => state.authReducer);
   const [p0_Data, setP0_Data] = useState(P0);
   const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);

@@ -3,6 +3,7 @@ import { StatusBar, View, Text } from "react-native";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import { store } from "./app/redux/store";
+import { ReloadProvider } from './app/context/ReloadContext';
 import { ThemeProvider } from "./app/context/ThemeContext";
 import { LoginProvider } from "./app/context/LoginContext";
 import { LocationProvider } from "./app/context/LocationContext";
@@ -37,14 +38,16 @@ export default function App() {
                   <UserProvider>
                     <DataProvider>
                       <ReportProvider>
-                        <ChecklistProvider>
-                          <ChecklistLaiProvider>
-                            <NavigationContainer>
-                              <StatusBar />
-                              <CheckNavigation />
-                            </NavigationContainer>
-                          </ChecklistLaiProvider>
-                        </ChecklistProvider>
+                        <ReloadProvider>
+                          <ChecklistProvider>
+                            <ChecklistLaiProvider>
+                              <NavigationContainer>
+                                <StatusBar />
+                                <CheckNavigation />
+                              </NavigationContainer>
+                            </ChecklistLaiProvider>
+                          </ChecklistProvider>
+                        </ReloadProvider>
                       </ReportProvider>
                     </DataProvider>
                   </UserProvider>

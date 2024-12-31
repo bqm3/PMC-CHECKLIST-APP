@@ -31,6 +31,7 @@ import { BASE_URL } from "../../constants/config";
 import { COLORS, SIZES } from "../../constants/theme";
 import axios from "axios";
 import axiosClient from "../../api/axiosClient";
+import { ReloadContext } from "../../context/ReloadContext";
 
 const numberOfItemsPerPage = 7;
 
@@ -39,9 +40,9 @@ const DanhMucBaoCaoP0 = ({ navigation, route }) => {
   const { user, authToken } = useSelector((state) => state.authReducer);
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [hasMoreData, setHasMoreData] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [isReload, setIsReload] = useState(false);
+  // const [isReload, setIsReload] = useState(false);
+   const { isReload, setIsReload } = useContext(ReloadContext);
 
   const flatListRef = React.useRef();
 
@@ -82,7 +83,6 @@ const DanhMucBaoCaoP0 = ({ navigation, route }) => {
   const toggleTodo = (item) => {
     navigation.navigate("Chi tiết dữ liệu P0", {
       data: item,
-      setIsReload,
     });
     setIsReload(false);
   };
