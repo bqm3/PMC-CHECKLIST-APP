@@ -141,432 +141,470 @@ const ModalChangeTinhTrangSuCo = ({
         behavior={Platform.OS === "ios" ? "padding" : null}
         style={{ flex: 1 }}
       >
-             <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-        <View
-          style={{
-            margin: 10,
-            flex: 1,
-            height: "100%",
-            minHeight: modalHeight,
-            flexDirection: "column",
-            justifyContent: "space-between",
-          }}
-        >
-          <View>
+        <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+          <View
+            style={{
+              margin: 10,
+              flex: 1,
+              height: "100%",
+              minHeight: modalHeight,
+              flexDirection: "column",
+              justifyContent: "space-between",
+            }}
+          >
             <View>
-              <Text
-                style={{
-                  color: "black",
-                  fontWeight: "600",
-                  fontSize: 20,
-                  marginBottom: 10,
-                }}
-              >
-                Thay đổi trạng thái
-              </Text>
-              {hangmuc == undefined ? (
-                <View>
-                  <View
-                    style={{
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <View style={{ width: "49%" }}>
-                      <Text allowFontScaling={false} style={styles.text}>
-                        Tòa nhà
-                      </Text>
-                      {ent_toanha && ent_toanha?.length > 0 ? (
-                        <SelectDropdown
-                          data={ent_toanha}
-                          buttonStyle={styles.select}
-                          dropdownStyle={{
-                            borderRadius: 8,
-                            maxHeight: 400,
-                          }}
-                          defaultButtonText={"Tòa nhà"}
-                          buttonTextStyle={styles.customText}
-                          // defaultValue={defaultToaNha}
-                          onSelect={(selectedItem, index) => {
-                            handleChangeTextKhuVuc(
-                              "ID_Toanha",
-                              selectedItem.ID_Toanha
-                            );
-                          }}
-                          renderDropdownIcon={(isOpened) => {
-                            return (
-                              <FontAwesome
-                                name={isOpened ? "chevron-up" : "chevron-down"}
-                                color={"#637381"}
-                                size={14}
-                              />
-                            );
-                          }}
-                          dropdownIconPosition={"right"}
-                          buttonTextAfterSelection={(selectedItem, index) => {
-                            return (
-                              <Text
-                                allowFontScaling={false}
-                                style={[styles.text, { color: "black" }]}
-                              >
-                                {selectedItem?.Toanha}
-                              </Text>
-                            );
-                          }}
-                          renderCustomizedRowChild={(item, index) => {
-                            return (
-                              <VerticalSelect
-                                value={item.ID_Toanha}
-                                label={item.Toanha}
-                                key={index}
-                                selectedItem={dataCheckKhuvuc.ID_Toanha}
-                              />
-                            );
-                          }}
-                        />
-                      ) : (
-                        <Text allowFontScaling={false} style={styles.errorText}>
-                          Không có dữ liệu tòa nhà.
+              <View>
+                <Text
+                  style={{
+                    color: "black",
+                    fontWeight: "600",
+                    fontSize: 20,
+                    marginBottom: 10,
+                  }}
+                >
+                  Thay đổi trạng thái
+                </Text>
+                {hangmuc == undefined &&
+                `${newActionClick[0].TenHangmuc}` == `null` ? (
+                  <View>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <View style={{ width: "49%" }}>
+                        <Text allowFontScaling={false} style={styles.text}>
+                          Tòa nhà
                         </Text>
-                      )}
-                    </View>
+                        {ent_toanha && ent_toanha?.length > 0 ? (
+                          <SelectDropdown
+                            data={ent_toanha}
+                            buttonStyle={styles.select}
+                            dropdownStyle={{
+                              borderRadius: 8,
+                              maxHeight: 400,
+                            }}
+                            defaultButtonText={"Tòa nhà"}
+                            buttonTextStyle={styles.customText}
+                            // defaultValue={defaultToaNha}
+                            onSelect={(selectedItem, index) => {
+                              handleChangeTextKhuVuc(
+                                "ID_Toanha",
+                                selectedItem.ID_Toanha
+                              );
+                            }}
+                            renderDropdownIcon={(isOpened) => {
+                              return (
+                                <FontAwesome
+                                  name={
+                                    isOpened ? "chevron-up" : "chevron-down"
+                                  }
+                                  color={"#637381"}
+                                  size={14}
+                                />
+                              );
+                            }}
+                            dropdownIconPosition={"right"}
+                            buttonTextAfterSelection={(selectedItem, index) => {
+                              return (
+                                <Text
+                                  allowFontScaling={false}
+                                  style={[styles.text, { color: "black" }]}
+                                >
+                                  {selectedItem?.Toanha}
+                                </Text>
+                              );
+                            }}
+                            renderCustomizedRowChild={(item, index) => {
+                              return (
+                                <VerticalSelect
+                                  value={item.ID_Toanha}
+                                  label={item.Toanha}
+                                  key={index}
+                                  selectedItem={dataCheckKhuvuc.ID_Toanha}
+                                />
+                              );
+                            }}
+                          />
+                        ) : (
+                          <Text
+                            allowFontScaling={false}
+                            style={styles.errorText}
+                          >
+                            Không có dữ liệu tòa nhà.
+                          </Text>
+                        )}
+                      </View>
 
-                    <View style={{ width: "49%" }}>
-                      <Text allowFontScaling={false} style={styles.text}>
-                        Khu vực
-                      </Text>
-                      {dataKhuvuc && dataKhuvuc?.length > 0 ? (
-                        <SelectDropdown
-                          data={dataKhuvuc ? dataKhuvuc : []}
-                          buttonStyle={styles.select}
-                          dropdownStyle={{
-                            borderRadius: 8,
-                            maxHeight: 400,
-                            minWidth : 200,
-                            position: 'absolute',
-                            top: 0,
-                            left: 200
-                          }}
-                          // rowStyle={{ height: 50, justifyContent: "center" }}
-                          defaultButtonText={"Khu vực"}
-                          buttonTextStyle={styles.customText}
-                          // defaultValue={defaultKhuvuc}
-                          onSelect={(selectedItem, index) => {
-                            handleChangeTextKhuVuc(
-                              "ID_Khuvuc",
-                              selectedItem.ID_Khuvuc
-                            );
-                          }}
-                          renderDropdownIcon={(isOpened) => {
-                            return (
-                              <FontAwesome
-                                name={isOpened ? "chevron-up" : "chevron-down"}
-                                color={"#637381"}
-                                size={14}
-                              />
-                            );
-                          }}
-                          dropdownIconPosition={"right"}
-                          buttonTextAfterSelection={(selectedItem, index) => {
-                            return (
-                              <Text
-                                allowFontScaling={false}
-                                style={[styles.text, { color: "black" }]}
-                              >
-                                {selectedItem?.Tenkhuvuc}
-                              </Text>
-                            );
-                          }}
-                          renderCustomizedRowChild={(item, index) => {
-                            return (
-                              <VerticalSelect
-                                value={item.ID_Khuvuc}
-                                label={item.Tenkhuvuc}
-                                key={index}
-                                selectedItem={dataCheckKhuvuc.ID_Khuvuc}
-                              />
-                            );
-                          }}
-                        />
-                      ) : (
-                        <Text allowFontScaling={false} style={styles.errorText}>
-                          Không có dữ liệu khu vực
+                      <View style={{ width: "49%" }}>
+                        <Text allowFontScaling={false} style={styles.text}>
+                          Khu vực
                         </Text>
+                        {dataKhuvuc && dataKhuvuc?.length > 0 ? (
+                          <SelectDropdown
+                            data={dataKhuvuc ? dataKhuvuc : []}
+                            buttonStyle={styles.select}
+                            dropdownStyle={{
+                              borderRadius: 8,
+                              maxHeight: 400,
+                              minWidth: 200,
+                              position: "absolute",
+                              top: 0,
+                              left: 200,
+                            }}
+                            // rowStyle={{ height: 50, justifyContent: "center" }}
+                            defaultButtonText={"Khu vực"}
+                            buttonTextStyle={styles.customText}
+                            // defaultValue={defaultKhuvuc}
+                            onSelect={(selectedItem, index) => {
+                              handleChangeTextKhuVuc(
+                                "ID_Khuvuc",
+                                selectedItem.ID_Khuvuc
+                              );
+                            }}
+                            renderDropdownIcon={(isOpened) => {
+                              return (
+                                <FontAwesome
+                                  name={
+                                    isOpened ? "chevron-up" : "chevron-down"
+                                  }
+                                  color={"#637381"}
+                                  size={14}
+                                />
+                              );
+                            }}
+                            dropdownIconPosition={"right"}
+                            buttonTextAfterSelection={(selectedItem, index) => {
+                              return (
+                                <Text
+                                  allowFontScaling={false}
+                                  style={[styles.text, { color: "black" }]}
+                                >
+                                  {selectedItem?.Tenkhuvuc}
+                                </Text>
+                              );
+                            }}
+                            renderCustomizedRowChild={(item, index) => {
+                              return (
+                                <VerticalSelect
+                                  value={item.ID_Khuvuc}
+                                  label={item.Tenkhuvuc}
+                                  key={index}
+                                  selectedItem={dataCheckKhuvuc.ID_Khuvuc}
+                                />
+                              );
+                            }}
+                          />
+                        ) : (
+                          <Text
+                            allowFontScaling={false}
+                            style={styles.errorText}
+                          >
+                            Không có dữ liệu khu vực
+                          </Text>
+                        )}
+                      </View>
+                    </View>
+                    <View style={{ width: "100%" }}>
+                      {dataHangmuc && dataHangmuc?.length > 0 && (
+                        <View>
+                          <Text allowFontScaling={false} style={styles.text}>
+                            Hạng mục
+                          </Text>
+                          <SelectDropdown
+                            data={dataHangmuc}
+                            buttonStyle={[styles.select]}
+                            dropdownStyle={{
+                              borderRadius: 8,
+                              maxHeight: 400,
+                            }}
+                            defaultButtonText={"Hạng mục"}
+                            buttonTextStyle={[styles.customText]}
+                            // defaultValue={defaultHangmuc}
+                            onSelect={(selectedItem, index) => {
+                              handleChangeText(
+                                "ID_Hangmuc",
+                                selectedItem.ID_Hangmuc
+                              );
+                              setHangMuc(selectedItem.ID_Hangmuc);
+                            }}
+                            renderDropdownIcon={(isOpened) => {
+                              return (
+                                <FontAwesome
+                                  name={
+                                    isOpened ? "chevron-up" : "chevron-down"
+                                  }
+                                  color={"#637381"}
+                                  size={14}
+                                  style={{ marginRight: 10 }}
+                                />
+                              );
+                            }}
+                            dropdownIconPosition={"right"}
+                            buttonTextAfterSelection={(selectedItem, index) => {
+                              return (
+                                <Text
+                                  allowFontScaling={false}
+                                  style={[
+                                    styles.text,
+                                    { color: "black", textAlign: "center" },
+                                  ]}
+                                >
+                                  {selectedItem?.Hangmuc}
+                                </Text>
+                              );
+                            }}
+                            renderCustomizedRowChild={(item, index) => {
+                              return (
+                                <VerticalSelect
+                                  value={item.ID_Hangmuc}
+                                  label={item.Hangmuc}
+                                  key={index}
+                                  selectedItem={dataInput.ID_Hangmuc}
+                                />
+                              );
+                            }}
+                          />
+                        </View>
                       )}
                     </View>
                   </View>
-                  <View style={{ width: "100%" }}>
-                    {dataHangmuc && dataHangmuc?.length > 0 && (
-                      <View>
-                        <Text allowFontScaling={false} style={styles.text}>
-                          Hạng mục
-                        </Text>
-                        <SelectDropdown
-                          data={dataHangmuc}
-                          buttonStyle={[styles.select]}
-                          dropdownStyle={{
-                            borderRadius: 8,
-                            maxHeight: 400,
-                          }}
-                          defaultButtonText={"Hạng mục"}
-                          buttonTextStyle={[styles.customText]}
-                          // defaultValue={defaultHangmuc}
-                          onSelect={(selectedItem, index) => {
-                            handleChangeText(
-                              "ID_Hangmuc",
-                              selectedItem.ID_Hangmuc
-                            );
-                            setHangMuc(selectedItem.ID_Hangmuc);
-                          }}
-                          renderDropdownIcon={(isOpened) => {
-                            return (
+                ) : null}
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    marginTop: 10,
+                  }}
+                >
+                  {tinhTrang != 0 ? (
+                    <View style={styles.section}>
+                      <Checkbox
+                        disabled
+                        style={styles.checkbox}
+                        value={changeStatus?.status1}
+                        onValueChange={() => {
+                          handleChangeStatus("status1", !changeStatus?.status1);
+                        }}
+                        color={changeStatus?.status1 ? "#4630EB" : undefined}
+                      />
+                      <Text style={styles.paragraph}>Chưa xử lý</Text>
+                    </View>
+                  ) : null}
+                  {tinhTrang != 1 ? (
+                    <View style={styles.section}>
+                      <Checkbox
+                        style={styles.checkbox}
+                        value={changeStatus?.status2}
+                        onValueChange={() => {
+                          handleChangeStatus("status2", !changeStatus?.status2);
+                        }}
+                        color={changeStatus?.status2 ? "#4630EB" : undefined}
+                      />
+                      <Text style={styles.paragraph}>Đang xử lý</Text>
+                    </View>
+                  ) : null}
+                  <View style={styles.section}>
+                    <Checkbox
+                      style={styles.checkbox}
+                      value={changeStatus?.status3}
+                      onValueChange={() => {
+                        handleChangeStatus("status3", !changeStatus?.status3);
+                      }}
+                      color={changeStatus?.status3 ? "#4630EB" : undefined}
+                    />
+                    <Text style={styles.paragraph}>Đã xử lý</Text>
+                  </View>
+                </View>
+              </View>
+              <View style={{ width: "100%" }}>
+                <Text allowFontScaling={false} style={styles.text}>
+                  Ngày xử lý
+                </Text>
+                <TouchableOpacity
+                  onPress={() => handleChangeDate("isCheck", true)}
+                >
+                  <View style={styles.action}>
+                    <TextInput
+                      allowFontScaling={false}
+                      value={ngayXuLy.date}
+                      placeholder="Nhập ngày xử lý"
+                      placeholderTextColor="gray"
+                      style={{
+                        paddingLeft: 12,
+                        color: "#05375a",
+                        width: "80%",
+                        fontSize: adjust(16),
+                        height: adjust(50),
+                      }}
+                      pointerEvents="none"
+                    />
+                    <TouchableOpacity
+                      onPress={() => handleChangeDate("isCheck", true)}
+                      style={{
+                        justifyContent: "center",
+                        alignItems: "center",
+                        height: adjust(50),
+                        width: adjust(50),
+                      }}
+                    >
+                      <AntDesign name="calendar" size={24} color="black" />
+                    </TouchableOpacity>
+                  </View>
+                  <DateTimePickerModal
+                    isVisible={ngayXuLy.isCheck}
+                    mode="date"
+                    isDarkModeEnabled={true}
+                    maximumDate={new Date()}
+                    onConfirm={(date) => {
+                      handleChangeDate(
+                        "date",
+                        moment(date).format("DD-MM-YYYY")
+                      );
+                      handleChangeDate("isCheck", false);
+                    }}
+                    onCancel={() => handleChangeDate("isCheck", false)}
+                  />
+                </TouchableOpacity>
+              </View>
+              {changeStatus?.status3 && (
+                <View>
+                  {/* Nội dung sự cố */}
+                  <Text allowFontScaling={false} style={styles.text}>
+                    Biện pháp xử lý
+                  </Text>
+                  <TextInput
+                    allowFontScaling={false}
+                    placeholder="Biện pháp xử lý"
+                    placeholderTextColor="gray"
+                    textAlignVertical="top"
+                    multiline={true}
+                    blurOnSubmit={true}
+                    value={dataInput.Bienphapxuly}
+                    style={[
+                      styles.textInput,
+                      {
+                        paddingHorizontal: 10,
+                        height: 70,
+                      },
+                    ]}
+                    onChangeText={(text) => {
+                      handleChangeText("Bienphapxuly", text);
+                    }}
+                  />
+                  <Text allowFontScaling={false} style={styles.text}>
+                    Ghi chú
+                  </Text>
+                  <TextInput
+                    allowFontScaling={false}
+                    placeholder="Nội dung"
+                    placeholderTextColor="gray"
+                    textAlignVertical="top"
+                    multiline={true}
+                    blurOnSubmit={true}
+                    value={dataInput.Noidungghichu}
+                    style={[
+                      styles.textInput,
+                      {
+                        paddingHorizontal: 10,
+                        height: 50,
+                      },
+                    ]}
+                    onChangeText={(text) => {
+                      handleChangeText("Noidungghichu", text);
+                    }}
+                  />
+
+                  {/* Hình ảnh */}
+                  <Text allowFontScaling={false} style={styles.text}>
+                    Hình ảnh
+                  </Text>
+                  <View style={{ flexDirection: "row" }}>
+                    <TouchableOpacity
+                      style={{
+                        backgroundColor: "white",
+                        padding: SIZES.padding,
+                        borderRadius: SIZES.borderRadius,
+                        borderColor: COLORS.bg_button,
+                        borderWidth: 1,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        height: 60,
+                        width: 60,
+                      }}
+                      onPress={() => pickImage()}
+                    >
+                      <Entypo name="camera" size={20} color="black" />
+                    </TouchableOpacity>
+                    {images.length > 0 && (
+                      <FlatList
+                        horizontal={true}
+                        contentContainerStyle={{ flexGrow: 1 }}
+                        data={images}
+                        renderItem={({ item, index }) => (
+                          <View style={{ marginLeft: 10 }}>
+                            <Image
+                              source={{ uri: item }}
+                              style={{
+                                width: 80,
+                                height: 100,
+                                position: "relative",
+                                opacity: 0.8,
+                              }}
+                            />
+                            <TouchableOpacity
+                              style={{
+                                position: "absolute",
+                                top: 30,
+                                left: 15,
+                                width: 50,
+                                height: 50,
+                                justifyContent: "center",
+                                alignItems: "center",
+                              }}
+                              onPress={() => handleRemoveImage(item)}
+                            >
                               <FontAwesome
-                                name={isOpened ? "chevron-up" : "chevron-down"}
-                                color={"#637381"}
-                                size={14}
-                                style={{ marginRight: 10 }}
+                                name="remove"
+                                size={adjust(30)}
+                                color="white"
                               />
-                            );
-                          }}
-                          dropdownIconPosition={"right"}
-                          buttonTextAfterSelection={(selectedItem, index) => {
-                            return (
-                              <Text
-                                allowFontScaling={false}
-                                style={[
-                                  styles.text,
-                                  { color: "black", textAlign: "center" },
-                                ]}
-                              >
-                                {selectedItem?.Hangmuc}
-                              </Text>
-                            );
-                          }}
-                          renderCustomizedRowChild={(item, index) => {
-                            return (
-                              <VerticalSelect
-                                value={item.ID_Hangmuc}
-                                label={item.Hangmuc}
-                                key={index}
-                                selectedItem={dataInput.ID_Hangmuc}
-                              />
-                            );
-                          }}
-                        />
-                      </View>
+                            </TouchableOpacity>
+                          </View>
+                        )}
+                        keyExtractor={(item, index) => index.toString()}
+                        scrollEventThrottle={16}
+                        scrollEnabled={true}
+                      />
                     )}
                   </View>
                 </View>
-              ) : null}
-              <View
-                style={{
-                  flexDirection: "row",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  marginTop: 10,
+              )}
+            </View>
+            <View style={{ flexDirection: "row", marginBottom: 20, gap: 10 }}>
+              <ButtonSubmit
+                text={"Đóng"}
+                width={"49%"}
+                backgroundColor={"grey"}
+                color={"white"}
+                onPress={() => {
+                  handleCloseTinhTrang();
+                  resetDataInput();
+                  // setModalHeight(350);
                 }}
-              >
-                {tinhTrang != 0 ? (
-                  <View style={styles.section}>
-                    <Checkbox
-                      disabled
-                      style={styles.checkbox}
-                      value={changeStatus?.status1}
-                      onValueChange={() => {
-                        handleChangeStatus("status1", !changeStatus?.status1);
-                      }}
-                      color={changeStatus?.status1 ? "#4630EB" : undefined}
-                    />
-                    <Text style={styles.paragraph}>Chưa xử lý</Text>
-                  </View>
-                ) : null}
-                {tinhTrang != 1 ? (
-                  <View style={styles.section}>
-                    <Checkbox
-                      style={styles.checkbox}
-                      value={changeStatus?.status2}
-                      onValueChange={() => {
-                        handleChangeStatus("status2", !changeStatus?.status2);
-                      }}
-                      color={changeStatus?.status2 ? "#4630EB" : undefined}
-                    />
-                    <Text style={styles.paragraph}>Đang xử lý</Text>
-                  </View>
-                ) : null}
-                <View style={styles.section}>
-                  <Checkbox
-                    style={styles.checkbox}
-                    value={changeStatus?.status3}
-                    onValueChange={() => {
-                      handleChangeStatus("status3", !changeStatus?.status3);
-                    }}
-                    color={changeStatus?.status3 ? "#4630EB" : undefined}
-                  />
-                  <Text style={styles.paragraph}>Đã xử lý</Text>
-                </View>
-              </View>
+              />
+              <ButtonSubmit
+                text={"Cập nhật"}
+                width={"49%"}
+                backgroundColor={COLORS.bg_button}
+                color={"white"}
+                onPress={() => handleSubmit()}
+                isLoading={loadingStatus}
+              />
             </View>
-            <View style={{ width: "100%" }}>
-              <Text allowFontScaling={false} style={styles.text}>
-                Ngày xử lý
-              </Text>
-              <TouchableOpacity
-                onPress={() => handleChangeDate("isCheck", true)}
-              >
-                <View style={styles.action}>
-                  <TextInput
-                    allowFontScaling={false}
-                    value={ngayXuLy.date}
-                    placeholder="Nhập ngày xử lý"
-                    placeholderTextColor="gray"
-                    style={{
-                      paddingLeft: 12,
-                      color: "#05375a",
-                      width: "80%",
-                      fontSize: adjust(16),
-                      height: adjust(50),
-                    }}
-                    pointerEvents="none"
-                  />
-                  <TouchableOpacity
-                    onPress={() => handleChangeDate("isCheck", true)}
-                    style={{
-                      justifyContent: "center",
-                      alignItems: "center",
-                      height: adjust(50),
-                      width: adjust(50),
-                    }}
-                  >
-                    <AntDesign name="calendar" size={24} color="black" />
-                  </TouchableOpacity>
-                </View>
-                <DateTimePickerModal
-                  isVisible={ngayXuLy.isCheck}
-                  mode="date"
-                  isDarkModeEnabled={true}
-                  maximumDate={new Date()}
-                  onConfirm={(date) => {
-                    handleChangeDate("date", moment(date).format("DD-MM-YYYY"));
-                    handleChangeDate("isCheck", false);
-                  }}
-                  onCancel={() => handleChangeDate("isCheck", false)}
-                />
-              </TouchableOpacity>
-            </View>
-            {changeStatus?.status3 && (
-              <View>
-                {/* Nội dung sự cố */}
-                <Text allowFontScaling={false} style={styles.text}>
-                  Ghi chú
-                </Text>
-                <TextInput
-                  allowFontScaling={false}
-                  placeholder="Nội dung"
-                  placeholderTextColor="gray"
-                  textAlignVertical="top"
-                  multiline={true}
-                  blurOnSubmit={true}
-                  value={dataInput.Noidungghichu}
-                  style={[
-                    styles.textInput,
-                    {
-                      paddingHorizontal: 10,
-                      height: 50,
-                    },
-                  ]}
-                  onChangeText={(text) => {
-                    handleChangeText("Noidungghichu", text);
-                  }}
-                />
-
-                {/* Hình ảnh */}
-                <Text allowFontScaling={false} style={styles.text}>
-                  Hình ảnh
-                </Text>
-                <View style={{ flexDirection: "row" }}>
-                  <TouchableOpacity
-                    style={{
-                      backgroundColor: "white",
-                      padding: SIZES.padding,
-                      borderRadius: SIZES.borderRadius,
-                      borderColor: COLORS.bg_button,
-                      borderWidth: 1,
-                      alignItems: "center",
-                      justifyContent: "center",
-                      height: 60,
-                      width: 60,
-                    }}
-                    onPress={() => pickImage()}
-                  >
-                    <Entypo name="camera" size={20} color="black" />
-                  </TouchableOpacity>
-                  {images.length > 0 && (
-                    <FlatList
-                      horizontal={true}
-                      contentContainerStyle={{ flexGrow: 1 }}
-                      data={images}
-                      renderItem={({ item, index }) => (
-                        <View style={{ marginLeft: 10 }}>
-                          <Image
-                            source={{ uri: item }}
-                            style={{
-                              width: 80,
-                              height: 100,
-                              position: "relative",
-                              opacity: 0.8,
-                            }}
-                          />
-                          <TouchableOpacity
-                            style={{
-                              position: "absolute",
-                              top: 30,
-                              left: 15,
-                              width: 50,
-                              height: 50,
-                              justifyContent: "center",
-                              alignItems: "center",
-                            }}
-                            onPress={() => handleRemoveImage(item)}
-                          >
-                            <FontAwesome
-                              name="remove"
-                              size={adjust(30)}
-                              color="white"
-                            />
-                          </TouchableOpacity>
-                        </View>
-                      )}
-                      keyExtractor={(item, index) => index.toString()}
-                      scrollEventThrottle={16}
-                      scrollEnabled={true}
-                    />
-                  )}
-                </View>
-              </View>
-            )}
           </View>
-          <View style={{ flexDirection: "row", marginBottom: 20, gap: 10 }}>
-            <ButtonSubmit
-              text={"Đóng"}
-              width={"49%"}
-              backgroundColor={"grey"}
-              color={"white"}
-              onPress={() => {
-                handleCloseTinhTrang();
-                resetDataInput();
-                // setModalHeight(350);
-              }}
-            />
-            <ButtonSubmit
-              text={"Cập nhật"}
-              width={"49%"}
-              backgroundColor={COLORS.bg_button}
-              color={"white"}
-              onPress={() => handleSubmit()}
-              isLoading={loadingStatus}
-            />
-          </View>
-        </View>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
     </GestureHandlerRootView>
@@ -631,7 +669,7 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     backgroundColor: "white",
   },
-  
+
   select: {
     width: "100%",
     borderRadius: 8,

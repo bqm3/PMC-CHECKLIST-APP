@@ -33,7 +33,12 @@ import {
   DanhmucDuanScreen,
 } from "../screens/PSH";
 
-import { DetailSucongoai, ThuchienSucongoai, XulySuco } from "../screens/SuCo";
+import {
+  DetailSucongoai,
+  ThuchienSucongoai,
+  XulySuco,
+  ChangeTinhTrangSuCo,
+} from "../screens/SuCo";
 
 import {
   DanhmucChiTietTracuu,
@@ -564,7 +569,7 @@ const HomeStack = ({ navigation }) => {
         })}
       />
 
-<Stack.Screen
+      <Stack.Screen
         name="Tổng checklist chưa checklist"
         component={NotCheckListTracuuCa}
         lazy={false}
@@ -756,7 +761,35 @@ const HomeStack = ({ navigation }) => {
                 fontWeight: "700",
                 color: "white",
               }}
-            ></Text>
+            >Chi tiết sự cố</Text>
+          ),
+          headerLeft: () => headerLeft(navigation),
+          headerTitleAlign: "center",
+          headerStyle: {
+            backgroundColor: COLORS.bg_button,
+          },
+          headerBackTitleVisible: false,
+        })}
+      />
+
+      <Stack.Screen
+        name="Thay đổi trạng thái"
+        component={ChangeTinhTrangSuCo}
+        lazy={false}
+        options={({ navigation, route }) => ({
+          headerShown: true,
+
+          headerTitle: () => (
+            <Text
+              allowFontScaling={false}
+              style={{
+                fontSize: adjust(20),
+                fontWeight: "700",
+                color: "white",
+              }}
+            >
+              Thay đôi trạng thái
+            </Text>
           ),
           headerLeft: () => headerLeft(navigation),
           headerTitleAlign: "center",

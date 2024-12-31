@@ -91,6 +91,8 @@ const DetailChecklist = ({ route, navigation }) => {
   const [show, setShow] = useState(false);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [widthModal, setWidthModal] = useState("90%");
+  const [heightModal, setHeightModal] = useState("auto");
 
   const headerHeight = useHeaderHeight();
   const [isConnected, setConnected] = useState(true);
@@ -179,7 +181,7 @@ const DetailChecklist = ({ route, navigation }) => {
 
   const handleCheckAll = (value) => {
     setActiveAll(value);
-    console.log('value',value)
+    console.log("value", value);
     // value == false
     if (value) {
       const updateDataChecklist = dataChecklistFilter?.map((item, i) => {
@@ -592,8 +594,11 @@ const DetailChecklist = ({ route, navigation }) => {
 
   // call api submit data checklsit
   const handleSubmit = async () => {
-    console.log('defaultActionDataChecklist',defaultActionDataChecklist.length)
-    console.log('dataChecklistFaild',dataChecklistFaild)
+    console.log(
+      "defaultActionDataChecklist",
+      defaultActionDataChecklist.length
+    );
+    console.log("dataChecklistFaild", dataChecklistFaild);
     try {
       saveConnect(true);
       if (location == null) {
@@ -764,7 +769,7 @@ const DetailChecklist = ({ route, navigation }) => {
         formData.append("Kinhdo", item.Kinhdo || "");
         formData.append("Docao", item.Docao || "");
         formData.append("isScan", isScan || null);
-        
+
         if (item.Anh && Array.isArray(item.Anh)) {
           // Use a for...of loop to wait for asynchronous tasks
           for (const [imgIndex, image] of item.Anh.entries()) {
@@ -933,7 +938,7 @@ const DetailChecklist = ({ route, navigation }) => {
           formData.append("Kinhdo", item.Kinhdo || "");
           formData.append("Docao", item.Docao || "");
           formData.append("isScan", isScan || null);
-          
+
           if (item.Anh && Array.isArray(item.Anh)) {
             // Use a for...of loop to wait for asynchronous tasks
             for (const [imgIndex, image] of item.Anh.entries()) {
@@ -946,7 +951,7 @@ const DetailChecklist = ({ route, navigation }) => {
                   [{ resize: { width: image.width * 0.6 } }], // Resize nhỏ hơn 50%
                   { compress: 1, format: ImageManipulator.SaveFormat.PNG } // Nén ảnh
                 );
-  
+
                 const file = {
                   uri: resizedImage.uri,
                   name:
@@ -956,7 +961,7 @@ const DetailChecklist = ({ route, navigation }) => {
                     }_${imgIndex}.png`,
                   type: "image/png",
                 };
-  
+
                 formData.append(
                   `Images_${index}_${item.ID_Checklist}_${imgIndex}`,
                   file
@@ -1167,6 +1172,8 @@ const DetailChecklist = ({ route, navigation }) => {
     setDataItem(null);
     setIndex(null);
     setIsBottomSheetOpen(false);
+    setWidthModal("90%")
+    setHeightModal("auto")
   }, []);
 
   // view item flatlist
@@ -1546,8 +1553,8 @@ const DetailChecklist = ({ route, navigation }) => {
                 style={[
                   styles.modalView,
                   {
-                    width: "90%",
-                    height: "auto",
+                    width: widthModal,
+                    height: heightModal,
                     justifyContent: "space-between",
                     alignItems: "center",
                     alignContent: "center",
@@ -1562,24 +1569,12 @@ const DetailChecklist = ({ route, navigation }) => {
                   // handleChange={handleChange}
                   handleClearBottom={handleClearBottom}
                   user={user}
+                  setWidthModal={setWidthModal}
+                  setHeightModal={setHeightModal}
                 />
               </View>
             </View>
           </Modal>
-          {/* <ModalBottomSheet
-            visible={visibleBottom}
-            setVisible={setVisibleBottom}
-            setOpacity={setOpacity}
-          >
-            <ModalPopupDetailChecklist
-              handlePopupClear={handlePopupClear}
-              dataItem={dataItem}
-              handleItemClick={handleItemClick}
-              index={index}
-              handleClearBottom={handleClearBottom}
-              user={user}
-            />
-          </ModalBottomSheet> */}
 
           {/* Modal show tieu chuan  */}
           <Modal

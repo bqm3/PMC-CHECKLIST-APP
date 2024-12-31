@@ -16,9 +16,16 @@ import {
   Modal,
 } from "react-native";
 import * as Device from "expo-device";
-import React, { useState, useEffect, useCallback, useContext } from "react";
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useContext,
+  useRef,
+} from "react";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Entypo, AntDesign, FontAwesome } from "@expo/vector-icons";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import Checkbox from "expo-checkbox";
@@ -59,6 +66,13 @@ const ThuchienSucongoai = ({ navigation, route }) => {
   const [dataHangmuc, setDataHangmuc] = useState([]);
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [isModalcall, setIsModalcall] = useState(false);
+  const [isCheck, setIsCheck] = useState(false);
+  const [saveStatus, setSaveStatus] = useState(0);
+  const [changeStatus, setChangeStatus] = useState({
+    status1: true,
+    status2: false,
+    status3: false,
+  });
 
   const [dataInput, setDataInput] = useState({
     ID_KV_CV: null,
@@ -69,6 +83,9 @@ const ThuchienSucongoai = ({ navigation, route }) => {
     Duongdancacanh: [],
     deviceUser: token,
     deviceNameUser: Device.modelName,
+    TenHangmuc: null,
+    Bienphapxuly: null,
+    Ghichu: null,
   });
 
   const [dataCheckKhuvuc, setDataCheckKhuvuc] = useState({
@@ -82,6 +99,30 @@ const ThuchienSucongoai = ({ navigation, route }) => {
   });
 
   const [images, setImages] = useState([]);
+
+  const handleChangeStatus = (key, val) => {
+    setChangeStatus((prevStatus) => {
+      const updatedStatus = Object.keys(prevStatus).reduce(
+        (acc, currentKey) => {
+          // Đặt tất cả các key khác thành false, chỉ set key hiện tại thành val
+          acc[currentKey] = currentKey === key ? val : false;
+          return acc;
+        },
+        {}
+      );
+
+      return updatedStatus;
+    });
+    setSaveStatus(
+      key === "status1" && val == true
+        ? 0
+        : key === "status2" && val == true
+        ? 1
+        : key === "status3" && val == true
+        ? 2
+        : null
+    );
+  };
 
   const handleChangeText = (key, value) => {
     setDataInput((data) => ({
@@ -238,6 +279,8 @@ const ThuchienSucongoai = ({ navigation, route }) => {
       Giosuco: null,
       Noidungsuco: "",
       Duongdancacanh: [],
+      TenHangmuc: null,
+      Bienphapxuly: null,
     });
     setDataCheckKhuvuc({
       ID_Toanha: null,
@@ -245,6 +288,8 @@ const ThuchienSucongoai = ({ navigation, route }) => {
     });
     setImages([]);
   };
+
+  console.log("isCheck",isCheck)
 
   const handleSubmit = async () => {
     console.log("running submit");
@@ -280,8 +325,21 @@ const ThuchienSucongoai = ({ navigation, route }) => {
         formData.append("ID_User", user.ID_User);
         formData.append("deviceUser", token);
         formData.append("deviceNameUser", Device.modelName);
-        formData.append("Tinhtrangxuly", 0);
-        if (dataInput.Ngaysuco == null || dataInput.Giosuco == null) {
+        formData.append("Tinhtrangxuly", saveStatus != null ? saveStatus : 0);
+        formData.append("TenHangmuc", dataInput.TenHangmuc);
+        formData.append("Bienphapxuly", dataInput.Bienphapxuly);
+        formData.append("Ghichu", dataInput.Ghichu);
+        if(isCheck == true && dataInput.Ngaysuco == null){
+          Alert.alert("PMC Thông báo", "Vui lòng nhập ngày sự cố", [
+            {
+              text: "Hủy",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel",
+            },
+            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+          ]);
+          setLoadingSubmit(false);
+        } else if ((dataInput.Ngaysuco == null && isCheck == false) || (dataInput.Giosuco == null && isCheck == false)) {
           Alert.alert("PMC Thông báo", "Vui lòng nhập đầy đủ thông tin", [
             {
               text: "Hủy",
@@ -291,7 +349,6 @@ const ThuchienSucongoai = ({ navigation, route }) => {
             { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
           ]);
           setLoadingSubmit(false);
-          resetDataInput();
         } else if (dataInput.Ngaysuco > nowDate()) {
           Alert.alert("PMC Thông báo", "Ngày không hợp lệ", [
             {
@@ -332,9 +389,22 @@ const ThuchienSucongoai = ({ navigation, route }) => {
           deviceUser: token,
           deviceNameUser: Device.modelName,
           ID_User: user.ID_User,
-          Tinhtrangxuly: 0,
+          Tinhtrangxuly: saveStatus != null ? saveStatus : 0,
+          TenHangmuc: dataInput.TenHangmuc,
+          Bienphapxuly: dataInput.Bienphapxuly,
+          Ghichu: dataInput.Ghichu,
         };
-        if (data.Ngaysuco == null || data.Giosuco == null) {
+        if(isCheck == true && dataInput.Ngaysuco == null){
+          Alert.alert("PMC Thông báo", "Vui lòng nhập ngày sự cố", [
+            {
+              text: "Hủy",
+              onPress: () => console.log("Cancel Pressed"),
+              style: "cancel",
+            },
+            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+          ]);
+          setLoadingSubmit(false);
+        } else if ((dataInput.Ngaysuco == null && isCheck == false) || (dataInput.Giosuco == null && isCheck == false)) {
           Alert.alert("PMC Thông báo", "Vui lòng nhập đầy đủ thông tin", [
             {
               text: "Hủy",
@@ -344,7 +414,7 @@ const ThuchienSucongoai = ({ navigation, route }) => {
             { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
           ]);
           setLoadingSubmit(false);
-          resetDataInput();
+          // resetDataInput();
         } else if (data.Ngaysuco > nowDate()) {
           Alert.alert("PMC Thông báo", "Ngày không hợp lệ", [
             {
@@ -412,133 +482,151 @@ const ThuchienSucongoai = ({ navigation, route }) => {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : null}
-        style={{ flex: 1 }}
-      >
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <BottomSheetModalProvider>
-            <ImageBackground
-              source={require("../../../assets/bg_new.png")}
-              resizeMode="stretch"
-              style={{ flex: 1, width: "100%" }}
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <BottomSheetModalProvider>
+          <ImageBackground
+            source={require("../../../assets/bg_new.png")}
+            resizeMode="stretch"
+            style={{ flex: 1, width: "100%" }}
+          >
+            <KeyboardAwareScrollView
+              enableOnAndroid={true}
+              enableAutomaticScroll={true}
+              extraScrollHeight={Platform.OS === "ios" ? 120 : 140}
+              keyboardOpeningTime={0}
+              keyboardShouldPersistTaps="handled"
+              contentContainerStyle={styles.scrollViewContent}
+              showsVerticalScrollIndicator={false}
+              bounces={false}
             >
-              <ScrollView contentContainerStyle={[styles.container]}>
-                <View
-                  style={{
-                    flexDirection: "column",
-                    justifyContent: "space-between",
-                    height: "100%",
-                  }}
-                >
-                  <View>
-                    {/* Ngày giờ sự cố  */}
+              <View
+                style={{
+                  flexDirection: "column",
+                  justifyContent: "space-between",
+                  height: "100%",
+                }}
+              >
+                <View>
+                  <View style={styles.checkboxContainer}>
                     <View
-                      style={{
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                      }}
+                      style={{ flexDirection: "row", alignItems: "center" }}
                     >
-                      <View style={{ width: "48%" }}>
-                        <Text allowFontScaling={false} style={styles.text}>
-                          Ngày sự cố
-                        </Text>
-                        <TouchableOpacity
-                          onPress={() => showDatePicker("Ngaysuco")}
-                        >
-                          <View style={styles.action}>
-                            <TextInput
-                              allowFontScaling={false}
-                              value={dataInput.Ngaysuco}
-                              placeholder="Nhập ngày sự cố"
-                              placeholderTextColor="gray"
-                              style={{
-                                paddingLeft: 12,
-                                color: "#05375a",
-                                width: "75%",
-                                fontSize: adjust(16),
-                                height: adjust(50),
-                              }}
-                              pointerEvents="none"
-                            />
-                            <TouchableOpacity
-                              onPress={() => showDatePicker("Ngaysuco")}
-                              style={{
-                                justifyContent: "center",
-                                alignItems: "center",
-                                height: adjust(50),
-                                width: adjust(50),
-                              }}
-                            >
-                              <AntDesign
-                                name="calendar"
-                                size={24}
-                                color="black"
-                              />
-                            </TouchableOpacity>
-                          </View>
-                          <DateTimePickerModal
-                            isVisible={isDatePickerVisible.Ngaysuco}
-                            mode="date"
-                            isDarkModeEnabled={true}
-                            onConfirm={(date) =>
-                              handleConfirm("Ngaysuco", date, "YYYY-MM-DD")
-                            }
-                            onCancel={() => hideDatePicker("Ngaysuco", false)}
-                          />
-                        </TouchableOpacity>
-                      </View>
-                      <View style={{ width: "48%" }}>
-                        <Text allowFontScaling={false} style={styles.text}>
-                          Giờ sự cố
-                        </Text>
-                        <TouchableOpacity
-                          onPress={() => showDatePicker("Giosuco")}
-                        >
-                          <View style={styles.action}>
-                            <TextInput
-                              allowFontScaling={false}
-                              value={dataInput.Giosuco}
-                              placeholder="Nhập giờ sự cố"
-                              placeholderTextColor="gray"
-                              style={{
-                                paddingLeft: 12,
-                                color: "#05375a",
-                                width: "75%",
-                                fontSize: adjust(16),
-                                height: adjust(50),
-                              }}
-                              pointerEvents="none"
-                            />
-                            <TouchableOpacity
-                              onPress={() => showDatePicker("Giosuco")}
-                              style={{
-                                justifyContent: "center",
-                                alignItems: "center",
-                                height: adjust(50),
-                                width: adjust(50),
-                              }}
-                            >
-                              <AntDesign
-                                name="calendar"
-                                size={24}
-                                color="black"
-                              />
-                            </TouchableOpacity>
-                          </View>
-                          <DateTimePickerModal
-                            isVisible={isDatePickerVisible.Giosuco}
-                            mode="time"
-                            isDarkModeEnabled={true}
-                            onConfirm={(date) =>
-                              handleConfirm("Giosuco", date, "LT")
-                            }
-                            onCancel={() => hideDatePicker("Giosuco", false)}
-                          />
-                        </TouchableOpacity>
-                      </View>
+                      <Checkbox
+                        disabled={false}
+                        value={isCheck}
+                        onValueChange={(newValue) => setIsCheck(newValue)}
+                      />
+                      <Text style={styles.text}> Nhập hạng mục</Text>
                     </View>
-                    {/* Chọn khu vực hạng mục xảy ra sự cố  */}
+                  </View>
+                  {/* Ngày giờ sự cố  */}
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <View style={{ width: "48%" }}>
+                      <Text allowFontScaling={false} style={styles.text}>
+                        Ngày sự cố
+                      </Text>
+                      <TouchableOpacity
+                        onPress={() => showDatePicker("Ngaysuco")}
+                      >
+                        <View style={styles.action}>
+                          <TextInput
+                            allowFontScaling={false}
+                            value={dataInput.Ngaysuco}
+                            placeholder="Nhập ngày sự cố"
+                            placeholderTextColor="gray"
+                            style={{
+                              paddingLeft: 12,
+                              color: "#05375a",
+                              width: "75%",
+                              fontSize: adjust(16),
+                              height: adjust(50),
+                            }}
+                            pointerEvents="none"
+                          />
+                          <TouchableOpacity
+                            onPress={() => showDatePicker("Ngaysuco")}
+                            style={{
+                              justifyContent: "center",
+                              alignItems: "center",
+                              height: adjust(50),
+                              width: adjust(50),
+                            }}
+                          >
+                            <AntDesign
+                              name="calendar"
+                              size={24}
+                              color="black"
+                            />
+                          </TouchableOpacity>
+                        </View>
+                        <DateTimePickerModal
+                          isVisible={isDatePickerVisible.Ngaysuco}
+                          mode="date"
+                          isDarkModeEnabled={true}
+                          onConfirm={(date) =>
+                            handleConfirm("Ngaysuco", date, "YYYY-MM-DD")
+                          }
+                          onCancel={() => hideDatePicker("Ngaysuco", false)}
+                        />
+                      </TouchableOpacity>
+                    </View>
+                    <View style={{ width: "48%" }}>
+                      <Text allowFontScaling={false} style={styles.text}>
+                        Giờ sự cố
+                      </Text>
+                      <TouchableOpacity
+                        onPress={() => showDatePicker("Giosuco")}
+                      >
+                        <View style={styles.action}>
+                          <TextInput
+                            allowFontScaling={false}
+                            value={dataInput.Giosuco}
+                            placeholder="Nhập giờ sự cố"
+                            placeholderTextColor="gray"
+                            style={{
+                              paddingLeft: 12,
+                              color: "#05375a",
+                              width: "75%",
+                              fontSize: adjust(16),
+                              height: adjust(50),
+                            }}
+                            pointerEvents="none"
+                          />
+                          <TouchableOpacity
+                            onPress={() => showDatePicker("Giosuco")}
+                            style={{
+                              justifyContent: "center",
+                              alignItems: "center",
+                              height: adjust(50),
+                              width: adjust(50),
+                            }}
+                          >
+                            <AntDesign
+                              name="calendar"
+                              size={24}Giosuco
+                              color="black"
+                            />
+                          </TouchableOpacity>
+                        </View>
+                        <DateTimePickerModal
+                          isVisible={isDatePickerVisible.Giosuco}
+                          mode="time"
+                          isDarkModeEnabled={true}
+                          onConfirm={(date) =>
+                            handleConfirm("Giosuco", date, "LT")
+                          }
+                          onCancel={() => hideDatePicker("Giosuco", false)}
+                        />
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                  {/* Chọn khu vực hạng mục xảy ra sự cố  */}
+                  {!isCheck ? (
                     <View>
                       <View
                         style={{
@@ -748,19 +836,74 @@ const ThuchienSucongoai = ({ navigation, route }) => {
                         )}
                       </View>
                     </View>
-                    {/* Nội dung sự cố  */}
+                  ) : (
+                    <>
+                      <View>
+                        <Text allowFontScaling={false} style={styles.text}>
+                          Tên hạng mục
+                        </Text>
+                        <TextInput
+                          allowFontScaling={false}
+                          placeholder="Tên hạng mục"
+                          placeholderTextColor="gray"
+                          textAlignVertical="top"
+                          multiline={true}
+                          blurOnSubmit={true}
+                          value={dataInput.TenHangmuc}
+                          style={[
+                            styles.textInput,
+                            {
+                              paddingHorizontal: 10,
+                              height: adjust(70),
+                            },
+                          ]}
+                          onChangeText={(text) => {
+                            handleChangeText("TenHangmuc", text);
+                          }}
+                        />
+                      </View>
+                    </>
+                  )}
+
+                  {/* Nội dung sự cố  */}
+                  <View>
+                    <Text allowFontScaling={false} style={styles.text}>
+                      Nội dung sự cố
+                    </Text>
+                    <TextInput
+                      allowFontScaling={false}
+                      placeholder="Nội dung"
+                      placeholderTextColor="gray"
+                      textAlignVertical="top"
+                      multiline={true}
+                      blurOnSubmit={true}
+                      value={dataInput.Noidungsuco}
+                      style={[
+                        styles.textInput,
+                        {
+                          paddingHorizontal: 10,
+                          height: 100,
+                        },
+                      ]}
+                      onChangeText={(text) => {
+                        handleChangeText("Noidungsuco", text);
+                      }}
+                    />
+                  </View>
+
+                  {isCheck && (
                     <View>
                       <Text allowFontScaling={false} style={styles.text}>
-                        Nội dung sự cố
+                        Biện pháp xử lý
                       </Text>
                       <TextInput
                         allowFontScaling={false}
-                        placeholder="Nội dung"
+                        placeholder="Biện pháp xử lý"
                         placeholderTextColor="gray"
                         textAlignVertical="top"
                         multiline={true}
                         blurOnSubmit={true}
-                        value={dataInput.Noidungsuco}
+                        value={dataInput.Bienphapxuly}
                         style={[
                           styles.textInput,
                           {
@@ -769,129 +912,227 @@ const ThuchienSucongoai = ({ navigation, route }) => {
                           },
                         ]}
                         onChangeText={(text) => {
-                          handleChangeText("Noidungsuco", text);
+                          handleChangeText("Bienphapxuly", text);
                         }}
                       />
-                    </View>
-
-                    {/* Hình ảnh sự cố  */}
-                    <View>
                       <Text allowFontScaling={false} style={styles.text}>
-                        Hình ảnh
+                        Ghi chú
                       </Text>
-                      <View style={{ flexDirection: "row" }}>
-                        <TouchableOpacity
-                          style={{
-                            backgroundColor: "white",
-                            padding: SIZES.padding,
-                            borderRadius: SIZES.borderRadius,
-                            borderColor: COLORS.bg_button,
-                            borderWidth: 1,
-                            alignItems: "center",
-                            justifyContent: "center",
-                            height: 80,
-                            width: 80,
-                          }}
-                          onPress={() => pickImage()}
-                        >
-                          <Entypo name="camera" size={24} color="black" />
-                        </TouchableOpacity>
+                      <TextInput
+                        allowFontScaling={false}
+                        placeholder="Ghi chú"
+                        placeholderTextColor="gray"
+                        textAlignVertical="top"
+                        multiline={true}
+                        blurOnSubmit={true}
+                        value={dataInput.Ghichu}
+                        style={[
+                          styles.textInput,
+                          {
+                            paddingHorizontal: 10,
+                            height: 60,
+                          },
+                        ]}
+                        onChangeText={(text) => {
+                          handleChangeText("Ghichu", text);
+                        }}
+                      />
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          marginTop: 10,
+                        }}
+                      >
+                        <View style={styles.section}>
+                          <Checkbox
+                            style={styles.checkbox}
+                            value={changeStatus?.status1}
+                            onValueChange={() => {
+                              handleChangeStatus(
+                                "status1",
+                                !changeStatus?.status1
+                              );
+                            }}
+                            color={
+                              changeStatus?.status1 ? "#4630EB" : undefined
+                            }
+                          />
+                          <Text
+                            style={[
+                              styles.paragraph,
+                              { marginLeft: adjust(10) },
+                            ]}
+                          >
+                            Chưa xử lý
+                          </Text>
+                        </View>
+                        <View style={styles.section}>
+                          <Checkbox
+                            style={styles.checkbox}
+                            value={changeStatus?.status2}
+                            onValueChange={() => {
+                              handleChangeStatus(
+                                "status2",
+                                !changeStatus?.status2
+                              );
+                            }}
+                            color={
+                              changeStatus?.status2 ? "#4630EB" : undefined
+                            }
+                          />
+                          <Text
+                            style={[
+                              styles.paragraph,
+                              { marginLeft: adjust(10) },
+                            ]}
+                          >
+                            Đang xử lý
+                          </Text>
+                        </View>
 
-                        <FlatList
-                          horizontal={true}
-                          contentContainerStyle={{ flexGrow: 1 }}
-                          data={images}
-                          renderItem={({ item, index }) => (
-                            <View style={{ marginLeft: 10 }}>
-                              <Image
-                                source={{ uri: item }}
-                                style={{
-                                  width: 100,
-                                  height: 140,
-                                  position: "relative",
-                                  opacity: 0.8,
-                                }}
-                              />
-                              <TouchableOpacity
-                                style={{
-                                  position: "absolute",
-                                  top: 45,
-                                  left: 25,
-                                  width: 50,
-                                  height: 50,
-                                  justifyContent: "center",
-                                  alignItems: "center",
-                                }}
-                                onPress={() => handleRemoveImage(item)}
-                              >
-                                <Image
-                                  source={require("../../../assets/icons/ic_close.png")}
-                                  style={styles.closeIcon}
-                                />
-                              </TouchableOpacity>
-                            </View>
-                          )}
-                          keyExtractor={(item, index) => index.toString()}
-                          scrollEventThrottle={16}
-                          scrollEnabled={true}
-                        />
+                        <View style={styles.section}>
+                          <Checkbox
+                            style={styles.checkbox}
+                            value={changeStatus?.status3}
+                            onValueChange={() => {
+                              handleChangeStatus(
+                                "status3",
+                                !changeStatus?.status3
+                              );
+                            }}
+                            color={
+                              changeStatus?.status3 ? "#4630EB" : undefined
+                            }
+                          />
+                          <Text
+                            style={[
+                              styles.paragraph,
+                              { marginLeft: adjust(10) },
+                            ]}
+                          >
+                            Đã xử lý
+                          </Text>
+                        </View>
                       </View>
                     </View>
-                  </View>
+                  )}
 
-                  <View style={{ marginBottom: 10 }}>
-                    <TouchableOpacity onPress={() => setIsModalcall(true)}>
-                      <View
-                        style={{ alignItems: "flex-end", marginBottom: 10 }}
+                  {/* Hình ảnh sự cố  */}
+                  <View>
+                    <Text allowFontScaling={false} style={styles.text}>
+                      Hình ảnh
+                    </Text>
+                    <View style={{ flexDirection: "row" }}>
+                      <TouchableOpacity
+                        style={{
+                          backgroundColor: "white",
+                          padding: SIZES.padding,
+                          borderRadius: SIZES.borderRadius,
+                          borderColor: COLORS.bg_button,
+                          borderWidth: 1,
+                          alignItems: "center",
+                          justifyContent: "center",
+                          height: 80,
+                          width: 80,
+                          marginEnd: adjust(10),
+                        }}
+                        onPress={() => pickImage()}
                       >
-                        <Image
-                          source={require("../../../assets/icons/ic_phone_green_2.png")}
-                          style={{
-                            width: adjust(80) * 0.8,
-                            height: adjust(80) * 0.8,
-                            resizeMode: "contain",
-                          }}
-                        />
-                      </View>
-                    </TouchableOpacity>
-                    <ButtonSubmit
-                      text="Gửi"
-                      onPress={() => handleSubmit()}
-                      isLoading={loadingSubmit}
-                      backgroundColor={COLORS.bg_button}
-                      color="white"
-                      width="100%"
-                    />
+                        <Entypo name="camera" size={24} color="black" />
+                      </TouchableOpacity>
+
+                      <FlatList
+                        horizontal={true}
+                        contentContainerStyle={{ flexGrow: 1 }}
+                        data={images}
+                        renderItem={({ item, index }) => (
+                          <View style={{ marginEnd: 10 }}>
+                            <Image
+                              source={{ uri: item }}
+                              style={{
+                                width: 100,
+                                height: 140,
+                                position: "relative",
+                                opacity: 0.8,
+                              }}
+                            />
+                            <TouchableOpacity
+                              style={{
+                                position: "absolute",
+                                top: 45,
+                                left: 25,
+                                width: 50,
+                                height: 50,
+                                justifyContent: "center",
+                                alignItems: "center",
+                              }}
+                              onPress={() => handleRemoveImage(item)}
+                            >
+                              <Image
+                                source={require("../../../assets/icons/ic_close.png")}
+                                style={styles.closeIcon}
+                              />
+                            </TouchableOpacity>
+                          </View>
+                        )}
+                        keyExtractor={(item, index) => index.toString()}
+                        scrollEventThrottle={16}
+                        scrollEnabled={true}
+                        showsHorizontalScrollIndicator={false}
+                      />
+                    </View>
                   </View>
                 </View>
 
-                <Modal
-                  animationType="slide"
-                  transparent={true}
-                  visible={isModalcall}
-                  onRequestClose={() => {
-                    setIsModalcall(false);
-                  }}
-                >
-                  <View style={styles.centeredView}>
-                    <View
-                      style={[
-                        styles.modalView,
-                        { width: "80%", height: "70%" },
-                      ]}
-                    >
-                      <ModalCallSucongoai
-                        userPhone={userPhone}
-                        setIsModalcall={setIsModalcall}
+                <View style={{ marginBottom: 10, marginTop: adjust(5) }}>
+                  <TouchableOpacity onPress={() => setIsModalcall(true)}>
+                    <View style={{ alignItems: "flex-end", marginBottom: 10 }}>
+                      <Image
+                        source={require("../../../assets/icons/ic_phone_green_2.png")}
+                        style={{
+                          width: adjust(80) * 0.8,
+                          height: adjust(80) * 0.8,
+                          resizeMode: "contain",
+                        }}
                       />
                     </View>
+                  </TouchableOpacity>
+                  <ButtonSubmit
+                    text="Gửi"
+                    onPress={() => handleSubmit()}
+                    isLoading={loadingSubmit}
+                    backgroundColor={COLORS.bg_button}
+                    color="white"
+                    width="100%"
+                  />
+                </View>
+              </View>
+
+              <Modal
+                animationType="slide"
+                transparent={true}
+                visible={isModalcall}
+                onRequestClose={() => {
+                  setIsModalcall(false);
+                }}
+              >
+                <View style={styles.centeredView}>
+                  <View
+                    style={[styles.modalView, { width: "80%", height: "70%" }]}
+                  >
+                    <ModalCallSucongoai
+                      userPhone={userPhone}
+                      setIsModalcall={setIsModalcall}
+                    />
                   </View>
-                </Modal>
-              </ScrollView>
-            </ImageBackground>
-          </BottomSheetModalProvider>
-        </TouchableWithoutFeedback>
-      </KeyboardAvoidingView>
+                </View>
+              </Modal>
+            </KeyboardAwareScrollView>
+          </ImageBackground>
+        </BottomSheetModalProvider>
+      </TouchableWithoutFeedback>
     </GestureHandlerRootView>
   );
 };
@@ -899,6 +1140,10 @@ const ThuchienSucongoai = ({ navigation, route }) => {
 export default ThuchienSucongoai;
 
 const styles = StyleSheet.create({
+  scrollViewContent: {
+    flexGrow: 1,
+    padding: 10,
+  },
   container: {
     flexDirection: "column",
     margin: 10,
@@ -975,7 +1220,6 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   checkbox: {
-    margin: 8,
     width: 24,
     height: 24,
   },
@@ -1006,5 +1250,9 @@ const styles = StyleSheet.create({
   },
   closeIcon: {
     tintColor: "white",
+  },
+  checkboxContainer: {
+    flexDirection: "row",
+    alignItems: "center",
   },
 });
