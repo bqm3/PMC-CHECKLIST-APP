@@ -289,8 +289,6 @@ const ThuchienSucongoai = ({ navigation, route }) => {
     setImages([]);
   };
 
-  console.log("isCheck",isCheck)
-
   const handleSubmit = async () => {
     console.log("running submit");
     setLoadingSubmit(true);
