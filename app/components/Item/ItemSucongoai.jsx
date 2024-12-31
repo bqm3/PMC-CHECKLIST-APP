@@ -14,7 +14,6 @@ export default function ItemSucongoai({
     (existingItem) => existingItem.ID_Suco === item.ID_Suco
   );
 
-  const formattedTime = item?.Giosuco.slice(0, 5);
   return (
     <TouchableOpacity
       style={[
@@ -81,16 +80,16 @@ export default function ItemSucongoai({
               {
                 fontWeight: "500",
                 color: isExistIndex
-                  ? item?.ent_hangmuc?.Hangmuc
+                  ? item?.ent_hangmuc?.Hangmuc || item?.TenHangmuc
                     ? "black"
                     : "red"
-                  : item?.ent_hangmuc?.Hangmuc
+                  : item?.ent_hangmuc?.Hangmuc || item?.TenHangmuc
                   ? "white"
                   : "red",
               },
             ]}
           >
-            : {item?.ent_hangmuc?.Hangmuc || "Chưa có hạng mục"}
+          : {`${item?.TenHangmuc}` != `null` ? item?.TenHangmuc : (item?.ent_hangmuc?.Hangmuc || "Chưa có hạng mục")}
           </Text>
         </View>
       </View>

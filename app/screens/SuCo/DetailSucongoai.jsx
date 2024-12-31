@@ -15,25 +15,19 @@ import {
   ScrollView,
   ActivityIndicator,
 } from "react-native";
-import * as Device from 'expo-device';
-import React, { useState, useEffect, useCallback } from "react";
-import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
+import React, { useState, useEffect, useCallback, useRef } from "react";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { Entypo, AntDesign, Feather } from "@expo/vector-icons";
-import { Provider, useDispatch, useSelector } from "react-redux";
+import { AntDesign, Feather } from "@expo/vector-icons";
 import adjust from "../../adjust";
 import moment from "moment";
-import { COLORS, SIZES } from "../../constants/theme";
-import { funcBaseUri_Image, getImageUrls } from "../../utils/util";
+import { getImageUrls } from "../../utils/util";
 
 const DetailSucongoai = ({ navigation, route }) => {
   const data = route.params.data;
-
-  const dispath = useDispatch();
-
   const images = data?.Duongdancacanh ? data.Duongdancacanh.split(",") : [];
   const imagesHandle = data?.Anhkiemtra ? data.Anhkiemtra.split(",") : [];
-  const formattedTime = data?.Giosuco.slice(0, 5);
+  const formattedTime = data?.Giosuco != undefined ? `${data?.Giosuco?.slice(0, 5)} ` : "";
 
   const [isShowImage, setIsShowImage] = useState(false);
   const [dataImage, setDataImage] = useState(null);
@@ -46,358 +40,394 @@ const DetailSucongoai = ({ navigation, route }) => {
   const [isLoading, setIsLoading] = useState(true);
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : null}
-        style={{ flex: 1 }}
+      <ImageBackground
+        source={require("../../../assets/bg_new.png")}
+        resizeMode="stretch"
+        style={{ flex: 1, width: "100%" }}
       >
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-          <BottomSheetModalProvider>
-            <ImageBackground
-              source={require("../../../assets/bg_new.png")}
-              resizeMode="stretch"
-              style={{ flex: 1, width: "100%" }}
+        <View style={{ flex: 1 }}>
+          {isShowImage && (
+            <View>
+              {isLoading && (
+                <ActivityIndicator
+                  size="large"
+                  color="#ffffff"
+                  style={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: [{ translateX: -25 }, { translateY: -25 }],
+                  }}
+                />
+              )}
+              <Image
+                style={{
+                  height: "100%",
+                  width: "100%",
+                  resizeMode: "contain",
+                }}
+                source={{
+                  uri: getImageUrls(3, dataImage),
+                }}
+                onLoadStart={() => setIsLoading(true)}
+                onLoadEnd={() => setIsLoading(false)}
+                onError={() => {
+                  setIsLoading(false);
+                }}
+              />
+              <TouchableOpacity
+                style={{
+                  position: "absolute",
+                  top: 10,
+                  right: 10,
+                  width: 50,
+                  height: 50,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+                onPress={() => setIsShowImage(false)}
+              >
+                <AntDesign name="close" size={adjust(40)} color="white" />
+              </TouchableOpacity>
+            </View>
+          )}
+          <KeyboardAwareScrollView
+            enableOnAndroid={true}
+            enableAutomaticScroll={true}
+            extraScrollHeight={Platform.OS === "ios" ? 120 : 140}
+            keyboardOpeningTime={0}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+            bounces={false}
+            style={{ flex: 1 }}
+            contentContainerStyle={{ flexGrow: 1 }}
+          >
+            <View
+              style={{
+                margin: 10,
+                flex: 1,
+                height: "100%",
+                flexDirection: "column",
+                justifyContent: "space-between",
+                marginBottom: adjust(60),
+              }}
             >
-              <>
-              
-                {isShowImage ? (
-                  <View style={styles.container}>
-                    {isLoading && (
-                      <ActivityIndicator
-                        size="large"
-                        color="#ffffff"
-                        style={{
-                          position: "absolute",
-                          top: "50%",
-                          left: "50%",
-                          transform: [{ translateX: -25 }, { translateY: -25 }],
-                        }}
-                      />
-                    )}
-                    <Image
+              <Text style={styles.header}>
+                Tình trạng:{" "}
+                {(data.Tinhtrangxuly == 0 && "Chưa xử lý") ||
+                  (data.Tinhtrangxuly == 1 && "Đang xử lý") ||
+                  (data.Tinhtrangxuly == 2 && "Đã xử lý")}
+              </Text>
+              <View style={{ width: "100%" }}>
+                <Text allowFontScaling={false} style={styles.text}>
+                  Hạng mục
+                </Text>
+
+                <View style={styles.action}>
+                  <TextInput
+                    allowFontScaling={false}
+                    value={
+                      data?.TenHangmuc ||
+                      data?.ent_hangmuc?.Hangmuc ||
+                      "Chưa có hạng mục"
+                    }
+                    editable={false}
+                    placeholder="Hạng mục"
+                    placeholderTextColor="gray"
+                    style={{
+                      paddingLeft: 12,
+                      color: "#05375a",
+                      width: "75%",
+                      fontSize: adjust(16),
+                      height: adjust(50),
+                    }}
+                    pointerEvents="none"
+                  />
+                </View>
+              </View>
+              <View style={{ width: "100%" }}>
+                <Text allowFontScaling={false} style={styles.text}>
+                  Người gửi
+                </Text>
+
+                <View style={styles.action}>
+                  <TextInput
+                    allowFontScaling={false}
+                    value={`${data?.ent_user?.Hoten} - ${data?.ent_user?.ent_chucvu?.Chucvu}`}
+                    editable={false}
+                    placeholder="Hạng mục"
+                    placeholderTextColor="gray"
+                    style={{
+                      paddingLeft: 12,
+                      color: "#05375a",
+                      width: "75%",
+                      fontSize: adjust(16),
+                      height: adjust(50),
+                    }}
+                    pointerEvents="none"
+                  />
+                </View>
+              </View>
+              {data?.ID_Handler != null && (
+                <View style={{ width: "100%" }}>
+                  <Text allowFontScaling={false} style={styles.text}>
+                    Người xử lý
+                  </Text>
+
+                  <View style={styles.action}>
+                    <TextInput
+                      allowFontScaling={false}
+                      value={`${data?.ent_handler?.Hoten} - ${data?.ent_handler?.ent_chucvu?.Chucvu}`}
+                      editable={false}
+                      placeholder="Hạng mục"
+                      placeholderTextColor="gray"
                       style={{
-                        height: "100%",
-                        width: "100%",
+                        paddingLeft: 12,
+                        color: "#05375a",
+                        width: "75%",
+                        fontSize: adjust(16),
+                        height: adjust(50),
                       }}
-                      source={{
-                        uri: getImageUrls(3, dataImage),
-                      }}
-                      onLoadStart={() => setIsLoading(true)}
-                      onLoadEnd={() => setIsLoading(false)}
-                      onError={() => {
-                        setIsLoading(false);
-                      }}
+                      pointerEvents="none"
                     />
-                    <TouchableOpacity
-                      style={{
-                        position: "absolute",
-                        top: 10,
-                        right: 10,
-                        width: 50,
-                        height: 50,
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                      onPress={() => setIsShowImage(false)}
-                    >
-                      <AntDesign name="close" size={adjust(40)} color="white" />
-                    </TouchableOpacity>
                   </View>
-                ) : (
-                  <ScrollView showsVerticalScrollIndicator={false}>
-                    <View style={styles.container}>
-                      <Text style={styles.header}>
-                        Tình trạng:{" "}
-                        {(data.Tinhtrangxuly == 0 && "Chưa xử lý") ||
-                          (data.Tinhtrangxuly == 1 && "Đang xử lý") ||
-                          (data.Tinhtrangxuly == 2 && "Đã xử lý")}
-                      </Text>
-                      <View style={{ width: "100%" }}>
-                        <Text allowFontScaling={false} style={styles.text}>
-                          Hạng mục
-                        </Text>
+                </View>
+              )}
+              <View style={{ width: "100%" }}>
+                <Text allowFontScaling={false} style={styles.text}>
+                  Ngày giờ sự cố
+                </Text>
 
-                        <View style={styles.action}>
-                          <TextInput
-                            allowFontScaling={false}
-                            value={
-                              data?.ent_hangmuc?.Hangmuc || "Chưa có hạng mục"
-                            }
-                            editable={false}
-                            placeholder="Hạng mục"
-                            placeholderTextColor="gray"
-                            style={{
-                              paddingLeft: 12,
-                              color: "#05375a",
-                              width: "75%",
-                              fontSize: adjust(16),
-                              height: adjust(50),
-                            }}
-                            pointerEvents="none"
-                          />
-                        </View>
-                      </View>
-                      <View style={{ width: "100%" }}>
-                        <Text allowFontScaling={false} style={styles.text}>
-                          Người gửi
-                        </Text>
-
-                        <View style={styles.action}>
-                          <TextInput
-                            allowFontScaling={false}
-                            value={`${data?.ent_user?.Hoten} - ${data?.ent_user?.ent_chucvu?.Chucvu}`}
-                            editable={false}
-                            placeholder="Hạng mục"
-                            placeholderTextColor="gray"
-                            style={{
-                              paddingLeft: 12,
-                              color: "#05375a",
-                              width: "75%",
-                              fontSize: adjust(16),
-                              height: adjust(50),
-                            }}
-                            pointerEvents="none"
-                          />
-                        </View>
-                      </View>
-                      {data?.ID_Handler != null && (
-                        <View style={{ width: "100%" }}>
-                          <Text allowFontScaling={false} style={styles.text}>
-                            Người xử lý
-                          </Text>
-
-                          <View style={styles.action}>
-                            <TextInput
-                              allowFontScaling={false}
-                              value={`${data?.ent_handler?.Hoten} - ${data?.ent_handler?.ent_chucvu?.Chucvu}`}
-                              editable={false}
-                              placeholder="Hạng mục"
-                              placeholderTextColor="gray"
-                              style={{
-                                paddingLeft: 12,
-                                color: "#05375a",
-                                width: "75%",
-                                fontSize: adjust(16),
-                                height: adjust(50),
-                              }}
-                              pointerEvents="none"
-                            />
-                          </View>
-                        </View>
-                      )}
-                      <View style={{ width: "100%" }}>
-                        <Text allowFontScaling={false} style={styles.text}>
-                          Ngày giờ sự cố
-                        </Text>
-
-                        <View style={styles.action}>
-                          <TextInput
-                            allowFontScaling={false}
-                            value={`${formattedTime} ${moment(
-                              data.Ngaysuco
-                            ).format("DD-MM-YYYY")}`}
-                            editable={false}
-                            placeholder="Hạng mục"
-                            placeholderTextColor="gray"
-                            style={{
-                              paddingLeft: 12,
-                              color: "#05375a",
-                              width: "75%",
-                              fontSize: adjust(16),
-                              height: adjust(50),
-                            }}
-                            pointerEvents="none"
-                          />
-                        </View>
-                      </View>
-                      <View style={{ width: "100%" }}>
-                        <Text allowFontScaling={false} style={styles.text}>
-                          Ngày xử lý
-                        </Text>
-                        <View style={styles.action}>
-                          <TextInput
-                            allowFontScaling={false}
-                            value={data?.Ngayxuly || "Chưa có"}
-                            editable={false}
-                            style={{
-                              paddingLeft: 12,
-                              color: "#05375a",
-                              fontSize: adjust(16),
-                              height: adjust(50),
-                            }}
-                            pointerEvents="none"
-                          />
-                        </View>
-                      </View>
-                      <View style={{ width: "100%" }}>
-                        <Text allowFontScaling={false} style={styles.text}>
-                          Nội dung sự cố
-                        </Text>
-                        <View style={styles.inputs}>
-                          <TextInput
-                            allowFontScaling={false}
-                            value={data?.Noidungsuco}
-                            editable={false}
-                            placeholder="Nội dung sự cố"
-                            placeholderTextColor="gray"
-                            multiline
-                            style={[
-                              styles.textInput,
-                              {
-                                paddingHorizontal: 10,
-                                height: 70,
-                                textAlignVertical: "top",
-                              },
-                            ]}
-                            autoCapitalize="sentences"
-                          />
-                        </View>
-                      </View>
-                      <View style={{ width: "100%" }}>
-                        <Text allowFontScaling={false} style={styles.text}>
-                          Hình ảnh
-                        </Text>
-                        <FlatList
-                          horizontal={true}
-                          contentContainerStyle={{
-                            flexGrow: 1,
-                            gap: 12,
+                <View style={styles.action}>
+                  <TextInput
+                    allowFontScaling={false}
+                    value={`${formattedTime}${moment(data.Ngaysuco).format(
+                      "DD-MM-YYYY"
+                    )}`}
+                    editable={false}
+                    placeholder="Hạng mục"
+                    placeholderTextColor="gray"
+                    style={{
+                      paddingLeft: 12,
+                      color: "#05375a",
+                      width: "75%",
+                      fontSize: adjust(16),
+                      height: adjust(50),
+                    }}
+                    pointerEvents="none"
+                  />
+                </View>
+              </View>
+              <View style={{ width: "100%" }}>
+                <Text allowFontScaling={false} style={styles.text}>
+                  Ngày xử lý
+                </Text>
+                <View style={styles.action}>
+                  <TextInput
+                    allowFontScaling={false}
+                    value={`${moment(data.Ngayxuly).format(
+                      "DD-MM-YYYY"
+                    )}`}
+                    editable={false}
+                    style={{
+                      paddingLeft: 12,
+                      color: "#05375a",
+                      fontSize: adjust(16),
+                      height: adjust(50),
+                    }}
+                    pointerEvents="none"
+                  />
+                </View>
+              </View>
+              <View style={{ width: "100%" }}>
+                <Text allowFontScaling={false} style={styles.text}>
+                  Nội dung sự cố
+                </Text>
+                <View style={styles.inputs}>
+                  <TextInput
+                    allowFontScaling={false}
+                    value={data?.Noidungsuco}
+                    editable={false}
+                    placeholder="Nội dung sự cố"
+                    placeholderTextColor="gray"
+                    multiline
+                    style={[
+                      styles.textInput,
+                      {
+                        paddingHorizontal: 10,
+                        height: 70,
+                        textAlignVertical: "top",
+                      },
+                    ]}
+                    autoCapitalize="sentences"
+                  />
+                </View>
+              </View>
+              <View style={{ width: "100%" }}>
+                <Text allowFontScaling={false} style={styles.text}>
+                  Biện pháp xử lý
+                </Text>
+                <View style={styles.inputs}>
+                  <TextInput
+                    allowFontScaling={false}
+                    value={data?.Bienphapxuly}
+                    editable={false}
+                    placeholder="Biện pháp xử lý"
+                    placeholderTextColor="gray"
+                    multiline
+                    style={[
+                      styles.textInput,
+                      {
+                        paddingHorizontal: 10,
+                        height: 70,
+                        textAlignVertical: "top",
+                      },
+                    ]}
+                    autoCapitalize="sentences"
+                  />
+                </View>
+              </View>
+              {images?.length > 0 && (
+                <View style={{ width: "100%" }}>
+                  <Text allowFontScaling={false} style={styles.text}>
+                    Hình ảnh
+                  </Text>
+                  <FlatList
+                    horizontal={true}
+                    contentContainerStyle={{
+                      flexGrow: 1,
+                      gap: 12,
+                    }}
+                    data={images}
+                    renderItem={({ item, index }) => (
+                      <View>
+                        <Image
+                          source={{
+                            uri: getImageUrls(3, item),
                           }}
-                          data={images}
-                          renderItem={({ item, index }) => (
-                            <View>
-                              <Image
-                                source={{
-                                  uri: getImageUrls(3, item),
-                                }}
-                                style={{
-                                  width: 100,
-                                  height: 140,
-                                  position: "relative",
-                                  opacity: 0.9,
-                                }}
-                              />
-                              <TouchableOpacity
-                                style={{
-                                  position: "absolute",
-                                  top: 40,
-                                  left: 30,
-                                  width: 50,
-                                  height: 50,
-                                  justifyContent: "center",
-                                  alignItems: "center",
-                                }}
-                                onPress={() => handleShowImage(item)}
-                              >
-                                <Feather
-                                  name="zoom-in"
-                                  size={adjust(30)}
-                                  color="gray"
-                                />
-                              </TouchableOpacity>
-                            </View>
-                          )}
-                          keyExtractor={(item, index) => index.toString()}
-                          scrollEventThrottle={16}
-                          scrollEnabled={true}
+                          style={{
+                            width: 100,
+                            height: 140,
+                            position: "relative",
+                            opacity: 0.9,
+                          }}
                         />
+                        <TouchableOpacity
+                          style={{
+                            position: "absolute",
+                            top: 40,
+                            left: 30,
+                            width: 50,
+                            height: 50,
+                            justifyContent: "center",
+                            alignItems: "center",
+                          }}
+                          onPress={() => handleShowImage(item)}
+                        >
+                          <Feather
+                            name="zoom-in"
+                            size={adjust(30)}
+                            color="gray"
+                          />
+                        </TouchableOpacity>
                       </View>
-                      {data.Tinhtrangxuly == 2 && (
-                        <View>
-                          <View style={{ width: "100%" }}>
-                            <Text allowFontScaling={false} style={styles.text}>
-                              Ghi chú
-                            </Text>
-                            <View style={styles.inputs}>
-                              <TextInput
-                                allowFontScaling={false}
-                                value={
-                                  data?.Ghichu === null ||
-                                  data?.Ghichu === undefined ||
-                                  data?.Ghichu === "undefined"
-                                    ? ""
-                                    : data.Ghichu
-                                }
-                                editable={false}
-                                placeholder="Nội dung ghi chú"
-                                placeholderTextColor="gray"
-                                multiline
-                                style={[
-                                  styles.textInput,
-                                  {
-                                    height: 70,
-                                    paddingHorizontal: 10,
-                                    paddingLeft: 10,
-                                    textAlignVertical: "top",
-                                  },
-                                ]}
-                                autoCapitalize="sentences"
-                              />
-                            </View>
-                          </View>
-                          {imagesHandle.length > 0 && (
-                            <View style={{ width: "100%" }}>
-                              <Text
-                                allowFontScaling={false}
-                                style={styles.text}
-                              >
-                                Hình ảnh xử lý
-                              </Text>
-                              <FlatList
-                                horizontal={true}
-                                contentContainerStyle={{
-                                  flexGrow: 1,
-                                  gap: 12,
-                                }}
-                                data={imagesHandle}
-                                renderItem={({ item, index }) => (
-                                  <View>
-                                    <Image
-                                      source={{
-                                        uri: getImageUrls(3, item),
-                                      }}
-                                      style={{
-                                        width: 100,
-                                        height: 140,
-                                        position: "relative",
-                                        opacity: 0.9,
-                                      }}
-                                    />
-                                    <TouchableOpacity
-                                      style={{
-                                        position: "absolute",
-                                        top: 40,
-                                        left: 30,
-                                        width: 50,
-                                        height: 50,
-                                        justifyContent: "center",
-                                        alignItems: "center",
-                                      }}
-                                      onPress={() => handleShowImage(item)}
-                                    >
-                                      <Feather
-                                        name="zoom-in"
-                                        size={adjust(30)}
-                                        color="gray"
-                                      />
-                                    </TouchableOpacity>
-                                  </View>
-                                )}
-                                keyExtractor={(item, index) => index.toString()}
-                                scrollEventThrottle={16}
-                                scrollEnabled={true}
-                              />
-                            </View>
-                          )}
-                        </View>
-                      )}
+                    )}
+                    keyExtractor={(item, index) => index.toString()}
+                    scrollEventThrottle={16}
+                    scrollEnabled={true}
+                  />
+                </View>
+              )}
+              {data.Tinhtrangxuly == 2 && (
+                <View>
+                  <View style={{ width: "100%" }}>
+                    <Text allowFontScaling={false} style={styles.text}>
+                      Ghi chú
+                    </Text>
+                    <View style={styles.inputs}>
+                      <TextInput
+                        allowFontScaling={false}
+                        value={
+                          data?.Ghichu === null ||
+                          data?.Ghichu === undefined ||
+                          data?.Ghichu === "undefined"
+                            ? ""
+                            : data.Ghichu
+                        }
+                        editable={false}
+                        placeholder="Nội dung ghi chú"
+                        placeholderTextColor="gray"
+                        multiline
+                        style={[
+                          styles.textInput,
+                          {
+                            height: 70,
+                            paddingHorizontal: 10,
+                            paddingLeft: 10,
+                            textAlignVertical: "top",
+                          },
+                        ]}
+                        autoCapitalize="sentences"
+                      />
                     </View>
-                  </ScrollView>
-                )}
-              </>
-            </ImageBackground>
-          </BottomSheetModalProvider>
-        </TouchableWithoutFeedback>
-      </KeyboardAvoidingView>
+                  </View>
+                  {imagesHandle.length > 0 && (
+                    <View style={{ width: "100%" }}>
+                      <Text allowFontScaling={false} style={styles.text}>
+                        Hình ảnh xử lý
+                      </Text>
+                      <FlatList
+                        horizontal={true}
+                        contentContainerStyle={{
+                          flexGrow: 1,
+                          gap: 12,
+                        }}
+                        data={imagesHandle}
+                        renderItem={({ item, index }) => (
+                          <View>
+                            <Image
+                              source={{
+                                uri: getImageUrls(3, item),
+                              }}
+                              style={{
+                                width: 100,
+                                height: 140,
+                                position: "relative",
+                                opacity: 0.9,
+                              }}
+                            />
+                            <TouchableOpacity
+                              style={{
+                                position: "absolute",
+                                top: 40,
+                                left: 30,
+                                width: 50,
+                                height: 50,
+                                justifyContent: "center",
+                                alignItems: "center",
+                              }}
+                              onPress={() => handleShowImage(item)}
+                            >
+                              <Feather
+                                name="zoom-in"
+                                size={adjust(30)}
+                                color="gray"
+                              />
+                            </TouchableOpacity>
+                          </View>
+                        )}
+                        keyExtractor={(item, index) => index.toString()}
+                        scrollEventThrottle={16}
+                        scrollEnabled={true}
+                      />
+                    </View>
+                  )}
+                </View>
+              )}
+            </View>
+          </KeyboardAwareScrollView>
+        </View>
+      </ImageBackground>
     </GestureHandlerRootView>
   );
 };

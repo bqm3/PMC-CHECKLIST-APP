@@ -17,8 +17,11 @@ import { FontAwesome, Entypo } from "@expo/vector-icons";
 import VerticalSelect from "../Vertical/VerticalSelect";
 import Button from "../Button/Button";
 import { COLORS, SIZES } from "../../constants/theme";
-import * as ImagePicker from 'expo-image-picker';
-import * as ImageManipulator from 'expo-image-manipulator';
+import * as ImagePicker from "expo-image-picker";
+import * as ImageManipulator from "expo-image-manipulator";
+import { CameraView } from "expo-camera";
+import * as FileSystem from "expo-file-system";
+import { MaterialIcons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import adjust from "../../adjust";
@@ -30,6 +33,8 @@ const ModalPopupDetailChecklist = ({
   handleItemClick,
   handleClearBottom,
   user,
+  setWidthModal,
+  setHeightModal
 }) => {
   const ref = useRef(null);
   const [step, setStep] = useState(1);
@@ -39,48 +44,56 @@ const ModalPopupDetailChecklist = ({
   const [images, setImages] = useState([]);
   const [ghichu, setGhichu] = useState();
   const [chiso, setChiso] = useState();
-  let newImageItem = []
+  const [camera, setCamera] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [flashMode, setFlashMode] = useState(false);
+  const cameraRef = useRef(null);
+  let newImageItem = [];
 
   const pickImage = async () => {
+    if (Platform.OS === "android") {
+      setWidthModal("100%")
+      setHeightModal("90%")
+      setCamera(true);
+      return;
+    }
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
-  
+
     if (permissionResult.granted === false) {
       alert("You've refused to allow this app to access your camera!");
       return;
     }
-  
+
     try {
       const result = await ImagePicker.launchCameraAsync({
-        quality: 0.8, 
+        quality: 0.8,
       });
-  
+
       if (!result.canceled) {
         const originalImage = result.assets[0];
-  
+
         // Resize and compress the image
-        // const resizedImage = await ImageManipulator.manipulateAsync(
-        //   originalImage.uri,
-        //   [{ resize: { width: originalImage.width / 5 } }], 
-        //   { compress: 1, format: "png" }
-        // );
-  
+        const resizedImage = await ImageManipulator.manipulateAsync(
+          originalImage.uri,
+          [{ resize: { width: originalImage.width / 5 } }],
+          { compress: 1, format: "png" }
+        );
+
         // Update the state with the resized image, ensuring no more than 5 images
         setImages((prevImages) => {
           if (prevImages.length < 5) {
             return [...prevImages, originalImage];
           }
-          return prevImages; 
+          return prevImages;
         });
-  
-        const newImageItem = [...images, originalImage];
+
+        const newImageItem = [...images, resizedImage];
         handleItemClick(newImageItem, "option", "Anh", dataItem);
       }
     } catch (error) {
       console.error("Error capturing image: ", error);
     }
   };
-  
-  
 
   const removeImage = (indexToRemove) => {
     setImages((prevImages) =>
@@ -96,7 +109,6 @@ const ModalPopupDetailChecklist = ({
     GhichuChitiet: ghichu,
     valueCheck: defaultChecklist || chiso,
   };
-
 
   const setData = () => {
     dataItem.valueCheck = defaultChecklist || chiso;
@@ -116,6 +128,119 @@ const ModalPopupDetailChecklist = ({
   const close = () => {
     handleClearBottom();
   };
+
+  const handleCapture = async () => {
+    if (isProcessing) return;
+
+    try {
+      setIsProcessing(true);
+      const photo = await cameraRef.current.takePictureAsync(); 
+
+      // Tạo tên file ngẫu nhiên
+      const fileName = `photo_${Date.now()}.jpg`;
+      const cachedImagePath = `${FileSystem.cacheDirectory}${fileName}`;
+
+      // Copy ảnh vào cache
+      await FileSystem.copyAsync({
+        from: photo.uri,
+        to: cachedImagePath,
+      });
+
+      // Resize và nén ảnh
+      const resizedImage = await ImageManipulator.manipulateAsync(
+        cachedImagePath,
+        [{ resize: { width: Math.min(1024, photo.width) } }],
+        { compress: 0.7, format: "jpeg" }
+      );
+
+      // Xóa ảnh cache
+      await FileSystem.deleteAsync(cachedImagePath);
+
+      // Cập nhật state và xử lý ảnh
+      setImages((prevImages) => {
+        if (prevImages.length < 5) {
+          return [...prevImages, resizedImage];
+        }
+        return prevImages;
+      });
+
+      const newImageItem = [...images, resizedImage];
+      handleItemClick(newImageItem, "option", "Anh", dataItem);
+    } catch (error) {
+      console.error("Error processing image:", error);
+    } finally {
+      turnOffCamera()
+    }
+  };
+
+  const turnOffCamera = () => {
+    setWidthModal("90%")
+    setHeightModal("auto")
+    setIsProcessing(false);
+    setFlashMode(false);
+    setCamera(false);
+  }
+
+  const toggleFlash = () => {
+    // Chuyển đổi chế độ flash
+    setFlashMode((prevMode) => !prevMode);
+  };
+
+  if (camera === true) {
+    return (
+      <CameraView
+        ref={cameraRef}
+        style={[styles.camera]}
+        enableTorch={flashMode}
+        enableZoom={true}
+        preset="medium"
+      >
+        <View style={styles.buttonContainer}>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+              width: "100%",
+            }}
+          >
+
+            <TouchableOpacity style={styles.flashButton} onPress={toggleFlash}>
+              <MaterialIcons
+                name={flashMode ? "flash-on" : "flash-off"}
+                size={36}
+                color="white"
+              />
+            </TouchableOpacity>
+
+            <View style={{ flex: 1, alignItems: "center" }}>
+              <TouchableOpacity
+                style={[
+                  styles.captureButton,
+                  isProcessing && styles.buttonDisabled,
+                ]}
+                disabled={isProcessing}
+                onPress={() => handleCapture()}
+              >
+                <MaterialIcons
+                  name="camera"
+                  size={36}
+                  color={isProcessing ? "gray" : "white"}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <TouchableOpacity
+            style={styles.closeButton}
+            onPress={() => turnOffCamera()}
+          >
+            <AntDesign name="close" size={24} color="white" />
+          </TouchableOpacity>
+        </View>
+      </CameraView>
+    );
+  }
 
   return (
     <GestureHandlerRootView style={{ height: "auto" }}>
@@ -277,7 +402,7 @@ const ModalPopupDetailChecklist = ({
                       {
                         paddingHorizontal: 10,
                         height: 70,
-                        textAlignVertical: 'top',
+                        textAlignVertical: "top",
                       },
                     ]}
                   />
@@ -298,7 +423,7 @@ const ModalPopupDetailChecklist = ({
                         alignItems: "center",
                         justifyContent: "center",
                         height: 60,
-                        marginEnd: 10  
+                        marginEnd: 10,
                       }}
                       onPress={() => pickImage()}
                     >
@@ -421,5 +546,42 @@ const styles = StyleSheet.create({
     height: 150,
     resizeMode: "contain",
     marginVertical: 10,
+  },
+  camera: {
+    width: "100%",
+    height: "100%",
+  },
+  buttonContainer: {
+    flex: 1,
+    backgroundColor: "transparent",
+    flexDirection: "row",
+    margin: adjust(20),
+    justifyContent: "center",
+    alignItems: "flex-end",
+  },
+  captureButton: {
+    width: adjust(70),
+    height: adjust(70),
+    borderRadius: adjust(35),
+    backgroundColor: "#2196F3",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  buttonDisabled: {
+    backgroundColor: "#999",
+  },
+  closeButton: {
+    position: "absolute",
+    top: adjust(0),
+    right: adjust(0),
+    width: adjust(40),
+    height: adjust(40),
+    borderRadius: adjust(20),
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  flashButton: {
+    position: "absolute",
   },
 });
