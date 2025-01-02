@@ -931,6 +931,15 @@ const DetailChecklist = ({ route, navigation }) => {
             // Use a for...of loop to wait for asynchronous tasks
             for (const [imgIndex, image] of item.Anh.entries()) {
               try {
+                // Resize và nén ảnh trước khi append vào formData
+                // const resizedImage = await ImageManipulator.manipulateAsync(
+                //   Platform.OS === "android"
+                //     ? image.uri
+                //     : image.uri.replace("file://", ""),
+                //   [{ resize: { width: image.width * 0.6 } }], // Resize nhỏ hơn 50%
+                //   { compress: 1, format: ImageManipulator.SaveFormat.PNG } // Nén ảnh
+                // );
+
                 const file = {
                   uri: image.uri,
                   name:

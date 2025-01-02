@@ -62,7 +62,8 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
   const [isCheckhangmuc, setHangMuc] = useState(item?.ent_hangmuc?.Hangmuc);
   const tinhTrang = item?.Tinhtrangxuly;
   let hangmuc = item?.ent_hangmuc?.Hangmuc;
-  const formattedTime = item?.Giosuco != undefined ? `${item?.Giosuco?.slice(0, 5)} ` : "";
+  const formattedTime =
+    item?.Giosuco != undefined ? `${item?.Giosuco?.slice(0, 5)} ` : "";
 
   const [images, setImages] = useState([]);
   const imagesSuco = item?.Duongdancacanh ? item.Duongdancacanh.split(",") : [];
@@ -270,6 +271,25 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
     setImages(images.filter((image) => image !== item));
   };
 
+  const handleAlertUpdate = () => {
+    Alert.alert(
+      "PMC Thông báo",
+      "Bạn có chắc muốn cập nhật sự cố này ?",
+      [
+        {
+          text: "Hủy",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+        {
+          text: "Đồng ý",
+          onPress: () => handleSubmit(),
+          style: "default",
+        },
+      ]
+    );
+  };
+
   const handleSubmit = () => {
     if (isCheckhangmuc == undefined && item?.TenHangmuc == null) {
       Alert.alert("PMC Thông báo", "Phải chọn hạng mục", [
@@ -282,8 +302,7 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
         },
         { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
       ]);
-    } 
-     else {
+    } else {
       if (changeStatus?.status3) {
         handleSubmitStatusImage();
       } else {
@@ -1178,7 +1197,7 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
                   text={"Cập nhật"}
                   backgroundColor={COLORS.bg_button}
                   color={"white"}
-                  onPress={() => handleSubmit()}
+                  onPress={() => handleAlertUpdate()}
                   isLoading={loadingStatus}
                 />
               </View>
@@ -1201,7 +1220,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   checkbox: {
-    backgroundColor: "white"
+    backgroundColor: "white",
   },
   section: {
     flexDirection: "row",

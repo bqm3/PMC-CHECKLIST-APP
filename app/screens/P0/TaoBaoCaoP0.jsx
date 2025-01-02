@@ -466,6 +466,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     backgroundColor: "white",
     textAlign: "left",
+    textAlignVertical: "top", 
+    paddingTop: 10,
   },
   multilineTextInput: {
     height: 80,

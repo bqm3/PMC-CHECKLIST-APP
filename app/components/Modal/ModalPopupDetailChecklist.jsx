@@ -80,7 +80,7 @@ const ModalPopupDetailChecklist = ({
         //   [{ resize: { width: originalImage.width / 5 } }],
         //   { compress: 1, format: "png" }
         // );
-
+  
         // Update the state with the resized image, ensuring no more than 5 images
         setImages((prevImages) => {
           if (prevImages.length < 5) {
@@ -88,7 +88,7 @@ const ModalPopupDetailChecklist = ({
           }
           return prevImages;
         });
-
+  
         const newImageItem = [...images, originalImage];
         handleItemClick(newImageItem, "option", "Anh", dataItem);
       }

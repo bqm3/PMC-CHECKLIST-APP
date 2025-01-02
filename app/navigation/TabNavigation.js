@@ -788,7 +788,7 @@ const HomeStack = ({ navigation }) => {
                 color: "white",
               }}
             >
-              Thay đôi trạng thái
+              Thay đổi trạng thái
             </Text>
           ),
           headerLeft: () => headerLeft(navigation),
