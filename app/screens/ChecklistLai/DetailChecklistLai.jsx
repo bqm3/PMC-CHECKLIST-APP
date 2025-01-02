@@ -86,6 +86,8 @@ const DetailChecklistLai = ({ route, navigation }) => {
   const [show, setShow] = useState(false);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [widthModal, setWidthModal] = useState("90%");
+  const [heightModal, setHeightModal] = useState("auto");
 
   const headerHeight = useHeaderHeight();
   const [isConnected, setConnected] = useState(true);
@@ -1166,6 +1168,8 @@ const DetailChecklistLai = ({ route, navigation }) => {
     setDataItem(null);
     setIndex(null);
     setIsBottomSheetOpen(false);
+    setWidthModal("90%")
+    setHeightModal("auto")
   }, []);
 
   // view item flatlist
@@ -1545,8 +1549,8 @@ const DetailChecklistLai = ({ route, navigation }) => {
                 style={[
                   styles.modalView,
                   {
-                    width: "90%",
-                    height: "auto",
+                    width: widthModal,
+                    height: heightModal,
                     justifyContent: "space-between",
                     alignItems: "center",
                     alignContent: "center",
@@ -1561,6 +1565,8 @@ const DetailChecklistLai = ({ route, navigation }) => {
                   // handleChange={handleChange}
                   handleClearBottom={handleClearBottom}
                   user={user}
+                  setWidthModal={setWidthModal}
+                  setHeightModal={setHeightModal}
                 />
               </View>
             </View>

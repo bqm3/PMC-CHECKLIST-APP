@@ -193,7 +193,7 @@ const NotKhuVucTracuuCa = ({ route, navigation }) => {
                         ItemSeparatorComponent={() => (
                           <View style={{ height: 16 }} />
                         )}
-                        showsHorizontalScrollIndicator = {false}
+                        showsVerticalScrollIndicator = {false}
                         keyExtractor={(item, index) =>
                           `${item?.ID_Checklist}_${index}`
                         }
