@@ -51,18 +51,20 @@ const ModalPopupDetailChecklist = ({
   let newImageItem = [];
 
   const pickImage = async () => {
-    if (Platform.OS === "android") {
-      setWidthModal("100%")
-      setHeightModal("90%")
-      setCamera(true);
-      return;
-    }
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
 
     if (permissionResult.granted === false) {
       alert("You've refused to allow this app to access your camera!");
       return;
     }
+    
+    if (Platform.OS === "android") {
+      setWidthModal("100%")
+      setHeightModal("90%")
+      setCamera(true);
+      return;
+    }
+   
 
     try {
       const result = await ImagePicker.launchCameraAsync({
@@ -73,11 +75,11 @@ const ModalPopupDetailChecklist = ({
         const originalImage = result.assets[0];
 
         // Resize and compress the image
-        const resizedImage = await ImageManipulator.manipulateAsync(
-          originalImage.uri,
-          [{ resize: { width: originalImage.width / 5 } }],
-          { compress: 1, format: "png" }
-        );
+        // const resizedImage = await ImageManipulator.manipulateAsync(
+        //   originalImage.uri,
+        //   [{ resize: { width: originalImage.width / 5 } }],
+        //   { compress: 1, format: "png" }
+        // );
 
         // Update the state with the resized image, ensuring no more than 5 images
         setImages((prevImages) => {
@@ -87,7 +89,7 @@ const ModalPopupDetailChecklist = ({
           return prevImages;
         });
 
-        const newImageItem = [...images, resizedImage];
+        const newImageItem = [...images, originalImage];
         handleItemClick(newImageItem, "option", "Anh", dataItem);
       }
     } catch (error) {
