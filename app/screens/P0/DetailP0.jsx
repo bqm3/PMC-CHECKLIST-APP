@@ -207,14 +207,14 @@ const DetailP0 = ({ navigation, route }) => {
         "?",
       [
         {
-          text: "Đồng ý",
-          onPress: () => handleUpdate(),
-          style: "default",
-        },
-        {
           text: "Hủy",
           onPress: () => console.log("Cancel Pressed"),
           style: "cancel",
+        },
+        {
+          text: "Đồng ý",
+          onPress: () => handleUpdate(),
+          style: "default",
         },
       ]
     );
@@ -370,7 +370,7 @@ const DetailP0 = ({ navigation, route }) => {
               <TextInput
                 ref={noteInputRef}
                 value={ghichu}
-                placeholder="Thêm ghi chú"
+                placeholder="Ghi chú"
                 placeholderTextColor="gray"
                 multiline
                 returnKeyType="done"
