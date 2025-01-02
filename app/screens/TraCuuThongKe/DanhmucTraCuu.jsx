@@ -28,7 +28,6 @@ import { BASE_URL } from "../../constants/config";
 import moment from "moment";
 import ModalTraCuu from "../../components/Modal/ModalTracuu";
 import ItemCaChecklist from "../../components/Item/ItemCaChecklist";
-import { el } from "date-fns/locale";
 
 const numberOfItemsPerPage = 20;
 const DanhmucTraCuu = ({ setOpacity, opacity, navigation }) => {
