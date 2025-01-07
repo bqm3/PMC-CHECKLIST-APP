@@ -68,7 +68,7 @@ const HSSE = [
 ];
 
 const DetailHSSE = ({ navigation, route }) => {
-  // const { data, setIsReload } = route.params;
+  const { data } = route.params;
    const { isReload, setIsReload } = useContext(ReloadContext);
   const { authToken } = useSelector((state) => state.authReducer);
   const [hsseData, setHsseData] = useState(HSSE);

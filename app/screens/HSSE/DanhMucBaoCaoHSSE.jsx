@@ -92,15 +92,12 @@ const DanhMucBaoCaoHSSE = ({ navigation, route }) => {
   const toggleTodo = async (item, index) => {
     navigation.navigate("Chi tiết dữ liệu HSSE", {
       data: item,
-      setIsReload,
     });
     setIsReload(false)
   };
 
   const handleCreate = async () => {
-    navigation.navigate("Tạo báo cáo HSSE", {
-      setIsReload,
-    });
+    navigation.navigate("Tạo báo cáo HSSE");
     setIsReload(false)
   };
 

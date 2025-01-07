@@ -5,6 +5,7 @@ const initialState = {
   error: false,
   isLoading: false,
   message: null,
+  passwordCore: null
 };
 
 export const authReducer = (state = initialState, action) => {
@@ -15,6 +16,7 @@ export const authReducer = (state = initialState, action) => {
         ...state,
         authToken: null,
         user: null,
+        passwordCore: null,
         error: false,
         isLoading: action.payload.isLoading,
         message: action.payload.message,
@@ -24,6 +26,7 @@ export const authReducer = (state = initialState, action) => {
         ...state,
         user: action.payload.user,
         authToken: action.payload.authToken,
+        passwordCore: action.payload.passwordCore,
         isLoading: action.payload.isLoading,
         error: false,
         message: null
@@ -32,6 +35,7 @@ export const authReducer = (state = initialState, action) => {
       return {
         ...state,
         authToken: null,
+        passwordCore: null,
         user: null,
         error: true,
         isLoading: action.payload.isLoading,
@@ -41,6 +45,7 @@ export const authReducer = (state = initialState, action) => {
       return {
         ...state,
         authToken: null,
+        passwordCore: null,
         user: null,
         error: false,
         isLoading: false,

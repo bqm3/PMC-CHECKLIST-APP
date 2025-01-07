@@ -52,7 +52,7 @@ export const login = (UserName, Password) => {
         },
       );
       if (response.status == 200) {
-        const {token, user} = response.data;
+        const {token, user, passwordCore} = response.data;
         await AsyncStorage.setItem('tokenUser', token);
         dispatch({
           type: type.SET_LOGIN_SUCCESS,
@@ -60,7 +60,8 @@ export const login = (UserName, Password) => {
             user: user,
             authToken: token,
             message: null,
-            isLoading: false
+            isLoading: false,
+            passwordCore: passwordCore
           },
         });
       }
@@ -71,7 +72,8 @@ export const login = (UserName, Password) => {
           user: null,
           authToken: null,
           message: "Thông tin đăng nhập sai. Vui lòng thử lại!!!",
-          isLoading: false
+          isLoading: false ,
+          passwordCore: null
         },
       });
     }

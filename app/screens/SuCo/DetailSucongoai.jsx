@@ -137,7 +137,7 @@ const DetailSucongoai = ({ navigation, route }) => {
                     style={{
                       paddingLeft: 12,
                       color: "#05375a",
-                      width: "75%",
+                      width: "90%",
                       fontSize: adjust(16),
                       height: adjust(50),
                     }}
@@ -210,7 +210,7 @@ const DetailSucongoai = ({ navigation, route }) => {
                     style={{
                       paddingLeft: 12,
                       color: "#05375a",
-                      width: "75%",
+                      width: "90%",
                       fontSize: adjust(16),
                       height: adjust(50),
                     }}
@@ -225,7 +225,7 @@ const DetailSucongoai = ({ navigation, route }) => {
                 <View style={styles.action}>
                   <TextInput
                     allowFontScaling={false}
-                    value={`${moment(data.Ngayxuly).format(
+                    value={`${moment(data.Ngayxuly || data.Ngaysuco).format(
                       "DD-MM-YYYY"
                     )}`}
                     editable={false}
