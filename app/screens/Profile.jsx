@@ -73,20 +73,20 @@ const Profile = () => {
 
   const handleSubmit = async () => {
     setIsLoading(true);
+    if (dataPassword.newpassword !== dataPassword.re_newpassword) {
+      Alert.alert("PMC Thông báo", "Mật khẩu phải trùng nhau", [
+        { text: "Xác nhận", onPress: () => console.log("Cancel Pressed") },
+      ]);
+      setIsLoading(false);
+      return;
+    }
+
     if (!validatePassword(dataPassword.newpassword)) {
       Alert.alert(
         "PMC Thông báo",
         "Mật khẩu ít nhất 6 ký tự và bao gồm ít nhất một chữ cái.",
         [{ text: "Xác nhận", onPress: () => console.log("Invalid password") }]
       );
-      setIsLoading(false);
-      return;
-    }
-
-    if (dataPassword.newpassword !== dataPassword.re_newpassword) {
-      Alert.alert("PMC Thông báo", "Mật khẩu phải trùng nhau", [
-        { text: "Xác nhận", onPress: () => console.log("Cancel Pressed") },
-      ]);
       setIsLoading(false);
     } else {
       await axios

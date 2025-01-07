@@ -42,6 +42,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { login } from "../redux/actions/authActions";
 import { COLORS } from "../constants/theme";
 import ExpoTokenContext from "../context/ExpoTokenContext";
+import { validatePassword } from "../utils/util";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -338,7 +339,17 @@ const HomeScreen = ({ navigation }) => {
 
   useEffect(()=> {
     asyncPassword()
+    checkPasswordStrength();
   }, [])
+
+  const checkPasswordStrength = async () => {
+    const password = await AsyncStorage.getItem("Password");
+    if (!validatePassword(password)) {
+      showAlert(
+        "Mật khẩu của bạn không đủ mạnh. Vui lòng cập nhật mật khẩu mới với độ bảo mật cao hơn."
+      );
+    }
+  };
 
   const funcDuan = async () => {
     try {
@@ -370,14 +381,6 @@ const HomeScreen = ({ navigation }) => {
     funcDuan();
     funcCheckP0();
   }, [refreshScreen]);
-
-  useEffect(() => {
-    if (passwordCore < 2) {
-      showAlert(
-        "Mật khẩu của bạn không đủ mạnh. Vui lòng cập nhật mật khẩu mới với độ bảo mật cao hơn."
-      );
-    }
-  }, [passwordCore]);
 
   useEffect(() => {
     registerForPushNotificationsAsync()
