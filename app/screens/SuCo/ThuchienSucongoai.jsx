@@ -540,7 +540,7 @@ const ThuchienSucongoai = ({ navigation, route }) => {
                             style={{
                               paddingLeft: 12,
                               color: "#05375a",
-                              width: "75%",
+                              width: "90%",
                               fontSize: adjust(16),
                               height: adjust(50),
                             }}
@@ -589,7 +589,7 @@ const ThuchienSucongoai = ({ navigation, route }) => {
                             style={{
                               paddingLeft: 12,
                               color: "#05375a",
-                              width: "75%",
+                              width: "90%",
                               fontSize: adjust(16),
                               height: adjust(50),
                             }}

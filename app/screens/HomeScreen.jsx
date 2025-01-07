@@ -277,10 +277,12 @@ const dataBQTKhoi = [
 // create a component
 const HomeScreen = ({ navigation }) => {
   const dispath = useDispatch();
-  const { user, authToken, passwordCore } = useSelector(
+  const { user, authToken } = useSelector(
     (state) => state.authReducer
   );
-  const { setShowReport, showReport } = useContext(ReportContext);
+
+  const [passwordCore, setPasswordCore] = useState("");
+
   const { setToken } = useContext(ExpoTokenContext);
 
   const [expoPushToken, setExpoPushToken] = useState("");
@@ -289,7 +291,6 @@ const HomeScreen = ({ navigation }) => {
   const [duan, setDuan] = useState([]);
   const [refreshScreen, setRefreshScreen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [searchText, setSearchText] = useState("");
 
   const [checkP0, setCheckP0] = useState(false);
 
@@ -301,7 +302,6 @@ const HomeScreen = ({ navigation }) => {
       ID_Chucvu={user?.ID_Chucvu}
       item={item}
       index={index}
-      showReport={showReport}
       passwordCore={passwordCore}
       showAlert={showAlert}
     />
@@ -330,6 +330,15 @@ const HomeScreen = ({ navigation }) => {
   const int_calv = async () => {
     await dispath(ent_calv_get());
   };
+
+  const asyncPassword  = async () => {
+    const data = await AsyncStorage.getItem("Password");
+    setPasswordCore(data);
+  }
+
+  useEffect(()=> {
+    asyncPassword()
+  }, [])
 
   const funcDuan = async () => {
     try {

@@ -28,13 +28,11 @@ import { COLORS } from "../constants/theme";
 import LoginContext from "../context/LoginContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import adjust from "../adjust";
+import { validatePassword } from "../utils/util";
 
 const Profile = () => {
   const { user, authToken } = useSelector((state) => state.authReducer);
   const dispatch = useDispatch();
-  const navigation = useNavigation();
-  const { step, saveStep } = useContext(LoginContext);
-  const [passwordStrength, setPasswordStrength] = useState("");
 
   const [isCheckSecurity, setIsCheckSecurity] = useState({
     password: true,
@@ -72,18 +70,13 @@ const Profile = () => {
     });
   };
 
-  const validatePassword = (password) => {
-    // Kiểm tra mật khẩu ít nhất 6 ký tự và bao gồm ít nhất một chữ cái và một số
-    const regex = /^(?=.*[a-zA-Z])(?=.*\d)[A-Za-z\d]{6,}$/;
-    return regex.test(password);
-  };
 
   const handleSubmit = async () => {
     setIsLoading(true);
     if (!validatePassword(dataPassword.newpassword)) {
       Alert.alert(
         "PMC Thông báo",
-        "Mật khẩu ít nhất 6 ký tự và bao gồm ít nhất một chữ cái và một số.",
+        "Mật khẩu ít nhất 6 ký tự và bao gồm ít nhất một chữ cái.",
         [{ text: "Xác nhận", onPress: () => console.log("Invalid password") }]
       );
       setIsLoading(false);

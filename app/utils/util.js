@@ -21,6 +21,18 @@ export const nowDate = () => {
   return nowDate;
 };
 
+export const validatePassword = (password) => {
+  // Kiểm tra nếu mật khẩu chỉ là số
+  const isAllDigits = /^\d+$/.test(password);
+
+  if (isAllDigits) {
+    return false; // Nếu chỉ toàn số, trả về false
+  }
+
+  // Nếu không phải là toàn số, thì hợp lệ
+  return password.length >= 6;
+};
+
 export const getImageUrls = (key, item) => {
   if (!item) return null;
   return item.endsWith(".jpg") || item.endsWith(".jpeg") || item.endsWith(".png") 
