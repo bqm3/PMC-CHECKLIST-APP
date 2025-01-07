@@ -16,6 +16,7 @@ import {
 import React, { useState, useContext } from "react";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import { BASE_URL } from "../constants/config";
@@ -33,6 +34,7 @@ const Profile = () => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const { step, saveStep } = useContext(LoginContext);
+  const [passwordStrength, setPasswordStrength] = useState("");
 
   const [isCheckSecurity, setIsCheckSecurity] = useState({
     password: true,
@@ -70,8 +72,24 @@ const Profile = () => {
     });
   };
 
+  const validatePassword = (password) => {
+    // Kiểm tra mật khẩu ít nhất 6 ký tự và bao gồm ít nhất một chữ cái và một số
+    const regex = /^(?=.*[a-zA-Z])(?=.*\d)[A-Za-z\d]{6,}$/;
+    return regex.test(password);
+  };
+
   const handleSubmit = async () => {
     setIsLoading(true);
+    if (!validatePassword(dataPassword.newpassword)) {
+      Alert.alert(
+        "PMC Thông báo",
+        "Mật khẩu ít nhất 6 ký tự và bao gồm ít nhất một chữ cái và một số.",
+        [{ text: "Xác nhận", onPress: () => console.log("Invalid password") }]
+      );
+      setIsLoading(false);
+      return;
+    }
+
     if (dataPassword.newpassword !== dataPassword.re_newpassword) {
       Alert.alert("PMC Thông báo", "Mật khẩu phải trùng nhau", [
         { text: "Xác nhận", onPress: () => console.log("Cancel Pressed") },
@@ -96,12 +114,7 @@ const Profile = () => {
           handleAdd();
           setIsLoading(false);
           Alert.alert("PMC Thông báo", response.data.message, [
-            {
-              text: "Hủy",
-              onPress: () => console.log("Cancel Pressed"),
-              style: "cancel",
-            },
-            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+            { text: "Xác nhận", onPress: () => logout() },
           ]);
         })
         .catch((err) => {
@@ -124,16 +137,25 @@ const Profile = () => {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : null}
-        style={{ flex: 1 }}
+      <KeyboardAwareScrollView
+        enableOnAndroid={true}
+        enableAutomaticScroll={true}
+        extraScrollHeight={Platform.OS === "ios" ? 120 : 140}
+        keyboardOpeningTime={0}
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={styles.scrollViewContent}
+        showsVerticalScrollIndicator={false}
+        bounces={false}
       >
         <ImageBackground
           source={require("../../assets/thumbnail.png")}
           resizeMode="cover"
           style={{ flex: 1 }}
         >
-          <ScrollView style={{ flex: 1, margin: 20 }} showsVerticalScrollIndicator={false}>
+          <ScrollView
+            style={{ flex: 1, margin: 20 }}
+            showsVerticalScrollIndicator={false}
+          >
             <Title
               text={"Thông tin cá nhân"}
               size={adjust(18)}
@@ -327,7 +349,7 @@ const Profile = () => {
             />
           </ScrollView>
         </ImageBackground>
-      </KeyboardAvoidingView>
+      </KeyboardAwareScrollView>
     </GestureHandlerRootView>
   );
 };
@@ -335,6 +357,9 @@ const Profile = () => {
 export default Profile;
 
 const styles = StyleSheet.create({
+  scrollViewContent: {
+    flexGrow: 1,
+  },
   inputs: {
     marginBottom: 10,
   },

@@ -277,9 +277,11 @@ const dataBQTKhoi = [
 // create a component
 const HomeScreen = ({ navigation }) => {
   const dispath = useDispatch();
-  const { user, authToken } = useSelector((state) => state.authReducer);
+  const { user, authToken, passwordCore } = useSelector(
+    (state) => state.authReducer
+  );
   const { setShowReport, showReport } = useContext(ReportContext);
-  const {setToken} = useContext(ExpoTokenContext)
+  const { setToken } = useContext(ExpoTokenContext);
 
   const [expoPushToken, setExpoPushToken] = useState("");
   const [notification, setNotification] = useState(undefined);
@@ -289,7 +291,7 @@ const HomeScreen = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [searchText, setSearchText] = useState("");
 
-  const [checkP0, setCheckP0] = useState(false)
+  const [checkP0, setCheckP0] = useState(false);
 
   const notificationListener = useRef();
   const responseListener = useRef();
@@ -300,6 +302,8 @@ const HomeScreen = ({ navigation }) => {
       item={item}
       index={index}
       showReport={showReport}
+      passwordCore={passwordCore}
+      showAlert={showAlert}
     />
   );
 
@@ -359,6 +363,14 @@ const HomeScreen = ({ navigation }) => {
   }, [refreshScreen]);
 
   useEffect(() => {
+    if (passwordCore < 2) {
+      showAlert(
+        "Mật khẩu của bạn không đủ mạnh. Vui lòng cập nhật mật khẩu mới với độ bảo mật cao hơn."
+      );
+    }
+  }, [passwordCore]);
+
+  useEffect(() => {
     registerForPushNotificationsAsync()
       .then((token) => setExpoPushToken(token ?? ""))
       .catch((error) => setExpoPushToken(`${error}`));
@@ -390,7 +402,7 @@ const HomeScreen = ({ navigation }) => {
           BASE_URL + "/ent_user/device-token",
           {
             deviceToken: expoPushToken,
-            deviceName: Device.modelName
+            deviceName: Device.modelName,
           },
           {
             headers: {
@@ -452,7 +464,7 @@ const HomeScreen = ({ navigation }) => {
           Authorization: `Bearer ${authToken}`,
         },
       });
-  
+
       if (response.status === 200) {
         setCheckP0(response.data.data);
       } else {
@@ -465,17 +477,17 @@ const HomeScreen = ({ navigation }) => {
       setIsLoading(false);
     }
   };
-  
+
   const showAlert = (message) => {
     Alert.alert("PMC Thông báo", message, [
       {
-        text: "Xác nhận",
-        onPress: () => console.log("Alert dismissed"),
+        text: "Hủy",
+        onPress: () => console.log("Cancel Pressed"),
         style: "cancel",
       },
+      { text: "Xác nhận", onPress: () => navigation.navigate("Profile") },
     ]);
   };
-  
 
   return (
     <ImageBackground
@@ -536,10 +548,11 @@ const HomeScreen = ({ navigation }) => {
             >
               Tài khoản: {user?.UserName}
             </Text>
-            {(user?.ent_chucvu?.Role === 5 || user?.ent_chucvu?.Role === 1 && user?.arr_Duan != null) && (
+            {(user?.ent_chucvu?.Role === 5 ||
+              (user?.ent_chucvu?.Role === 1 && user?.arr_Duan != null)) && (
               <SelectDropdown
                 data={duan.map((item) => item.Duan)} // Dữ liệu dự án
-                style={{ alignItems: "center" , height: "auto"}}
+                style={{ alignItems: "center", height: "auto" }}
                 buttonStyle={styles.select}
                 dropdownStyle={styles.dropdown}
                 defaultButtonText={user?.ent_duan?.Duan}
@@ -601,13 +614,13 @@ const HomeScreen = ({ navigation }) => {
                   user?.ent_chucvu?.Role == 3
                     ? dataDanhMuc
                     : user?.ent_chucvu?.Role == 5
-                    ? dataBQTKhoi
-                    : user?.ent_chucvu?.Role == 1
-                    ? dataGD
-                    : user?.ent_chucvu?.Role == 2 && dataKST;
+                      ? dataBQTKhoi
+                      : user?.ent_chucvu?.Role == 1
+                        ? dataGD
+                        : user?.ent_chucvu?.Role == 2 && dataKST;
 
                 if (!checkP0) {
-                  baseData = baseData.filter(item => item.id !== 7);
+                  baseData = baseData.filter((item) => item.id !== 7);
                 }
 
                 const currentDate = new Date();

@@ -5,12 +5,12 @@ import { useNavigation } from "@react-navigation/native";
 import { Image } from "react-native";
 import adjust from "../../adjust";
 
-export default function ItemHome({ item, index, roleUser, showReport }) {
+export default function ItemHome({ item, index, roleUser, showReport, passwordCore, showAlert }) {
   const navigation = useNavigation();
   return (
     <TouchableOpacity
       onPress={() => {
-        navigation.navigate(item.path);
+        passwordCore >= 2 ? navigation.navigate(item.path) : showAlert("Mật khẩu của bạn không đủ mạnh. Vui lòng cập nhật mật khẩu mới với độ bảo mật cao hơn.");
       }}
       style={[
         {
