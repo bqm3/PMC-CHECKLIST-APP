@@ -1458,7 +1458,7 @@ const DetailChecklist = ({ route, navigation }) => {
                   isCheck={activeAll}
                   onPress={() => handleCheckAll(!activeAll)}
                   size={30}
-                  location = {location}
+                  location={location}
                 />
                 <Text
                   allowFontScaling={false}
@@ -1475,24 +1475,30 @@ const DetailChecklist = ({ route, navigation }) => {
                 dataChecklistFilter &&
                 dataChecklistFilter?.length > 0 && (
                   <>
-                    <FlatList
+                    <View
                       style={{
-                        margin: 12,
                         flex: 1,
-                        marginBottom: 80,
+                        pointerEvents: location ? "auto" : "none",
                       }}
-                      data={dataChecklistFilter}
-                      renderItem={({ item, index, separators }) =>
-                        renderItem(item, index)
-                      }
-                      ItemSeparatorComponent={() => (
-                        <View style={{ height: 16 }} />
-                      )}
-                      keyExtractor={(item, index) =>
-                        `${item?.ID_Checklist}_${index}`
-                      }
-                      pointerEvents={location ? 'auto' : 'none'}
-                    />
+                    >
+                      <FlatList
+                        style={{
+                          margin: 12,
+                          flex: 1,
+                          marginBottom: 80,
+                        }}
+                        data={dataChecklistFilter}
+                        renderItem={({ item, index, separators }) =>
+                          renderItem(item, index)
+                        }
+                        ItemSeparatorComponent={() => (
+                          <View style={{ height: 16 }} />
+                        )}
+                        keyExtractor={(item, index) =>
+                          `${item?.ID_Checklist}_${index}`
+                        }
+                      />
+                    </View>
                   </>
                 )}
 
