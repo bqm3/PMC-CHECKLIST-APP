@@ -113,6 +113,27 @@ const DetailHSSE = ({ navigation, route }) => {
     ]);
   };
 
+    const handleAlertUpdate = () => {
+      Alert.alert(
+        "PMC Thông báo",
+        "Bạn có chắc muốn cập nhật báo cáo ngày " +
+          moment(data?.Ngaybc).format("DD/MM/YYYY") +
+          "?",
+        [
+          {
+            text: "Hủy",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel",
+          },
+          {
+            text: "Đồng ý",
+            onPress: () => handleUpdate(),
+            style: "default",
+          },
+        ]
+      );
+    }
+
   const handleUpdate = async () => {
     const filteredReport = hsseData.reduce((acc, item) => {
       const floatValue = parseFloat(item.value.replace(",", "."));
@@ -226,7 +247,7 @@ const DetailHSSE = ({ navigation, route }) => {
               style={styles.submitButton}
               onPress={() => {
                 Keyboard.dismiss();
-                handleUpdate();
+                handleAlertUpdate();
               }}
             >
               <Text style={styles.submitButtonText}>Cập nhật</Text>
