@@ -293,8 +293,7 @@ const ThuchienSucongoai = ({ navigation, route }) => {
     setLoadingSubmit(true);
   
     try {
-      if (!isValidInput()) {
-        showAlert("Vui lòng nhập đầy đủ thông tin");
+      if (isValidInput()) {
         return;
       }
   
@@ -316,7 +315,19 @@ const ThuchienSucongoai = ({ navigation, route }) => {
   };
   
   const isValidInput = () => {
-    return dataInput.Ngaysuco != null && dataInput.Giosuco != null;
+    if (dataInput.Ngaysuco == null) {
+      showAlert("Vui lòng nhập ngày sự cố.");
+      return true;
+    }
+    if (dataInput.Giosuco == null) {
+      showAlert("Vui lòng nhập giờ sự cố.");
+      return true;
+    }
+    if (dataInput.Noidungsuco == "") {
+      showAlert("Vui lòng nhập nội dung sự cố.");
+      return true;
+    }
+    return false;
   };
   
   const isInvalidDate = () => {

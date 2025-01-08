@@ -121,6 +121,14 @@ const TaoBaoCaoHSSE = ({ navigation, route }) => {
       return acc;
     }, {});
 
+    if (Object.values(filteredReport).every(value => value === 0)) {
+      showAlert(
+        "Chưa có thông tin nào thay đổi. Vui lòng nhập thông tin !",
+        false
+      );
+      return;
+    }    
+
     setIsLoadingSubmit(true);
     try {
       const response = await axios.post(
