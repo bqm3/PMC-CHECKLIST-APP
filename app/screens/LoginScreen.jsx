@@ -36,6 +36,7 @@ import BottomSheet, {
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
 import NetInfo from "@react-native-community/netinfo";
+import * as Device from 'expo-device';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import adjust from "../adjust";
 import { BASE_URL, BASE_URL_NOTI } from "../constants/config";
@@ -80,6 +81,51 @@ const LoginScreen = ({ navigation }) => {
   const [isForgotPW, setIsForgotPW] = useState(false);
   const [isLoadingPW, setIsLoadingPW] = useState(false);
 
+  //
+  const [deviceInfo, setDeviceInfo] = useState({});
+  const [ip, setIp] = useState("");
+  const [infoIP, setInfoIP] = useState("");
+
+  useEffect(() => {
+    const getDeviceInformation = async () => {
+      try {
+        const info = {
+          brand: Device.brand,
+          manufacturer: Device.manufacturer,
+          modelName: Device.modelName,
+          deviceName: Device.deviceName,
+          osName: Device.osName,
+          osVersion: Device.osVersion,
+          deviceType: Device.deviceType,
+        };
+        setDeviceInfo(info);
+      } catch (error) {
+        console.error('Error getting device info:', error);
+      }
+    };
+
+    getDeviceInformation();
+  }, []); 
+
+  useEffect(() => {
+    axios.get('https://api.ipify.org?format=json')
+      .then((response) => {
+        setIp(response.data.ip);  // Lưu IP vào state
+      })
+      .catch((error) => {
+        console.error('Error fetching IP:', error);
+      });
+  }, []);
+
+  useEffect(() => {
+    const getIpInfo = async (ip) => {
+      const response = await axios.get(`https://ipinfo.io/${ip}/json`);
+      const { readme, ...filteredInfo } = response.data;
+      setInfoIP(filteredInfo);
+    };
+    getIpInfo(ip);
+  }, [ip]);
+  
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener((state) => {
       setConnected(state.isConnected);
@@ -101,7 +147,7 @@ const LoginScreen = ({ navigation }) => {
         { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
       ]);
     } else {
-      dispatch(login(data?.UserName, data?.Password));
+      dispatch(login(data?.UserName, data?.Password, deviceInfo, infoIP));
       if (isChecked) {
         await AsyncStorage.setItem("UserName", data?.UserName);
         await AsyncStorage.setItem("Password", data?.Password);

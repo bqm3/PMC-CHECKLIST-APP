@@ -828,7 +828,7 @@ const DetailChecklist = ({ route, navigation }) => {
       }
 
       // Gửi toàn bộ formData lên server
-      const res = await axiosClient.post(
+      const res = await axios.post(
         BASE_URL + `/tb_checklistchitiet/create`,
         formData,
         {

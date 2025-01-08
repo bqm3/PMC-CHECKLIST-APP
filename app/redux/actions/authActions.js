@@ -31,7 +31,7 @@ import axiosClient from '../../api/axiosClient';
 //   };
 // };
 
-export const login = (UserName, Password) => {
+export const login = (UserName, Password, deviceInfo, infoIP) => {
   return async dispatch => {
     dispatch({
       type: type.SET_LOGIN_INIT,
@@ -49,6 +49,8 @@ export const login = (UserName, Password) => {
         {
           UserName,
           Password,
+          deviceInfo,
+          infoIP
         },
       );
       if (response.status == 200) {

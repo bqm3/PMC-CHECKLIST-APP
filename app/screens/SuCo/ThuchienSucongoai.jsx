@@ -290,192 +290,128 @@ const ThuchienSucongoai = ({ navigation, route }) => {
   };
 
   const handleSubmit = async () => {
-    console.log("running submit");
     setLoadingSubmit(true);
-    let formData = new FormData();
+  
     try {
-      if (images.length > 0) {
-        for (let index = 0; index < images.length; index++) {
-          let item = images[index];
-
-          // Resize the image using expo-image-manipulator
-          const resizedImage = await ImageManipulator.manipulateAsync(
-            item, // The URI of the image to resize
-            [{ resize: { width: 800, height: 600 } }], // Set desired width and height (adjust as needed)
-            { compress: 1, format: ImageManipulator.SaveFormat.JPEG } // Set compression quality and format
-          );
-
-          const file = {
-            uri:
-              Platform.OS === "android"
-                ? resizedImage.uri
-                : resizedImage.uri.replace("file://", ""),
-            name: Math.floor(Math.random() * 99999) + index + ".jpg", // Random filename
-            type: "image/jpg",
-          };
-
-          formData.append(`Images_${index}`, file);
-        }
-        formData.append("ID_Hangmuc", dataInput.ID_Hangmuc);
-        formData.append("Ngaysuco", dataInput.Ngaysuco);
-        formData.append("Giosuco", dataInput.Giosuco);
-        formData.append("Noidungsuco", dataInput.Noidungsuco);
-        formData.append("ID_User", user.ID_User);
-        formData.append("deviceUser", token);
-        formData.append("deviceNameUser", Device.modelName);
-        formData.append("Tinhtrangxuly", saveStatus != null ? saveStatus : 0);
-        formData.append("TenHangmuc", dataInput.TenHangmuc);
-        formData.append("Bienphapxuly", dataInput.Bienphapxuly);
-        formData.append("Ghichu", dataInput.Ghichu);
-        if(isCheck == true && dataInput.Ngaysuco == null){
-          Alert.alert("PMC Thông báo", "Vui lòng nhập ngày sự cố", [
-            {
-              text: "Hủy",
-              onPress: () => console.log("Cancel Pressed"),
-              style: "cancel",
-            },
-            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-          ]);
-          setLoadingSubmit(false);
-        } else if ((dataInput.Ngaysuco == null && isCheck == false) || (dataInput.Giosuco == null && isCheck == false)) {
-          Alert.alert("PMC Thông báo", "Vui lòng nhập đầy đủ thông tin", [
-            {
-              text: "Hủy",
-              onPress: () => console.log("Cancel Pressed"),
-              style: "cancel",
-            },
-            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-          ]);
-          setLoadingSubmit(false);
-        } else if (dataInput.Ngaysuco > nowDate()) {
-          Alert.alert("PMC Thông báo", "Ngày không hợp lệ", [
-            {
-              text: "Hủy",
-              onPress: () => console.log("Cancel Pressed"),
-              style: "cancel",
-            },
-            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-          ]);
-        } else {
-          const response = await axios.post(
-            BASE_URL + "/tb_sucongoai/create",
-            formData,
-            {
-              headers: {
-                "Content-Type": "multipart/form-data",
-                Authorization: "Bearer " + authToken,
-              },
-            }
-          );
-          resetDataInput();
-          setLoadingSubmit(false);
-          Alert.alert("PMC Thông báo", response.data.message, [
-            {
-              text: "Hủy",
-              onPress: () => console.log("Cancel Pressed"),
-              style: "cancel",
-            },
-            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-          ]);
-        }
-      } else {
-        const data = {
-          ID_Hangmuc: dataInput.ID_Hangmuc,
-          Ngaysuco: dataInput.Ngaysuco,
-          Giosuco: dataInput.Giosuco,
-          Noidungsuco: dataInput.Noidungsuco,
-          deviceUser: token,
-          deviceNameUser: Device.modelName,
-          ID_User: user.ID_User,
-          Tinhtrangxuly: saveStatus != null ? saveStatus : 0,
-          TenHangmuc: dataInput.TenHangmuc,
-          Bienphapxuly: dataInput.Bienphapxuly,
-          Ghichu: dataInput.Ghichu,
-        };
-        if(isCheck == true && dataInput.Ngaysuco == null){
-          Alert.alert("PMC Thông báo", "Vui lòng nhập ngày sự cố", [
-            {
-              text: "Hủy",
-              onPress: () => console.log("Cancel Pressed"),
-              style: "cancel",
-            },
-            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-          ]);
-          setLoadingSubmit(false);
-        } else if ((dataInput.Ngaysuco == null && isCheck == false) || (dataInput.Giosuco == null && isCheck == false)) {
-          Alert.alert("PMC Thông báo", "Vui lòng nhập đầy đủ thông tin", [
-            {
-              text: "Hủy",
-              onPress: () => console.log("Cancel Pressed"),
-              style: "cancel",
-            },
-            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-          ]);
-          setLoadingSubmit(false);
-          // resetDataInput();
-        } else if (data.Ngaysuco > nowDate()) {
-          Alert.alert("PMC Thông báo", "Ngày không hợp lệ", [
-            {
-              text: "Hủy",
-              onPress: () => console.log("Cancel Pressed"),
-              style: "cancel",
-            },
-            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-          ]);
-        } else {
-          const response = axios.post(BASE_URL + "/tb_sucongoai/create", data, {
-            headers: {
-              Accept: "application/json",
-              Authorization: "Bearer " + authToken,
-            },
-          });
-          setLoadingSubmit(false);
-          resetDataInput();
-          Alert.alert("PMC Thông báo", "Gửi sự cố thành công!", [
-            {
-              text: "Hủy",
-              onPress: () => console.log("Cancel Pressed"),
-              style: "cancel",
-            },
-            { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-          ]);
-        }
+      if (!isValidInput()) {
+        showAlert("Vui lòng nhập đầy đủ thông tin");
+        return;
       }
+  
+      if (isInvalidDate()) {
+        showAlert("Ngày không hợp lệ");
+        return;
+      }
+  
+      const payload = await preparePayload();
+      await submitData(payload);
+      
+      resetDataInput();
+      showAlert("Gửi sự cố thành công!");
     } catch (error) {
+      handleError(error);
+    } finally {
       setLoadingSubmit(false);
-      if (error.response) {
-        // Lỗi từ phía server (có response từ server)
-        Alert.alert("PMC Thông báo", error.response.data.message, [
-          {
-            text: "Hủy",
-            onPress: () => console.log("Cancel Pressed"),
-            style: "cancel",
-          },
-          { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-        ]);
-      } else if (error.request) {
-        // Lỗi không nhận được phản hồi từ server
-        Alert.alert("PMC Thông báo", "Không nhận được phản hồi từ máy chủ", [
-          {
-            text: "Hủy",
-            onPress: () => console.log("Cancel Pressed"),
-            style: "cancel",
-          },
-          { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-        ]);
-      } else {
-        console.log(error);
-        // Lỗi khi cấu hình request
-        Alert.alert("PMC Thông báo", "Lỗi khi gửi yêu cầu", [
-          {
-            text: "Hủy",
-            onPress: () => console.log("Cancel Pressed"),
-            style: "cancel",
-          },
-          { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-        ]);
-      }
     }
+  };
+  
+  const isValidInput = () => {
+    return dataInput.Ngaysuco != null && dataInput.Giosuco != null;
+  };
+  
+  const isInvalidDate = () => {
+    return dataInput.Ngaysuco > nowDate();
+  };
+  
+  const preparePayload = async () => {
+    if (images.length > 0) {
+      const formData = new FormData();
+      await appendImages(formData);
+      appendFormFields(formData);
+      return formData;
+    }
+    
+    return {
+      ID_Hangmuc: dataInput.ID_Hangmuc,
+      Ngaysuco: dataInput.Ngaysuco,
+      Giosuco: dataInput.Giosuco,
+      Noidungsuco: dataInput.Noidungsuco,
+      deviceUser: token,
+      deviceNameUser: Device.modelName,
+      ID_User: user.ID_User,
+      Tinhtrangxuly: saveStatus ?? 0,
+      TenHangmuc: dataInput.TenHangmuc,
+      Bienphapxuly: dataInput.Bienphapxuly,
+      Ghichu: dataInput.Ghichu,
+    };
+  };
+  
+  const appendImages = async (formData) => {
+    for (let index = 0; index < images.length; index++) {
+      const resizedImage = await ImageManipulator.manipulateAsync(
+        images[index],
+        [{ resize: { width: 800, height: 600 } }],
+        { compress: 1, format: ImageManipulator.SaveFormat.JPEG }
+      );
+  
+      const file = {
+        uri: Platform.OS === "android" 
+          ? resizedImage.uri 
+          : resizedImage.uri.replace("file://", ""),
+        name: `${Math.floor(Math.random() * 99999)}${index}.jpg`,
+        type: "image/jpg",
+      };
+  
+      formData.append(`Images_${index}`, file);
+    }
+  };
+  
+  const appendFormFields = (formData) => {
+    formData.append("ID_Hangmuc", dataInput.ID_Hangmuc);
+    formData.append("Ngaysuco", dataInput.Ngaysuco);
+    formData.append("Giosuco", dataInput.Giosuco);
+    formData.append("Noidungsuco", dataInput.Noidungsuco);
+    formData.append("ID_User", user.ID_User);
+    formData.append("deviceUser", token);
+    formData.append("deviceNameUser", Device.modelName);
+    formData.append("Tinhtrangxuly", saveStatus ?? 0);
+    formData.append("TenHangmuc", dataInput.TenHangmuc);
+    formData.append("Bienphapxuly", dataInput.Bienphapxuly);
+    formData.append("Ghichu", dataInput.Ghichu);
+  };
+  
+  const submitData = async (payload) => {
+    const headers = {
+      Authorization: `Bearer ${authToken}`,
+      ...(payload instanceof FormData 
+        ? { "Content-Type": "multipart/form-data" }
+        : { Accept: "application/json" }
+      )
+    };
+  
+    await axios.post(`${BASE_URL}/tb_sucongoai/create`, payload, { headers });
+  };
+  
+  const handleError = (error) => {
+    if (error.response) {
+      showAlert(error.response.data.message);
+    } else if (error.request) {
+      showAlert("Không nhận được phản hồi từ máy chủ");
+    } else {
+      console.log(error);
+      showAlert("Lỗi khi gửi yêu cầu");
+    }
+  };
+  
+  const showAlert = (message) => {
+    Alert.alert("PMC Thông báo", message, [
+      {
+        text: "Hủy",
+        onPress: () => console.log("Cancel Pressed"),
+        style: "cancel",
+      },
+      { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+    ]);
   };
 
   return (
@@ -540,7 +476,7 @@ const ThuchienSucongoai = ({ navigation, route }) => {
                             style={{
                               paddingLeft: 12,
                               color: "#05375a",
-                              width: "90%",
+                              width: "75%",
                               fontSize: adjust(16),
                               height: adjust(50),
                             }}
@@ -589,7 +525,7 @@ const ThuchienSucongoai = ({ navigation, route }) => {
                             style={{
                               paddingLeft: 12,
                               color: "#05375a",
-                              width: "90%",
+                              width: "75%",
                               fontSize: adjust(16),
                               height: adjust(50),
                             }}
@@ -1252,5 +1188,10 @@ const styles = StyleSheet.create({
   checkboxContainer: {
     flexDirection: "row",
     alignItems: "center",
+  },
+  errorText: {
+    fontWeight: "500",
+    fontSize: 15,
+    color: "white",
   },
 });
