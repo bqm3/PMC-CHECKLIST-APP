@@ -296,6 +296,10 @@ const ThuchienSucongoai = ({ navigation, route }) => {
       if (isValidInput()) {
         return;
       }
+
+      if (isCheckInput()){
+        return;
+      }
   
       if (isInvalidDate()) {
         showAlert("Ngày không hợp lệ");
@@ -313,6 +317,13 @@ const ThuchienSucongoai = ({ navigation, route }) => {
       setLoadingSubmit(false);
     }
   };
+
+  const isCheckInput = () => {
+    if(isCheck == true && (dataInput?.TenHangmuc == null || dataInput?.TenHangmuc?.trim() == "")){
+      showAlert("Vui lòng nhập tên hạng mục.");
+      return true;
+    }
+  }
   
   const isValidInput = () => {
     if (dataInput.Ngaysuco == null) {
