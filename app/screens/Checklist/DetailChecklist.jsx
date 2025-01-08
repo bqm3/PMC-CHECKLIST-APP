@@ -47,7 +47,7 @@ import ChecklistContext from "../../context/ChecklistContext";
 
 import adjust from "../../adjust";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Checkbox from "../../components/Active/Checkbox";
+import CheckboxChecklist from "../../components/Active/CheckboxChecklist";
 import ConnectContext from "../../context/ConnectContext";
 import WebView from "react-native-webview";
 import { useHeaderHeight } from "@react-navigation/elements";
@@ -197,6 +197,9 @@ const DetailChecklist = ({ route, navigation }) => {
               ...item,
               valueCheck: item.Giatridinhdanh,
               Gioht: moment().format("LTS"),
+              Vido: location?.coords?.latitude || "",
+              Kinhdo: location?.coords?.longitude || "",
+              Docao: location?.coords?.altitude || "",
               isScan: isScan,
             };
           } else if (item.valueCheck == item.Giatridinhdanh) {
@@ -204,12 +207,18 @@ const DetailChecklist = ({ route, navigation }) => {
               ...item,
               valueCheck: item.Giatridinhdanh,
               Gioht: moment().format("LTS"),
+              Vido: location?.coords?.latitude || "",
+              Kinhdo: location?.coords?.longitude || "",
+              Docao: location?.coords?.altitude || "",
               isScan: isScan,
             };
           } else {
             return {
               ...item,
               Gioht: moment().format("LTS"),
+              Vido: location?.coords?.latitude || "",
+              Kinhdo: location?.coords?.longitude || "",
+              Docao: location?.coords?.altitude || "",
               isScan: isScan,
             };
           }
@@ -223,6 +232,9 @@ const DetailChecklist = ({ route, navigation }) => {
               ...item,
               valueCheck: item.Giatridinhdanh,
               Gioht: moment().format("LTS"),
+              Vido: location?.coords?.latitude || "",
+              Kinhdo: location?.coords?.longitude || "",
+              Docao: location?.coords?.altitude || "",
               isScan: isScan,
             };
           } else if (item.valueCheck == item.Giatridinhdanh) {
@@ -230,12 +242,18 @@ const DetailChecklist = ({ route, navigation }) => {
               ...item,
               valueCheck: item.Giatridinhdanh,
               Gioht: moment().format("LTS"),
+              Vido: location?.coords?.latitude || "",
+              Kinhdo: location?.coords?.longitude || "",
+              Docao: location?.coords?.altitude || "",
               isScan: isScan,
             };
           } else {
             return {
               ...item,
               Gioht: moment().format("LTS"),
+              Vido: location?.coords?.latitude || "",
+              Kinhdo: location?.coords?.longitude || "",
+              Docao: location?.coords?.altitude || "",
               isScan: isScan,
             };
           }
@@ -243,6 +261,9 @@ const DetailChecklist = ({ route, navigation }) => {
           return {
             ...item,
             Gioht: moment().format("LTS"),
+            Vido: location?.coords?.latitude || "",
+            Kinhdo: location?.coords?.longitude || "",
+            Docao: location?.coords?.altitude || "",
             isScan: isScan,
           };
         }
@@ -264,6 +285,9 @@ const DetailChecklist = ({ route, navigation }) => {
           return {
             ...item,
             valueCheck: item.Giatridinhdanh,
+            Vido: location?.coords?.latitude || "",
+            Kinhdo: location?.coords?.longitude || "",
+            Docao: location?.coords?.altitude || "",
             isScan: isScan,
           };
         }
@@ -347,6 +371,9 @@ const DetailChecklist = ({ route, navigation }) => {
             GhichuChitiet: value?.GhichuChitiet ? value?.GhichuChitiet : "",
             valueCheck: value?.valueCheck ? value?.valueCheck : null,
             Gioht: moment().format("LTS"),
+            Vido: location?.coords?.latitude || "",
+            Kinhdo: location?.coords?.longitude || "",
+            Docao: location?.coords?.altitude || "",
             isScan: isScan,
           };
         }
@@ -358,6 +385,9 @@ const DetailChecklist = ({ route, navigation }) => {
         GhichuChitiet: value?.GhichuChitiet ? value?.GhichuChitiet : "",
         valueCheck: value?.valueCheck ? value?.valueCheck : null,
         Gioht: moment().format("LTS"),
+        Vido: location?.coords?.latitude || "",
+        Kinhdo: location?.coords?.longitude || "",
+        Docao: location?.coords?.altitude || "",
         isScan: isScan,
       };
     } else {
@@ -367,6 +397,9 @@ const DetailChecklist = ({ route, navigation }) => {
             ...item,
             [key]: value ? value : null,
             Gioht: moment().format("LTS"),
+            Vido: location?.coords?.latitude || "",
+            Kinhdo: location?.coords?.longitude || "",
+            Docao: location?.coords?.altitude || "",
             isScan: isScan,
           };
         }
@@ -377,6 +410,9 @@ const DetailChecklist = ({ route, navigation }) => {
         ...itemData,
         [key]: value ? value : null,
         Gioht: moment().format("LTS"),
+        Vido: location?.coords?.latitude || "",
+        Kinhdo: location?.coords?.longitude || "",
+        Docao: location?.coords?.altitude || "",
         isScan: isScan,
       };
     }
@@ -1160,8 +1196,8 @@ const DetailChecklist = ({ route, navigation }) => {
     setDataItem(null);
     setIndex(null);
     setIsBottomSheetOpen(false);
-    setWidthModal("90%")
-    setHeightModal("auto")
+    setWidthModal("90%");
+    setHeightModal("auto");
   }, []);
 
   // view item flatlist
@@ -1175,8 +1211,8 @@ const DetailChecklist = ({ route, navigation }) => {
               `${item.isCheck}` == 1
                 ? "white"
                 : `${item?.Tinhtrang}` === "1"
-                ? "#ea9999"
-                : "white",
+                  ? "#ea9999"
+                  : "white",
           },
         ]}
         key={item?.ID_Checklist}
@@ -1418,10 +1454,11 @@ const DetailChecklist = ({ route, navigation }) => {
                   marginLeft: 12,
                 }}
               >
-                <Checkbox
+                <CheckboxChecklist
                   isCheck={activeAll}
                   onPress={() => handleCheckAll(!activeAll)}
                   size={30}
+                  location = {location}
                 />
                 <Text
                   allowFontScaling={false}
@@ -1454,6 +1491,7 @@ const DetailChecklist = ({ route, navigation }) => {
                       keyExtractor={(item, index) =>
                         `${item?.ID_Checklist}_${index}`
                       }
+                      pointerEvents={location ? 'auto' : 'none'}
                     />
                   </>
                 )}
