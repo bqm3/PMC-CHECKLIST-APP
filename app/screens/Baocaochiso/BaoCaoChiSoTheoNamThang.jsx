@@ -78,7 +78,7 @@ const BaoCaoChiSoTheoNamThang = ({ navigation, route }) => {
               resizeMode="stretch"
               style={{ flex: 1, width: "100%" }}
             >
-              <View style={{ flex: 1, width: "100%" , opacity: opacity}}>
+              <View style={{ flex: 1, width: "100%" , opacity: opacity, pointerEvents: opacity == 1 ? "auto" : "none"}}>
                 <View style={[styles.container]}>
                   <View style={styles.content}>
                     {data.data.length > 0 && (
