@@ -278,11 +278,9 @@ const dataBQTKhoi = [
 // create a component
 const HomeScreen = ({ navigation }) => {
   const dispath = useDispatch();
-  const { user, authToken } = useSelector(
+  const { user, authToken , passwordCore} = useSelector(
     (state) => state.authReducer
   );
-
-  const [passwordCore, setPasswordCore] = useState("");
 
   const { setToken } = useContext(ExpoTokenContext);
 
@@ -332,19 +330,12 @@ const HomeScreen = ({ navigation }) => {
     await dispath(ent_calv_get());
   };
 
-  const asyncPassword  = async () => {
-    const data = await AsyncStorage.getItem("Password");
-    setPasswordCore(data);
-  }
-
   useEffect(()=> {
-    asyncPassword()
     checkPasswordStrength();
   }, [])
 
   const checkPasswordStrength = async () => {
-    const password = await AsyncStorage.getItem("Password");
-    if (!validatePassword(password)) {
+    if (!passwordCore) {
       showAlert(
         "Mật khẩu của bạn không đủ mạnh. Vui lòng cập nhật mật khẩu mới với độ bảo mật cao hơn."
       );

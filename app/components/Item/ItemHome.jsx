@@ -11,7 +11,7 @@ export default function ItemHome({ item, index, roleUser, passwordCore, showAler
   return (
     <TouchableOpacity
       onPress={() => {
-        validatePassword(passwordCore) ? navigation.navigate(item.path) : showAlert("Mật khẩu của bạn không đủ mạnh. Vui lòng cập nhật mật khẩu mới với độ bảo mật cao hơn.");
+        passwordCore ? navigation.navigate(item.path) : showAlert("Mật khẩu của bạn không đủ mạnh. Vui lòng cập nhật mật khẩu mới với độ bảo mật cao hơn.");
       }}
       style={[
         {
