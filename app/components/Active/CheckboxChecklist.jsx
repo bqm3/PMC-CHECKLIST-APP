@@ -42,7 +42,7 @@ const Checkbox = ({ isCheck, onPress, color, size, location }) => {
         if (location) {
           onPress();
         } else {
-          showAlert();
+          onPress();
         }
       }}
     >

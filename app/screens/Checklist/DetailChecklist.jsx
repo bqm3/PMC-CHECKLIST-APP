@@ -1478,7 +1478,7 @@ const DetailChecklist = ({ route, navigation }) => {
                     <View
                       style={{
                         flex: 1,
-                        pointerEvents: location ? "auto" : "none",
+                        // pointerEvents: location ? "auto" : "none",
                       }}
                     >
                       <FlatList
