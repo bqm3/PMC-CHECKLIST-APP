@@ -633,14 +633,14 @@ const DetailChecklist = ({ route, navigation }) => {
   const handleSubmit = async () => {
     try {
       saveConnect(true);
-      if (location == null) {
-        Alert.alert(
-          "PMC Thông báo",
-          "Vui lòng đợi để xác định vị trí. Hãy xác thực lại trong vòng 1-2 giây!",
-          [{ text: "OK", onPress: () => setLoadingSubmit(false) }]
-        );
-        return;
-      } else {
+      // if (location == null) {
+      //   Alert.alert(
+      //     "PMC Thông báo",
+      //     "Vui lòng đợi để xác định vị trí. Hãy xác thực lại trong vòng 1-2 giây!",
+      //     [{ text: "OK", onPress: () => setLoadingSubmit(false) }]
+      //   );
+      //   return;
+      // } else {
         if (isConnected) {
           setLoadingSubmit(true);
           setActiveAll(false);
@@ -764,7 +764,7 @@ const DetailChecklist = ({ route, navigation }) => {
             JSON.stringify(updatedData1)
           );
         }
-      }
+      // }
     } catch (error) {
       console.error("Lỗi khi kiểm tra kết nối mạng:", error);
       setLoadingSubmit(false);
@@ -1555,13 +1555,13 @@ const DetailChecklist = ({ route, navigation }) => {
               >
                 <Button
                   text={
-                    loadingSubmit || !location
+                    loadingSubmit
                       ? "Đang tải dữ liệu"
                       : "Hoàn Thành"
                   }
-                  isLoading={loadingSubmit || !location}
+                  isLoading={loadingSubmit}
                   backgroundColor={
-                    loadingSubmit || !location ? "gray" : COLORS.bg_button
+                    loadingSubmit ? "gray" : COLORS.bg_button
                   }
                   color={"white"}
                   onPress={() => handleSubmit()}
