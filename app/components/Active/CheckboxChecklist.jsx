@@ -14,7 +14,7 @@ const Checkbox = ({ isCheck, onPress, color, size, location }) => {
   const showAlert = () => {
     Alert.alert(
       "PMC Thông báo",
-      "Bạn cần bật quyền truy cập vị trí trong Cài đặt để tiếp tục sử dụng ứng dụng.",
+      "Vui lòng chờ trong giây lát để ứng dụng lấy dữ liệu vị trí hoặc kiểm tra và cấp quyền truy cập vị trí trong phần Cài đặt để đảm bảo trải nghiệm tốt nhất.",
       [
         {
           text: "Hủy",

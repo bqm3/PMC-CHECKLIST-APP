@@ -334,7 +334,9 @@ const HomeScreen = ({ navigation }) => {
 
   const asyncPassword  = async () => {
     const data = await AsyncStorage.getItem("Password");
-    setPasswordCore(data);
+    if(data){
+      setPasswordCore(data);
+    }
   }
 
   useEffect(()=> {
@@ -344,7 +346,7 @@ const HomeScreen = ({ navigation }) => {
 
   const checkPasswordStrength = async () => {
     const password = await AsyncStorage.getItem("Password");
-    if (!validatePassword(password)) {
+    if (password && !validatePassword(password)) {
       showAlert(
         "Mật khẩu của bạn không đủ mạnh. Vui lòng cập nhật mật khẩu mới với độ bảo mật cao hơn."
       );
