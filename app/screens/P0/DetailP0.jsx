@@ -1,30 +1,7 @@
-import React, {
-  useState,
-  useCallback,
-  useMemo,
-  useEffect,
-  useRef,
-  useContext,
-} from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  Platform,
-  KeyboardAvoidingView,
-  ImageBackground,
-  TouchableOpacity,
-  Keyboard,
-  ActivityIndicator,
-  Alert,
-  ScrollView,
-} from "react-native";
+import React, { useState, useCallback, useMemo, useEffect, useRef, useContext } from "react";
+import { View, Text, StyleSheet, FlatList, Platform, KeyboardAvoidingView, ImageBackground, TouchableOpacity, Keyboard, ActivityIndicator, Alert, ScrollView } from "react-native";
 import { useSelector } from "react-redux";
-import {
-  GestureHandlerRootView,
-  TextInput,
-} from "react-native-gesture-handler";
+import { GestureHandlerRootView, TextInput } from "react-native-gesture-handler";
 import adjust from "../../adjust";
 import moment from "moment";
 import axios from "axios";
@@ -33,105 +10,32 @@ import { BASE_URL } from "../../constants/config";
 import { ReloadContext } from "../../context/ReloadContext";
 
 const P0 = [
-  {
-    id: 0,
-    title: "Xe ô tô thường",
-    key: "Slxeoto",
-    value: "0",
-  },
-  {
-    id: 1,
-    title: "Xe ô tô điện",
-    key: "Slxeotodien",
-    value: "0",
-  },
-  { id: 2, title: "Xe máy điện", key: "Slxemaydien", value: "0" },
-  {
-    id: 3,
-    title: "Xe máy thường",
-    key: "Slxemay",
-    value: "0",
-  },
-  { id: 4, title: "Xe đạp điện", key: "Slxedapdien", value: "0" },
-  {
-    id: 5,
-    title: "Xe đạp thường",
-    key: "Slxedap",
-    value: "0",
-  },
-  { id: 6, title: "Thẻ xe ô tô", key: "Sltheoto", value: "0" },
-  { id: 7, title: "Thẻ xe máy", key: "Slthexemay", value: "0" },
-  {
-    id: 8,
-    title: "Sự cố xe ô tô thường",
-    key: "Slscoto",
-    value: "0",
-  },
-  {
-    id: 9,
-    title: "Sự cố xe ô tô điện",
-    key: "Slscotodien",
-    value: "0",
-  },
-  {
-    id: 10,
-    title: "Sự cố xe máy điện",
-    key: "Slscxemaydien",
-    value: "0",
-  },
-  {
-    id: 11,
-    title: "Sự cố xe máy thường",
-    key: "Slscxemay",
-    value: "0",
-  },
-  {
-    id: 12,
-    title: "Sự cố xe đạp điện",
-    key: "Slscxedapdien",
-    value: "0",
-  },
-  {
-    id: 13,
-    title: "Sự cố xe đạp thường",
-    key: "Slscxedap",
-    value: "0",
-  },
-  {
-    id: 14,
-    title: "Sự cố khác",
-    key: "Slsucokhac",
-    value: "0",
-  },
-  {
-    id: 15,
-    title: "Công tơ điện",
-    key: "Slcongto",
-    value: "0",
-  },
-  {
-    id: 16,
-    title: "Quân số thực tế",
-    key: "QuansoTT",
-    value: "0",
-  },
-  {
-    id: 17,
-    title: "Quân số định biên",
-    key: "QuansoDB",
-    value: "0",
-  },
-  {
-    id: 18,
-    title: "Doanh thu từ 16h hôm trước đến 16h hôm nay",
-    key: "Doanhthu",
-    value: "0",
-  },
+  { id: 0, title: "Thẻ ô tô phát hành", key: "Sotheotodk", value: "0" },
+  { id: 1, title: "Thẻ xe máy phát hành", key: "Sothexemaydk", value: "0" },
+  { id: 2, title: "Xe ô tô thường", key: "Slxeoto", value: "0" },
+  { id: 3, title: "Xe ô tô điện", key: "Slxeotodien", value: "0" },
+  { id: 4, title: "Xe máy điện", key: "Slxemaydien", value: "0" },
+  { id: 5, title: "Xe máy thường", key: "Slxemay", value: "0" },
+  { id: 6, title: "Xe đạp điện", key: "Slxedapdien", value: "0" },
+  { id: 7, title: "Xe đạp thường", key: "Slxedap", value: "0" },
+  { id: 8, title: "Thẻ xe ô tô", key: "Sltheoto", value: "0" },
+  { id: 9, title: "Thẻ xe máy", key: "Slthexemay", value: "0" },
+  { id: 10, title: "Sự cố xe ô tô thường", key: "Slscoto", value: "0" },
+  { id: 11, title: "Sự cố xe ô tô điện", key: "Slscotodien", value: "0" },
+  { id: 12, title: "Sự cố xe máy điện", key: "Slscxemaydien", value: "0" },
+  { id: 13, title: "Sự cố xe máy thường", key: "Slscxemay", value: "0" },
+  { id: 14, title: "Sự cố xe đạp điện", key: "Slscxedapdien", value: "0" },
+  { id: 15, title: "Sự cố xe đạp thường", key: "Slscxedap", value: "0" },
+  { id: 16, title: "Sự cố khác", key: "Slsucokhac", value: "0" },
+  { id: 17, title: "Công tơ điện", key: "Slcongto", value: "0" },
+  { id: 18, title: "Quân số thực tế", key: "QuansoTT", value: "0" },
+  { id: 19, title: "Quân số định biên", key: "QuansoDB", value: "0" },
+  { id: 20, title: "Doanh thu từ 16h hôm trước đến 16h hôm nay", key: "Doanhthu", value: "0" },
 ];
 
 const DetailP0 = ({ navigation, route }) => {
   const { data } = route.params;
-   const { isReload, setIsReload } = useContext(ReloadContext);
+  const { isReload, setIsReload } = useContext(ReloadContext);
   const { user, authToken } = useSelector((state) => state.authReducer);
   const [p0_Data, setP0_Data] = useState(P0);
   const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
@@ -167,16 +71,13 @@ const DetailP0 = ({ navigation, route }) => {
   useEffect(() => {
     const updatedP0 = P0.map((item) => ({
       ...item,
-      value:
-        data[item.key] !== undefined ? data[item.key].toString() : item.value,
+      value: data[item.key] !== undefined ? data[item.key].toString() : item.value,
     }));
     setP0_Data(updatedP0);
   }, [data]);
 
   const handleInputChange = (key, value) => {
-    setP0_Data((prev) =>
-      prev.map((item) => (item.key == key ? { ...item, value } : item))
-    );
+    setP0_Data((prev) => prev.map((item) => (item.key == key ? { ...item, value } : item)));
   };
 
   const groupedData = useMemo(() => {
@@ -191,34 +92,25 @@ const DetailP0 = ({ navigation, route }) => {
     Alert.alert("PMC Thông báo", message, [
       {
         text: "Xác nhận",
-        onPress: () =>
-          key
-            ? navigation.navigate("Báo cáo P0")
-            : console.log("Cancel Pressed"),
+        onPress: () => (key ? navigation.navigate("Báo cáo P0") : console.log("Cancel Pressed")),
         style: "cancel",
       },
     ]);
   };
   const handleAlertUpdate = () => {
-    Alert.alert(
-      "PMC Thông báo",
-      "Bạn có chắc muốn cập nhật báo cáo ngày " +
-        moment(data?.Ngaybc).format("DD/MM/YYYY") +
-        "?",
-      [
-        {
-          text: "Hủy",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel",
-        },
-        {
-          text: "Đồng ý",
-          onPress: () => handleUpdate(),
-          style: "default",
-        },
-      ]
-    );
-  }
+    Alert.alert("PMC Thông báo", "Bạn có chắc muốn cập nhật báo cáo ngày " + moment(data?.Ngaybc).format("DD/MM/YYYY") + "?", [
+      {
+        text: "Hủy",
+        onPress: () => console.log("Cancel Pressed"),
+        style: "cancel",
+      },
+      {
+        text: "Đồng ý",
+        onPress: () => handleUpdate(),
+        style: "default",
+      },
+    ]);
+  };
 
   const handleUpdate = async () => {
     const filteredReport = p0_Data.reduce((acc, item) => {
@@ -236,16 +128,13 @@ const DetailP0 = ({ navigation, route }) => {
 
     setIsLoadingSubmit(true);
     try {
-      const response = await axios.put(
-        `${BASE_URL}/p0/update/${data.ID_P0}`,
-        dataReq,
-        {
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${authToken}`,
-          },
-        }
-      );
+      const response = await axios.put(`${BASE_URL}/p0/update/${data.ID_P0}`, dataReq, {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+
 
       // Kiểm tra response status
       if (response.status == 200 || response.status == 201) {
@@ -256,16 +145,10 @@ const DetailP0 = ({ navigation, route }) => {
       }
     } catch (error) {
       if (error.response) {
-        showAlert(
-          error.response.data?.message || "Lỗi từ máy chủ. Vui lòng thử lại",
-          false
-        );
+        showAlert(error.response.data?.message || "Lỗi từ máy chủ. Vui lòng thử lại", false);
       } else if (error.request) {
         // Lỗi kết nối
-        showAlert(
-          "Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối",
-          false
-        );
+        showAlert("Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối", false);
       } else {
         // Lỗi khác
         showAlert("Đã có lỗi xảy ra. Vui lòng thử lại", false);
@@ -277,9 +160,9 @@ const DetailP0 = ({ navigation, route }) => {
 
   const editable = (id) => {
     let check = false;
-    if (user?.ID_KhoiCV == 4 && id == 18) {
+    if (user?.ID_KhoiCV == 4 && id == 20) {
       check = true;
-    } else if (user?.ID_KhoiCV == 3 && id != 18) {
+    } else if (user?.ID_KhoiCV == 3 && id != 20) {
       check = true;
     } else if (user?.ID_KhoiCV == null) {
       check = true;
@@ -301,14 +184,7 @@ const DetailP0 = ({ navigation, route }) => {
               },
             ]}
           >
-            <Text
-              style={[
-                styles.itemTitle,
-                { color: editable(subItem.id) ? "black" : "white" },
-              ]}
-            >
-              {subItem.title}
-            </Text>
+            <Text style={[styles.itemTitle, { color: editable(subItem.id) ? "black" : "white" }]}>{subItem.title}</Text>
             <TextInput
               style={[
                 styles.input,
@@ -334,38 +210,16 @@ const DetailP0 = ({ navigation, route }) => {
 
   return (
     <GestureHandlerRootView style={styles.flex}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.flex}
-      >
-        <ImageBackground
-          source={require("../../../assets/bg.png")}
-          resizeMode="cover"
-          style={styles.flex}
-        >
+      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.flex}>
+        <ImageBackground source={require("../../../assets/bg.png")} resizeMode="cover" style={styles.flex}>
           {isLoadingSubmit && (
             <View style={styles.loadingContainer}>
               <ActivityIndicator size="small" color={COLORS.bg_white} />
             </View>
           )}
-          <ScrollView
-            ref={scrollViewRef}
-            keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}
-          >
-            <FlatList
-              data={groupedData}
-              renderItem={renderItem}
-              keyExtractor={keyExtractor}
-              contentContainerStyle={styles.listContent}
-              scrollEnabled={false}
-            />
-            <TouchableOpacity
-              ref={noteContainerRef}
-              style={styles.noteContainer}
-              onPress={handleNotePress}
-              activeOpacity={1}
-            >
+          <ScrollView ref={scrollViewRef} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+            <FlatList data={groupedData} renderItem={renderItem} keyExtractor={keyExtractor} contentContainerStyle={styles.listContent} scrollEnabled={false} />
+            <TouchableOpacity ref={noteContainerRef} style={styles.noteContainer} onPress={handleNotePress} activeOpacity={1}>
               <Text style={styles.text}>Ghi chú</Text>
               <TextInput
                 ref={noteInputRef}
@@ -380,7 +234,6 @@ const DetailP0 = ({ navigation, route }) => {
                 onSubmitEditing={Keyboard.dismiss}
                 style={[styles.textInput, styles.multilineTextInput]}
                 editable={isToday}
-                
               />
             </TouchableOpacity>
           </ScrollView>
@@ -390,7 +243,7 @@ const DetailP0 = ({ navigation, route }) => {
               onPress={() => {
                 Keyboard.dismiss();
                 // handleUpdate();
-                handleAlertUpdate()
+                handleAlertUpdate();
               }}
             >
               <Text style={styles.submitButtonText}>Cập nhật</Text>
@@ -491,7 +344,7 @@ const styles = StyleSheet.create({
   multilineTextInput: {
     height: 70,
     marginBottom: 10,
-    textAlignVertical: 'top',
+    textAlignVertical: "top",
   },
 });
 
