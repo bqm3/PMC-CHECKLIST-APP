@@ -51,7 +51,7 @@ const ModalForgotPassword = ({
           <Text style={styles.modalTitle}>Quên mật khẩu</Text>
           <TextInput
             style={styles.input}
-            placeholder="Tên đăng nhập"
+            placeholder="Tài khoản"
             placeholderTextColor="#aaa"
             value={username}
             onChangeText={setUsername}
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingHorizontal: adjust(20),
+    // paddingHorizontal: adjust(20),
     marginTop: adjust(15),
     gap: adjust(12),
   },
@@ -145,10 +145,10 @@ const styles = StyleSheet.create({
   cancelButton: {
     backgroundColor: "#ffffff",
     borderWidth: 1,
-    borderColor: "#007BFF",
+    borderColor: COLORS.bg_button,
   },
   submitButton: {
-    backgroundColor: "#007BFF",
+    backgroundColor: COLORS.bg_button,
   },
   buttonText: {
     fontSize: adjust(16),
@@ -156,6 +156,6 @@ const styles = StyleSheet.create({
     color: "#ffffff",
   },
   cancelButtonText: {
-    color: "#007BFF",
+    color: COLORS.bg_button,
   },
 });

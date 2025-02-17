@@ -148,6 +148,8 @@ const LoginScreen = ({ navigation }) => {
       ]);
     } else {
       dispatch(login(data?.UserName, data?.Password, deviceInfo, infoIP));
+      await AsyncStorage.setItem("Password", data?.Password);
+      await AsyncStorage.setItem("UserName", data?.UserName);
       if (isChecked) {
         await AsyncStorage.setItem("UserName", data?.UserName);
         await AsyncStorage.setItem("Password", data?.Password);
@@ -490,7 +492,7 @@ const LoginScreen = ({ navigation }) => {
                       flexDirection: "row",
                       justifyContent: "space-between",
                       alignItems: "center",
-                      padding: adjust(10),
+                      paddingTop: adjust(12),
                     }}
                   >
                     <View style={styles.checkboxContainer}>
@@ -517,11 +519,11 @@ const LoginScreen = ({ navigation }) => {
                         alignItems: "center",
                       }}
                     >
-                      <Text style={[styles.label]}>Quên mật khẩu</Text>
+                      <Text allowFontScaling={false} style={[styles.label]}>Quên mật khẩu</Text>
                     </Pressable>
                   </View>
 
-                  <View style={{ height: 20 }} />
+                  <View style={{ height: 12 }} />
                   <ButtonSubmit
                     backgroundColor={COLORS.bg_button}
                     text={"Đăng nhập"}
@@ -536,6 +538,7 @@ const LoginScreen = ({ navigation }) => {
                       textAlign: "right",
                       paddingTop: 10
                     }}
+                    allowFontScaling={false}
                   >
                     Phiên bản: {version}
                   </Text>
