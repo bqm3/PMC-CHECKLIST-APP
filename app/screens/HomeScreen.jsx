@@ -552,7 +552,7 @@ const HomeScreen = ({ navigation }) => {
               Tài khoản: {user?.UserName}
             </Text>
             {(user?.ent_chucvu?.Role === 5 ||
-              (user?.ent_chucvu?.Role === 1 && user?.arr_Duan != null)) && (
+              (user?.ent_chucvu?.Role === 1 && user?.arr_Duan != null && user?.arr_Duan != "" && user?.arr_Duan != undefined)) && (
               <SelectDropdown
                 data={duan.map((item) => item.Duan)} // Dữ liệu dự án
                 style={{ alignItems: "center", height: "auto" }}
