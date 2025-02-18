@@ -1,5 +1,26 @@
-import React, { useState, useCallback, useMemo, useRef, useEffect, useContext } from "react";
-import { View, Text, StyleSheet, FlatList, TextInput, Platform, KeyboardAvoidingView, Keyboard, TouchableOpacity, ImageBackground, ActivityIndicator, Alert, ScrollView } from "react-native";
+import React, {
+  useState,
+  useCallback,
+  useMemo,
+  useRef,
+  useEffect,
+  useContext,
+} from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  TextInput,
+  Platform,
+  KeyboardAvoidingView,
+  Keyboard,
+  TouchableOpacity,
+  ImageBackground,
+  ActivityIndicator,
+  Alert,
+  ScrollView,
+} from "react-native";
 import { useSelector } from "react-redux";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import adjust from "../../adjust";
@@ -29,7 +50,12 @@ const P0 = [
   { id: 17, title: "Công tơ điện", key: "Slcongto", value: "0" },
   { id: 18, title: "Quân số thực tế", key: "QuansoTT", value: "0" },
   { id: 19, title: "Quân số định biên", key: "QuansoDB", value: "0" },
-  { id: 20, title: "Doanh thu từ 16h hôm trước đến 16h hôm nay", key: "Doanhthu", value: "0" },
+  {
+    id: 20,
+    title: "Doanh thu từ 16h hôm trước đến 16h hôm nay",
+    key: "Doanhthu",
+    value: "0",
+  },
 ];
 
 const TaoBaoCaoP0 = ({ navigation, route }) => {
@@ -71,7 +97,11 @@ const TaoBaoCaoP0 = ({ navigation, route }) => {
   };
 
   const handleChange = useCallback((id, value) => {
-    setP0_Data((prevState) => prevState.map((item) => (item.id === id ? { ...item, value: value } : item)));
+    setP0_Data((prevState) =>
+      prevState.map((item) =>
+        item.id === id ? { ...item, value: value } : item
+      )
+    );
   }, []);
 
   const groupedData = useMemo(() => {
@@ -86,7 +116,10 @@ const TaoBaoCaoP0 = ({ navigation, route }) => {
     Alert.alert("PMC Thông báo", message, [
       {
         text: "Xác nhận",
-        onPress: () => (key ? navigation.navigate("Báo cáo P0") : console.log("Cancel Pressed")),
+        onPress: () =>
+          key
+            ? navigation.navigate("Báo cáo P0")
+            : console.log("Cancel Pressed"),
         style: "cancel",
       },
     ]);
@@ -116,8 +149,20 @@ const TaoBaoCaoP0 = ({ navigation, route }) => {
 
       setP0_Data((prevData) =>
         prevData.map((item) => {
-          if (item.key === "Sotheotodk") return { ...item, value: `${res.data.data.Sotheotodk}` };
-          if (item.key === "Sothexemaydk") return { ...item, value: `${res.data.data.Sothexemaydk}` };
+          if (item.key === "Sotheotodk")
+            return {
+              ...item,
+              value: res.data?.data?.Sotheotodk
+                ? res.data?.data?.Sotheotodk
+                : 0,
+            };
+          if (item.key === "Sothexemaydk")
+            return {
+              ...item,
+              value: res.data?.data?.Sothexemaydk
+                ? res.data?.data?.Sothexemaydk
+                : 0,
+            };
           return item;
         })
       );
@@ -137,12 +182,16 @@ const TaoBaoCaoP0 = ({ navigation, route }) => {
     setIsLoadingSubmit(true);
 
     try {
-      const response = await axios.post(`${BASE_URL}/p0/create`, filteredReport, {
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${authToken}`,
-        },
-      });
+      const response = await axios.post(
+        `${BASE_URL}/p0/create`,
+        filteredReport,
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
 
       // Kiểm tra response status
       if (response.status == 200 || response.status == 201) {
@@ -154,10 +203,16 @@ const TaoBaoCaoP0 = ({ navigation, route }) => {
       }
     } catch (error) {
       if (error.response) {
-        showAlert(error.response.data?.message || "Lỗi từ máy chủ. Vui lòng thử lại", false);
+        showAlert(
+          error.response.data?.message || "Lỗi từ máy chủ. Vui lòng thử lại",
+          false
+        );
       } else if (error.request) {
         // Lỗi kết nối
-        showAlert("Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối", false);
+        showAlert(
+          "Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối",
+          false
+        );
       } else {
         // Lỗi khác
         showAlert("Đã có lỗi xảy ra. Vui lòng thử lại", false);
@@ -182,33 +237,40 @@ const TaoBaoCaoP0 = ({ navigation, route }) => {
   const renderItem = useCallback(
     ({ item }) => (
       <View style={styles.row}>
-        {item.map((subItem) => {
+        {item?.map((subItem) => {
           if (!subItem) return null;
           return (
             <View
-              key={subItem.id}
+              key={subItem?.id}
               style={[
                 styles.itemContainer,
                 {
-                  backgroundColor: editable(subItem.id) ? "white" : "gray",
+                  backgroundColor: editable(subItem?.id) ? "white" : "gray",
                 },
               ]}
             >
-              <Text style={[styles.itemTitle, { color: editable(subItem.id) ? "black" : "white" }]}>{subItem.title}</Text>
+              <Text
+                style={[
+                  styles.itemTitle,
+                  { color: editable(subItem?.id) ? "black" : "white" },
+                ]}
+              >
+                {subItem?.title}
+              </Text>
               <TextInput
                 style={[
                   styles.input,
                   {
-                    backgroundColor: editable(subItem.id) ? "white" : "gray",
-                    color: editable(subItem.id) ? "black" : "white",
+                    backgroundColor: editable(subItem?.id) ? "white" : "gray",
+                    color: editable(subItem?.id) ? "black" : "white",
                   },
                 ]}
-                value={subItem.value.toString()}
-                onChangeText={(text) => handleChange(subItem.id, text)}
+                value={subItem?.value.toString()}
+                onChangeText={(text) => handleChange(subItem?.id, text)}
                 placeholderTextColor="#888"
                 keyboardType="numeric"
                 returnKeyType="done"
-                editable={editable(subItem.id)}
+                editable={editable(subItem?.id)}
               />
             </View>
           );
@@ -222,16 +284,38 @@ const TaoBaoCaoP0 = ({ navigation, route }) => {
 
   return (
     <GestureHandlerRootView style={styles.flex}>
-      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.flex}>
-        <ImageBackground source={require("../../../assets/bg.png")} resizeMode="cover" style={styles.flex}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.flex}
+      >
+        <ImageBackground
+          source={require("../../../assets/bg.png")}
+          resizeMode="cover"
+          style={styles.flex}
+        >
           {isLoadingSubmit && (
             <View style={styles.loadingContainer}>
               <ActivityIndicator size="small" color={COLORS.bg_white} />
             </View>
           )}
-          <ScrollView ref={scrollViewRef} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-            <FlatList data={groupedData} renderItem={renderItem} keyExtractor={keyExtractor} contentContainerStyle={styles.listContent} scrollEnabled={false} />
-            <TouchableOpacity ref={noteContainerRef} style={styles.noteContainer} onPress={handleNotePress} activeOpacity={1}>
+          <ScrollView
+            ref={scrollViewRef}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+          >
+            <FlatList
+              data={groupedData}
+              renderItem={renderItem}
+              keyExtractor={keyExtractor}
+              contentContainerStyle={styles.listContent}
+              scrollEnabled={false}
+            />
+            <TouchableOpacity
+              ref={noteContainerRef}
+              style={styles.noteContainer}
+              onPress={handleNotePress}
+              activeOpacity={1}
+            >
               <Text style={styles.text}>Ghi chú</Text>
               <TextInput
                 ref={noteInputRef}
