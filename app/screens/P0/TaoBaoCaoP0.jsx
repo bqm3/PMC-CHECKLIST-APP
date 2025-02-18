@@ -152,15 +152,15 @@ const TaoBaoCaoP0 = ({ navigation, route }) => {
           if (item.key === "Sotheotodk")
             return {
               ...item,
-              value: res.data?.data?.Sotheotodk
-                ? res.data?.data?.Sotheotodk
+              value: `${res.data?.data?.Sotheotodk}` != `null`
+                ? `${res.data?.data?.Sotheotodk}`
                 : 0,
             };
           if (item.key === "Sothexemaydk")
             return {
               ...item,
-              value: res.data?.data?.Sothexemaydk
-                ? res.data?.data?.Sothexemaydk
+              value: `${res.data?.data?.Sotheotodk}`!= `null`
+                ? `${res.data?.data?.Sothexemaydk}`
                 : 0,
             };
           return item;

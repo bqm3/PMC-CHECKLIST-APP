@@ -330,15 +330,15 @@ const HomeScreen = ({ navigation }) => {
     await dispath(ent_calv_get());
   };
 
-  const asyncPassword  = async () => {
-    const data = await AsyncStorage.getItem("Password");
-    if(data){
-      setPasswordCore(data);
-    }
-  }
+  // const asyncPassword  = async () => {
+  //   const data = await AsyncStorage.getItem("Password");
+  //   if(data){
+  //     setPasswordCore(data);
+  //   }
+  // }
 
   useEffect(()=> {
-    asyncPassword();
+    // asyncPassword();
     checkPasswordStrength();
   }, [])
 
