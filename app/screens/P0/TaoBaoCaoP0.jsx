@@ -1,26 +1,5 @@
-import React, {
-  useState,
-  useCallback,
-  useMemo,
-  useRef,
-  useEffect,
-  useContext,
-} from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  TextInput,
-  Platform,
-  KeyboardAvoidingView,
-  Keyboard,
-  TouchableOpacity,
-  ImageBackground,
-  ActivityIndicator,
-  Alert,
-  ScrollView,
-} from "react-native";
+import React, { useState, useCallback, useMemo, useRef, useEffect, useContext } from "react";
+import { View, Text, StyleSheet, FlatList, TextInput, Platform, KeyboardAvoidingView, Keyboard, TouchableOpacity, ImageBackground, ActivityIndicator, Alert, ScrollView } from "react-native";
 import { useSelector } from "react-redux";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import adjust from "../../adjust";
@@ -28,18 +7,19 @@ import axios from "axios";
 import { BASE_URL } from "../../constants/config";
 import { COLORS } from "../../constants/theme";
 import { ReloadContext } from "../../context/ReloadContext";
+import WarningBox from "../../components/Warning/WarningBox";
 
 const P0 = [
-  { id: 0, title: "Thẻ ô tô phát hành", key: "Sotheotodk", value: "0" },
-  { id: 1, title: "Thẻ xe máy phát hành", key: "Sothexemaydk", value: "0" },
+  { id: 0, title: "Thẻ ô tô đã bàn giao", key: "Sotheotodk", value: "0" },
+  { id: 1, title: "Thẻ xe máy đã bàn giao", key: "Sothexemaydk", value: "0" },
   { id: 2, title: "Xe ô tô thường", key: "Slxeoto", value: "0" },
   { id: 3, title: "Xe ô tô điện", key: "Slxeotodien", value: "0" },
   { id: 4, title: "Xe máy điện", key: "Slxemaydien", value: "0" },
   { id: 5, title: "Xe máy thường", key: "Slxemay", value: "0" },
   { id: 6, title: "Xe đạp điện", key: "Slxedapdien", value: "0" },
   { id: 7, title: "Xe đạp thường", key: "Slxedap", value: "0" },
-  { id: 8, title: "Thẻ xe ô tô", key: "Sltheoto", value: "0" },
-  { id: 9, title: "Thẻ xe máy", key: "Slthexemay", value: "0" },
+  { id: 8, title: "Thẻ xe ô tô chưa sử dụng", key: "Sltheoto", value: "0" },
+  { id: 9, title: "Thẻ xe máy chưa sử dụng", key: "Slthexemay", value: "0" },
   { id: 10, title: "Sự cố xe ô tô thường", key: "Slscoto", value: "0" },
   { id: 11, title: "Sự cố xe ô tô điện", key: "Slscotodien", value: "0" },
   { id: 12, title: "Sự cố xe máy điện", key: "Slscxemaydien", value: "0" },
@@ -65,6 +45,10 @@ const TaoBaoCaoP0 = ({ navigation, route }) => {
   const [p0_Data, setP0_Data] = useState(P0);
   const [ghichu, setGhichu] = useState("");
   const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
+  const [totalCars, setTotalCars] = useState(0);
+  const [totalMotorcycles, setTotalMotorcycles] = useState(0);
+  const [isCars, setIsCars] = useState(false);
+  const [isMotorcycles, setIsMotorcycles] = useState(false);
 
   const scrollViewRef = useRef(null);
   const noteInputRef = useRef(null);
@@ -73,6 +57,38 @@ const TaoBaoCaoP0 = ({ navigation, route }) => {
   useEffect(() => {
     getSoThe();
   }, [authToken]);
+
+
+  const report = useMemo(() => {
+    if (p0_Data.length === 0) return {};
+
+    return p0_Data.reduce((acc, item) => {
+      const floatValue = parseFloat(item.value.replace(",", ".")) || 0;
+      acc[item.key] = floatValue;
+      return acc;
+    }, {});
+  }, [p0_Data]);
+
+  useEffect(() => {
+    setTotalCars((report.Slxeoto || 0) + (report.Slxeotodien || 0) + (report.Sltheoto || 0));
+    setTotalMotorcycles((report.Slxemay || 0) + (report.Slxemaydien || 0) + (report.Slthexemay || 0));
+  }, [report]);
+
+  useEffect(() => {
+    if (totalCars !== (report.Sotheotodk || 0)) {
+      setIsCars(true);
+    } else {
+      setIsCars(false);
+    }
+  }, [totalCars, report]);
+
+  useEffect(() => {
+    if (totalMotorcycles !== (report.Sothexemaydk || 0)) {
+      setIsMotorcycles(true);
+    } else {
+      setIsMotorcycles(false);
+    }
+  }, [totalMotorcycles, report]);
 
   const handleNotePress = () => {
     noteInputRef.current?.focus();
@@ -97,11 +113,7 @@ const TaoBaoCaoP0 = ({ navigation, route }) => {
   };
 
   const handleChange = useCallback((id, value) => {
-    setP0_Data((prevState) =>
-      prevState.map((item) =>
-        item.id === id ? { ...item, value: value } : item
-      )
-    );
+    setP0_Data((prevState) => prevState.map((item) => (item.id === id ? { ...item, value: value } : item)));
   }, []);
 
   const groupedData = useMemo(() => {
@@ -116,10 +128,7 @@ const TaoBaoCaoP0 = ({ navigation, route }) => {
     Alert.alert("PMC Thông báo", message, [
       {
         text: "Xác nhận",
-        onPress: () =>
-          key
-            ? navigation.navigate("Báo cáo P0")
-            : console.log("Cancel Pressed"),
+        onPress: () => (key ? navigation.navigate("Báo cáo P0") : console.log("Cancel Pressed")),
         style: "cancel",
       },
     ]);
@@ -152,16 +161,12 @@ const TaoBaoCaoP0 = ({ navigation, route }) => {
           if (item.key === "Sotheotodk")
             return {
               ...item,
-              value: `${res.data?.data?.Sotheotodk}` != `null`
-                ? `${res.data?.data?.Sotheotodk}`
-                : 0,
+              value: `${res.data?.data?.Sotheotodk}` != `null` ? `${res.data?.data?.Sotheotodk}` : 0,
             };
           if (item.key === "Sothexemaydk")
             return {
               ...item,
-              value: `${res.data?.data?.Sotheotodk}`!= `null`
-                ? `${res.data?.data?.Sothexemaydk}`
-                : 0,
+              value: `${res.data?.data?.Sotheotodk}` != `null` ? `${res.data?.data?.Sothexemaydk}` : 0,
             };
           return item;
         })
@@ -172,26 +177,23 @@ const TaoBaoCaoP0 = ({ navigation, route }) => {
   };
 
   const handleSubmit = async () => {
-    const filteredReport = p0_Data.reduce((acc, item) => {
-      const floatValue = parseFloat(item.value.replace(",", "."));
-      acc[item.key] = floatValue;
-      return acc;
-    }, {});
+    // const filteredReport = p0_Data.reduce((acc, item) => {
+    //   const floatValue = parseFloat(item.value.replace(",", "."));
+    //   acc[item.key] = floatValue;
+    //   return acc;
+    // }, {});
 
-    filteredReport.Ghichu = ghichu;
+    // filteredReport.Ghichu = ghichu;
+    report.Ghichu = ghichu;
     setIsLoadingSubmit(true);
 
     try {
-      const response = await axios.post(
-        `${BASE_URL}/p0/create`,
-        filteredReport,
-        {
-          headers: {
-            Accept: "application/json",
-            Authorization: `Bearer ${authToken}`,
-          },
-        }
-      );
+      const response = await axios.post(`${BASE_URL}/p0/create`, report, {
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
 
       // Kiểm tra response status
       if (response.status == 200 || response.status == 201) {
@@ -203,16 +205,10 @@ const TaoBaoCaoP0 = ({ navigation, route }) => {
       }
     } catch (error) {
       if (error.response) {
-        showAlert(
-          error.response.data?.message || "Lỗi từ máy chủ. Vui lòng thử lại",
-          false
-        );
+        showAlert(error.response.data?.message || "Lỗi từ máy chủ. Vui lòng thử lại", false);
       } else if (error.request) {
         // Lỗi kết nối
-        showAlert(
-          "Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối",
-          false
-        );
+        showAlert("Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối", false);
       } else {
         // Lỗi khác
         showAlert("Đã có lỗi xảy ra. Vui lòng thử lại", false);
@@ -249,14 +245,7 @@ const TaoBaoCaoP0 = ({ navigation, route }) => {
                 },
               ]}
             >
-              <Text
-                style={[
-                  styles.itemTitle,
-                  { color: editable(subItem?.id) ? "black" : "white" },
-                ]}
-              >
-                {subItem?.title}
-              </Text>
+              <Text style={[styles.itemTitle, { color: editable(subItem?.id) ? "black" : "white" }]}>{subItem?.title}</Text>
               <TextInput
                 style={[
                   styles.input,
@@ -284,38 +273,16 @@ const TaoBaoCaoP0 = ({ navigation, route }) => {
 
   return (
     <GestureHandlerRootView style={styles.flex}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.flex}
-      >
-        <ImageBackground
-          source={require("../../../assets/bg.png")}
-          resizeMode="cover"
-          style={styles.flex}
-        >
+      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.flex}>
+        <ImageBackground source={require("../../../assets/bg.png")} resizeMode="cover" style={styles.flex}>
           {isLoadingSubmit && (
             <View style={styles.loadingContainer}>
               <ActivityIndicator size="small" color={COLORS.bg_white} />
             </View>
           )}
-          <ScrollView
-            ref={scrollViewRef}
-            keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}
-          >
-            <FlatList
-              data={groupedData}
-              renderItem={renderItem}
-              keyExtractor={keyExtractor}
-              contentContainerStyle={styles.listContent}
-              scrollEnabled={false}
-            />
-            <TouchableOpacity
-              ref={noteContainerRef}
-              style={styles.noteContainer}
-              onPress={handleNotePress}
-              activeOpacity={1}
-            >
+          <ScrollView ref={scrollViewRef} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+            <FlatList data={groupedData} renderItem={renderItem} keyExtractor={keyExtractor} contentContainerStyle={styles.listContent} scrollEnabled={false} />
+            <TouchableOpacity ref={noteContainerRef} style={styles.noteContainer} onPress={handleNotePress} activeOpacity={1}>
               <Text style={styles.text}>Ghi chú</Text>
               <TextInput
                 ref={noteInputRef}
@@ -332,6 +299,32 @@ const TaoBaoCaoP0 = ({ navigation, route }) => {
               />
             </TouchableOpacity>
           </ScrollView>
+
+          {isCars && (
+            <WarningBox
+              title="Số lượng thẻ xe ô tô không khớp"
+              content={`
+                        <span><strong>Tổng:</strong> xe thường (${report.Slxeoto}) + xe điện (${report.Slxeotodien}) + chưa sử dụng (${report.Sltheoto}) 
+                        = ${report.Slxeoto + report.Slxeotodien + report.Sltheoto}</span></br>
+                        <span>Số thẻ ô tô đã bàn giao = ${report.Sotheotodk}</span></br>
+                        <span style="color:red;">Vui lòng kiểm tra lại dữ liệu trước khi gửi</span>
+                      `}
+              style={{ marginHorizontal: 10 }}
+            />
+          )}
+
+          {isMotorcycles && (
+            <WarningBox
+              title="Số lượng thẻ xe máy không khớp"
+              content={`
+                        <span><strong>Tổng:</strong> xe thường (${report.Slxemay}) + xe điện (${report.Slxemaydien}) + chưa sử dụng (${report.Slthexemay})
+                        = ${report.Slxemay + report.Slxemaydien + report.Slthexemay}</span></br>
+                        <span>Số thẻ xe máy đã bàn giao = ${report.Sothexemaydk}</span></br>
+                        <span style="color:red;">Vui lòng kiểm tra lại dữ liệu trước khi gửi</span>
+                      `}
+              style={{ marginHorizontal: 10 }}
+            />
+          )}
 
           <TouchableOpacity
             style={styles.submitButton}
