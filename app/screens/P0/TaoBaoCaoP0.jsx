@@ -128,7 +128,7 @@ const TaoBaoCaoP0 = ({ navigation, route }) => {
     Alert.alert("PMC Thông báo", message, [
       {
         text: "Xác nhận",
-        onPress: () => (key ? navigation.navigate("Báo cáo P0") : console.log("Cancel Pressed")),
+        onPress: () => (key ? navigation.navigate("Báo cáo S0") : console.log("Cancel Pressed")),
         style: "cancel",
       },
     ]);

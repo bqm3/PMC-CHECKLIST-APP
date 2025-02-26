@@ -459,3 +459,30 @@ export const check_hsse = () => {
     }
   };
 };
+
+export const ent_get_sdt_KhanCap = () => {
+  return async (dispatch) => {
+    try {
+      const token = await AsyncStorage.getItem("tokenUser");
+      if (token !== null) {
+        const response = await axios.get(BASE_URL + "/ent_duan/sdt-khan-cap", {
+          headers: {
+            Accept: "application/json",
+            Authorization: "Bearer " + token,
+          },
+        });
+        const data = response.data.SDTKhanCap;
+        dispatch({
+          type: type.SET_ENT_DUAN_SDT_SUCCESS,
+          payload: {
+            sdt_khancap: data,
+          },
+        });
+      } else {
+        console.error("initialized error");
+      }
+    } catch (err) {
+      console.log("err", err);
+    }
+  };
+};

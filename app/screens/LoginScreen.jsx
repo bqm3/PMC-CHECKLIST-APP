@@ -185,7 +185,7 @@ const LoginScreen = ({ navigation }) => {
     if (message) {
       Alert.alert(
         "PMC Thông báo",
-        "Sai tài khoản hoặc mật khẩu. Vui lòng thử lại!!",
+        `${message}`,
         [{ text: "Xác nhận", onPress: () => console.log("OK Pressed") }]
       );
     }

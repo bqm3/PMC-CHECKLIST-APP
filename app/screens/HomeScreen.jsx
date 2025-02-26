@@ -1,33 +1,9 @@
 //import liraries
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  useRef,
-} from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  ImageBackground,
-  Image,
-  Platform,
-  ActivityIndicator,
-  TextInput,
-} from "react-native";
+import React, { createContext, useContext, useState, useEffect, useRef } from "react";
+import { View, Text, StyleSheet, FlatList, ImageBackground, Image, Platform, ActivityIndicator, TextInput, TouchableOpacity } from "react-native";
 import * as Device from "expo-device";
 import { Provider, useDispatch, useSelector } from "react-redux";
-import {
-  ent_calv_get,
-  ent_hangmuc_get,
-  ent_khuvuc_get,
-  ent_tang_get,
-  ent_toanha_get,
-  ent_khoicv_get,
-  check_hsse,
-} from "../redux/actions/entActions";
+import { ent_calv_get, ent_hangmuc_get, ent_khuvuc_get, ent_tang_get, ent_toanha_get, ent_khoicv_get, check_hsse } from "../redux/actions/entActions";
 import SelectDropdown from "react-native-select-dropdown";
 import { FontAwesome, AntDesign } from "@expo/vector-icons";
 import { Alert, Linking } from "react-native";
@@ -67,8 +43,7 @@ async function registerForPushNotificationsAsync() {
   }
 
   if (Device.isDevice) {
-    const { status: existingStatus } =
-      await Notifications.getPermissionsAsync();
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
     let finalStatus = existingStatus;
 
     if (existingStatus !== "granted") {
@@ -78,23 +53,17 @@ async function registerForPushNotificationsAsync() {
 
     // Only show the settings alert if finalStatus is not granted
     if (finalStatus !== "granted") {
-      Alert.alert(
-        "Thông báo",
-        "Bạn đã từ chối nhận thông báo. Hãy bật thông báo trong Cài đặt để tiếp tục.",
-        [
-          {
-            text: "Mở cài đặt",
-            onPress: () => Linking.openSettings(), // Open app settings if the user denies notification permissions
-          },
-          { text: "Hủy", style: "cancel" },
-        ]
-      );
+      Alert.alert("Thông báo", "Bạn đã từ chối nhận thông báo. Hãy bật thông báo trong Cài đặt để tiếp tục.", [
+        {
+          text: "Mở cài đặt",
+          onPress: () => Linking.openSettings(), // Open app settings if the user denies notification permissions
+        },
+        { text: "Hủy", style: "cancel" },
+      ]);
       return;
     }
 
-    const projectId =
-      Constants?.expoConfig?.extra?.eas?.projectId ??
-      Constants?.easConfig?.projectId;
+    const projectId = Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
 
     if (!projectId) {
       handleRegistrationError("Không tìm thấy thông tin máy");
@@ -157,7 +126,7 @@ const dataDanhMuc = [
   {
     id: 7,
     status: "new",
-    path: "Báo cáo P0",
+    path: "Báo cáo S0",
     icon: require("../../assets/icons/o-04.png"),
   },
 ];
@@ -190,7 +159,7 @@ const dataGD = [
   {
     id: 7,
     status: "new",
-    path: "Báo cáo P0",
+    path: "Báo cáo S0",
     icon: require("../../assets/icons/o-04.png"),
   },
 ];
@@ -236,7 +205,7 @@ const dataKST = [
   {
     id: 7,
     status: "new",
-    path: "Báo cáo P0",
+    path: "Báo cáo S0",
     icon: require("../../assets/icons/o-04.png"),
   },
 ];
@@ -270,7 +239,7 @@ const dataBQTKhoi = [
   {
     id: 7,
     status: "new",
-    path: "Báo cáo P0",
+    path: "Báo cáo S0",
     icon: require("../../assets/icons/o-04.png"),
   },
 ];
@@ -278,9 +247,7 @@ const dataBQTKhoi = [
 // create a component
 const HomeScreen = ({ navigation }) => {
   const dispath = useDispatch();
-  const { user, authToken , passwordCore} = useSelector(
-    (state) => state.authReducer
-  );
+  const { user, authToken, passwordCore } = useSelector((state) => state.authReducer);
 
   const { setToken } = useContext(ExpoTokenContext);
 
@@ -293,17 +260,13 @@ const HomeScreen = ({ navigation }) => {
 
   const [checkP0, setCheckP0] = useState(false);
 
+  const [arrDuan, setArrDuan] = useState([]);
+
   const notificationListener = useRef();
   const responseListener = useRef();
 
   const renderItem = ({ item, index }) => (
-    <ItemHome
-      ID_Chucvu={user?.ID_Chucvu}
-      item={item}
-      index={index}
-      passwordCore={passwordCore}
-      showAlert={showAlert}
-    />
+    <ItemHome ID_Chucvu={user?.ID_Chucvu} item={item} index={index} passwordCore={passwordCore} showAlert={showAlert} />
   );
 
   const int_khuvuc = async () => {
@@ -337,17 +300,19 @@ const HomeScreen = ({ navigation }) => {
   //   }
   // }
 
-  useEffect(()=> {
+  useEffect(() => {
+    setArrDuan(user?.arr_Duan);
+  }, []);
+
+  useEffect(() => {
     // asyncPassword();
     checkPasswordStrength();
-  }, [])
+  }, []);
 
   const checkPasswordStrength = async () => {
     const password = await AsyncStorage.getItem("Password");
     if (password && !validatePassword(password)) {
-      showAlert(
-        "Mật khẩu của bạn không đủ mạnh. Vui lòng cập nhật mật khẩu mới với độ bảo mật cao hơn."
-      );
+      showAlert("Mật khẩu của bạn không đủ mạnh. Vui lòng cập nhật mật khẩu mới với độ bảo mật cao hơn.");
     }
   };
 
@@ -387,23 +352,17 @@ const HomeScreen = ({ navigation }) => {
       .then((token) => setExpoPushToken(token ?? ""))
       .catch((error) => setExpoPushToken(`${error}`));
 
-    notificationListener.current =
-      Notifications.addNotificationReceivedListener((notification) => {
-        setNotification(notification);
-      });
+    notificationListener.current = Notifications.addNotificationReceivedListener((notification) => {
+      setNotification(notification);
+    });
 
-    responseListener.current =
-      Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log(response);
-      });
+    responseListener.current = Notifications.addNotificationResponseReceivedListener((response) => {
+      console.log(response);
+    });
 
     return () => {
-      notificationListener.current &&
-        Notifications.removeNotificationSubscription(
-          notificationListener.current
-        );
-      responseListener.current &&
-        Notifications.removeNotificationSubscription(responseListener.current);
+      notificationListener.current && Notifications.removeNotificationSubscription(notificationListener.current);
+      responseListener.current && Notifications.removeNotificationSubscription(responseListener.current);
     };
   }, []);
 
@@ -436,6 +395,42 @@ const HomeScreen = ({ navigation }) => {
       setIsLoading(true);
       const response = await axios.put(
         `${BASE_URL}/ent_user/duan/update/${ID_Duan}`,
+        {},
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+
+      // Xử lý response nếu thành công
+      if (response.status === 200) {
+        const UserName = await AsyncStorage.getItem("UserName");
+        const Password = await AsyncStorage.getItem("Password");
+        dispath(login(UserName, Password));
+        Alert.alert("Thông báo", "Cập nhật dự án thành công!");
+        setRefreshScreen(true);
+      }
+    } catch (error) {
+      console.log("error", error.message);
+      Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra, vui lòng thử lại", [
+        {
+          text: "Xác nhận",
+          onPress: () => console.log("Cancel Pressed"),
+          style: "cancel",
+        },
+      ]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const funcHandleClearDuan = async () => {
+    try {
+      setIsLoading(true);
+      const response = await axios.put(
+        `${BASE_URL}/ent_user/duan/clear`,
         {},
         {
           headers: {
@@ -502,11 +497,7 @@ const HomeScreen = ({ navigation }) => {
   };
 
   return (
-    <ImageBackground
-      source={require("../../assets/bg_new.png")}
-      resizeMode="stretch"
-      style={{ flex: 1, width: "100%" }}
-    >
+    <ImageBackground source={require("../../assets/bg_new.png")} resizeMode="stretch" style={{ flex: 1, width: "100%" }}>
       {isLoading ? (
         <ActivityIndicator
           style={{
@@ -525,17 +516,9 @@ const HomeScreen = ({ navigation }) => {
         <View style={styles.container}>
           <View style={styles.content}>
             {user?.ent_duan?.Logo ? (
-              <Image
-                source={{ uri: user?.ent_duan?.Logo }}
-                resizeMode="contain"
-                style={{ height: adjust(70), width: adjust(180) }}
-              />
+              <Image source={{ uri: user?.ent_duan?.Logo }} resizeMode="contain" style={{ height: adjust(70), width: adjust(180) }} />
             ) : (
-              <Image
-                source={require("../../assets/pmc_logo.png")}
-                resizeMode="contain"
-                style={{ height: adjust(80), width: adjust(200) }}
-              />
+              <Image source={require("../../assets/pmc_logo.png")} resizeMode="contain" style={{ height: adjust(80), width: adjust(200) }} />
             )}
             <Text
               allowFontScaling={false}
@@ -561,48 +544,54 @@ const HomeScreen = ({ navigation }) => {
               Tài khoản: {user?.UserName}
             </Text>
             {(user?.ent_chucvu?.Role === 5 ||
-              (user?.ent_chucvu?.Role === 1 && user?.arr_Duan != null && user?.arr_Duan != "" && user?.arr_Duan != undefined)) && (
-              <SelectDropdown
-                data={duan.map((item) => item.Duan)} // Dữ liệu dự án
-                style={{ alignItems: "center", height: "auto" }}
-                buttonStyle={styles.select}
-                dropdownStyle={styles.dropdown}
-                defaultButtonText={user?.ent_duan?.Duan}
-                buttonTextStyle={styles.customText}
-                searchable={true}
-                onSelect={(selectedItem, index) => {
-                  const selectedProject = duan[index]?.ID_Duan;
-                  funcHandleDuan(selectedProject);
-                }}
-                renderDropdownIcon={(isOpened) => (
-                  <FontAwesome
-                    name={isOpened ? "chevron-up" : "chevron-down"}
-                    color={"#637381"}
-                    size={18}
-                    style={{ marginRight: 10 }}
-                  />
-                )}
-                dropdownIconPosition={"right"}
-                buttonTextAfterSelection={(selectedItem, index) => (
-                  <View
-                    key={index}
-                    style={{
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Text allowFontScaling={false} style={styles.selectedText}>
-                      {selectedItem || "Chọn dự án"}{" "}
+              // (user?.ent_chucvu?.Role === 1 && user?.arr_Duan != null && user?.arr_Duan != "" && user?.arr_Duan != undefined)) && (
+              (user?.ent_chucvu?.Role === 1 && arrDuan && arrDuan?.length > 1)) && (
+              <View style={{ flexDirection: "row" }}>
+                <SelectDropdown
+                  data={duan.map((item) => item.Duan)} // Dữ liệu dự án
+                  style={{ alignItems: "center", height: "auto" }}
+                  buttonStyle={styles.select}
+                  dropdownStyle={styles.dropdown}
+                  defaultButtonText={user?.ent_duan?.Duan || "Chọn dự án"}
+                  buttonTextStyle={styles.customText}
+                  searchable={true}
+                  onSelect={(selectedItem, index) => {
+                    const selectedProject = duan[index]?.ID_Duan;
+                    funcHandleDuan(selectedProject);
+                  }}
+                  renderDropdownIcon={(isOpened) => (
+                    <FontAwesome name={isOpened ? "chevron-up" : "chevron-down"} color={"#637381"} size={18} style={{ marginRight: 10 }} />
+                  )}
+                  dropdownIconPosition={"right"}
+                  buttonTextAfterSelection={(selectedItem, index) => (
+                    <View
+                      key={index}
+                      style={{
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Text allowFontScaling={false} style={styles.selectedText}>
+                        {selectedItem || "Chọn dự án"}{" "}
+                      </Text>
+                    </View>
+                  )}
+                  renderCustomizedRowChild={(item, index) => (
+                    <View key={index} style={styles.dropdownItem}>
+                      <Text style={styles.dropdownItemText}>{item}</Text>
+                    </View>
+                  )}
+                  search
+                />
+
+                {(user?.ent_chucvu?.Role === 5 || user?.ent_chucvu?.Role === 10) && (
+                  <TouchableOpacity style={styles.resetButton} onPress={() => funcHandleClearDuan("clear")}>
+                    <Text allowFontScaling={false} style={styles.resetButtonText}>
+                      Tổng quan dự án
                     </Text>
-                  </View>
+                  </TouchableOpacity>
                 )}
-                renderCustomizedRowChild={(item, index) => (
-                  <View key={index} style={styles.dropdownItem}>
-                    <Text style={styles.dropdownItemText}>{item}</Text>
-                  </View>
-                )}
-                search
-              />
+              </View>
             )}
           </View>
 
@@ -667,8 +656,7 @@ const HomeScreen = ({ navigation }) => {
                 fontSize: adjust(16),
               }}
             >
-              Người Giám sát chỉ thực hiện công việc Checklist, Tra cứu và Đổi
-              mật khẩu.
+              Người Giám sát chỉ thực hiện công việc Checklist, Tra cứu và Đổi mật khẩu.
             </Text>
             <Text
               allowFontScaling={false}
@@ -751,6 +739,24 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 10,
     backgroundColor: "#fff",
+  },
+  resetButton: {
+    marginTop: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 20,
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    borderRadius: 8,
+    flexDirection: "row",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.3)",
+    marginLeft: 10,
+  },
+  resetButtonText: {
+    color: "#fff",
+    fontSize: adjust(14),
+    fontWeight: "500",
+    marginLeft: 5,
   },
 });
 

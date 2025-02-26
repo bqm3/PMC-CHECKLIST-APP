@@ -16,13 +16,7 @@ import {
   Modal,
 } from "react-native";
 import * as Device from "expo-device";
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  useContext,
-  useRef,
-} from "react";
+import React, { useState, useEffect, useCallback, useContext, useRef } from "react";
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -34,13 +28,7 @@ import moment from "moment";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
-import {
-  ent_tang_get,
-  ent_khuvuc_get,
-  ent_toanha_get,
-  ent_khoicv_get,
-  ent_hangmuc_get,
-} from "../../redux/actions/entActions";
+import { ent_tang_get, ent_khuvuc_get, ent_toanha_get, ent_khoicv_get, ent_hangmuc_get } from "../../redux/actions/entActions";
 import SelectDropdown from "react-native-select-dropdown";
 import { COLORS, SIZES } from "../../constants/theme";
 import ItemSucongoai from "../../components/Item/ItemSucongoai";
@@ -57,9 +45,7 @@ const ThuchienSucongoai = ({ navigation, route }) => {
   const dispath = useDispatch();
   const { userPhone } = route.params;
   const { user, authToken } = useSelector((state) => state.authReducer);
-  const { ent_khuvuc, ent_khoicv, ent_toanha, ent_hangmuc } = useSelector(
-    (state) => state.entReducer
-  );
+  const { ent_khuvuc, ent_khoicv, ent_toanha, ent_hangmuc } = useSelector((state) => state.entReducer);
   const { token } = useContext(ExpoTokenContext);
 
   const [dataKhuvuc, setDataKhuvuc] = useState([]);
@@ -67,6 +53,7 @@ const ThuchienSucongoai = ({ navigation, route }) => {
   const [loadingSubmit, setLoadingSubmit] = useState(false);
   const [isModalcall, setIsModalcall] = useState(false);
   const [isCheck, setIsCheck] = useState(false);
+  const [isMucDo, setIsMucDo] = useState(false);
   const [saveStatus, setSaveStatus] = useState(0);
   const [changeStatus, setChangeStatus] = useState({
     status1: true,
@@ -80,6 +67,7 @@ const ThuchienSucongoai = ({ navigation, route }) => {
     Ngaysuco: null,
     Giosuco: null,
     Noidungsuco: "",
+    Mucdo: 0,
     Duongdancacanh: [],
     deviceUser: token,
     deviceNameUser: Device.modelName,
@@ -102,26 +90,15 @@ const ThuchienSucongoai = ({ navigation, route }) => {
 
   const handleChangeStatus = (key, val) => {
     setChangeStatus((prevStatus) => {
-      const updatedStatus = Object.keys(prevStatus).reduce(
-        (acc, currentKey) => {
-          // Đặt tất cả các key khác thành false, chỉ set key hiện tại thành val
-          acc[currentKey] = currentKey === key ? val : false;
-          return acc;
-        },
-        {}
-      );
+      const updatedStatus = Object.keys(prevStatus).reduce((acc, currentKey) => {
+        // Đặt tất cả các key khác thành false, chỉ set key hiện tại thành val
+        acc[currentKey] = currentKey === key ? val : false;
+        return acc;
+      }, {});
 
       return updatedStatus;
     });
-    setSaveStatus(
-      key === "status1" && val == true
-        ? 0
-        : key === "status2" && val == true
-        ? 1
-        : key === "status3" && val == true
-        ? 2
-        : null
-    );
+    setSaveStatus(key === "status1" && val == true ? 0 : key === "status2" && val == true ? 1 : key === "status3" && val == true ? 2 : null);
   };
 
   const handleChangeText = (key, value) => {
@@ -169,12 +146,9 @@ const ThuchienSucongoai = ({ navigation, route }) => {
         {
           text: "Chụp ảnh",
           onPress: async () => {
-            const permissionResult =
-              await ImagePicker.requestCameraPermissionsAsync();
+            const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
             if (permissionResult.granted === false) {
-              alert(
-                "Bạn đã từ chối cho phép sử dụng camera. Vào cài đặt và mở lại!"
-              );
+              alert("Bạn đã từ chối cho phép sử dụng camera. Vào cài đặt và mở lại!");
               return;
             }
 
@@ -200,12 +174,9 @@ const ThuchienSucongoai = ({ navigation, route }) => {
         {
           text: "Chọn từ thư viện",
           onPress: async () => {
-            const permissionResult =
-              await ImagePicker.requestMediaLibraryPermissionsAsync();
+            const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
             if (permissionResult.granted === false) {
-              alert(
-                "Bạn đã từ chối cho phép sử dụng thư viện. Vào cài đặt và mở lại!"
-              );
+              alert("Bạn đã từ chối cho phép sử dụng thư viện. Vào cài đặt và mở lại!");
               return;
             }
 
@@ -257,16 +228,12 @@ const ThuchienSucongoai = ({ navigation, route }) => {
 
   useEffect(() => {
     if (ent_khuvuc && dataCheckKhuvuc.ID_Toanha) {
-      const filterData = ent_khuvuc.filter(
-        (item) => item.ID_Toanha === dataCheckKhuvuc.ID_Toanha
-      );
+      const filterData = ent_khuvuc.filter((item) => item.ID_Toanha === dataCheckKhuvuc.ID_Toanha);
       setDataKhuvuc(filterData);
     }
 
     if (ent_hangmuc && dataCheckKhuvuc.ID_Khuvuc) {
-      const filterData = ent_hangmuc.filter(
-        (item) => item.ID_Khuvuc === dataCheckKhuvuc.ID_Khuvuc
-      );
+      const filterData = ent_hangmuc.filter((item) => item.ID_Khuvuc === dataCheckKhuvuc.ID_Khuvuc);
       setDataHangmuc(filterData);
     }
   }, [ent_khuvuc, ent_hangmuc, dataCheckKhuvuc]);
@@ -291,24 +258,24 @@ const ThuchienSucongoai = ({ navigation, route }) => {
 
   const handleSubmit = async () => {
     setLoadingSubmit(true);
-  
+
     try {
       if (isValidInput()) {
         return;
       }
 
-      if (isCheckInput()){
+      if (isCheckInput()) {
         return;
       }
-  
+
       if (isInvalidDate()) {
         showAlert("Ngày không hợp lệ");
         return;
       }
-  
+
       const payload = await preparePayload();
       await submitData(payload);
-      
+
       resetDataInput();
       showAlert("Gửi sự cố thành công!");
     } catch (error) {
@@ -319,12 +286,12 @@ const ThuchienSucongoai = ({ navigation, route }) => {
   };
 
   const isCheckInput = () => {
-    if(isCheck == true && (dataInput?.TenHangmuc == null || dataInput?.TenHangmuc?.trim() == "")){
+    if (isCheck == true && (dataInput?.TenHangmuc == null || dataInput?.TenHangmuc?.trim() == "")) {
       showAlert("Vui lòng nhập tên hạng mục.");
       return true;
     }
-  }
-  
+  };
+
   const isValidInput = () => {
     if (dataInput.Ngaysuco == null) {
       showAlert("Vui lòng nhập ngày sự cố.");
@@ -340,11 +307,11 @@ const ThuchienSucongoai = ({ navigation, route }) => {
     }
     return false;
   };
-  
+
   const isInvalidDate = () => {
     return dataInput.Ngaysuco > nowDate();
   };
-  
+
   const preparePayload = async () => {
     if (images.length > 0) {
       const formData = new FormData();
@@ -352,12 +319,13 @@ const ThuchienSucongoai = ({ navigation, route }) => {
       appendFormFields(formData);
       return formData;
     }
-    
+
     return {
       ID_Hangmuc: dataInput.ID_Hangmuc,
       Ngaysuco: dataInput.Ngaysuco,
       Giosuco: dataInput.Giosuco,
       Noidungsuco: dataInput.Noidungsuco,
+      Mucdo: isMucDo ? 1 : 0,
       deviceUser: token,
       deviceNameUser: Device.modelName,
       ID_User: user.ID_User,
@@ -367,32 +335,30 @@ const ThuchienSucongoai = ({ navigation, route }) => {
       Ghichu: dataInput.Ghichu,
     };
   };
-  
+
   const appendImages = async (formData) => {
     for (let index = 0; index < images.length; index++) {
-      const resizedImage = await ImageManipulator.manipulateAsync(
-        images[index],
-        [{ resize: { width: 800, height: 600 } }],
-        { compress: 1, format: ImageManipulator.SaveFormat.JPEG }
-      );
-  
+      const resizedImage = await ImageManipulator.manipulateAsync(images[index], [{ resize: { width: 800, height: 600 } }], {
+        compress: 1,
+        format: ImageManipulator.SaveFormat.JPEG,
+      });
+
       const file = {
-        uri: Platform.OS === "android" 
-          ? resizedImage.uri 
-          : resizedImage.uri.replace("file://", ""),
+        uri: Platform.OS === "android" ? resizedImage.uri : resizedImage.uri.replace("file://", ""),
         name: `${Math.floor(Math.random() * 99999)}${index}.jpg`,
         type: "image/jpg",
       };
-  
+
       formData.append(`Images_${index}`, file);
     }
   };
-  
+
   const appendFormFields = (formData) => {
     formData.append("ID_Hangmuc", dataInput.ID_Hangmuc);
     formData.append("Ngaysuco", dataInput.Ngaysuco);
     formData.append("Giosuco", dataInput.Giosuco);
     formData.append("Noidungsuco", dataInput.Noidungsuco);
+    formData.append("Mucdo", isMucDo ? 1 : 0);
     formData.append("ID_User", user.ID_User);
     formData.append("deviceUser", token);
     formData.append("deviceNameUser", Device.modelName);
@@ -401,19 +367,16 @@ const ThuchienSucongoai = ({ navigation, route }) => {
     formData.append("Bienphapxuly", dataInput.Bienphapxuly);
     formData.append("Ghichu", dataInput.Ghichu);
   };
-  
+
   const submitData = async (payload) => {
     const headers = {
       Authorization: `Bearer ${authToken}`,
-      ...(payload instanceof FormData 
-        ? { "Content-Type": "multipart/form-data" }
-        : { Accept: "application/json" }
-      )
+      ...(payload instanceof FormData ? { "Content-Type": "multipart/form-data" } : { Accept: "application/json" }),
     };
-  
+
     await axios.post(`${BASE_URL}/tb_sucongoai/create`, payload, { headers });
   };
-  
+
   const handleError = (error) => {
     if (error.response) {
       showAlert(error.response.data.message);
@@ -424,7 +387,7 @@ const ThuchienSucongoai = ({ navigation, route }) => {
       showAlert("Lỗi khi gửi yêu cầu");
     }
   };
-  
+
   const showAlert = (message) => {
     Alert.alert("PMC Thông báo", message, [
       {
@@ -440,11 +403,7 @@ const ThuchienSucongoai = ({ navigation, route }) => {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <BottomSheetModalProvider>
-          <ImageBackground
-            source={require("../../../assets/bg_new.png")}
-            resizeMode="stretch"
-            style={{ flex: 1, width: "100%" }}
-          >
+          <ImageBackground source={require("../../../assets/bg_new.png")} resizeMode="stretch" style={{ flex: 1, width: "100%" }}>
             <KeyboardAwareScrollView
               enableOnAndroid={true}
               enableAutomaticScroll={true}
@@ -464,15 +423,13 @@ const ThuchienSucongoai = ({ navigation, route }) => {
               >
                 <View>
                   <View style={styles.checkboxContainer}>
-                    <View
-                      style={{ flexDirection: "row", alignItems: "center" }}
-                    >
-                      <Checkbox
-                        disabled={false}
-                        value={isCheck}
-                        onValueChange={(newValue) => setIsCheck(newValue)}
-                      />
+                    <View style={{ flexDirection: "row", alignItems: "center" }}>
+                      <Checkbox disabled={false} value={isCheck} onValueChange={(newValue) => setIsCheck(newValue)} />
                       <Text style={styles.text}> Nhập hạng mục</Text>
+                    </View>
+                    <View style={{ flexDirection: "row", alignItems: "center" }}>
+                      <Checkbox disabled={false} value={isMucDo} onValueChange={(newValue) => setIsMucDo(newValue)} />
+                      <Text style={styles.text}> Nghiêm trọng</Text>
                     </View>
                   </View>
                   {/* Ngày giờ sự cố  */}
@@ -486,9 +443,7 @@ const ThuchienSucongoai = ({ navigation, route }) => {
                       <Text allowFontScaling={false} style={styles.text}>
                         Ngày sự cố
                       </Text>
-                      <TouchableOpacity
-                        onPress={() => showDatePicker("Ngaysuco")}
-                      >
+                      <TouchableOpacity onPress={() => showDatePicker("Ngaysuco")}>
                         <View style={styles.action}>
                           <TextInput
                             allowFontScaling={false}
@@ -513,20 +468,14 @@ const ThuchienSucongoai = ({ navigation, route }) => {
                               width: adjust(50),
                             }}
                           >
-                            <AntDesign
-                              name="calendar"
-                              size={24}
-                              color="black"
-                            />
+                            <AntDesign name="calendar" size={24} color="black" />
                           </TouchableOpacity>
                         </View>
                         <DateTimePickerModal
                           isVisible={isDatePickerVisible.Ngaysuco}
                           mode="date"
                           isDarkModeEnabled={true}
-                          onConfirm={(date) =>
-                            handleConfirm("Ngaysuco", date, "YYYY-MM-DD")
-                          }
+                          onConfirm={(date) => handleConfirm("Ngaysuco", date, "YYYY-MM-DD")}
                           onCancel={() => hideDatePicker("Ngaysuco", false)}
                         />
                       </TouchableOpacity>
@@ -535,9 +484,7 @@ const ThuchienSucongoai = ({ navigation, route }) => {
                       <Text allowFontScaling={false} style={styles.text}>
                         Giờ sự cố
                       </Text>
-                      <TouchableOpacity
-                        onPress={() => showDatePicker("Giosuco")}
-                      >
+                      <TouchableOpacity onPress={() => showDatePicker("Giosuco")}>
                         <View style={styles.action}>
                           <TextInput
                             allowFontScaling={false}
@@ -562,20 +509,14 @@ const ThuchienSucongoai = ({ navigation, route }) => {
                               width: adjust(50),
                             }}
                           >
-                            <AntDesign
-                              name="calendar"
-                              size={24}Giosuco
-                              color="black"
-                            />
+                            <AntDesign name="calendar" size={24} Giosuco color="black" />
                           </TouchableOpacity>
                         </View>
                         <DateTimePickerModal
                           isVisible={isDatePickerVisible.Giosuco}
                           mode="time"
                           isDarkModeEnabled={true}
-                          onConfirm={(date) =>
-                            handleConfirm("Giosuco", date, "LT")
-                          }
+                          onConfirm={(date) => handleConfirm("Giosuco", date, "LT")}
                           onCancel={() => hideDatePicker("Giosuco", false)}
                         />
                       </TouchableOpacity>
@@ -606,52 +547,27 @@ const ThuchienSucongoai = ({ navigation, route }) => {
                               buttonTextStyle={styles.customText}
                               // defaultValue={defaultToaNha}
                               onSelect={(selectedItem, index) => {
-                                handleChangeTextKhuVuc(
-                                  "ID_Toanha",
-                                  selectedItem.ID_Toanha
-                                );
+                                handleChangeTextKhuVuc("ID_Toanha", selectedItem.ID_Toanha);
                               }}
                               renderDropdownIcon={(isOpened) => {
-                                return (
-                                  <FontAwesome
-                                    name={
-                                      isOpened ? "chevron-up" : "chevron-down"
-                                    }
-                                    color={"#637381"}
-                                    size={14}
-                                  />
-                                );
+                                return <FontAwesome name={isOpened ? "chevron-up" : "chevron-down"} color={"#637381"} size={14} />;
                               }}
                               dropdownIconPosition={"right"}
-                              buttonTextAfterSelection={(
-                                selectedItem,
-                                index
-                              ) => {
+                              buttonTextAfterSelection={(selectedItem, index) => {
                                 return (
-                                  <Text
-                                    allowFontScaling={false}
-                                    style={[styles.text, { color: "black" }]}
-                                  >
+                                  <Text allowFontScaling={false} style={[styles.text, { color: "black" }]}>
                                     {selectedItem?.Toanha}
                                   </Text>
                                 );
                               }}
                               renderCustomizedRowChild={(item, index) => {
                                 return (
-                                  <VerticalSelect
-                                    value={item.ID_Toanha}
-                                    label={item.Toanha}
-                                    key={index}
-                                    selectedItem={dataCheckKhuvuc.ID_Toanha}
-                                  />
+                                  <VerticalSelect value={item.ID_Toanha} label={item.Toanha} key={index} selectedItem={dataCheckKhuvuc.ID_Toanha} />
                                 );
                               }}
                             />
                           ) : (
-                            <Text
-                              allowFontScaling={false}
-                              style={styles.errorText}
-                            >
+                            <Text allowFontScaling={false} style={styles.errorText}>
                               Không có dữ liệu tòa nhà.
                             </Text>
                           )}
@@ -674,32 +590,15 @@ const ThuchienSucongoai = ({ navigation, route }) => {
                               buttonTextStyle={styles.customText}
                               // defaultValue={defaultKhuvuc}
                               onSelect={(selectedItem, index) => {
-                                handleChangeTextKhuVuc(
-                                  "ID_Khuvuc",
-                                  selectedItem.ID_Khuvuc
-                                );
+                                handleChangeTextKhuVuc("ID_Khuvuc", selectedItem.ID_Khuvuc);
                               }}
                               renderDropdownIcon={(isOpened) => {
-                                return (
-                                  <FontAwesome
-                                    name={
-                                      isOpened ? "chevron-up" : "chevron-down"
-                                    }
-                                    color={"#637381"}
-                                    size={14}
-                                  />
-                                );
+                                return <FontAwesome name={isOpened ? "chevron-up" : "chevron-down"} color={"#637381"} size={14} />;
                               }}
                               dropdownIconPosition={"right"}
-                              buttonTextAfterSelection={(
-                                selectedItem,
-                                index
-                              ) => {
+                              buttonTextAfterSelection={(selectedItem, index) => {
                                 return (
-                                  <Text
-                                    allowFontScaling={false}
-                                    style={[styles.text, { color: "black" }]}
-                                  >
+                                  <Text allowFontScaling={false} style={[styles.text, { color: "black" }]}>
                                     {selectedItem?.Tenkhuvuc}
                                   </Text>
                                 );
@@ -716,10 +615,7 @@ const ThuchienSucongoai = ({ navigation, route }) => {
                               }}
                             />
                           ) : (
-                            <Text
-                              allowFontScaling={false}
-                              style={styles.errorText}
-                            >
+                            <Text allowFontScaling={false} style={styles.errorText}>
                               Không có dữ liệu khu vực
                             </Text>
                           )}
@@ -742,17 +638,12 @@ const ThuchienSucongoai = ({ navigation, route }) => {
                             buttonTextStyle={styles.customText}
                             // defaultValue={defaultHangmuc}
                             onSelect={(selectedItem, index) => {
-                              handleChangeText(
-                                "ID_Hangmuc",
-                                selectedItem.ID_Hangmuc
-                              );
+                              handleChangeText("ID_Hangmuc", selectedItem.ID_Hangmuc);
                             }}
                             renderDropdownIcon={(isOpened) => {
                               return (
                                 <FontAwesome
-                                  name={
-                                    isOpened ? "chevron-up" : "chevron-down"
-                                  }
+                                  name={isOpened ? "chevron-up" : "chevron-down"}
                                   color={"#637381"}
                                   size={14}
                                   style={{ marginRight: 10 }}
@@ -769,24 +660,14 @@ const ThuchienSucongoai = ({ navigation, route }) => {
                                     height: 50,
                                   }}
                                 >
-                                  <Text
-                                    allowFontScaling={false}
-                                    style={[styles.text, { color: "black" }]}
-                                  >
+                                  <Text allowFontScaling={false} style={[styles.text, { color: "black" }]}>
                                     {selectedItem?.Hangmuc}
                                   </Text>
                                 </View>
                               );
                             }}
                             renderCustomizedRowChild={(item, index) => {
-                              return (
-                                <VerticalSelect
-                                  value={item.ID_Hangmuc}
-                                  label={item.Hangmuc}
-                                  key={index}
-                                  selectedItem={dataInput.ID_Hangmuc}
-                                />
-                              );
+                              return <VerticalSelect value={item.ID_Hangmuc} label={item.Hangmuc} key={index} selectedItem={dataInput.ID_Hangmuc} />;
                             }}
                           />
                         )}
@@ -906,46 +787,22 @@ const ThuchienSucongoai = ({ navigation, route }) => {
                             style={styles.checkbox}
                             value={changeStatus?.status1}
                             onValueChange={() => {
-                              handleChangeStatus(
-                                "status1",
-                                !changeStatus?.status1
-                              );
+                              handleChangeStatus("status1", !changeStatus?.status1);
                             }}
-                            color={
-                              changeStatus?.status1 ? "#4630EB" : undefined
-                            }
+                            color={changeStatus?.status1 ? "#4630EB" : undefined}
                           />
-                          <Text
-                            style={[
-                              styles.paragraph,
-                              { marginLeft: adjust(10) },
-                            ]}
-                          >
-                            Chưa xử lý
-                          </Text>
+                          <Text style={[styles.paragraph, { marginLeft: adjust(10) }]}>Chưa xử lý</Text>
                         </View>
                         <View style={styles.section}>
                           <Checkbox
                             style={styles.checkbox}
                             value={changeStatus?.status2}
                             onValueChange={() => {
-                              handleChangeStatus(
-                                "status2",
-                                !changeStatus?.status2
-                              );
+                              handleChangeStatus("status2", !changeStatus?.status2);
                             }}
-                            color={
-                              changeStatus?.status2 ? "#4630EB" : undefined
-                            }
+                            color={changeStatus?.status2 ? "#4630EB" : undefined}
                           />
-                          <Text
-                            style={[
-                              styles.paragraph,
-                              { marginLeft: adjust(10) },
-                            ]}
-                          >
-                            Đang xử lý
-                          </Text>
+                          <Text style={[styles.paragraph, { marginLeft: adjust(10) }]}>Đang xử lý</Text>
                         </View>
 
                         <View style={styles.section}>
@@ -953,23 +810,11 @@ const ThuchienSucongoai = ({ navigation, route }) => {
                             style={styles.checkbox}
                             value={changeStatus?.status3}
                             onValueChange={() => {
-                              handleChangeStatus(
-                                "status3",
-                                !changeStatus?.status3
-                              );
+                              handleChangeStatus("status3", !changeStatus?.status3);
                             }}
-                            color={
-                              changeStatus?.status3 ? "#4630EB" : undefined
-                            }
+                            color={changeStatus?.status3 ? "#4630EB" : undefined}
                           />
-                          <Text
-                            style={[
-                              styles.paragraph,
-                              { marginLeft: adjust(10) },
-                            ]}
-                          >
-                            Đã xử lý
-                          </Text>
+                          <Text style={[styles.paragraph, { marginLeft: adjust(10) }]}>Đã xử lý</Text>
                         </View>
                       </View>
                     </View>
@@ -1026,10 +871,7 @@ const ThuchienSucongoai = ({ navigation, route }) => {
                               }}
                               onPress={() => handleRemoveImage(item)}
                             >
-                              <Image
-                                source={require("../../../assets/icons/ic_close.png")}
-                                style={styles.closeIcon}
-                              />
+                              <Image source={require("../../../assets/icons/ic_close.png")} style={styles.closeIcon} />
                             </TouchableOpacity>
                           </View>
                         )}
@@ -1075,13 +917,8 @@ const ThuchienSucongoai = ({ navigation, route }) => {
                 }}
               >
                 <View style={styles.centeredView}>
-                  <View
-                    style={[styles.modalView, { width: "80%", height: "70%" }]}
-                  >
-                    <ModalCallSucongoai
-                      userPhone={userPhone}
-                      setIsModalcall={setIsModalcall}
-                    />
+                  <View style={[styles.modalView, { width: "80%", height: "70%" }]}>
+                    <ModalCallSucongoai userPhone={userPhone} setIsModalcall={setIsModalcall} />
                   </View>
                 </View>
               </Modal>
@@ -1210,6 +1047,7 @@ const styles = StyleSheet.create({
   checkboxContainer: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
   },
   errorText: {
     fontWeight: "500",

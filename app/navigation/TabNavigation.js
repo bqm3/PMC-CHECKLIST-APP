@@ -1064,7 +1064,7 @@ const HomeStack = ({ navigation }) => {
       />
 
       <Stack.Screen
-        name="Báo cáo P0"
+        name="Báo cáo S0"
         component={DanhMucBaoCaoP0}
         lazy={false}
         options={({ route, navigation }) => ({
@@ -1078,7 +1078,7 @@ const HomeStack = ({ navigation }) => {
                 color: "white",
               }}
             >
-              Dữ liệu P0
+              Dữ liệu S0
             </Text>
           ),
           headerLeft: () => headerLeft(navigation),
@@ -1091,7 +1091,7 @@ const HomeStack = ({ navigation }) => {
       />
 
       <Stack.Screen
-        name="Tạo báo cáo P0"
+        name="Tạo báo cáo S0"
         component={TaoBaoCaoP0}
         lazy={false}
         options={({ route, navigation }) => ({
@@ -1105,13 +1105,13 @@ const HomeStack = ({ navigation }) => {
                 color: "white",
               }}
             >
-              Tạo báo cáo P0
+              Tạo báo cáo S0
             </Text>
           ),
           headerLeft: () => (
             <TouchableOpacity
               onPressIn={() =>
-                navigation.navigate("Báo cáo P0", { isReload: true })
+                navigation.navigate("Báo cáo S0", { isReload: true })
               }
             >
               {Platform.OS === "ios" && (
@@ -1136,7 +1136,7 @@ const HomeStack = ({ navigation }) => {
       />
 
       <Stack.Screen
-        name="Chi tiết dữ liệu P0"
+        name="Chi tiết dữ liệu S0"
         component={DetailP0}
         lazy={false}
         options={({ route, navigation }) => ({

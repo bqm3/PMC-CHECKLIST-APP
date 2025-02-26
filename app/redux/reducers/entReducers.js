@@ -1,4 +1,3 @@
-import { check_hsse } from "../actions/entActions";
 import * as type from "../types";
 const initialState = {
   ent_khoicv: [],
@@ -135,6 +134,14 @@ export const entReducer = (state = initialState, action) => {
         isLoading: false,
         message: null,
       };
+    case type.SET_ENT_DUAN_SDT_SUCCESS:
+        return {
+          ...state,
+          sdt_khancap: action.payload.sdt_khancap,
+          error: false,
+          isLoading: false,
+          message: null,
+        };
     case type.SET_ENT_DUAN_FAIL:
       return {
         ...state,

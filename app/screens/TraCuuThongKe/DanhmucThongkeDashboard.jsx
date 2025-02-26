@@ -68,7 +68,7 @@ const DanhmucThongkeDashBoard = () => {
 
         setDataPercentDays(transformedRows);
       } catch (err) {
-        console.log("Error fetching data", err);
+        console.log("Error fetching data", err.message);
       } finally {
         setLoading(false); // Kết thúc loading
       }

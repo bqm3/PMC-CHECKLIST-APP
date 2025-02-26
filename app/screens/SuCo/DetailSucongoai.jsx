@@ -40,11 +40,7 @@ const DetailSucongoai = ({ navigation, route }) => {
   const [isLoading, setIsLoading] = useState(true);
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <ImageBackground
-        source={require("../../../assets/bg_new.png")}
-        resizeMode="stretch"
-        style={{ flex: 1, width: "100%" }}
-      >
+      <ImageBackground source={require("../../../assets/bg_new.png")} resizeMode="stretch" style={{ flex: 1, width: "100%" }}>
         <View style={{ flex: 1 }}>
           {isShowImage && (
             <View>
@@ -114,9 +110,7 @@ const DetailSucongoai = ({ navigation, route }) => {
             >
               <Text style={styles.header}>
                 Tình trạng:{" "}
-                {(data.Tinhtrangxuly == 0 && "Chưa xử lý") ||
-                  (data.Tinhtrangxuly == 1 && "Đang xử lý") ||
-                  (data.Tinhtrangxuly == 2 && "Đã xử lý")}
+                {(data.Tinhtrangxuly == 0 && "Chưa xử lý") || (data.Tinhtrangxuly == 1 && "Đang xử lý") || (data.Tinhtrangxuly == 2 && "Đã xử lý")}
               </Text>
               <View style={{ width: "100%" }}>
                 <Text allowFontScaling={false} style={styles.text}>
@@ -126,11 +120,7 @@ const DetailSucongoai = ({ navigation, route }) => {
                 <View style={styles.action}>
                   <TextInput
                     allowFontScaling={false}
-                    value={
-                      data?.TenHangmuc ||
-                      data?.ent_hangmuc?.Hangmuc ||
-                      "Chưa có hạng mục"
-                    }
+                    value={data?.TenHangmuc || data?.ent_hangmuc?.Hangmuc || "Chưa có hạng mục"}
                     editable={false}
                     placeholder="Hạng mục"
                     placeholderTextColor="gray"
@@ -201,9 +191,7 @@ const DetailSucongoai = ({ navigation, route }) => {
                 <View style={styles.action}>
                   <TextInput
                     allowFontScaling={false}
-                    value={`${formattedTime}${moment(data.Ngaysuco).format(
-                      "DD-MM-YYYY"
-                    )}`}
+                    value={`${formattedTime}${moment(data.Ngaysuco).format("DD-MM-YYYY")}`}
                     editable={false}
                     placeholder="Hạng mục"
                     placeholderTextColor="gray"
@@ -225,9 +213,7 @@ const DetailSucongoai = ({ navigation, route }) => {
                 <View style={styles.action}>
                   <TextInput
                     allowFontScaling={false}
-                    value={`${moment(data.Ngayxuly || data.Ngaysuco).format(
-                      "DD-MM-YYYY"
-                    )}`}
+                    value={`${moment(data.Ngayxuly || data.Ngaysuco).format("DD-MM-YYYY")}`}
                     editable={false}
                     style={{
                       paddingLeft: 12,
@@ -239,52 +225,48 @@ const DetailSucongoai = ({ navigation, route }) => {
                   />
                 </View>
               </View>
+
               <View style={{ width: "100%" }}>
                 <Text allowFontScaling={false} style={styles.text}>
                   Nội dung sự cố
                 </Text>
                 <View style={styles.inputs}>
-                  <TextInput
+                  <Text
                     allowFontScaling={false}
-                    value={data?.Noidungsuco}
-                    editable={false}
-                    placeholder="Nội dung sự cố"
-                    placeholderTextColor="gray"
-                    multiline
                     style={[
                       styles.textInput,
                       {
                         paddingHorizontal: 10,
-                        height: 70,
                         textAlignVertical: "top",
+                        minHeight: 70, // Chiều cao tối thiểu, sẽ mở rộng nếu nội dung dài
+                        color: "#05375a",
                       },
                     ]}
-                    autoCapitalize="sentences"
-                  />
+                  >
+                    {data?.Noidungsuco || "Nội dung sự cố"}
+                  </Text>
                 </View>
               </View>
+
               <View style={{ width: "100%" }}>
                 <Text allowFontScaling={false} style={styles.text}>
                   Biện pháp xử lý
                 </Text>
                 <View style={styles.inputs}>
-                  <TextInput
+                  <Text
                     allowFontScaling={false}
-                    value={data?.Bienphapxuly}
-                    editable={false}
-                    placeholder="Biện pháp xử lý"
-                    placeholderTextColor="gray"
-                    multiline
                     style={[
                       styles.textInput,
                       {
                         paddingHorizontal: 10,
-                        height: 70,
                         textAlignVertical: "top",
+                        minHeight: 70, // Chiều cao tối thiểu, sẽ mở rộng nếu nội dung dài
+                        color: "#05375a",
                       },
                     ]}
-                    autoCapitalize="sentences"
-                  />
+                  >
+                    {data?.Bienphapxuly || "Biện pháp xử lý"}
+                  </Text>
                 </View>
               </View>
               {images?.length > 0 && (
@@ -324,11 +306,7 @@ const DetailSucongoai = ({ navigation, route }) => {
                           }}
                           onPress={() => handleShowImage(item)}
                         >
-                          <Feather
-                            name="zoom-in"
-                            size={adjust(30)}
-                            color="gray"
-                          />
+                          <Feather name="zoom-in" size={adjust(30)} color="gray" />
                         </TouchableOpacity>
                       </View>
                     )}
@@ -345,32 +323,25 @@ const DetailSucongoai = ({ navigation, route }) => {
                       Ghi chú
                     </Text>
                     <View style={styles.inputs}>
-                      <TextInput
+                      <Text
                         allowFontScaling={false}
-                        value={
-                          data?.Ghichu === null ||
-                          data?.Ghichu === undefined ||
-                          data?.Ghichu === "undefined"
-                            ? ""
-                            : data.Ghichu
-                        }
-                        editable={false}
-                        placeholder="Nội dung ghi chú"
-                        placeholderTextColor="gray"
-                        multiline
                         style={[
                           styles.textInput,
                           {
-                            height: 70,
                             paddingHorizontal: 10,
-                            paddingLeft: 10,
                             textAlignVertical: "top",
+                            minHeight: 70, // Chiều cao tối thiểu, sẽ mở rộng nếu nội dung dài
+                            color: "#05375a",
                           },
                         ]}
-                        autoCapitalize="sentences"
-                      />
+                      >
+                        {data?.Ghichu === null || data?.Ghichu === undefined || data?.Ghichu === "undefined" || data?.Ghichu === ""
+                          ? "Nội dung ghi chú"
+                          : data.Ghichu}
+                      </Text>
                     </View>
                   </View>
+
                   {imagesHandle.length > 0 && (
                     <View style={{ width: "100%" }}>
                       <Text allowFontScaling={false} style={styles.text}>
@@ -408,11 +379,7 @@ const DetailSucongoai = ({ navigation, route }) => {
                               }}
                               onPress={() => handleShowImage(item)}
                             >
-                              <Feather
-                                name="zoom-in"
-                                size={adjust(30)}
-                                color="gray"
-                              />
+                              <Feather name="zoom-in" size={adjust(30)} color="gray" />
                             </TouchableOpacity>
                           </View>
                         )}
@@ -529,5 +496,14 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "600",
     paddingLeft: 4,
+  },
+  textInput: {
+    color: "#05375a",
+    fontSize: 16,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "gray",
+    backgroundColor: "white",
+    paddingVertical: 4,
   },
 });

@@ -81,14 +81,14 @@ const DanhMucBaoCaoP0 = ({ navigation, route }) => {
   };
 
   const toggleTodo = (item) => {
-    navigation.navigate("Chi tiết dữ liệu P0", {
+    navigation.navigate("Chi tiết dữ liệu S0", {
       data: item,
     });
     setIsReload(false);
   };
 
   const handleCreate = () => {
-    navigation.navigate("Tạo báo cáo P0", {
+    navigation.navigate("Tạo báo cáo S0", {
       setIsReload,
     });
     setIsReload(false);

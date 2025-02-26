@@ -14,11 +14,7 @@ import {
   Keyboard,
   ImageBackground,
 } from "react-native";
-import {
-  ent_khuvuc_get,
-  ent_toanha_get,
-  ent_hangmuc_get,
-} from "../../redux/actions/entActions";
+import { ent_khuvuc_get, ent_toanha_get, ent_hangmuc_get } from "../../redux/actions/entActions";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useRoute } from "@react-navigation/native";
 import SelectDropdown from "react-native-select-dropdown";
@@ -47,9 +43,7 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
 
   const dispath = useDispatch();
   const { user, authToken } = useSelector((state) => state.authReducer);
-  const { ent_khuvuc, ent_khoicv, ent_toanha, ent_hangmuc } = useSelector(
-    (state) => state.entReducer
-  );
+  const { ent_khuvuc, ent_khoicv, ent_toanha, ent_hangmuc } = useSelector((state) => state.entReducer);
   const { token } = useContext(ExpoTokenContext);
   const [dataKhuvuc, setDataKhuvuc] = useState([]);
   const [dataHangmuc, setDataHangmuc] = useState([]);
@@ -62,8 +56,7 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
   const [isCheckhangmuc, setHangMuc] = useState(item?.ent_hangmuc?.Hangmuc);
   const tinhTrang = item?.Tinhtrangxuly;
   let hangmuc = item?.ent_hangmuc?.Hangmuc;
-  const formattedTime =
-    item?.Giosuco != undefined ? `${item?.Giosuco?.slice(0, 5)} ` : "";
+  const formattedTime = item?.Giosuco != undefined ? `${item?.Giosuco?.slice(0, 5)} ` : "";
 
   const [images, setImages] = useState([]);
   const imagesSuco = item?.Duongdancacanh ? item.Duongdancacanh.split(",") : [];
@@ -108,9 +101,7 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
 
   useEffect(() => {
     if (ent_khuvuc && dataCheckKhuvuc.ID_Toanha) {
-      const filterData = ent_khuvuc.filter(
-        (item) => item.ID_Toanha === dataCheckKhuvuc.ID_Toanha
-      );
+      const filterData = ent_khuvuc.filter((item) => item.ID_Toanha === dataCheckKhuvuc.ID_Toanha);
       setDataKhuvuc(filterData);
       if (filterData.length == 0) {
         dataCheckKhuvuc.ID_Khuvuc = [];
@@ -118,9 +109,7 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
     }
 
     if (ent_hangmuc && dataCheckKhuvuc?.ID_Khuvuc) {
-      const filterData = ent_hangmuc.filter(
-        (item) => item.ID_Khuvuc === dataCheckKhuvuc.ID_Khuvuc
-      );
+      const filterData = ent_hangmuc.filter((item) => item.ID_Khuvuc === dataCheckKhuvuc.ID_Khuvuc);
       setDataHangmuc(filterData);
     } else if (dataKhuvuc.length === 0) {
       setDataHangmuc([]);
@@ -129,26 +118,15 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
 
   const handleChangeStatus = (key, val) => {
     setChangeStatus((prevStatus) => {
-      const updatedStatus = Object.keys(prevStatus).reduce(
-        (acc, currentKey) => {
-          // Đặt tất cả các key khác thành false, chỉ set key hiện tại thành val
-          acc[currentKey] = currentKey === key ? val : false;
-          return acc;
-        },
-        {}
-      );
+      const updatedStatus = Object.keys(prevStatus).reduce((acc, currentKey) => {
+        // Đặt tất cả các key khác thành false, chỉ set key hiện tại thành val
+        acc[currentKey] = currentKey === key ? val : false;
+        return acc;
+      }, {});
 
       return updatedStatus;
     });
-    setSaveStatus(
-      key === "status1" && val == true
-        ? 0
-        : key === "status2" && val == true
-        ? 1
-        : key === "status3" && val == true
-        ? 2
-        : null
-    );
+    setSaveStatus(key === "status1" && val == true ? 0 : key === "status2" && val == true ? 1 : key === "status3" && val == true ? 2 : null);
   };
 
   const resetDataInput = () => {
@@ -199,12 +177,9 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
         {
           text: "Chụp ảnh",
           onPress: async () => {
-            const permissionResult =
-              await ImagePicker.requestCameraPermissionsAsync();
+            const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
             if (permissionResult.granted === false) {
-              alert(
-                "Bạn đã từ chối cho phép sử dụng camera. Vào cài đặt và mở lại!"
-              );
+              alert("Bạn đã từ chối cho phép sử dụng camera. Vào cài đặt và mở lại!");
               return;
             }
 
@@ -230,12 +205,9 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
         {
           text: "Chọn từ thư viện",
           onPress: async () => {
-            const permissionResult =
-              await ImagePicker.requestMediaLibraryPermissionsAsync();
+            const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
             if (permissionResult.granted === false) {
-              alert(
-                "Bạn đã từ chối cho phép sử dụng thư viện. Vào cài đặt và mở lại!"
-              );
+              alert("Bạn đã từ chối cho phép sử dụng thư viện. Vào cài đặt và mở lại!");
               return;
             }
 
@@ -272,22 +244,18 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
   };
 
   const handleAlertUpdate = () => {
-    Alert.alert(
-      "PMC Thông báo",
-      "Bạn có chắc muốn cập nhật sự cố này ?",
-      [
-        {
-          text: "Hủy",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel",
-        },
-        {
-          text: "Đồng ý",
-          onPress: () => handleSubmit(),
-          style: "default",
-        },
-      ]
-    );
+    Alert.alert("PMC Thông báo", "Bạn có chắc muốn cập nhật sự cố này ?", [
+      {
+        text: "Hủy",
+        onPress: () => console.log("Cancel Pressed"),
+        style: "cancel",
+      },
+      {
+        text: "Đồng ý",
+        onPress: () => handleSubmit(),
+        style: "default",
+      },
+    ]);
   };
 
   const handleSubmit = () => {
@@ -329,8 +297,7 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
           {
             Tinhtrangxuly: saveStatus,
             ngayXuLy: formatDate(ngayXuLy.date),
-            ID_Hangmuc:
-              dataInput.ID_Hangmuc != null ? dataInput.ID_Hangmuc : null,
+            ID_Hangmuc: dataInput.ID_Hangmuc != null ? dataInput.ID_Hangmuc : null,
             deviceHandler: token,
             deviceNameHandler: Device.modelName,
             Bienphapxuly: dataInput.Bienphapxuly,
@@ -374,18 +341,14 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
             ]);
           } else if (error.request) {
             // Lỗi không nhận được phản hồi từ server
-            Alert.alert(
-              "PMC Thông báo",
-              "Không nhận được phản hồi từ máy chủ",
-              [
-                {
-                  text: "Hủy",
-                  onPress: () => console.log("Cancel Pressed"),
-                  style: "cancel",
-                },
-                { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-              ]
-            );
+            Alert.alert("PMC Thông báo", "Không nhận được phản hồi từ máy chủ", [
+              {
+                text: "Hủy",
+                onPress: () => console.log("Cancel Pressed"),
+                style: "cancel",
+              },
+              { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+            ]);
           } else {
             // Lỗi khi cấu hình request
             Alert.alert("PMC Thông báo", "Lỗi khi gửi yêu cầu", [
@@ -431,10 +394,7 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
       );
 
       const file = {
-        uri:
-          Platform.OS === "android"
-            ? resizedImage.uri
-            : resizedImage.uri.replace("file://", ""),
+        uri: Platform.OS === "android" ? resizedImage.uri : resizedImage.uri.replace("file://", ""),
         name: Math.floor(Math.random() * 99999999999999) + index + ".jpg", // Random filename
         type: "image/jpg",
       };
@@ -446,26 +406,19 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
     formData.append("Tinhtrangxuly", saveStatus);
     formData.append("Ghichu", dataInput.Noidungghichu);
     formData.append("ngayXuLy", formatDate(ngayXuLy.date));
-    formData.append(
-      "ID_Hangmuc",
-      dataInput.ID_Hangmuc != null ? dataInput.ID_Hangmuc : null
-    );
+    formData.append("ID_Hangmuc", dataInput.ID_Hangmuc != null ? dataInput.ID_Hangmuc : null);
     formData.append("deviceHandler", token);
     formData.append("deviceNameHandler", Device.modelName);
     formData.append("Bienphapxuly", dataInput.Bienphapxuly);
 
     // Send the request to the server
     try {
-      const response = await axios.put(
-        BASE_URL + `/tb_sucongoai/status/${item.ID_Suco}`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: "Bearer " + authToken,
-          },
-        }
-      );
+      const response = await axios.put(BASE_URL + `/tb_sucongoai/status/${item.ID_Suco}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: "Bearer " + authToken,
+        },
+      });
 
       setLoadingStatus(false);
       resetDataInput();
@@ -499,16 +452,9 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : null}
-        style={{ flex: 1 }}
-      >
+      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : null} style={{ flex: 1 }}>
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
-          <ImageBackground
-            source={require("../../../assets/bg_new.png")}
-            resizeMode="stretch"
-            style={{ flex: 1, width: "100%" }}
-          >
+          <ImageBackground source={require("../../../assets/bg_new.png")} resizeMode="stretch" style={{ flex: 1, width: "100%" }}>
             <View style={{ flex: 1 }}>
               {isShowImage && (
                 <View style={styles.container}>
@@ -567,9 +513,8 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
                           (item.Tinhtrangxuly == 1 && "Đang xử lý") ||
                           (item.Tinhtrangxuly == 2 && "Đã xử lý")}
                       </Text>
-                      {(`${hangmuc}` == `undefined` ||
-                        `${hangmuc}` == `null`) &&
-                      `${item?.TenHangmuc}` == `null` ? (
+                      <Text style={styles.header}>Mức độ: {(item?.Mucdo == 0 && "Bình thường") || (item?.Mucdo == 1 && "Nghiêm trọng")}</Text>
+                      {(`${hangmuc}` == `undefined` || `${hangmuc}` == `null`) && `${item?.TenHangmuc}` == `null` ? (
                         <View>
                           <View
                             style={{
@@ -578,10 +523,7 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
                             }}
                           >
                             <View style={{ width: "49%" }}>
-                              <Text
-                                allowFontScaling={false}
-                                style={styles.text}
-                              >
+                              <Text allowFontScaling={false} style={styles.text}>
                                 Tòa nhà
                               </Text>
                               {ent_toanha && ent_toanha?.length > 0 ? (
@@ -596,37 +538,15 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
                                   buttonTextStyle={styles.customText}
                                   // defaultValue={defaultToaNha}
                                   onSelect={(selectedItem, index) => {
-                                    handleChangeTextKhuVuc(
-                                      "ID_Toanha",
-                                      selectedItem.ID_Toanha
-                                    );
+                                    handleChangeTextKhuVuc("ID_Toanha", selectedItem.ID_Toanha);
                                   }}
                                   renderDropdownIcon={(isOpened) => {
-                                    return (
-                                      <FontAwesome
-                                        name={
-                                          isOpened
-                                            ? "chevron-up"
-                                            : "chevron-down"
-                                        }
-                                        color={"#637381"}
-                                        size={14}
-                                      />
-                                    );
+                                    return <FontAwesome name={isOpened ? "chevron-up" : "chevron-down"} color={"#637381"} size={14} />;
                                   }}
                                   dropdownIconPosition={"right"}
-                                  buttonTextAfterSelection={(
-                                    selectedItem,
-                                    index
-                                  ) => {
+                                  buttonTextAfterSelection={(selectedItem, index) => {
                                     return (
-                                      <Text
-                                        allowFontScaling={false}
-                                        style={[
-                                          styles.text,
-                                          { color: "black" },
-                                        ]}
-                                      >
+                                      <Text allowFontScaling={false} style={[styles.text, { color: "black" }]}>
                                         {selectedItem?.Toanha}
                                       </Text>
                                     );
@@ -643,20 +563,14 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
                                   }}
                                 />
                               ) : (
-                                <Text
-                                  allowFontScaling={false}
-                                  style={styles.errorText}
-                                >
+                                <Text allowFontScaling={false} style={styles.errorText}>
                                   Không có dữ liệu tòa nhà.
                                 </Text>
                               )}
                             </View>
 
                             <View style={{ width: "49%" }}>
-                              <Text
-                                allowFontScaling={false}
-                                style={styles.text}
-                              >
+                              <Text allowFontScaling={false} style={styles.text}>
                                 Khu vực
                               </Text>
                               {dataKhuvuc && dataKhuvuc?.length > 0 ? (
@@ -676,37 +590,15 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
                                   buttonTextStyle={styles.customText}
                                   // defaultValue={defaultKhuvuc}
                                   onSelect={(selectedItem, index) => {
-                                    handleChangeTextKhuVuc(
-                                      "ID_Khuvuc",
-                                      selectedItem.ID_Khuvuc
-                                    );
+                                    handleChangeTextKhuVuc("ID_Khuvuc", selectedItem.ID_Khuvuc);
                                   }}
                                   renderDropdownIcon={(isOpened) => {
-                                    return (
-                                      <FontAwesome
-                                        name={
-                                          isOpened
-                                            ? "chevron-up"
-                                            : "chevron-down"
-                                        }
-                                        color={"#637381"}
-                                        size={14}
-                                      />
-                                    );
+                                    return <FontAwesome name={isOpened ? "chevron-up" : "chevron-down"} color={"#637381"} size={14} />;
                                   }}
                                   dropdownIconPosition={"right"}
-                                  buttonTextAfterSelection={(
-                                    selectedItem,
-                                    index
-                                  ) => {
+                                  buttonTextAfterSelection={(selectedItem, index) => {
                                     return (
-                                      <Text
-                                        allowFontScaling={false}
-                                        style={[
-                                          styles.text,
-                                          { color: "black" },
-                                        ]}
-                                      >
+                                      <Text allowFontScaling={false} style={[styles.text, { color: "black" }]}>
                                         {selectedItem?.Tenkhuvuc}
                                       </Text>
                                     );
@@ -723,10 +615,7 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
                                   }}
                                 />
                               ) : (
-                                <Text
-                                  allowFontScaling={false}
-                                  style={styles.errorText}
-                                >
+                                <Text allowFontScaling={false} style={styles.errorText}>
                                   Không có dữ liệu khu vực
                                 </Text>
                               )}
@@ -735,10 +624,7 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
                           <View style={{ width: "100%" }}>
                             {dataHangmuc && dataHangmuc?.length > 0 && (
                               <View>
-                                <Text
-                                  allowFontScaling={false}
-                                  style={styles.text}
-                                >
+                                <Text allowFontScaling={false} style={styles.text}>
                                   Hạng mục
                                 </Text>
                                 <SelectDropdown
@@ -752,20 +638,13 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
                                   buttonTextStyle={[styles.customText]}
                                   // defaultValue={defaultHangmuc}
                                   onSelect={(selectedItem, index) => {
-                                    handleChangeText(
-                                      "ID_Hangmuc",
-                                      selectedItem.ID_Hangmuc
-                                    );
+                                    handleChangeText("ID_Hangmuc", selectedItem.ID_Hangmuc);
                                     setHangMuc(selectedItem.ID_Hangmuc);
                                   }}
                                   renderDropdownIcon={(isOpened) => {
                                     return (
                                       <FontAwesome
-                                        name={
-                                          isOpened
-                                            ? "chevron-up"
-                                            : "chevron-down"
-                                        }
+                                        name={isOpened ? "chevron-up" : "chevron-down"}
                                         color={"black"}
                                         size={14}
                                         style={{ marginRight: 10 }}
@@ -773,10 +652,7 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
                                     );
                                   }}
                                   dropdownIconPosition={"right"}
-                                  buttonTextAfterSelection={(
-                                    selectedItem,
-                                    index
-                                  ) => {
+                                  buttonTextAfterSelection={(selectedItem, index) => {
                                     return (
                                       <Text
                                         allowFontScaling={false}
@@ -794,12 +670,7 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
                                   }}
                                   renderCustomizedRowChild={(item, index) => {
                                     return (
-                                      <VerticalSelect
-                                        value={item.ID_Hangmuc}
-                                        label={item.Hangmuc}
-                                        key={index}
-                                        selectedItem={dataInput.ID_Hangmuc}
-                                      />
+                                      <VerticalSelect value={item.ID_Hangmuc} label={item.Hangmuc} key={index} selectedItem={dataInput.ID_Hangmuc} />
                                     );
                                   }}
                                 />
@@ -816,11 +687,7 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
                           <View style={styles.action}>
                             <TextInput
                               allowFontScaling={false}
-                              value={
-                                item?.TenHangmuc ||
-                                item?.ent_hangmuc?.Hangmuc ||
-                                "Chưa có hạng mục"
-                              }
+                              value={item?.TenHangmuc || item?.ent_hangmuc?.Hangmuc || "Chưa có hạng mục"}
                               editable={false}
                               placeholder="Hạng mục"
                               placeholderTextColor="gray"
@@ -866,9 +733,7 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
                         <View style={styles.action}>
                           <TextInput
                             allowFontScaling={false}
-                            value={`${formattedTime}${moment(
-                              item?.Ngaysuco
-                            ).format("DD-MM-YYYY")}`}
+                            value={`${formattedTime}${moment(item?.Ngaysuco).format("DD-MM-YYYY")}`}
                             editable={false}
                             placeholder="Hạng mục"
                             placeholderTextColor="gray"
@@ -883,26 +748,29 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
                           />
                         </View>
                       </View>
-                      <Text allowFontScaling={false} style={styles.text}>
-                        Nội dung sự cố
-                      </Text>
-                      <TextInput
-                        allowFontScaling={false}
-                        placeholder="Biện pháp xử lý"
-                        placeholderTextColor="gray"
-                        textAlignVertical="top"
-                        multiline={true}
-                        blurOnSubmit={true}
-                        value={item?.Noidungsuco}
-                        style={[
-                          styles.textInput,
-                          {
-                            paddingHorizontal: 10,
-                            height: 70,
-                          },
-                        ]}
-                        editable={false}
-                      />
+
+                      <View style={{ width: "100%" }}>
+                        <Text allowFontScaling={false} style={styles.text}>
+                          Nội dung sự cố
+                        </Text>
+                        <View style={styles.inputs}>
+                          <Text
+                            allowFontScaling={false}
+                            style={[
+                              styles.textInput,
+                              {
+                                paddingHorizontal: 10,
+                                textAlignVertical: "top",
+                                minHeight: 70, // Chiều cao tối thiểu, sẽ mở rộng nếu nội dung dài
+                                color: "#05375a",
+                              },
+                            ]}
+                          >
+                            {item?.Noidungsuco || "Nội dung sự cố"}
+                          </Text>
+                        </View>
+                      </View>
+
                       {imagesSuco?.length > 0 && (
                         <View style={{ width: "100%" }}>
                           <Text allowFontScaling={false} style={styles.text}>
@@ -940,11 +808,7 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
                                   }}
                                   onPress={() => handleShowImage(item)}
                                 >
-                                  <Feather
-                                    name="zoom-in"
-                                    size={adjust(30)}
-                                    color="gray"
-                                  />
+                                  <Feather name="zoom-in" size={adjust(30)} color="gray" />
                                 </TouchableOpacity>
                               </View>
                             )}
@@ -969,14 +833,9 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
                               style={styles.checkbox}
                               value={changeStatus?.status1}
                               onValueChange={() => {
-                                handleChangeStatus(
-                                  "status1",
-                                  !changeStatus?.status1
-                                );
+                                handleChangeStatus("status1", !changeStatus?.status1);
                               }}
-                              color={
-                                changeStatus?.status1 ? "#4630EB" : undefined
-                              }
+                              color={changeStatus?.status1 ? "#4630EB" : undefined}
                             />
                             <Text style={styles.paragraph}>Chưa xử lý</Text>
                           </View>
@@ -987,14 +846,9 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
                               style={styles.checkbox}
                               value={changeStatus?.status2}
                               onValueChange={() => {
-                                handleChangeStatus(
-                                  "status2",
-                                  !changeStatus?.status2
-                                );
+                                handleChangeStatus("status2", !changeStatus?.status2);
                               }}
-                              color={
-                                changeStatus?.status2 ? "#4630EB" : undefined
-                              }
+                              color={changeStatus?.status2 ? "#4630EB" : undefined}
                             />
                             <Text style={styles.paragraph}>Đang xử lý</Text>
                           </View>
@@ -1004,14 +858,9 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
                             style={styles.checkbox}
                             value={changeStatus?.status3}
                             onValueChange={() => {
-                              handleChangeStatus(
-                                "status3",
-                                !changeStatus?.status3
-                              );
+                              handleChangeStatus("status3", !changeStatus?.status3);
                             }}
-                            color={
-                              changeStatus?.status3 ? "#4630EB" : undefined
-                            }
+                            color={changeStatus?.status3 ? "#4630EB" : undefined}
                           />
                           <Text style={styles.paragraph}>Đã xử lý</Text>
                         </View>
@@ -1021,9 +870,7 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
                       <Text allowFontScaling={false} style={styles.text}>
                         Ngày xử lý
                       </Text>
-                      <TouchableOpacity
-                        onPress={() => handleChangeDate("isCheck", true)}
-                      >
+                      <TouchableOpacity onPress={() => handleChangeDate("isCheck", true)}>
                         <View style={styles.action}>
                           <TextInput
                             allowFontScaling={false}
@@ -1048,11 +895,7 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
                               width: adjust(50),
                             }}
                           >
-                            <AntDesign
-                              name="calendar"
-                              size={24}
-                              color="black"
-                            />
+                            <AntDesign name="calendar" size={24} color="black" />
                           </TouchableOpacity>
                         </View>
                         <DateTimePickerModal
@@ -1061,10 +904,7 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
                           isDarkModeEnabled={true}
                           maximumDate={new Date()}
                           onConfirm={(date) => {
-                            handleChangeDate(
-                              "date",
-                              moment(date).format("DD-MM-YYYY")
-                            );
+                            handleChangeDate("date", moment(date).format("DD-MM-YYYY"));
                             handleChangeDate("isCheck", false);
                           }}
                           onCancel={() => handleChangeDate("isCheck", false)}
@@ -1168,11 +1008,7 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
                                     }}
                                     onPress={() => handleRemoveImage(item)}
                                   >
-                                    <FontAwesome
-                                      name="remove"
-                                      size={adjust(30)}
-                                      color="white"
-                                    />
+                                    <FontAwesome name="remove" size={adjust(30)} color="white" />
                                   </TouchableOpacity>
                                 </View>
                               )}
@@ -1289,5 +1125,14 @@ const styles = StyleSheet.create({
     color: "white",
     fontWeight: "600",
     paddingLeft: 4,
+  },
+  textInput: {
+    color: "#05375a",
+    fontSize: 16,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "gray",
+    backgroundColor: "white",
+    paddingVertical: 4,
   },
 });

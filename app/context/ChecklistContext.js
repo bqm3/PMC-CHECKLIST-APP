@@ -8,12 +8,9 @@ const ChecklistContext = createContext();
 
 export const ChecklistProvider = ({ children }) => {
   const [dataChecklist1, setDataChecklist1] = useState([]);
-  const [dataChecklistFilterContext, setDataChecklistFilterContext] = useState(
-    []
-  );
+  const [dataChecklistFilterContext, setDataChecklistFilterContext] = useState([]);
   const [newActionDataChecklist1, setNewActionDataChecklist1] = useState([]);
-  const [defaultActionDataChecklist1, setDataChecklistDefault1] =
-    useState([]);
+  const [defaultActionDataChecklist1, setDataChecklistDefault1] = useState([]);
   const [dataChecklistFaild1, setDataChecklistFaild1] = useState([]);
   const [localtionContext, setLocationContext] = useState([]);
   return (
@@ -30,7 +27,7 @@ export const ChecklistProvider = ({ children }) => {
         dataChecklistFaild1,
         setDataChecklistFaild1,
         localtionContext,
-        setLocationContext
+        setLocationContext,
       }}
     >
       {children}
