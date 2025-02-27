@@ -1,44 +1,15 @@
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import {
-  Image,
-  Button,
-  Text,
-  TouchableOpacity,
-  Platform,
-  Alert,
-  Pressable,
-  View,
-} from "react-native";
+import { Image, Text, TouchableOpacity, Platform, Alert, Pressable, View, Linking, TouchableWithoutFeedback } from "react-native";
 import { COLORS } from "../constants/theme";
 import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
 import adjust from "../adjust";
-import {
-  ThucHienChecklist,
-  DetailChecklist,
-  ThucHienHangmuc,
-  ThucHienKhuvuc,
-} from "../screens/Checklist";
+import { useSelector } from "react-redux";
 
-import {
-  ThucHienChecklistLai,
-  ThucHienKhuvucLai,
-  ThucHienHangmucLai,
-  DetailChecklistLai,
-} from "../screens/ChecklistLai";
-
-import {
-  DanhmucToanhaScreen,
-  DanhmucUserScreen,
-  DanhmucDuanScreen,
-} from "../screens/PSH";
-
-import {
-  DetailSucongoai,
-  ThuchienSucongoai,
-  XulySuco,
-  ChangeTinhTrangSuCo,
-} from "../screens/SuCo";
+import { ThucHienChecklist, DetailChecklist, ThucHienHangmuc, ThucHienKhuvuc } from "../screens/Checklist";
+import { ThucHienChecklistLai, ThucHienKhuvucLai, ThucHienHangmucLai, DetailChecklistLai } from "../screens/ChecklistLai";
+import { DanhmucUserScreen, DanhmucDuanScreen } from "../screens/PSH";
+import { DetailSucongoai, ThuchienSucongoai, XulySuco, ChangeTinhTrangSuCo } from "../screens/SuCo";
 
 import {
   DanhmucChiTietTracuu,
@@ -54,11 +25,7 @@ import {
   NotHangMucTracuuCa,
   NotCheckListTracuuCa,
 } from "../screens/TraCuuThongKe";
-import {
-  BaoCaoChiSoTheoNamThang,
-  DanhMucBaoCaoChiSo,
-  DanhmucHangMucChiSo,
-} from "../screens/Baocaochiso";
+import { BaoCaoChiSoTheoNamThang, DanhMucBaoCaoChiSo, DanhmucHangMucChiSo } from "../screens/Baocaochiso";
 
 import { DanhMucBaoCaoHSSE, TaoBaoCaoHSSE, DetailHSSE } from "../screens/HSSE";
 import { DanhMucBaoCaoP0, TaoBaoCaoP0, DetailP0 } from "../screens/P0";
@@ -85,7 +52,39 @@ const headerLeft = (navigation) => {
   );
 };
 
+const buttonCall = (sdt_khancap) => {
+  return (
+    <TouchableWithoutFeedback
+      onPressIn={() => {
+        handleEmergencyCall(sdt_khancap);
+      }}
+    >
+      <Image
+        source={require("../../assets/icons/ic_emergency_call_58.png")}
+        style={{
+          width: adjust(25),
+          height: adjust(25),
+          transform: [{ scaleX: -1 }],
+        }}
+      />
+    </TouchableWithoutFeedback>
+  );
+};
+
+const handleEmergencyCall = (sdt_khancap) => {
+  if (!sdt_khancap) {
+    Alert.alert("PMC Thông báo", "Không có số điện thoại khẩn cấp!", [{ text: "Xác nhận" }]);
+    return;
+  }
+
+  const phoneUrl = `tel:${sdt_khancap}`;
+  Linking.openURL(phoneUrl).catch((error) => {
+    Alert.alert("PMC Thông báo", "Không thể thực hiện cuộc gọi!");
+  });
+};
+
 const HomeStack = ({ navigation }) => {
+  const { sdt_khancap } = useSelector((state) => state.entReducer);
   return (
     <Stack.Navigator
       initialRouteName="Trang chính"
@@ -275,6 +274,7 @@ const HomeStack = ({ navigation }) => {
             backgroundColor: COLORS.bg_button,
           },
           headerBackTitleVisible: false,
+          headerRight: () => buttonCall(sdt_khancap),
         })}
       />
 
@@ -303,6 +303,7 @@ const HomeStack = ({ navigation }) => {
             backgroundColor: COLORS.bg_button,
           },
           headerBackTitleVisible: false,
+          headerRight: () => buttonCall(sdt_khancap),
         })}
       />
       <Stack.Screen
@@ -358,6 +359,7 @@ const HomeStack = ({ navigation }) => {
             backgroundColor: COLORS.bg_button,
           },
           headerBackTitleVisible: false,
+          headerRight: () => buttonCall(sdt_khancap),
         })}
       />
 
@@ -414,6 +416,7 @@ const HomeStack = ({ navigation }) => {
             backgroundColor: COLORS.bg_button,
           },
           headerBackTitleVisible: false,
+          headerRight: () => buttonCall(sdt_khancap),
         })}
       />
 
@@ -442,9 +445,7 @@ const HomeStack = ({ navigation }) => {
                 navigation.goBack();
               }}
             >
-              {Platform.OS === "ios" && (
-                <Ionicons name="chevron-back" size={28} color="white" />
-              )}
+              {Platform.OS === "ios" && <Ionicons name="chevron-back" size={28} color="white" />}
             </TouchableOpacity>
           ),
           headerTitleAlign: "center",
@@ -452,6 +453,7 @@ const HomeStack = ({ navigation }) => {
             backgroundColor: COLORS.bg_button, // Replace with your color
           },
           headerBackTitleVisible: false,
+          headerRight: () => buttonCall(sdt_khancap),
         })}
       />
 
@@ -480,9 +482,7 @@ const HomeStack = ({ navigation }) => {
                 navigation.goBack();
               }}
             >
-              {Platform.OS === "ios" && (
-                <Ionicons name="chevron-back" size={28} color="white" />
-              )}
+              {Platform.OS === "ios" && <Ionicons name="chevron-back" size={28} color="white" />}
             </TouchableOpacity>
           ),
           headerTitleAlign: "center",
@@ -518,9 +518,7 @@ const HomeStack = ({ navigation }) => {
                 navigation.goBack();
               }}
             >
-              {Platform.OS === "ios" && (
-                <Ionicons name="chevron-back" size={28} color="white" />
-              )}
+              {Platform.OS === "ios" && <Ionicons name="chevron-back" size={28} color="white" />}
             </TouchableOpacity>
           ),
           headerTitleAlign: "center",
@@ -556,9 +554,7 @@ const HomeStack = ({ navigation }) => {
                 navigation.goBack();
               }}
             >
-              {Platform.OS === "ios" && (
-                <Ionicons name="chevron-back" size={28} color="white" />
-              )}
+              {Platform.OS === "ios" && <Ionicons name="chevron-back" size={28} color="white" />}
             </TouchableOpacity>
           ),
           headerTitleAlign: "center",
@@ -594,9 +590,7 @@ const HomeStack = ({ navigation }) => {
                 navigation.goBack();
               }}
             >
-              {Platform.OS === "ios" && (
-                <Ionicons name="chevron-back" size={28} color="white" />
-              )}
+              {Platform.OS === "ios" && <Ionicons name="chevron-back" size={28} color="white" />}
             </TouchableOpacity>
           ),
           headerTitleAlign: "center",
@@ -632,6 +626,7 @@ const HomeStack = ({ navigation }) => {
             backgroundColor: COLORS.bg_button,
           },
           headerBackTitleVisible: false,
+          headerRight: () => buttonCall(sdt_khancap),
         })}
       />
 
@@ -660,6 +655,7 @@ const HomeStack = ({ navigation }) => {
             backgroundColor: COLORS.bg_button,
           },
           headerBackTitleVisible: false,
+          headerRight: () => buttonCall(sdt_khancap),
         })}
       />
 
@@ -743,6 +739,7 @@ const HomeStack = ({ navigation }) => {
             backgroundColor: COLORS.bg_button,
           },
           headerBackTitleVisible: false,
+          headerRight: () => buttonCall(sdt_khancap),
         })}
       />
 
@@ -761,7 +758,9 @@ const HomeStack = ({ navigation }) => {
                 fontWeight: "700",
                 color: "white",
               }}
-            >Chi tiết sự cố</Text>
+            >
+              Chi tiết sự cố
+            </Text>
           ),
           headerLeft: () => headerLeft(navigation),
           headerTitleAlign: "center",
@@ -769,6 +768,7 @@ const HomeStack = ({ navigation }) => {
             backgroundColor: COLORS.bg_button,
           },
           headerBackTitleVisible: false,
+          headerRight: () => buttonCall(sdt_khancap),
         })}
       />
 
@@ -797,6 +797,7 @@ const HomeStack = ({ navigation }) => {
             backgroundColor: COLORS.bg_button,
           },
           headerBackTitleVisible: false,
+          headerRight: () => buttonCall(sdt_khancap),
         })}
       />
 
@@ -907,6 +908,7 @@ const HomeStack = ({ navigation }) => {
             backgroundColor: COLORS.bg_button,
           },
           headerBackTitleVisible: true,
+          headerRight: () => buttonCall(sdt_khancap),
         })}
       />
 
@@ -961,6 +963,7 @@ const HomeStack = ({ navigation }) => {
             backgroundColor: COLORS.bg_button,
           },
           headerBackTitleVisible: false,
+          headerRight: () => buttonCall(sdt_khancap),
         })}
       />
 
@@ -1010,11 +1013,7 @@ const HomeStack = ({ navigation }) => {
             </Text>
           ),
           headerLeft: () => (
-            <TouchableOpacity
-              onPressIn={() =>
-                navigation.navigate("Báo cáo HSSE", { isReload: true })
-              }
-            >
+            <TouchableOpacity onPressIn={() => navigation.navigate("Báo cáo HSSE", { isReload: true })}>
               {Platform.OS === "ios" && (
                 <Image
                   source={require("../../assets/icons/ic_button_back.png")}
@@ -1109,11 +1108,7 @@ const HomeStack = ({ navigation }) => {
             </Text>
           ),
           headerLeft: () => (
-            <TouchableOpacity
-              onPressIn={() =>
-                navigation.navigate("Báo cáo S0", { isReload: true })
-              }
-            >
+            <TouchableOpacity onPressIn={() => navigation.navigate("Báo cáo S0", { isReload: true })}>
               {Platform.OS === "ios" && (
                 <Image
                   source={require("../../assets/icons/ic_button_back.png")}

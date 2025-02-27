@@ -3,7 +3,16 @@ import React, { createContext, useContext, useState, useEffect, useRef } from "r
 import { View, Text, StyleSheet, FlatList, ImageBackground, Image, Platform, ActivityIndicator, TextInput, TouchableOpacity } from "react-native";
 import * as Device from "expo-device";
 import { Provider, useDispatch, useSelector } from "react-redux";
-import { ent_calv_get, ent_hangmuc_get, ent_khuvuc_get, ent_tang_get, ent_toanha_get, ent_khoicv_get, check_hsse } from "../redux/actions/entActions";
+import {
+  ent_calv_get,
+  ent_hangmuc_get,
+  ent_khuvuc_get,
+  ent_tang_get,
+  ent_toanha_get,
+  ent_khoicv_get,
+  check_hsse,
+  ent_get_sdt_KhanCap,
+} from "../redux/actions/entActions";
 import SelectDropdown from "react-native-select-dropdown";
 import { FontAwesome, AntDesign } from "@expo/vector-icons";
 import { Alert, Linking } from "react-native";
@@ -248,6 +257,7 @@ const dataBQTKhoi = [
 const HomeScreen = ({ navigation }) => {
   const dispath = useDispatch();
   const { user, authToken, passwordCore } = useSelector((state) => state.authReducer);
+  const { sdt_khancap } = useSelector((state) => state.entReducer);
 
   const { setToken } = useContext(ExpoTokenContext);
 
@@ -291,6 +301,10 @@ const HomeScreen = ({ navigation }) => {
 
   const int_calv = async () => {
     await dispath(ent_calv_get());
+  };
+
+  const int_get_sdt_KhanCap = async () => {
+    await dispath(ent_get_sdt_KhanCap());
   };
 
   // const asyncPassword  = async () => {
@@ -345,6 +359,7 @@ const HomeScreen = ({ navigation }) => {
     int_calv();
     funcDuan();
     funcCheckP0();
+    int_get_sdt_KhanCap();
   }, [refreshScreen]);
 
   useEffect(() => {
@@ -483,6 +498,18 @@ const HomeScreen = ({ navigation }) => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleEmergencyCall = () => {
+    if (!sdt_khancap) {
+      Alert.alert("PMC Thông báo", "Không có số điện thoại khẩn cấp!", [{ text: "Xác nhận" }]);
+      return;
+    }
+
+    const phoneUrl = `tel:${sdt_khancap}`;
+    Linking.openURL(phoneUrl).catch((error) => {
+      Alert.alert("PMC Thông báo", "Không thể thực hiện cuộc gọi!");
+    });
   };
 
   const showAlert = (message) => {
@@ -642,6 +669,35 @@ const HomeScreen = ({ navigation }) => {
               columnWrapperStyle={{ gap: 10 }}
             />
           </View>
+          <TouchableOpacity
+            onPress={() => handleEmergencyCall()}
+            style={{
+              position: "absolute", // Đặt vị trí tuyệt đối
+              bottom: 10,
+              right: 10,
+              zIndex: 9999,
+              elevation: 9999,
+              backgroundColor: "white",
+              borderRadius: 50, // Bo tròn background
+              padding: 10,
+              shadowColor: "#000",
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.25,
+              shadowRadius: 3.84,
+            }}
+          >
+            <View style={{ alignItems: "flex-end" }}>
+              <Image
+                source={require("../../assets/icons/ic_emergency_call_58.png")}
+                style={{
+                  width: adjust(50) * 0.8,
+                  height: adjust(50) * 0.8,
+                  resizeMode: "contain",
+                  transform: [{ scaleX: -1 }],
+                }}
+              />
+            </View>
+          </TouchableOpacity>
           <View
             style={{
               flexDirection: "column",

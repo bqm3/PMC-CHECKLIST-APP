@@ -950,7 +950,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
                     />
                   )}
 
-                  {!dataSelect[0] && (
+                  {/* {!dataSelect[0] && (
                     <Button
                       // image={require("../../../assets/icons/ic_phone_green_2.png")}
                       text={"Gọi khẩn cấp"}
@@ -959,7 +959,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
                       color={"white"}
                       onPress={() => handleEmergencyCall()}
                     />
-                  )}
+                  )} */}
                 </View>
               </View>
             </ImageBackground>

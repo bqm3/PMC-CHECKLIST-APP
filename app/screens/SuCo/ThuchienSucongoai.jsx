@@ -885,7 +885,7 @@ const ThuchienSucongoai = ({ navigation, route }) => {
                 </View>
 
                 <View style={{ marginBottom: 10, marginTop: adjust(5) }}>
-                  <TouchableOpacity onPress={() => setIsModalcall(true)}>
+                  {/* <TouchableOpacity onPress={() => setIsModalcall(true)}>
                     <View style={{ alignItems: "flex-end", marginBottom: 10 }}>
                       <Image
                         source={require("../../../assets/icons/ic_phone_green_2.png")}
@@ -896,7 +896,7 @@ const ThuchienSucongoai = ({ navigation, route }) => {
                         }}
                       />
                     </View>
-                  </TouchableOpacity>
+                  </TouchableOpacity> */}
                   <ButtonSubmit
                     text="Gửi"
                     onPress={() => handleSubmit()}

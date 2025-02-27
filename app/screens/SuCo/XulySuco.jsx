@@ -211,7 +211,7 @@ const XulySuco = ({ navigation }) => {
                 </View>
               </View>
 
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 onPress={() => handleEmergencyCall()}
                 // onPress={() => setIsModalcall(true)}
                 style={{
@@ -232,7 +232,7 @@ const XulySuco = ({ navigation }) => {
                     }}
                   />
                 </View>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
 
               <Modal
                 animationType="slide"
