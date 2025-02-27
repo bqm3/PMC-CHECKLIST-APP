@@ -254,8 +254,10 @@ const dataBQTKhoi = [
 ];
 
 // create a component
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = ({ navigation, route }) => {
   const dispath = useDispatch();
+  const setIsLoading = route.params.setIsLoading;
+  const setColorLoading = route.params.setColorLoading;
   const { user, authToken, passwordCore } = useSelector((state) => state.authReducer);
   const { sdt_khancap } = useSelector((state) => state.entReducer);
 
@@ -266,7 +268,6 @@ const HomeScreen = ({ navigation }) => {
 
   const [duan, setDuan] = useState([]);
   const [refreshScreen, setRefreshScreen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
 
   const [checkP0, setCheckP0] = useState(false);
 
@@ -505,11 +506,18 @@ const HomeScreen = ({ navigation }) => {
       Alert.alert("PMC Thông báo", "Không có số điện thoại khẩn cấp!", [{ text: "Xác nhận" }]);
       return;
     }
-
+    setIsLoading(true);
     const phoneUrl = `tel:${sdt_khancap}`;
-    Linking.openURL(phoneUrl).catch((error) => {
-      Alert.alert("PMC Thông báo", "Không thể thực hiện cuộc gọi!");
-    });
+    Linking.openURL(phoneUrl)
+      .then(() => {
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 1000);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        Alert.alert("PMC Thông báo", "Không thể thực hiện cuộc gọi!");
+      });
   };
 
   const showAlert = (message) => {
@@ -525,21 +533,6 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <ImageBackground source={require("../../assets/bg_new.png")} resizeMode="stretch" style={{ flex: 1, width: "100%" }}>
-      {isLoading ? (
-        <ActivityIndicator
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-          size="large"
-          color={COLORS.bg_white}
-        ></ActivityIndicator>
-      ) : (
         <View style={styles.container}>
           <View style={styles.content}>
             {user?.ent_duan?.Logo ? (
@@ -725,7 +718,6 @@ const HomeScreen = ({ navigation }) => {
             </Text>
           </View>
         </View>
-      )}
     </ImageBackground>
   );
 };
