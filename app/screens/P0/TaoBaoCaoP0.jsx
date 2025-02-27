@@ -10,8 +10,8 @@ import { ReloadContext } from "../../context/ReloadContext";
 import WarningBox from "../../components/Warning/WarningBox";
 
 const P0 = [
-  { id: 0, title: "Thẻ ô tô đã bàn giao", key: "Sotheotodk", value: "0" },
-  { id: 1, title: "Thẻ xe máy đã bàn giao", key: "Sothexemaydk", value: "0" },
+  { id: 0, title: "Thẻ ô tô đã giao", key: "Sotheotodk", value: "0" },
+  { id: 1, title: "Thẻ xe máy đã giao", key: "Sothexemaydk", value: "0" },
   { id: 2, title: "Xe ô tô thường", key: "Slxeoto", value: "0" },
   { id: 3, title: "Xe ô tô điện", key: "Slxeotodien", value: "0" },
   { id: 4, title: "Xe máy điện", key: "Slxemaydien", value: "0" },
