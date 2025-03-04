@@ -38,7 +38,7 @@ import * as FileSystem from "expo-file-system";
 import ButtonChecklist from "../../components/Button/ButtonCheckList";
 import { COLORS, SIZES } from "../../constants/theme";
 import {
-  ent_calv_get,
+  ent_calv_get, ent_calv_get_chuky
 } from "../../redux/actions/entActions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { tb_checklistc_get } from "../../redux/actions/tbActions";
@@ -59,7 +59,7 @@ import ChecklistContext from "../../context/ChecklistContext";
 const ThucHienChecklist = ({ navigation }) => {
   const ref = useRef(null);
   const dispath = useDispatch();
-  const { ent_calv, ent_hangmuc } = useSelector((state) => state.entReducer);
+  const { ent_calv, ent_hangmuc, ent_calv_chuky } = useSelector((state) => state.entReducer);
   const { tb_checklistc } = useSelector((state) => state.tbReducer);
   const { user, authToken } = useSelector((state) => state.authReducer);
   const {
@@ -143,6 +143,7 @@ const ThucHienChecklist = ({ navigation }) => {
 
   const init_ca = async () => {
     await dispath(ent_calv_get());
+    await dispath(ent_calv_get_chuky());
   };
 
   const int_checklistc = async () => {
@@ -363,6 +364,7 @@ const ThucHienChecklist = ({ navigation }) => {
       let data = {
         Tenca: dataInput.Calv.Tenca,
         ID_Calv: dataInput.Calv.ID_Calv,
+        ID_Duan_KhoiCV: dataInput.ID_Duan_KhoiCV,  //(ID_Chuky)
         ID_User: user.ID_User,
         ID_Duan: user.ID_Duan,
         ID_KhoiCV: user.ID_KhoiCV,
@@ -370,6 +372,7 @@ const ThucHienChecklist = ({ navigation }) => {
         Giobd: dataInput.dateHour,
       };
       setLoadingSubmit(true);
+      setLoadingSubmit(false);
       try {
         await axios
           .post(BASE_URL + "/tb_checklistc/create", data, {
@@ -691,7 +694,7 @@ const ThucHienChecklist = ({ navigation }) => {
                   <View
                     style={[
                       styles.modalView,
-                      { width: "80%", height: "auto", minHeight: 300 },
+                      { width: "80%", height: "auto", minHeight: 380 },
                     ]}
                   >
                     <View style={styles.contentContainer}>
@@ -708,6 +711,7 @@ const ThucHienChecklist = ({ navigation }) => {
                         {user?.ent_khoicv?.KhoiCV}
                       </Text>
                       <ModalChecklistC
+                        ent_calv_chuky= {ent_calv_chuky}
                         ent_calv={ent_calv}
                         dataInput={dataInput}
                         handleChangeText={handleChangeText}

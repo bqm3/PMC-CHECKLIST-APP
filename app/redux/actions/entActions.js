@@ -59,6 +59,34 @@ export const ent_calv_get = () => {
   };
 };
 
+export const ent_calv_get_chuky = () => {
+  return async (dispatch) => {
+    try {
+      const token = await AsyncStorage.getItem("tokenUser");
+
+      if (token !== null) {
+        const response = await axios.get(BASE_URL + "/ent_calv/chuky", {
+          headers: {
+            Accept: "application/json",
+            Authorization: "Bearer " + token,
+          },
+        });
+        const data = response.data.data;
+        dispatch({
+          type: type.SET_ENT_CALV_CHUKY_SUCCESS,
+          payload: {
+            ent_calv_chuky: data,
+          },
+        });
+      } else {
+        console.error("initialized error");
+      }
+    } catch (err) {
+      console.log("err", err);
+    }
+  };
+};
+
 export const ent_calv_filter = (id) => {
   return async (dispatch) => {
     try {

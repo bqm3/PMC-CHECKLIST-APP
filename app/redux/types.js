@@ -24,6 +24,7 @@ export const SET_ENT_KHOICV_FAIL = "SET_ENT_KHOICV_FAIL";
 //ent_calv
 export const SET_ENT_CALV_STATE = "SET_ENT_CALV_STATE";
 export const SET_ENT_CALV_SUCCESS = "SET_ENT_CALV_SUCCESS";
+export const SET_ENT_CALV_CHUKY_SUCCESS = "SET_ENT_CALV_CHUKY_SUCCESS";
 export const SET_ENT_CALV_FAIL = "SET_ENT_CALV_FAIL";
 
 //ent_toanha

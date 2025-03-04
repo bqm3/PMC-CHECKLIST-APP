@@ -10,9 +10,8 @@ import {
   Platform,
   BackHandler
 } from "react-native";
-import React, { useRef ,useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-
 import { COLORS } from "../../constants/theme";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { FontAwesome } from "@expo/vector-icons";
@@ -21,17 +20,57 @@ import SelectDropdown from "react-native-select-dropdown";
 import ButtonSubmit from "../Button/ButtonSubmit";
 
 const ModalChecklistC = ({
-  ent_calv,
+  ent_calv_chuky,
+  ent_calv, // Nếu vẫn cần dùng danh sách này để lấy thông tin chi tiết
   dataInput,
   handleChangeText,
   handlePushDataSave,
   isLoading,
   handleClosePopUp,
 }) => {
-  const ref = useRef(null);
-  const defaultCalv = ent_calv?.find(
-    (calv) => calv.ID_Calv === dataInput?.Calv?.ID_Calv
-  );
+  const chukyRef = useRef(null);
+  const calvRef = useRef(null);
+
+  const getDefaultChuky = () => {
+    if (ent_calv_chuky?.length === 1) {
+      return ent_calv_chuky[0];
+    }
+    return ent_calv_chuky?.find(
+      (chuky) => chuky.ID_Duan_KhoiCV === dataInput?.ID_Duan_KhoiCV
+    );
+  };
+
+  const defaultChuky = getDefaultChuky();
+
+  // State để lưu chu kỳ đã chọn và danh sách ca làm việc tương ứng
+  const [selectedChuky, setSelectedChuky] = useState(defaultChuky || null);
+  const [availableCalv, setAvailableCalv] = useState([]);
+
+  // Cập nhật danh sách ca làm việc từ ent_thietlapca_list
+  useEffect(() => {
+    if (selectedChuky && selectedChuky.ent_thietlapca_list) {
+      const calvDetails = [
+        ...new Map(
+          selectedChuky.ent_thietlapca_list.map((item) => [item.ID_Calv, {
+            ID_Calv: item.ID_Calv,
+            Tenca: `${item?.ent_calv?.Tenca}`,
+          }])
+        ).values()
+      ];
+      
+      setAvailableCalv(calvDetails);
+    } else {
+      setAvailableCalv([]);
+    }
+  }, [selectedChuky]);
+
+  useEffect(() => {
+    if (ent_calv_chuky?.length === 1 && !dataInput?.ID_Duan_KhoiCV) {
+      const singleChuky = ent_calv_chuky[0];
+      setSelectedChuky(singleChuky);
+      handleChangeText("ID_Duan_KhoiCV", singleChuky.ID_Duan_KhoiCV);
+    }
+  }, [ent_calv_chuky, handleChangeText, dataInput?.ID_Duan_KhoiCV]);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -44,7 +83,7 @@ const ModalChecklistC = ({
             style={{
               justifyContent: "space-between",
               width: "100%",
-              height: '100%'
+              height: "100%",
             }}
           >
             <View>
@@ -92,79 +131,135 @@ const ModalChecklistC = ({
                   />
                 </View>
               </View>
+
+              {/* Dropdown chọn chu kỳ */}
+              <View>
+                <Text allowFontScaling={false} style={styles.text}>
+                  Chu kỳ
+                </Text>
+                {ent_calv_chuky && ent_calv_chuky?.length > 0 ? (
+                  <SelectDropdown
+                    ref={chukyRef}
+                    data={ent_calv_chuky || []}
+                    buttonStyle={styles.select}
+                    dropdownStyle={{ borderRadius: 8, maxHeight: 400 }}
+                    defaultButtonText={"Chọn chu kỳ"}
+                    buttonTextStyle={styles.customText}
+                    defaultValue={defaultChuky}
+                    onSelect={(selectedItem) => {
+                      setSelectedChuky(selectedItem);
+                      handleChangeText("ID_Duan_KhoiCV", selectedItem.ID_Duan_KhoiCV);
+                    }}
+                    renderDropdownIcon={(isOpened) => (
+                      <FontAwesome
+                        name={isOpened ? "chevron-up" : "chevron-down"}
+                        color={"#637381"}
+                        size={14}
+                        style={{ marginRight: 10 }}
+                      />
+                    )}
+                    dropdownIconPosition={"right"}
+                    buttonTextAfterSelection={(selectedItem) => (
+                      <View
+                        style={{
+                          justifyContent: "center",
+                          alignContent: "center",
+                          height: 50,
+                        }}
+                      >
+                        <Text
+                          allowFontScaling={false}
+                          style={styles.text}
+                          numberOfLines={1}
+                        >
+                          {selectedItem?.Tenchuky}
+                        </Text>
+                      </View>
+                    )}
+                    renderCustomizedRowChild={(item) => (
+                      <VerticalSelect
+                        value={item.ID_Duan_KhoiCV}
+                        label={`${item?.Tenchuky}`}
+                        selectedItem={dataInput?.ID_Duan_KhoiCV}
+                      />
+                    )}
+                  />
+                ) : (
+                  <Text allowFontScaling={false} style={styles.errorText}>
+                    Không có dữ liệu chu kỳ.
+                  </Text>
+                )}
+              </View>
+
+              {/* Dropdown chọn ca làm việc */}
               <View>
                 <Text allowFontScaling={false} style={styles.text}>
                   Ca làm việc
                 </Text>
-                {ent_calv && ent_calv?.length > 0 ? (
+                {availableCalv.length > 0 ? (
                   <SelectDropdown
-                    ref={ref}
-                    data={ent_calv ? ent_calv : []}
+                    ref={calvRef}
+                    data={availableCalv}
                     buttonStyle={styles.select}
-                    dropdownStyle={{
-                      borderRadius: 8,
-                      maxHeight: 400,
-                    }}
-                    // rowStyle={{ height: 50, justifyContent: "center" }}
-                    defaultButtonText={"Ca làm việc"}
+                    dropdownStyle={{ borderRadius: 8, maxHeight: 400 }}
+                    defaultButtonText={"Chọn ca làm việc"}
                     buttonTextStyle={styles.customText}
-                    defaultValue={defaultCalv}
-                    onSelect={(selectedItem, index) => {
-                      handleChangeText("Calv", selectedItem);
+                    onSelect={(selectedItem) => {
+                      handleChangeText("Calv", {
+                        ID_Calv: selectedItem.ID_Calv,
+                        Tenca: selectedItem.Tenca
+                      });
                     }}
-                    renderDropdownIcon={(isOpened) => {
-                      return (
-                        <FontAwesome
-                          name={isOpened ? "chevron-up" : "chevron-down"}
-                          color={"#637381"}
-                          size={14}
-                          style={{ marginRight: 10 }}
-                        />
-                      );
-                    }}
+                    renderDropdownIcon={(isOpened) => (
+                      <FontAwesome
+                        name={isOpened ? "chevron-up" : "chevron-down"}
+                        color={"#637381"}
+                        size={14}
+                        style={{ marginRight: 10 }}
+                      />
+                    )}
                     dropdownIconPosition={"right"}
-                    buttonTextAfterSelection={(selectedItem, index) => {
-                      return (
-                        <View
-                          style={{
-                            justifyContent: "center",
-                            alignContent: "center",
-                            height: 50,
-                          }}
+                    buttonTextAfterSelection={(selectedItem) => (
+                      <View
+                        style={{
+                          justifyContent: "center",
+                          alignContent: "center",
+                          height: 50,
+                        }}
+                      >
+                        <Text
+                          allowFontScaling={false}
+                          style={styles.text}
+                          numberOfLines={1}
                         >
-                          <Text allowFontScaling={false} style={styles.text} numberOfLines={1}>
-                            {selectedItem?.Tenca} -{" "}
-                            {selectedItem?.ent_khoicv?.KhoiCV}
-                          </Text>
-                        </View>
-                      );
-                    }}
-                    renderCustomizedRowChild={(item, index) => {
-                      return (
-                        <VerticalSelect
-                          value={item.ID_Calv}
-                          label={`${item?.Tenca} - ${item?.ent_khoicv?.KhoiCV}`}
-                          key={index}
-                          selectedItem={dataInput?.Calv?.ID_Calv}
-                        />
-                      );
-                    }}
+                          {`${selectedItem?.Tenca}`}
+                        </Text>
+                      </View>
+                    )}
+                    renderCustomizedRowChild={(item) => (
+                      <VerticalSelect
+                        value={item.ID_Calv}
+                        label={`${item?.Tenca}`}
+                        selectedItem={dataInput?.Calv}
+                      />
+                    )}
                   />
                 ) : (
                   <Text allowFontScaling={false} style={styles.errorText}>
-                    Không có dữ liệu ca làm việc.
+                    Vui lòng chọn chu kỳ để chọn ca làm việc.
                   </Text>
                 )}
               </View>
             </View>
 
-            <View style={{
-              flexDirection: 'row',
-               justifyContent: "space-between",
-               width: "100%",
-            }}>
-              
-              <View style={{ marginTop: 20, width:'49%' }}>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                width: "100%",
+              }}
+            >
+              <View style={{ marginTop: 20, width: "49%" }}>
                 <ButtonSubmit
                   text={"Đóng"}
                   width={"100%"}
@@ -173,7 +268,7 @@ const ModalChecklistC = ({
                   onPress={handleClosePopUp}
                 />
               </View>
-              <View style={{ marginTop: 20, width:'49%' }}>
+              <View style={{ marginTop: 20, width: "49%" }}>
                 <ButtonSubmit
                   text={"Tạo ca làm việc"}
                   width={"auto"}
@@ -200,7 +295,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     paddingHorizontal: 8,
     paddingVertical: 8,
-    // paddingTop: 12,
   },
   textInput: {
     color: "#05375a",
@@ -211,33 +305,6 @@ const styles = StyleSheet.create({
     height: 50,
     paddingVertical: 4,
     backgroundColor: "white",
-  },
-  dropdown: {
-    height: 50,
-    paddingHorizontal: 10,
-    borderRadius: 8,
-    backgroundColor: "white",
-    shadowColor: "#000000",
-    shadowOffset: {
-      width: 0,
-      height: 9,
-    },
-    shadowOpacity: 0.22,
-    shadowRadius: 9.22,
-    elevation: 12,
-  },
-  head: {
-    backgroundColor: COLORS.bg_main,
-    // height: 30
-  },
-  headText: {
-    textAlign: "center",
-    color: COLORS.text_main,
-  },
-  row: { flexDirection: "row", backgroundColor: "#FFF1C1" },
-  selectedTextStyle: {
-    // color: COLORS.bg_button,
-    fontWeight: "600",
   },
   select: {
     width: "100%",
@@ -251,5 +318,11 @@ const styles = StyleSheet.create({
   customText: {
     fontWeight: "600",
     fontSize: 15,
+  },
+  errorText: {
+    fontSize: 14,
+    color: "red",
+    paddingHorizontal: 8,
+    paddingVertical: 8,
   },
 });

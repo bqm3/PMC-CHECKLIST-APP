@@ -61,6 +61,14 @@ export const entReducer = (state = initialState, action) => {
         isLoading: false,
         message: null,
       };
+    case type.SET_ENT_CALV_CHUKY_SUCCESS:
+      return {
+        ...state,
+        ent_calv_chuky: action.payload.ent_calv_chuky,
+        error: false,
+        isLoading: false,
+        message: null,
+      };
     case type.SET_ENT_CALV_FAIL:
       return {
         ...state,
@@ -135,13 +143,13 @@ export const entReducer = (state = initialState, action) => {
         message: null,
       };
     case type.SET_ENT_DUAN_SDT_SUCCESS:
-        return {
-          ...state,
-          sdt_khancap: action.payload.sdt_khancap,
-          error: false,
-          isLoading: false,
-          message: null,
-        };
+      return {
+        ...state,
+        sdt_khancap: action.payload.sdt_khancap,
+        error: false,
+        isLoading: false,
+        message: null,
+      };
     case type.SET_ENT_DUAN_FAIL:
       return {
         ...state,
@@ -271,30 +279,30 @@ export const entReducer = (state = initialState, action) => {
         message: null,
       };
 
-      case type.SET_ENT_CHECKLIST_DETAIL_RETURN_STATE:
-        return {
-          ...state,
-          ent_checklist_detail_return: action.payload.ent_checklist_detail_return,
-          error: false,
-          isLoadingDetail: action.payload.isLoading,
-          message: null,
-        };
-      case type.SET_ENT_CHECKLIST_DETAIL_RETURN_SUCCESS:
-        return {
-          ...state,
-          ent_checklist_detail_return: action.payload.ent_checklist_detail_return,
-          error: false,
-          isLoadingDetail: action.payload.isLoading,
-          message: null,
-        };
-      case type.SET_ENT_CHECKLIST_DETAIL_RETURN_FAIL:
-        return {
-          ...state,
-          ent_checklist_detail_return: action.payload.ent_checklist_detail_return,
-          error: false,
-          isLoadingDetail: action.payload.isLoading,
-          message: null,
-        };
+    case type.SET_ENT_CHECKLIST_DETAIL_RETURN_STATE:
+      return {
+        ...state,
+        ent_checklist_detail_return: action.payload.ent_checklist_detail_return,
+        error: false,
+        isLoadingDetail: action.payload.isLoading,
+        message: null,
+      };
+    case type.SET_ENT_CHECKLIST_DETAIL_RETURN_SUCCESS:
+      return {
+        ...state,
+        ent_checklist_detail_return: action.payload.ent_checklist_detail_return,
+        error: false,
+        isLoadingDetail: action.payload.isLoading,
+        message: null,
+      };
+    case type.SET_ENT_CHECKLIST_DETAIL_RETURN_FAIL:
+      return {
+        ...state,
+        ent_checklist_detail_return: action.payload.ent_checklist_detail_return,
+        error: false,
+        isLoadingDetail: action.payload.isLoading,
+        message: null,
+      };
     case type.SET_ENT_HANGMUC_STATE:
       return {
         ...state,
