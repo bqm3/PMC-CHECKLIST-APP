@@ -694,7 +694,7 @@ const ThucHienChecklist = ({ navigation }) => {
                   <View
                     style={[
                       styles.modalView,
-                      { width: "80%", height: "auto", minHeight: 380 },
+                      { width: "80%", height: "auto", minHeight: adjust(420) },
                     ]}
                   >
                     <View style={styles.contentContainer}>

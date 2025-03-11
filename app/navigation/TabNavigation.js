@@ -66,28 +66,31 @@ const LoadingOverlay = ({ visible, colorLoading }) => {
   if (!visible) return null;
 
   return (
-    <Modal transparent visible={visible} animationType="fade">
+    <View
+      style={{
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: "rgba(0, 0, 0, 0.5)",
+        justifyContent: "center",
+        alignItems: "center",
+        zIndex: 9999,
+      }}
+    >
       <View
         style={{
-          flex: 1,
-          justifyContent: "center",
+          backgroundColor: "transparent",
+          padding: adjust(20),
+          borderRadius: adjust(10),
           alignItems: "center",
-          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          justifyContent: "center",
         }}
       >
-        <View
-          style={{
-            backgroundColor: "transform",
-            padding: adjust(20),
-            borderRadius: adjust(10),
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <ActivityIndicator size="large" color={colorLoading} />
-        </View>
+        <ActivityIndicator size="large" color={colorLoading} />
       </View>
-    </Modal>
+    </View>
   );
 };
 
@@ -151,7 +154,6 @@ const HomeStack = ({ navigation }) => {
   gsetColorLoading = setColorLoading;
   return (
     <>
-      <LoadingOverlay visible={isLoading} colorLoading={colorLoading} />
       <Stack.Navigator
         initialRouteName="Trang chính"
         screenOptions={{
@@ -1132,6 +1134,7 @@ const HomeStack = ({ navigation }) => {
         <Stack.Screen
           name="Báo cáo S0"
           component={DanhMucBaoCaoP0}
+          initialParams={{ setIsLoading: setIsLoading, setColorLoading: setColorLoading }}
           lazy={false}
           options={({ route, navigation }) => ({
             headerShown: true,
@@ -1159,6 +1162,7 @@ const HomeStack = ({ navigation }) => {
         <Stack.Screen
           name="Tạo báo cáo S0"
           component={TaoBaoCaoP0}
+          initialParams={{ setIsLoading: setIsLoading, setColorLoading: setColorLoading }}
           lazy={false}
           options={({ route, navigation }) => ({
             headerShown: true,
@@ -1200,6 +1204,7 @@ const HomeStack = ({ navigation }) => {
         <Stack.Screen
           name="Chi tiết dữ liệu S0"
           component={DetailP0}
+          initialParams={{ setIsLoading: setIsLoading, setColorLoading: setColorLoading }}
           lazy={false}
           options={({ route, navigation }) => ({
             headerShown: true,
@@ -1224,6 +1229,7 @@ const HomeStack = ({ navigation }) => {
           })}
         />
       </Stack.Navigator>
+      <LoadingOverlay visible={isLoading} colorLoading={colorLoading} />
     </>
   );
 };
