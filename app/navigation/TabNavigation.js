@@ -928,6 +928,7 @@ const HomeStack = ({ navigation }) => {
         <Stack.Screen
           name="Tra cứu"
           component={DanhmucTracuuVsThongke}
+          initialParams={{ setIsLoading: setIsLoading, setColorLoading: setColorLoading }}
           lazy={false}
           options={({ navigation, route }) => ({
             headerShown: true,

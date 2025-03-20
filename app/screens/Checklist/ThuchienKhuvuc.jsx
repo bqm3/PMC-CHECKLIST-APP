@@ -161,7 +161,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
         // Retrieve the item from AsyncStorage
         const network = await AsyncStorage.getItem("checkNetwork");
         const savedData = await AsyncStorage.getItem(`dataChecklistStorage_${ID_ChecklistC}`);
-        if ((network === "close" && isConnect) || (savedData !== null && savedData !== undefined && savedData !== "")) {
+        if ((network === "close" && isConnect) || (savedData !== null && savedData !== undefined && savedData !== "" && savedData?.length > 0)) {
           setSubmit(true);
         }
 

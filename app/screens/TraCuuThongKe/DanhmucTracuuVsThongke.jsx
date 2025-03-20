@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -47,8 +47,15 @@ const TabButtons = ({
 };
 
 const DanhmucTracuuVsThongke = ({ route, navigation }) => {
+  const setIsLoading = route.params.setIsLoading;
+  const setColorLoading = route.params.setColorLoading;
   const [selectedTab, setSelectedTab] = useState("Tra cứu");
   const [opacity, setOpacity] = useState(1);
+
+  useEffect(() => {
+    setColorLoading("white")
+  },[])
+
 
   const TabButtonType = [
     { title: "Tra cứu" },
@@ -74,6 +81,8 @@ const DanhmucTracuuVsThongke = ({ route, navigation }) => {
             opacity={opacity}
             setOpacity={setOpacity}
             navigation={navigation}
+            setIsLoading={setIsLoading}
+            setColorLoading={setColorLoading}
           />
         );
       default:

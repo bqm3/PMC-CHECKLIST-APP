@@ -142,7 +142,7 @@ const ThucHienChecklist = ({ navigation }) => {
           style={{
             flexDirection: "column",
             gap: 4,
-            width: "80%",
+            width: "100%",
           }}
         >
           <Text
@@ -155,6 +155,17 @@ const ThucHienChecklist = ({ navigation }) => {
             numberOfLines={5}
           >
             Ngày: {item?.Ngay}
+          </Text>
+          <Text
+            allowFontScaling={false}
+            style={{
+              fontSize: adjust(16),
+              color: newActionCheckList[0] === item ? "white" : "black",
+              fontWeight: "600",
+            }}
+            numberOfLines={5}
+          >
+            Chu kỳ: {item?.ent_thietlapca?.ent_duan_khoicv?.Tenchuky}
           </Text>
           <Text
             allowFontScaling={false}

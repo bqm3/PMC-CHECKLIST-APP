@@ -119,6 +119,25 @@ export default function ItemCaChecklist({
           : {item?.TongC}/{item?.Tong}
         </Text>
       </View>
+      <View style={styles.row}>
+        <View style={{ width: 110 }}>
+          <Text
+            allowFontScaling={false}
+            style={[styles.title, { color: isExistIndex ? "black" : "white" }]}
+          >
+            Chu kỳ
+          </Text>
+        </View>
+        <Text
+          allowFontScaling={false}
+          style={[
+            styles.title,
+            { fontWeight: "500", color: isExistIndex ? "black" : "white" },
+          ]}
+        >
+          : {item?.ent_thietlapca?.ent_duan_khoicv?.Tenchuky}
+        </Text>
+      </View>
     </TouchableOpacity>
   );
 }

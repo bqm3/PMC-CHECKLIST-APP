@@ -38,7 +38,7 @@ const ModalTracuu = ({
   handleKhoiSelection,
   filteredCalv,
   setOpacity,
-  setVisibleBottom,
+  // setVisibleBottom,
 }) => {
   const ref = useRef(null);
   const defaultKhoi = ent_khoicv?.find(
@@ -372,9 +372,9 @@ const ModalTracuu = ({
               backgroundColor={COLORS.bg_button}
               color={"white"}
               onPress={() => {
-                fetchData(filters, true, true);
+                fetchData(filters);
                 handlePresentModalClose();
-                setVisibleBottom(false);
+                // setVisibleBottom(false);
               }}
             />
             <View style={{ height: 10 }} />
@@ -385,7 +385,7 @@ const ModalTracuu = ({
               color={COLORS.color_bg}
               onPress={() => {
                 handlePresentModalClose();
-                setVisibleBottom(false);
+                // setVisibleBottom(false);
               }}
             />
           </View>

@@ -613,7 +613,6 @@ const DetailChecklist = ({ route, navigation }) => {
             }
             return item; // If no match in data2Map, keep the original item
           });
-
           // Lưu lại kết quả cập nhật
           setDataChecklistFilterContext(updatedData1);
           // Dùng trong trường hợp checklist bị văng rá
@@ -625,6 +624,36 @@ const DetailChecklist = ({ route, navigation }) => {
       setLoadingSubmit(false);
     }
   };
+  // xóa item trước đó đã check offline nhưng k ấn hoàn thành => ấn lại hoàn thành ở detail
+  const handleRemove = async () => {
+    const combinedData = [...defaultActionDataChecklist, ...dataChecklistFaild];
+    
+    // Update location for each item in combinedData
+    const updateLocation = combinedData.map((item) => {
+      return {
+        ...item,
+        Vido: location?.coords?.latitude || "",
+        Kinhdo: location?.coords?.longitude || "",
+        Docao: location?.coords?.altitude || "",
+        isScan: isScan,
+      };
+    });
+    
+    // Create a Map from updateLocation with ID_Checklist as the key
+    const data2Map = new Map(updateLocation.map((item) => [item.ID_Checklist, item]));
+    
+    // Filter out items that exist in data2Map
+    const filteredData = dataChecklistFilterContext.filter(
+      (item) => !data2Map.has(item.ID_Checklist)
+    );
+    
+    // Update AsyncStorage with the filtered data
+    setDataChecklistFilterContext(filteredData);
+    
+    // Update AsyncStorage in case of checklist issue
+    await AsyncStorage.setItem(`dataChecklistStorage_${ID_ChecklistC}`, JSON.stringify(filteredData));
+  };
+
   // api tb_checklistchitiet
   const handleDataChecklistFaild = async (arrData) => {
     try {
@@ -672,8 +701,6 @@ const DetailChecklist = ({ route, navigation }) => {
           }
         }
       }
-
-      console.log("Bắt đầu gửi API lúc:", startTime.toISOString());
       // Gửi toàn bộ formData lên server
       const res = await axios.post(BASE_URL + `/tb_checklistchitiet/create`, formData, {
         headers: {
@@ -682,14 +709,9 @@ const DetailChecklist = ({ route, navigation }) => {
         },
       });
 
-      endTime = new Date(); // Thêm thời gian kết thúc
-      const processingTime = (endTime - startTime) / 1000; // Tính thời gian xử lý (giây)
-      
-      console.log("Kết thúc API lúc:", endTime.toISOString());
-      console.log("Tổng thời gian xử lý API:", processingTime, "giây");
-
       postHandleSubmit();
       setLoadingSubmit(false);
+      handleRemove()
 
       Alert.alert("PMC Thông báo", "Checklist thành công", [
         {
@@ -773,6 +795,7 @@ const DetailChecklist = ({ route, navigation }) => {
       await Promise.all(requestDone);
       postHandleSubmit();
       setLoadingSubmit(false);
+      handleRemove()
       // Hiển thị cảnh báo sau khi tất cả các yêu cầu hoàn thành
       Alert.alert("PMC Thông báo", "Checklist thành công", [
         {
@@ -893,6 +916,7 @@ const DetailChecklist = ({ route, navigation }) => {
             axios.spread((faildResponse, doneResponse) => {
               postHandleSubmit();
               setLoadingSubmit(false);
+              handleRemove()
 
               // Hiển thị thông báo thành công
               Alert.alert("PMC Thông báo", "Checklist thành công", [

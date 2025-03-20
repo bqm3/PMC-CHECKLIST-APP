@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
+import { View, Text, TouchableOpacity, StyleSheet, Image, Animated } from "react-native";
 import React from "react";
 import { Feather, AntDesign } from "@expo/vector-icons";
 import adjust from "../../adjust";
@@ -7,19 +7,15 @@ import { COLORS, SIZES } from "../../constants/theme";
 
 export default function ItemTracuuCa({
   item,
-  index,
   toggleTodo,
-  newActionCheckList,
 }) {
-  const isExistIndex = newActionCheckList.findIndex(
-    (existingItem) => existingItem.ID_ChecklistC === item.ID_ChecklistC
-  );
+
   return (
     <TouchableOpacity
       style={[
         styles.container,
         {
-          backgroundColor: isExistIndex ? "white" : COLORS.bg_button,
+          backgroundColor: "white",
         },
       ]}
       onPress={() => toggleTodo(item)}
@@ -28,7 +24,7 @@ export default function ItemTracuuCa({
         <View style={{ width: SIZES.width * 0.3 }}>
           <Text
             allowFontScaling={false}
-            style={[styles.title, { color: isExistIndex ? "black" : "white" }]}
+            style={[styles.title, { color: "black" }]}
           >
             Ngày checklist
           </Text>
@@ -37,7 +33,7 @@ export default function ItemTracuuCa({
           allowFontScaling={false}
           style={[
             styles.title,
-            { fontWeight: "500", color: isExistIndex ? "black" : "white" },
+            { fontWeight: "500", color: "black" },
           ]}
         >
           : {item?.Ngay}
@@ -60,7 +56,7 @@ export default function ItemTracuuCa({
         <View style={{ width: SIZES.width * 0.3 }}>
           <Text
             allowFontScaling={false}
-            style={[styles.title, { color: isExistIndex ? "black" : "white" }]}
+            style={[styles.title, { color: "black" }]}
           >
             Ca làm việc
           </Text>
@@ -69,7 +65,7 @@ export default function ItemTracuuCa({
           allowFontScaling={false}
           style={[
             styles.title,
-            { fontWeight: "500", color: isExistIndex ? "black" : "white" },
+            { fontWeight: "500", color: "black" },
           ]}
         >
           : {item?.Ca}
@@ -79,7 +75,7 @@ export default function ItemTracuuCa({
         <View style={{ width: SIZES.width * 0.3 }}>
           <Text
             allowFontScaling={false}
-            style={[styles.title, { color: isExistIndex ? "black" : "white" }]}
+            style={[styles.title, { color: "black" }]}
           >
             Khối công việc
           </Text>
@@ -88,7 +84,7 @@ export default function ItemTracuuCa({
           allowFontScaling={false}
           style={[
             styles.title,
-            { fontWeight: "500", color: isExistIndex ? "black" : "white" },
+            { fontWeight: "500", color: "black" },
           ]}
         >
           : {item?.KhoiCV}
@@ -98,7 +94,7 @@ export default function ItemTracuuCa({
         <View style={{ width: SIZES.width * 0.3 }}>
           <Text
             allowFontScaling={false}
-            style={[styles.title, { color: isExistIndex ? "black" : "white" }]}
+            style={[styles.title, { color: "black" }]}
           >
             Số lượng
           </Text>
@@ -107,10 +103,31 @@ export default function ItemTracuuCa({
           allowFontScaling={false}
           style={[
             styles.title,
-            { fontWeight: "500", color: isExistIndex ? "black" : "white" },
+            { fontWeight: "500", color: "black" },
           ]}
         >
           : {item?.TongC}/{item?.Tong}
+        </Text>
+      </View>
+      <View style={styles.row}>
+        <View style={{ width: SIZES.width * 0.3 }}>
+          <Text
+            allowFontScaling={false}
+            style={[styles.title, { color: "black" }]}
+          >
+            Chu kỳ
+          </Text>
+        </View>
+        <Text
+          allowFontScaling={false}
+          style={[
+            styles.title,
+            { fontWeight: "500", color: "black", flexShrink: 1 },
+          ]}
+          numberOfLines={1}
+          ellipsizeMode="tail"
+        >
+          : {item?.Chuky}
         </Text>
       </View>
     </TouchableOpacity>
@@ -137,7 +154,6 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     width: "95%",
     flexDirection: "row",
-    flexWrap: "wrap",
     alignItems: "center",
   },
 });
