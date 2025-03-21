@@ -12,7 +12,7 @@ import {
   Alert,
   Image,
   Modal,
-  Linking
+  Linking,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -42,6 +42,7 @@ const XulySuco = ({ navigation }) => {
   const [userPhone, setUserPhone] = useState([]);
 
   const [isModalcall, setIsModalcall] = useState(false);
+  const [isNghiemTrong, setIsNghiemTrong] = useState(false);
 
   const init_sucongoai = async () => {
     dispath(tb_sucongoai_get());
@@ -78,6 +79,15 @@ const XulySuco = ({ navigation }) => {
       item,
     });
   };
+
+  const handleSCNghiemtrong = () => {
+    setIsNghiemTrong(!isNghiemTrong);
+    setDataSuCoNgoai(
+      !isNghiemTrong 
+        ? tb_sucongoai.filter((item) => item?.Mucdo === 1)
+        : tb_sucongoai
+    );
+  }
 
   useEffect(() => {
     const fetchData = async () => {
@@ -150,9 +160,9 @@ const XulySuco = ({ navigation }) => {
       Alert.alert("PMC Thông báo", "Không có số điện thoại khẩn cấp!", [{ text: "Xác nhận" }]);
       return;
     }
-    
+
     const phoneUrl = `tel:${sdt_khancap}`;
-    Linking.openURL(phoneUrl).catch(error => {
+    Linking.openURL(phoneUrl).catch((error) => {
       Alert.alert("PMC Thông báo", "Không thể thực hiện cuộc gọi!");
     });
   };
@@ -165,10 +175,13 @@ const XulySuco = ({ navigation }) => {
             <ImageBackground source={require("../../../assets/bg_new.png")} resizeMode="stretch" style={{ flex: 1, width: "100%" }}>
               <View style={[styles.container, { opacity: opacity }]}>
                 <View style={styles.header}>
-                  <View style={styles.warningSection}>
+                  <TouchableOpacity
+                    style={styles.warningSection}
+                    onPress={handleSCNghiemtrong}
+                  >
                     <Image source={require("../../../assets/icons/ic_warning_triangle.png")} style={styles.warningIcon} />
                     <Text style={{ fontSize: adjust(16), color: "white", fontWeight: "600" }}>Nghiêm trọng</Text>
-                  </View>
+                  </TouchableOpacity>
                   <TouchableOpacity
                     style={[styles.action]}
                     onPress={() =>
@@ -177,7 +190,7 @@ const XulySuco = ({ navigation }) => {
                       })
                     }
                   >
-                    <Image source={require("../../../assets/icons/ic_plus.png")} style={{tintColor: "white",}} />
+                    <Image source={require("../../../assets/icons/ic_plus.png")} style={{ tintColor: "white" }} />
                     <Text
                       style={{
                         fontSize: adjust(16),
@@ -211,7 +224,7 @@ const XulySuco = ({ navigation }) => {
                 </View>
               </View>
 
-              {/* <TouchableOpacity
+              <TouchableOpacity
                 onPress={() => handleEmergencyCall()}
                 // onPress={() => setIsModalcall(true)}
                 style={{
@@ -232,7 +245,7 @@ const XulySuco = ({ navigation }) => {
                     }}
                   />
                 </View>
-              </TouchableOpacity> */}
+              </TouchableOpacity>
 
               <Modal
                 animationType="slide"
