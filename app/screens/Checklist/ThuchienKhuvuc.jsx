@@ -863,7 +863,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
                           </Text>
                         )}
                       </View>
-                      {submit === true && (
+                      {submit === true && (defaultActionDataChecklist?.length > 0 || dataChecklistFaild?.length > 0) && (
                         <Button
                           text={"Hoàn thành"}
                           isLoading={loadingSubmit}
