@@ -2,8 +2,10 @@
   "expo": {
     "name": "PMC Checklist",
     "slug": "PMC-CHECKLIST-APP",
-    "version": "2.0.10",
+    // "newArchEnabled": true,
+    "version": "2.1.7", // v2.2.0
     "orientation": "portrait",
+
     "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/bg.png",
@@ -36,8 +38,6 @@
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE"
       ],
-      "hardwareAccelerated": true,
-      "largeHeap": true,
       "runtimeVersion": {
         "policy": "appVersion"
       },
@@ -80,12 +80,7 @@
           "photosPermission": "The app accesses your photos to let you share them with your friends."
         }
       ],
-      [
-        "expo-barcode-scanner",
-        {
-          "cameraPermission": "The app needs access to your camera to scan QR codes and barcodes."
-        }
-      ],
+     
       [
         "expo-location",
         {
@@ -115,6 +110,7 @@
     },
     "updates": {
       "url": "https://u.expo.dev/88067883-8168-4e0c-8f05-124ae86a6067"
-    }
+    },
+    "owner": "buiminh30"
   }
 }

@@ -754,6 +754,7 @@ const DetailChecklistLai = ({ route, navigation }) => {
           formData.append("Key_Image", 1);
           formData.append("ID_ChecklistC", ID_ChecklistC);
           formData.append("ID_Checklist", item.ID_Checklist);
+          formData.append("ID_Phanhe", item.ID_Phanhe);
           formData.append("Ketqua", item.valueCheck || "");
           formData.append("Gioht", item.Gioht);
           formData.append("Ghichu", item.GhichuChitiet || "");
@@ -925,6 +926,7 @@ const DetailChecklistLai = ({ route, navigation }) => {
           formData.append("Key_Image", 1);
           formData.append("ID_ChecklistC", ID_ChecklistC);
           formData.append("ID_Checklist", item.ID_Checklist);
+          formData.append("ID_Phanhe", item.ID_Phanhe);
           formData.append("Ketqua", item.valueCheck || "");
           formData.append("Gioht", item.Gioht);
           formData.append("Ghichu", item.GhichuChitiet || "");
@@ -1168,8 +1170,8 @@ const DetailChecklistLai = ({ route, navigation }) => {
     setDataItem(null);
     setIndex(null);
     setIsBottomSheetOpen(false);
-    setWidthModal("90%")
-    setHeightModal("auto")
+    setWidthModal("90%");
+    setHeightModal("auto");
   }, []);
 
   // view item flatlist

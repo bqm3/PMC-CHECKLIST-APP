@@ -3,7 +3,7 @@ import { StatusBar, View, Text } from "react-native";
 import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import { store } from "./app/redux/store";
-import { ReloadProvider } from './app/context/ReloadContext';
+import { ReloadProvider } from "./app/context/ReloadContext";
 import { ThemeProvider } from "./app/context/ThemeContext";
 import { LoginProvider } from "./app/context/LoginContext";
 import { LocationProvider } from "./app/context/LocationContext";
@@ -16,6 +16,7 @@ import { ChecklistProvider } from "./app/context/ChecklistContext";
 import { ChecklistLaiProvider } from "./app/context/ChecklistLaiContext";
 import CheckNavigation from "./app/navigation/CheckNavigation";
 import { DataTable, DefaultTheme, PaperProvider } from "react-native-paper";
+import { LogBox } from "react-native";
 require("moment/locale/vi");
 
 const customTheme = {
@@ -25,7 +26,7 @@ const customTheme = {
     text: "black", // Change this to your desired text color
   },
 };
-
+LogBox.ignoreLogs(["TNodeChildrenRenderer: Support for defaultProps"]);
 export default function App() {
   return (
     <Provider store={store}>

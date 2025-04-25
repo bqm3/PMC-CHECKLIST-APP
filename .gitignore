@@ -74,7 +74,8 @@ yarn-error.*
 *.tsbuildinfo
 
 # @end expo-cli/ios
-/android
+# /android
+# /ios
 
 # credentials.json
 # yarn.lock

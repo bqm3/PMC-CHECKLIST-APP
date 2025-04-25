@@ -38,7 +38,8 @@ import * as FileSystem from "expo-file-system";
 import ButtonChecklist from "../../components/Button/ButtonCheckList";
 import { COLORS, SIZES } from "../../constants/theme";
 import {
-  ent_calv_get, ent_calv_get_chuky
+  ent_calv_get,
+  ent_calv_get_chuky,
 } from "../../redux/actions/entActions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { tb_checklistc_get } from "../../redux/actions/tbActions";
@@ -53,24 +54,24 @@ import adjust from "../../adjust";
 import { useFocusEffect } from "@react-navigation/native";
 import NetInfo from "@react-native-community/netinfo";
 import CustomAlertModal from "../../components/CustomAlertModal";
-import RenderHTML from 'react-native-render-html';
+import RenderHTML from "react-native-render-html";
 import ChecklistContext from "../../context/ChecklistContext";
 
 const ThucHienChecklist = ({ navigation }) => {
   const ref = useRef(null);
   const dispath = useDispatch();
-  const { ent_calv, ent_hangmuc, ent_calv_chuky } = useSelector((state) => state.entReducer);
+  const { ent_calv, ent_hangmuc, ent_calv_chuky } = useSelector(
+    (state) => state.entReducer
+  );
   const { tb_checklistc } = useSelector((state) => state.tbReducer);
   const { user, authToken } = useSelector((state) => state.authReducer);
   const {
     setDataChecklists,
     setKhuVucFilterByIDChecklistC,
-    setHangMucFilterByIDChecklistC
+    setHangMucFilterByIDChecklistC,
   } = useContext(DataContext);
 
-  const {
-    setDataChecklistFilterContext
-  } = useContext(ChecklistContext)
+  const { setDataChecklistFilterContext } = useContext(ChecklistContext);
 
   const date = new Date();
   const dateDay = moment(date).format("YYYY-MM-DD");
@@ -109,10 +110,10 @@ const ThucHienChecklist = ({ navigation }) => {
 
   const [isConnected, setConnected] = useState(true);
   useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener(state => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
       setConnected(state.isConnected);
     });
-  
+
     return () => unsubscribe();
   }, []);
 
@@ -132,11 +133,11 @@ const ThucHienChecklist = ({ navigation }) => {
 
   useEffect(() => {
     setDataCalv(tb_checklistc?.data);
-    if(tb_checklistc?.data && tb_checklistc?.data.length > 0){
-      const isCheck = tb_checklistc.data.some(check => check.Tinhtrang == 0)
-      const data = tb_checklistc.data.filter(check => check.Tinhtrang == 0)
-      if(!isCheck){
-        clearCacheDirectory(data)
+    if (tb_checklistc?.data && tb_checklistc?.data.length > 0) {
+      const isCheck = tb_checklistc.data.some((check) => check.Tinhtrang == 0);
+      const data = tb_checklistc.data.filter((check) => check.Tinhtrang == 0);
+      if (!isCheck) {
+        clearCacheDirectory(data);
       }
     }
   }, [tb_checklistc]);
@@ -151,21 +152,14 @@ const ThucHienChecklist = ({ navigation }) => {
   };
 
   const loadData = async () => {
-    
     await AsyncStorage.removeItem("checkNetwork");
   };
 
-  useEffect(() => {
-    init_ca();
-    int_checklistc();
-  }, []);
-
   useFocusEffect(
     useCallback(() => {
-      // init_ca();
       loadData();
+      init_ca();
       int_checklistc();
-
       return () => {};
     }, [dispath])
   );
@@ -180,7 +174,7 @@ const ThucHienChecklist = ({ navigation }) => {
           idempotent: true,
         });
       }
-      
+
       console.log("Đã xóa cache khi ứng dụng đóng.");
     } catch (error) {
       console.error("Lỗi khi xóa cache:", error);
@@ -306,7 +300,6 @@ const ThucHienChecklist = ({ navigation }) => {
           ]);
         })
         .catch((error) => {
-          console.log("error", error.response);
           setLoadingSubmit(false);
           // Handle the error appropriately, e.g., displaying an error message
           if (error.response) {
@@ -364,7 +357,7 @@ const ThucHienChecklist = ({ navigation }) => {
       let data = {
         Tenca: dataInput.Calv.Tenca,
         ID_Calv: dataInput.Calv.ID_Calv,
-        ID_Duan_KhoiCV: dataInput.ID_Duan_KhoiCV,  //(ID_Chuky)
+        ID_Duan_KhoiCV: dataInput.ID_Duan_KhoiCV, //(ID_Chuky)
         ID_User: user.ID_User,
         ID_Duan: user.ID_Duan,
         ID_KhoiCV: user.ID_KhoiCV,
@@ -400,7 +393,7 @@ const ThucHienChecklist = ({ navigation }) => {
         setLoadingSubmit(false);
         if (error.response) {
           setIsModalVisible(true);
-          setMessage(error.response.data.message)
+          setMessage(error.response.data.message);
         } else if (error.request) {
           // Lỗi không nhận được phản hồi từ server
           console.log(error.request);
@@ -430,7 +423,6 @@ const ThucHienChecklist = ({ navigation }) => {
 
   const clearAsyncStorage = async () => {
     try {
-      
       await AsyncStorage.removeItem("checkNetwork");
     } catch (error) {
       console.error("Error clearing AsyncStorage:", error);
@@ -461,7 +453,6 @@ const ThucHienChecklist = ({ navigation }) => {
     setOpacity(1);
   }, []);
 
-
   const handleAdd = () => {
     setDataInput({
       dateDay: dateDay,
@@ -482,10 +473,10 @@ const ThucHienChecklist = ({ navigation }) => {
   };
 
   const handleChecklistDetail = async (id1, id2, id3, id4) => {
-    setDataChecklists([])
-    setKhuVucFilterByIDChecklistC([])
-    setHangMucFilterByIDChecklistC([])
-    setDataChecklistFilterContext([])
+    setDataChecklists([]);
+    setKhuVucFilterByIDChecklistC([]);
+    setHangMucFilterByIDChecklistC([]);
+    setDataChecklistFilterContext([]);
     if (isConnected) {
       navigation.navigate("Thực hiện khu vực", {
         ID_ChecklistC: id1,
@@ -687,7 +678,9 @@ const ThucHienChecklist = ({ navigation }) => {
                 <CustomAlertModal
                   isVisible={isModalVisible}
                   title="PMC Thông báo"
-                  message={<RenderHTML contentWidth={300} source={{ html: message }} />} // Sử dụng RenderHTML
+                  message={
+                    <RenderHTML contentWidth={300} source={{ html: message }} />
+                  } // Sử dụng RenderHTML
                   onConfirm={() => setIsModalVisible(false)}
                 />
                 <View style={styles.centeredView}>
@@ -711,7 +704,7 @@ const ThucHienChecklist = ({ navigation }) => {
                         {user?.ent_khoicv?.KhoiCV}
                       </Text>
                       <ModalChecklistC
-                        ent_calv_chuky= {ent_calv_chuky}
+                        ent_calv_chuky={ent_calv_chuky}
                         ent_calv={ent_calv}
                         dataInput={dataInput}
                         handleChangeText={handleChangeText}
@@ -800,9 +793,7 @@ const ThucHienChecklist = ({ navigation }) => {
                       </TouchableOpacity>
 
                       {/* chưa dùng */}
-                      <View style={{height: 50, width: 50}}>
-
-                      </View>
+                      <View style={{ height: 50, width: 50 }}></View>
                       {/* <TouchableOpacity
                         style={styles.button}
                         onPress={() => handleToggleModal()}

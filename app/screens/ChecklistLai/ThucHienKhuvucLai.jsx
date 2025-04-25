@@ -119,11 +119,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
   // Call API Checklist còn theo ID_ChecklistC
   const init_checklist = async () => {
     await dispath(
-      ent_checklist_mul_hm_return(
-        ID_Hangmucs,
-        ID_Calv,
-        ID_ChecklistC
-      )
+      ent_checklist_mul_hm_return(ID_Hangmucs, ID_Calv, ID_ChecklistC)
     );
   };
 
@@ -305,7 +301,6 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
           dataChecklistFaild.length === 0
         ) {
           await AsyncStorage.removeItem("checkNetwork");
-         
 
           // Hiển thị thông báo cho người dùng
           Alert.alert("PMC Thông báo", "Không có checklist để kiểm tra!", [
@@ -334,7 +329,10 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
           defaultActionDataChecklist.length > 0 &&
           dataChecklistFaild.length > 0
         ) {
-          await hadlChecklistAll(defaultActionDataChecklist, dataChecklistFaild);
+          await hadlChecklistAll(
+            defaultActionDataChecklist,
+            dataChecklistFaild
+          );
         }
       } else {
         Alert.alert(
@@ -372,6 +370,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
         //   formData.append("Key_Image", 1);
         //   formData.append("ID_ChecklistC", ID_ChecklistC);
         //   formData.append("ID_Checklist", item.ID_Checklist);
+        formData.append("ID_Phanhe", item.ID_Phanhe);
         //   formData.append("Ketqua", item.valueCheck || "");
         //   formData.append("Gioht", item.Gioht);
         //   formData.append("Ghichu", item.GhichuChitiet || "");
@@ -394,7 +393,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
         //                    [{ resize: { width: image.width * 0.6 } }], // Resize nhỏ hơn 50%
         //                    { compress: 1, format: ImageManipulator.SaveFormat.PNG } // Nén ảnh
         //                  );
-         
+
         //                  const file = {
         //                    uri: resizedImage.uri,
         //                    name:
@@ -404,7 +403,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
         //                      }_${imgIndex}.png`,
         //                    type: "image/png",
         //                  };
-         
+
         //                  formData.append(
         //                    `Images_${index}_${item.ID_Checklist}_${imgIndex}`,
         //                    file
@@ -417,50 +416,51 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
         // });
 
         for (const [index, item] of dataChecklistFaild.entries()) {
-                  formData.append("Key_Image", 1);
-                  formData.append("ID_ChecklistC", ID_ChecklistC);
-                  formData.append("ID_Checklist", item.ID_Checklist);
-                  formData.append("Ketqua", item.valueCheck || "");
-                  formData.append("Gioht", item.Gioht);
-                  formData.append("Ghichu", item.GhichuChitiet || "");
-                  formData.append("Vido", item.Vido || "");
-                  formData.append("Kinhdo", item.Kinhdo || "");
-                  formData.append("Docao", item.Docao || "");
-                  formData.append("isScan", isScan || null);
-                  
-                  if (item.Anh && Array.isArray(item.Anh)) {
-                    // Use a for...of loop to wait for asynchronous tasks
-                    for (const [imgIndex, image] of item.Anh.entries()) {
-                      try {
-                        // Resize và nén ảnh trước khi append vào formData
-                        const resizedImage = await ImageManipulator.manipulateAsync(
-                          Platform.OS === "android"
-                            ? image.uri
-                            : image.uri.replace("file://", ""),
-                          [{ resize: { width: image.width * 0.6 } }], // Resize nhỏ hơn 50%
-                          { compress: 1, format: ImageManipulator.SaveFormat.PNG } // Nén ảnh
-                        );
-          
-                        const file = {
-                          uri: resizedImage.uri,
-                          name:
-                            image.fileName ||
-                            `${Math.floor(Math.random() * 9999999)}_${
-                              item.ID_Checklist
-                            }_${imgIndex}.png`,
-                          type: "image/png",
-                        };
-          
-                        formData.append(
-                          `Images_${index}_${item.ID_Checklist}_${imgIndex}`,
-                          file
-                        );
-                      } catch (error) {
-                        console.error("Error resizing image: ", error);
-                      }
-                    }
-                  }
-                }
+          formData.append("Key_Image", 1);
+          formData.append("ID_ChecklistC", ID_ChecklistC);
+          formData.append("ID_Checklist", item.ID_Checklist);
+          formData.append("ID_Phanhe", item.ID_Phanhe);
+          formData.append("Ketqua", item.valueCheck || "");
+          formData.append("Gioht", item.Gioht);
+          formData.append("Ghichu", item.GhichuChitiet || "");
+          formData.append("Vido", item.Vido || "");
+          formData.append("Kinhdo", item.Kinhdo || "");
+          formData.append("Docao", item.Docao || "");
+          formData.append("isScan", isScan || null);
+
+          if (item.Anh && Array.isArray(item.Anh)) {
+            // Use a for...of loop to wait for asynchronous tasks
+            for (const [imgIndex, image] of item.Anh.entries()) {
+              try {
+                // Resize và nén ảnh trước khi append vào formData
+                const resizedImage = await ImageManipulator.manipulateAsync(
+                  Platform.OS === "android"
+                    ? image.uri
+                    : image.uri.replace("file://", ""),
+                  [{ resize: { width: image.width * 0.6 } }], // Resize nhỏ hơn 50%
+                  { compress: 1, format: ImageManipulator.SaveFormat.PNG } // Nén ảnh
+                );
+
+                const file = {
+                  uri: resizedImage.uri,
+                  name:
+                    image.fileName ||
+                    `${Math.floor(Math.random() * 9999999)}_${
+                      item.ID_Checklist
+                    }_${imgIndex}.png`,
+                  type: "image/png",
+                };
+
+                formData.append(
+                  `Images_${index}_${item.ID_Checklist}_${imgIndex}`,
+                  file
+                );
+              } catch (error) {
+                console.error("Error resizing image: ", error);
+              }
+            }
+          }
+        }
 
         // Send the entire FormData in a single request
         await axios
@@ -606,6 +606,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
           formData.append("Key_Image", 1);
           formData.append("ID_ChecklistC", ID_ChecklistC);
           formData.append("ID_Checklist", item.ID_Checklist);
+          formData.append("ID_Phanhe", item.ID_Phanhe);
           formData.append("Ketqua", item.valueCheck || "");
           formData.append("Gioht", item.Gioht);
           formData.append("Ghichu", item.GhichuChitiet || "");
@@ -613,7 +614,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
           formData.append("Kinhdo", item.Kinhdo || "");
           formData.append("Docao", item.Docao || "");
           formData.append("isScan", isScan || null);
-          
+
           if (item.Anh && Array.isArray(item.Anh)) {
             // Use a for...of loop to wait for asynchronous tasks
             for (const [imgIndex, image] of item.Anh.entries()) {
@@ -626,7 +627,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
                   [{ resize: { width: image.width * 0.6 } }], // Resize nhỏ hơn 50%
                   { compress: 1, format: ImageManipulator.SaveFormat.PNG } // Nén ảnh
                 );
-  
+
                 const file = {
                   uri: resizedImage.uri,
                   name:
@@ -636,7 +637,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
                     }_${imgIndex}.png`,
                   type: "image/png",
                 };
-  
+
                 formData.append(
                   `Images_${index}_${item.ID_Checklist}_${imgIndex}`,
                   file
@@ -659,43 +660,37 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
           }
         );
 
-        const requestDone = arrDefault.map(
-          async (itemDefault) => {
-            const descriptions = itemDefault.map(
-              (item) => item.ID_Checklist
-            ).join(",");
-            const ID_Checklists = itemDefault.map(
-              (item) => item.ID_Checklist
-            );
-            const valueChecks = itemDefault.map(
-              (item) => item.valueCheck
-            );
+        const requestDone = arrDefault.map(async (itemDefault) => {
+          const descriptions = itemDefault
+            .map((item) => item.ID_Checklist)
+            .join(",");
+          const ID_Checklists = itemDefault.map((item) => item.ID_Checklist);
+          const valueChecks = itemDefault.map((item) => item.valueCheck);
 
-            // Thực hiện yêu cầu API
-            return axios.post(
-              BASE_URL + "/tb_checklistchitietdone/create",
-              {
-                Description: descriptions,
-                Gioht: itemDefault[0].Gioht,
-                ID_Checklists: ID_Checklists,
-                valueChecks: valueChecks,
-                ID_ChecklistC: ID_ChecklistC,
-                checklistLength: itemDefault.length,
-                Vido: itemDefault[0]?.Vido || null,
-                Kinhdo: itemDefault[0]?.Kinhdo || null,
-                Docao: itemDefault[0]?.Docao || null,
-                isScan: itemDefault[0]?.isScan || null,
-                 isCheckListLai: 1,
+          // Thực hiện yêu cầu API
+          return axios.post(
+            BASE_URL + "/tb_checklistchitietdone/create",
+            {
+              Description: descriptions,
+              Gioht: itemDefault[0].Gioht,
+              ID_Checklists: ID_Checklists,
+              valueChecks: valueChecks,
+              ID_ChecklistC: ID_ChecklistC,
+              checklistLength: itemDefault.length,
+              Vido: itemDefault[0]?.Vido || null,
+              Kinhdo: itemDefault[0]?.Kinhdo || null,
+              Docao: itemDefault[0]?.Docao || null,
+              isScan: itemDefault[0]?.isScan || null,
+              isCheckListLai: 1,
+            },
+            {
+              headers: {
+                Accept: "application/json",
+                Authorization: "Bearer " + authToken,
               },
-              {
-                headers: {
-                  Accept: "application/json",
-                  Authorization: "Bearer " + authToken,
-                },
-              }
-            );
-          }
-        );
+            }
+          );
+        });
 
         axios
           .all([requestFaild, requestDone])
