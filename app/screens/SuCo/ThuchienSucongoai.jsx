@@ -639,6 +639,7 @@ const ThuchienSucongoai = ({ navigation, route }) => {
                             // defaultValue={defaultHangmuc}
                             onSelect={(selectedItem, index) => {
                               handleChangeText("ID_Hangmuc", selectedItem.ID_Hangmuc);
+                              handleChangeText("TenHangmuc", selectedItem?.Hangmuc);
                             }}
                             renderDropdownIcon={(isOpened) => {
                               return (

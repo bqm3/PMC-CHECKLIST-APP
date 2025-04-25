@@ -365,61 +365,11 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
         ]);
       } else {
         // Iterate over all items in dataChecklistFaild
-        // dataChecklistFaild.forEach(async (item, index) => {
-        //   // Extract and append checklist details to formData
-        //   formData.append("Key_Image", 1);
-        //   formData.append("ID_ChecklistC", ID_ChecklistC);
-        //   formData.append("ID_Checklist", item.ID_Checklist);
-        formData.append("ID_Phanhe", item.ID_Phanhe);
-        //   formData.append("Ketqua", item.valueCheck || "");
-        //   formData.append("Gioht", item.Gioht);
-        //   formData.append("Ghichu", item.GhichuChitiet || "");
-        //   formData.append("Vido", item.Vido || "");
-        //   formData.append("Kinhdo", item.Kinhdo || "");
-        //   formData.append("Docao", item.Docao || "");
-        //   formData.append("isScan", item.isScan || null);
-        //   formData.append("isCheckListLai", 1);
-
-        //   // If there is an image, append it to formData
-        //   if (item.Anh && Array.isArray(item.Anh)) {
-        //              // Use a for...of loop to wait for asynchronous tasks
-        //              for (const [imgIndex, image] of item.Anh.entries()) {
-        //                try {
-        //                  // Resize và nén ảnh trước khi append vào formData
-        //                  const resizedImage = await ImageManipulator.manipulateAsync(
-        //                    Platform.OS === "android"
-        //                      ? image.uri
-        //                      : image.uri.replace("file://", ""),
-        //                    [{ resize: { width: image.width * 0.6 } }], // Resize nhỏ hơn 50%
-        //                    { compress: 1, format: ImageManipulator.SaveFormat.PNG } // Nén ảnh
-        //                  );
-
-        //                  const file = {
-        //                    uri: resizedImage.uri,
-        //                    name:
-        //                      image.fileName ||
-        //                      `${Math.floor(Math.random() * 9999999)}_${
-        //                        item.ID_Checklist
-        //                      }_${imgIndex}.png`,
-        //                    type: "image/png",
-        //                  };
-
-        //                  formData.append(
-        //                    `Images_${index}_${item.ID_Checklist}_${imgIndex}`,
-        //                    file
-        //                  );
-        //                } catch (error) {
-        //                  console.error("Error resizing image: ", error);
-        //                }
-        //              }
-        //            }
-        // });
 
         for (const [index, item] of dataChecklistFaild.entries()) {
           formData.append("Key_Image", 1);
           formData.append("ID_ChecklistC", ID_ChecklistC);
           formData.append("ID_Checklist", item.ID_Checklist);
-          formData.append("ID_Phanhe", item.ID_Phanhe);
           formData.append("Ketqua", item.valueCheck || "");
           formData.append("Gioht", item.Gioht);
           formData.append("Ghichu", item.GhichuChitiet || "");
@@ -427,6 +377,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
           formData.append("Kinhdo", item.Kinhdo || "");
           formData.append("Docao", item.Docao || "");
           formData.append("isScan", isScan || null);
+          formData.append("isCheckListLai", 1);
 
           if (item.Anh && Array.isArray(item.Anh)) {
             // Use a for...of loop to wait for asynchronous tasks
@@ -614,6 +565,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
           formData.append("Kinhdo", item.Kinhdo || "");
           formData.append("Docao", item.Docao || "");
           formData.append("isScan", isScan || null);
+          formData.append("isCheckListLai", 1);
 
           if (item.Anh && Array.isArray(item.Anh)) {
             // Use a for...of loop to wait for asynchronous tasks
@@ -1004,15 +956,17 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
                           </Text>
                         )}
                       </View>
-                      {submit === true && (
-                        <Button
-                          text={"Hoàn thành tất cả"}
-                          isLoading={loadingSubmit}
-                          backgroundColor={COLORS.bg_button}
-                          color={"white"}
-                          onPress={() => handleSubmitChecklist()}
-                        />
-                      )}
+                      {submit === true &&
+                        (defaultActionDataChecklist?.length > 0 ||
+                          dataChecklistFaild?.length > 0) && (
+                          <Button
+                            text={"Hoàn thành tất cả"}
+                            isLoading={loadingSubmit}
+                            backgroundColor={COLORS.bg_button}
+                            color={"white"}
+                            onPress={() => handleSubmitChecklist()}
+                          />
+                        )}
                     </View>
                   </View>
                 </View>
