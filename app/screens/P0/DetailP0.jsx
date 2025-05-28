@@ -273,9 +273,11 @@ const DetailP0 = ({ navigation, route }) => {
     }
 
     let check = false;
-    if (user?.ID_KhoiCV == 4 && ["Sltheoto", "Slthexemay", "Sltheotophanmem", "Slthexemayphanmem"].includes(fieldKey)) {
+    const arrKhoiParsed = user?.arr_Khoi?.split(",").map(Number);
+
+    if ((user?.ID_KhoiCV == 4 || arrKhoiParsed.includes(4))&& ["Sltheoto", "Slthexemay", "Sltheotophanmem", "Slthexemayphanmem"].includes(fieldKey)) {
       check = true;
-    } else if (user?.ID_KhoiCV == 3 && !["Sltheoto", "Slthexemay", "Sltheotophanmem", "Slthexemayphanmem", "Doanhthu"].includes(fieldKey)) {
+    } else if ((user?.ID_KhoiCV == 3 || arrKhoiParsed.includes(3))&& !["Sltheoto", "Slthexemay", "Sltheotophanmem", "Slthexemayphanmem", "Doanhthu"].includes(fieldKey)) {
       check = true;
     } else if (user?.ID_KhoiCV == null) {
       check = true;
