@@ -385,8 +385,8 @@ const TaoBaoCaoP0 = ({ navigation, route }) => {
             <WarningBox
               title="Số lượng thẻ xe máy không khớp"
               content={`
-                <span><strong>Tổng:</strong> Thẻ xe máy chưa sử dụng (${report.Sltheoto}) + thẻ xe máy sử dụng trên phần mềm (${report.Slthexemayphanmem})
-                = ${report.Slxeoto + report.Slthexemayphanmem}</span></br>
+                <span><strong>Tổng:</strong> Thẻ xe máy chưa sử dụng (${report.Slthexemay}) + thẻ xe máy sử dụng trên phần mềm (${report.Slthexemayphanmem})
+                = ${report.Slthexemay + report.Slthexemayphanmem}</span></br>
                 <span>Số thẻ xe máy đã bàn giao = ${report.Sothexemaydk}</span></br>
                 <span style="color:red;">Vui lòng kiểm tra lại dữ liệu trước khi gửi</span>
               `}
