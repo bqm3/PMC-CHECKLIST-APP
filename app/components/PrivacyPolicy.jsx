@@ -219,13 +219,13 @@ const PrivacyPolicy = () => {
           <Text allowFontScaling={false} style={styles.strong}>
             Công Ty
           </Text>
-          : PMC, 57 Huỳnh Thúc Kháng, Q. Đống Đa, Việt Nam
+          : CCK, Ngõ 165, Đường Thái Hà, Phường Láng Hạ, Quận Đống Đa, Thành phố Hà Nội, Việt Nam
         </Text>
         <Text allowFontScaling={false} style={styles.li}>
           <Text allowFontScaling={false} style={styles.strong}>
             Email
           </Text>
-          : support.it@pmcweb.vn
+          : phongsohoa@pmcweb.vn
         </Text>
       </View>
 
