@@ -1,15 +1,42 @@
 import React, { useState } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Image, Text, TouchableOpacity, Platform, Alert, Pressable, View, Linking, TouchableWithoutFeedback, ActivityIndicator, Modal } from "react-native";
+import {
+  Image,
+  Text,
+  TouchableOpacity,
+  Platform,
+  Alert,
+  Pressable,
+  View,
+  Linking,
+  TouchableWithoutFeedback,
+  ActivityIndicator,
+  Modal,
+} from "react-native";
 import { COLORS } from "../constants/theme";
 import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
 import adjust from "../adjust";
 import { useSelector } from "react-redux";
 
-import { ThucHienChecklist, DetailChecklist, ThucHienHangmuc, ThucHienKhuvuc } from "../screens/Checklist";
-import { ThucHienChecklistLai, ThucHienKhuvucLai, ThucHienHangmucLai, DetailChecklistLai } from "../screens/ChecklistLai";
+import {
+  ThucHienChecklist,
+  DetailChecklist,
+  ThucHienHangmuc,
+  ThucHienKhuvuc,
+} from "../screens/Checklist";
+import {
+  ThucHienChecklistLai,
+  ThucHienKhuvucLai,
+  ThucHienHangmucLai,
+  DetailChecklistLai,
+} from "../screens/ChecklistLai";
 import { DanhmucUserScreen, DanhmucDuanScreen } from "../screens/PSH";
-import { DetailSucongoai, ThuchienSucongoai, XulySuco, ChangeTinhTrangSuCo } from "../screens/SuCo";
+import {
+  DetailSucongoai,
+  ThuchienSucongoai,
+  XulySuco,
+  ChangeTinhTrangSuCo,
+} from "../screens/SuCo";
 
 import {
   DanhmucChiTietTracuu,
@@ -25,7 +52,11 @@ import {
   NotHangMucTracuuCa,
   NotCheckListTracuuCa,
 } from "../screens/TraCuuThongKe";
-import { BaoCaoChiSoTheoNamThang, DanhMucBaoCaoChiSo, DanhmucHangMucChiSo } from "../screens/Baocaochiso";
+import {
+  BaoCaoChiSoTheoNamThang,
+  DanhMucBaoCaoChiSo,
+  DanhmucHangMucChiSo,
+} from "../screens/Baocaochiso";
 
 import { DanhMucBaoCaoHSSE, TaoBaoCaoHSSE, DetailHSSE } from "../screens/HSSE";
 import { DanhMucBaoCaoP0, TaoBaoCaoP0, DetailP0 } from "../screens/P0";
@@ -113,16 +144,16 @@ const buttonCall = (sdt_khancap) => {
   );
 };
 
-
 let gsetIsLoading = null;
 let gsetColorLoading = null;
 
 const handleEmergencyCall = (sdt_khancap) => {
   if (!sdt_khancap) {
-    Alert.alert("PMC Thông báo", "Không có số điện thoại khẩn cấp!", [{ text: "Xác nhận" }]);
+    Alert.alert("PMC Thông báo", "Không có số điện thoại khẩn cấp!", [
+      { text: "Xác nhận" },
+    ]);
     return;
   }
-
 
   if (gsetIsLoading) {
     gsetIsLoading(true);
@@ -148,7 +179,7 @@ const handleEmergencyCall = (sdt_khancap) => {
 const HomeStack = ({ navigation }) => {
   const { sdt_khancap } = useSelector((state) => state.entReducer);
   const { isLoading, setIsLoading } = useCallState();
-  const { colorLoading, setColorLoading} = useColorState();
+  const { colorLoading, setColorLoading } = useColorState();
 
   gsetIsLoading = setIsLoading;
   gsetColorLoading = setColorLoading;
@@ -163,7 +194,10 @@ const HomeStack = ({ navigation }) => {
         <Stack.Screen
           name="Trang chính"
           component={HomeScreen}
-          initialParams={{ setIsLoading: setIsLoading, setColorLoading: setColorLoading }}
+          initialParams={{
+            setIsLoading: setIsLoading,
+            setColorLoading: setColorLoading,
+          }}
           lazy={false}
           options={({ route, navigation, setIsLoading }) => ({
             headerShown: true,
@@ -514,7 +548,9 @@ const HomeStack = ({ navigation }) => {
                   navigation.goBack();
                 }}
               >
-                {Platform.OS === "ios" && <Ionicons name="chevron-back" size={28} color="white" />}
+                {Platform.OS === "ios" && (
+                  <Ionicons name="chevron-back" size={28} color="white" />
+                )}
               </TouchableOpacity>
             ),
             headerTitleAlign: "center",
@@ -551,7 +587,9 @@ const HomeStack = ({ navigation }) => {
                   navigation.goBack();
                 }}
               >
-                {Platform.OS === "ios" && <Ionicons name="chevron-back" size={28} color="white" />}
+                {Platform.OS === "ios" && (
+                  <Ionicons name="chevron-back" size={28} color="white" />
+                )}
               </TouchableOpacity>
             ),
             headerTitleAlign: "center",
@@ -587,7 +625,9 @@ const HomeStack = ({ navigation }) => {
                   navigation.goBack();
                 }}
               >
-                {Platform.OS === "ios" && <Ionicons name="chevron-back" size={28} color="white" />}
+                {Platform.OS === "ios" && (
+                  <Ionicons name="chevron-back" size={28} color="white" />
+                )}
               </TouchableOpacity>
             ),
             headerTitleAlign: "center",
@@ -623,7 +663,9 @@ const HomeStack = ({ navigation }) => {
                   navigation.goBack();
                 }}
               >
-                {Platform.OS === "ios" && <Ionicons name="chevron-back" size={28} color="white" />}
+                {Platform.OS === "ios" && (
+                  <Ionicons name="chevron-back" size={28} color="white" />
+                )}
               </TouchableOpacity>
             ),
             headerTitleAlign: "center",
@@ -659,7 +701,9 @@ const HomeStack = ({ navigation }) => {
                   navigation.goBack();
                 }}
               >
-                {Platform.OS === "ios" && <Ionicons name="chevron-back" size={28} color="white" />}
+                {Platform.OS === "ios" && (
+                  <Ionicons name="chevron-back" size={28} color="white" />
+                )}
               </TouchableOpacity>
             ),
             headerTitleAlign: "center",
@@ -928,7 +972,10 @@ const HomeStack = ({ navigation }) => {
         <Stack.Screen
           name="Tra cứu"
           component={DanhmucTracuuVsThongke}
-          initialParams={{ setIsLoading: setIsLoading, setColorLoading: setColorLoading }}
+          initialParams={{
+            setIsLoading: setIsLoading,
+            setColorLoading: setColorLoading,
+          }}
           lazy={false}
           options={({ navigation, route }) => ({
             headerShown: true,
@@ -1083,7 +1130,11 @@ const HomeStack = ({ navigation }) => {
               </Text>
             ),
             headerLeft: () => (
-              <TouchableOpacity onPressIn={() => navigation.navigate("Báo cáo HSSE", { isReload: true })}>
+              <TouchableOpacity
+                onPressIn={() =>
+                  navigation.navigate("Báo cáo HSSE", { isReload: true })
+                }
+              >
                 {Platform.OS === "ios" && (
                   <Image
                     source={require("../../assets/icons/ic_button_back.png")}
@@ -1135,7 +1186,10 @@ const HomeStack = ({ navigation }) => {
         <Stack.Screen
           name="Báo cáo S0"
           component={DanhMucBaoCaoP0}
-          initialParams={{ setIsLoading: setIsLoading, setColorLoading: setColorLoading }}
+          initialParams={{
+            setIsLoading: setIsLoading,
+            setColorLoading: setColorLoading,
+          }}
           lazy={false}
           options={({ route, navigation }) => ({
             headerShown: true,
@@ -1163,7 +1217,10 @@ const HomeStack = ({ navigation }) => {
         <Stack.Screen
           name="Tạo báo cáo S0"
           component={TaoBaoCaoP0}
-          initialParams={{ setIsLoading: setIsLoading, setColorLoading: setColorLoading }}
+          initialParams={{
+            setIsLoading: setIsLoading,
+            setColorLoading: setColorLoading,
+          }}
           lazy={false}
           options={({ route, navigation }) => ({
             headerShown: true,
@@ -1180,7 +1237,11 @@ const HomeStack = ({ navigation }) => {
               </Text>
             ),
             headerLeft: () => (
-              <TouchableOpacity onPressIn={() => navigation.navigate("Báo cáo S0", { isReload: true })}>
+              <TouchableOpacity
+                onPressIn={() =>
+                  navigation.navigate("Báo cáo S0", { isReload: true })
+                }
+              >
                 {Platform.OS === "ios" && (
                   <Image
                     source={require("../../assets/icons/ic_button_back.png")}
@@ -1205,7 +1266,10 @@ const HomeStack = ({ navigation }) => {
         <Stack.Screen
           name="Chi tiết dữ liệu S0"
           component={DetailP0}
-          initialParams={{ setIsLoading: setIsLoading, setColorLoading: setColorLoading }}
+          initialParams={{
+            setIsLoading: setIsLoading,
+            setColorLoading: setColorLoading,
+          }}
           lazy={false}
           options={({ route, navigation }) => ({
             headerShown: true,

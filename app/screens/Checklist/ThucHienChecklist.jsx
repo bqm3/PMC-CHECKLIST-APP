@@ -385,8 +385,7 @@ const ThucHienChecklist = ({ navigation }) => {
               response.data.data.ID_ChecklistC,
               response.data.data.ID_KhoiCV,
               response.data.data.ID_ThietLapCa,
-              response.data.data.ID_Hangmucs,
-              null
+              response.data.data.ID_Hangmucs
             );
           });
       } catch (error) {
@@ -547,20 +546,22 @@ const ThucHienChecklist = ({ navigation }) => {
   };
 
   useEffect(() => {
-    const backAction = () => {
-      if (modalVisible) {
-        handleClosePopUp();
-        return true;
-      }
-      return false;
-    };
+    if (Platform.OS === "android") {
+      const backAction = () => {
+        if (modalVisible) {
+          handleClosePopUp();
+          return true;
+        }
+        return false;
+      };
 
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
-    );
+      const backHandler = BackHandler.addEventListener(
+        "hardwareBackPress",
+        backAction
+      );
 
-    return () => backHandler.remove();
+      return () => backHandler.remove();
+    }
   }, [modalVisible]);
 
   return (

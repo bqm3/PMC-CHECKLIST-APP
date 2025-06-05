@@ -136,7 +136,7 @@ const DetailChecklist = ({ route, navigation }) => {
   useEffect(() => {
     const backAction = () => {
       if (isBottomSheetOpen) {
-        handleBackAnroid();
+        handleBackAndroid();
         return true;
       }
       return false;
@@ -147,7 +147,10 @@ const DetailChecklist = ({ route, navigation }) => {
       backAction
     );
 
-    return () => backHandler.remove();
+    return () => {
+      console.log("BackHandler removed");
+      backHandler.remove();
+    };
   }, [isBottomSheetOpen]);
 
   useEffect(() => {
@@ -758,7 +761,10 @@ const DetailChecklist = ({ route, navigation }) => {
         }
       }
     } catch (error) {
-      console.error("Lỗi khi kiểm tra kết nối mạng:", error);
+      console.error(
+        "Lỗi khi kiểm tra kết nối mạng:",
+        error.response.data.message
+      );
       setLoadingSubmit(false);
     }
   };
@@ -1223,7 +1229,7 @@ const DetailChecklist = ({ route, navigation }) => {
     bottomSheetModalRef?.current?.close();
   }, []);
 
-  const handleBackAnroid = async () => {
+  const handleBackAndroid = () => {
     setOpacity(1);
     setDataItem(null);
     setModalVisible(false);

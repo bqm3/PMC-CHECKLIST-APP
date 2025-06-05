@@ -1,4 +1,5 @@
 import * as type from "../types";
+import { InteractionManager } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { BASE_URL } from "../../constants/config";
@@ -364,7 +365,6 @@ export const ent_checklist_mul_hm = (
     });
     try {
       const token = await AsyncStorage.getItem("tokenUser");
-
       if (token !== null) {
         const response = await axios.put(
           `${BASE_URL}/ent_checklist/filter-mul/${ID_ChecklistC}/${ID_Calv}`,
@@ -457,25 +457,48 @@ export const ent_checklist_mul_hm_return = (
           }
         );
         const data = response.data.data;
-        const processedData = data?.map((item) => {
-          return {
-            ...item,
-            Giatrinhan: item?.Giatrinhan?.split("/").map((item) => item.trim()),
-            valueCheck: null,
-            GhichuChitiet: "",
-            ID_ChecklistC: ID_ChecklistC,
-            ID_Phanhe: item?.ID_Phanhe,
-            Anh: null,
-            isScan: null,
-            Gioht: moment().format("LTS"),
-          };
-        });
-        dispatch({
-          type: type.SET_ENT_CHECKLIST_DETAIL_RETURN_SUCCESS,
-          payload: {
-            ent_checklist_detail_return: processedData,
-            isLoading: false,
-          },
+
+        InteractionManager.runAfterInteractions(() => {
+          const processedData = data?.map((item) => {
+            return {
+              ...item,
+              Giatrinhan: item?.Giatrinhan?.split("/").map((item) =>
+                item
+                  .split(" ")
+                  .map(
+                    (word) =>
+                      word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+                  )
+                  .join(" ")
+                  .trim()
+              ),
+              Giatriloi: item?.Giatriloi
+                ? item?.Giatriloi.split(" ")
+                    .map(
+                      (item) =>
+                        item?.charAt(0).toUpperCase() +
+                        item.slice(1).toLowerCase()
+                    )
+                    .join(" ")
+                    .trim()
+                : null,
+              valueCheck: null,
+              GhichuChitiet: "",
+              ID_ChecklistC: ID_ChecklistC,
+              ID_Phanhe: item?.ID_Phanhe,
+              Anh: null,
+              isScan: null,
+              Gioht: moment().format("LTS"),
+            };
+          });
+
+          dispatch({
+            type: type.SET_ENT_CHECKLIST_DETAIL_SUCCESS,
+            payload: {
+              ent_checklist_detail: processedData,
+              isLoading: false,
+            },
+          });
         });
       }
     } catch (err) {

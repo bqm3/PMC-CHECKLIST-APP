@@ -47,7 +47,7 @@ import DataLicense from "../components/PrivacyPolicy";
 import Checkbox from "../components/Active/Checkbox";
 import ModalForgotPassword from "../components/Modal/ModalForgotPassword";
 
-const version = "2.2.0";
+const version = "2.2.1";
 
 const LoginScreen = ({ navigation }) => {
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
@@ -159,8 +159,6 @@ const LoginScreen = ({ navigation }) => {
   };
 
   useEffect(() => {
-    console.log("vao day");
-
     const handleNoti = async () => {
       try {
         const response = await axios.get(
@@ -173,7 +171,6 @@ const LoginScreen = ({ navigation }) => {
         );
 
         if (response.data.status == 1) {
-          console.log("response.data", response.data);
           const data = response.data;
           setNotification(data);
         }

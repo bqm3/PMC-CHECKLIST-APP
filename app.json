@@ -2,23 +2,24 @@
   "expo": {
     "name": "PMC Checklist",
     "slug": "PMC-CHECKLIST-APP",
-    // "newArchEnabled": true,
-    "version": "2.1.7", // v2.2.0
+    "version": "2.1.8",
     "orientation": "portrait",
-
     "icon": "./assets/icon.png",
     "splash": {
-      "image": "./assets/bg.png",
+      "image": "./assets/splash_background.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+    "jsEngine": "hermes", // cấu hình IOS Podfile
     "notification": {
       "icon": "./assets/icon.png",
       "color": "#ffffff",
       "iosDisplayInForeground": true,
       "androidMode": "default"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "userInterfaceStyle": "automatic",
     "android": {
       "adaptiveIcon": {
@@ -36,26 +37,31 @@
         "android.permission.FOREGROUND_SERVICE",
         "android.permission.LOCATION",
         "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.LOCATION",
+        "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE"
       ],
-      "runtimeVersion": {
-        "policy": "appVersion"
-      },
+       "runtimeVersion": "2.1.8",
       "userInterfaceStyle": "automatic"
     },
     "ios": {
+     
       "supportsTablet": false,
       "userInterfaceStyle": "automatic",
       "splash": {
-        "image": "./assets/bg.png",
+        "image": "./assets/splash_background.png",
         "resizeMode": "contain",
         "backgroundColor": "#ffffff"
       },
       "buildNumber": "7",
       "bundleIdentifier": "com.anonymous.PMCCHECKLISTAPP",
-      "runtimeVersion": {
-        "policy": "sdkVersion"
-      },
+      "runtimeVersion": "2.1.8",
       "infoPlist": {
         "NSCameraUsageDescription": "The app needs access to your camera to capture images during the checklist process, document areas with incidents, and scan QR codes for asset verification.",
         "NSMicrophoneUsageDescription": "The app needs access to your microphone so you can record and upload audio recordings.",
@@ -80,7 +86,6 @@
           "photosPermission": "The app accesses your photos to let you share them with your friends."
         }
       ],
-     
       [
         "expo-location",
         {
@@ -103,14 +108,14 @@
         }
       ]
     ],
+    "updates": {
+      "url": "https://u.expo.dev/05bff8c3-b200-4e8a-8141-955aa19fa0f7"
+    },
+    "owner": "pmcvnpt",
     "extra": {
       "eas": {
-        "projectId": "88067883-8168-4e0c-8f05-124ae86a6067"
+        "projectId": "05bff8c3-b200-4e8a-8141-955aa19fa0f7"
       }
-    },
-    "updates": {
-      "url": "https://u.expo.dev/88067883-8168-4e0c-8f05-124ae86a6067"
-    },
-    "owner": "buiminh30"
+    }
   }
 }
