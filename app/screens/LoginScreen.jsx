@@ -36,7 +36,7 @@ import BottomSheet, {
   BottomSheetScrollView,
 } from "@gorhom/bottom-sheet";
 import NetInfo from "@react-native-community/netinfo";
-import * as Device from 'expo-device';
+import * as Device from "expo-device";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import adjust from "../adjust";
 import { BASE_URL, BASE_URL_NOTI } from "../constants/config";
@@ -47,7 +47,7 @@ import DataLicense from "../components/PrivacyPolicy";
 import Checkbox from "../components/Active/Checkbox";
 import ModalForgotPassword from "../components/Modal/ModalForgotPassword";
 
-const version = "2.1.7";
+const version = "2.2.1";
 
 const LoginScreen = ({ navigation }) => {
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
@@ -100,20 +100,21 @@ const LoginScreen = ({ navigation }) => {
         };
         setDeviceInfo(info);
       } catch (error) {
-        console.error('Error getting device info:', error);
+        console.error("Error getting device info:", error);
       }
     };
 
     getDeviceInformation();
-  }, []); 
+  }, []);
 
   useEffect(() => {
-    axios.get('https://api.ipify.org?format=json')
+    axios
+      .get("https://api.ipify.org?format=json")
       .then((response) => {
-        setIp(response.data.ip);  // Lưu IP vào state
+        setIp(response.data.ip); // Lưu IP vào state
       })
       .catch((error) => {
-        console.error('Error fetching IP:', error);
+        console.error("Error fetching IP:", error);
       });
   }, []);
 
@@ -125,7 +126,7 @@ const LoginScreen = ({ navigation }) => {
     };
     getIpInfo(ip);
   }, [ip]);
-  
+
   useEffect(() => {
     const unsubscribe = NetInfo.addEventListener((state) => {
       setConnected(state.isConnected);
@@ -183,11 +184,9 @@ const LoginScreen = ({ navigation }) => {
 
   useEffect(() => {
     if (message) {
-      Alert.alert(
-        "PMC Thông báo",
-        `${message}`,
-        [{ text: "Xác nhận", onPress: () => console.log("OK Pressed") }]
-      );
+      Alert.alert("PMC Thông báo", `${message}`, [
+        { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+      ]);
     }
   }, [message, error]);
 
@@ -371,15 +370,13 @@ const LoginScreen = ({ navigation }) => {
         Alert.alert(
           "Thành công",
           "Yêu cầu khôi phục mật khẩu đã được gửi. Vui lòng kiểm tra email của bạn.",
-          [
-            { text: "Xác nhận", onPress: () => handleCloseModal() }
-          ]
+          [{ text: "Xác nhận", onPress: () => handleCloseModal() }]
         );
       } else {
         Alert.alert("Lỗi", response.data.message || "Đã xảy ra lỗi.");
       }
     } catch (err) {
-      console.log("err",err.message)
+      console.log("err", err.message);
       setIsLoadingPW(false);
       Alert.alert("Lỗi", "Không thể kết nối đến máy chủ. Vui lòng thử lại.");
     }
@@ -519,7 +516,9 @@ const LoginScreen = ({ navigation }) => {
                         alignItems: "center",
                       }}
                     >
-                      <Text allowFontScaling={false} style={[styles.label]}>Quên mật khẩu</Text>
+                      <Text allowFontScaling={false} style={[styles.label]}>
+                        Quên mật khẩu
+                      </Text>
                     </Pressable>
                   </View>
 
@@ -536,7 +535,7 @@ const LoginScreen = ({ navigation }) => {
                       color: "white",
                       fontWeight: "500",
                       textAlign: "right",
-                      paddingTop: 10
+                      paddingTop: 10,
                     }}
                     allowFontScaling={false}
                   >

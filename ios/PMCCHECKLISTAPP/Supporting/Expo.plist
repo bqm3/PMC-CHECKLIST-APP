@@ -9,8 +9,8 @@
     <key>EXUpdatesLaunchWaitMs</key>
     <integer>0</integer>
     <key>EXUpdatesRuntimeVersion</key>
-    <string>exposdk:51.0.0</string>
+    <string>exposdk:53.0.0</string>
     <key>EXUpdatesURL</key>
-    <string>https://exp.host/@buiminh30/PMC-CHECKLIST-APP</string>
+    <string>https://u.expo.dev/05bff8c3-b200-4e8a-8141-955aa19fa0f7</string>
   </dict>
 </plist>

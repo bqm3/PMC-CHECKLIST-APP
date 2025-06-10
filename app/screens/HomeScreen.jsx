@@ -1,6 +1,23 @@
 //import liraries
-import React, { createContext, useContext, useState, useEffect, useRef } from "react";
-import { View, Text, StyleSheet, FlatList, ImageBackground, Image, Platform, ActivityIndicator, TextInput, TouchableOpacity } from "react-native";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useRef,
+} from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  ImageBackground,
+  Image,
+  Platform,
+  ActivityIndicator,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
 import * as Device from "expo-device";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import {
@@ -52,7 +69,8 @@ async function registerForPushNotificationsAsync() {
   }
 
   if (Device.isDevice) {
-    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    const { status: existingStatus } =
+      await Notifications.getPermissionsAsync();
     let finalStatus = existingStatus;
 
     if (existingStatus !== "granted") {
@@ -62,17 +80,23 @@ async function registerForPushNotificationsAsync() {
 
     // Only show the settings alert if finalStatus is not granted
     if (finalStatus !== "granted") {
-      Alert.alert("Thông báo", "Bạn đã từ chối nhận thông báo. Hãy bật thông báo trong Cài đặt để tiếp tục.", [
-        {
-          text: "Mở cài đặt",
-          onPress: () => Linking.openSettings(), // Open app settings if the user denies notification permissions
-        },
-        { text: "Hủy", style: "cancel" },
-      ]);
+      Alert.alert(
+        "Thông báo",
+        "Bạn đã từ chối nhận thông báo. Hãy bật thông báo trong Cài đặt để tiếp tục.",
+        [
+          {
+            text: "Mở cài đặt",
+            onPress: () => Linking.openSettings(), // Open app settings if the user denies notification permissions
+          },
+          { text: "Hủy", style: "cancel" },
+        ]
+      );
       return;
     }
 
-    const projectId = Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
+    const projectId =
+      Constants?.expoConfig?.extra?.eas?.projectId ??
+      Constants?.easConfig?.projectId;
 
     if (!projectId) {
       handleRegistrationError("Không tìm thấy thông tin máy");
@@ -253,12 +277,41 @@ const dataBQTKhoi = [
   },
 ];
 
+const dataBQTDuAn = [
+  {
+    id: 2,
+    status: null,
+    path: "Tra cứu",
+    icon: require("../../assets/icons/o-02.png"),
+  },
+  {
+    id: 5,
+    status: "new",
+    path: "Báo cáo chỉ số",
+    icon: require("../../assets/icons/o-04.png"),
+  },
+  {
+    id: 6,
+    status: "new",
+    path: "Báo cáo HSSE",
+    icon: require("../../assets/icons/o-04.png"),
+  },
+  {
+    id: 7,
+    status: "new",
+    path: "Báo cáo S0",
+    icon: require("../../assets/icons/o-04.png"),
+  },
+];
+
 // create a component
 const HomeScreen = ({ navigation, route }) => {
   const dispath = useDispatch();
   const setIsLoading = route.params.setIsLoading;
   const setColorLoading = route.params.setColorLoading;
-  const { user, authToken, passwordCore } = useSelector((state) => state.authReducer);
+  const { user, authToken, passwordCore } = useSelector(
+    (state) => state.authReducer
+  );
   const { sdt_khancap } = useSelector((state) => state.entReducer);
 
   const { setToken } = useContext(ExpoTokenContext);
@@ -277,7 +330,13 @@ const HomeScreen = ({ navigation, route }) => {
   const responseListener = useRef();
 
   const renderItem = ({ item, index }) => (
-    <ItemHome ID_Chucvu={user?.ID_Chucvu} item={item} index={index} passwordCore={passwordCore} showAlert={showAlert} />
+    <ItemHome
+      ID_Chucvu={user?.ID_Chucvu}
+      item={item}
+      index={index}
+      passwordCore={passwordCore}
+      showAlert={showAlert}
+    />
   );
 
   const int_khuvuc = async () => {
@@ -327,7 +386,9 @@ const HomeScreen = ({ navigation, route }) => {
   const checkPasswordStrength = async () => {
     const password = await AsyncStorage.getItem("Password");
     if (password && !validatePassword(password)) {
-      showAlert("Mật khẩu của bạn không đủ mạnh. Vui lòng cập nhật mật khẩu mới với độ bảo mật cao hơn.");
+      showAlert(
+        "Mật khẩu của bạn không đủ mạnh. Vui lòng cập nhật mật khẩu mới với độ bảo mật cao hơn."
+      );
     }
   };
 
@@ -368,17 +429,19 @@ const HomeScreen = ({ navigation, route }) => {
       .then((token) => setExpoPushToken(token ?? ""))
       .catch((error) => setExpoPushToken(`${error}`));
 
-    notificationListener.current = Notifications.addNotificationReceivedListener((notification) => {
-      setNotification(notification);
-    });
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        setNotification(notification);
+      });
 
-    responseListener.current = Notifications.addNotificationResponseReceivedListener((response) => {
-      console.log(response);
-    });
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(response);
+      });
 
     return () => {
-      notificationListener.current && Notifications.removeNotificationSubscription(notificationListener.current);
-      responseListener.current && Notifications.removeNotificationSubscription(responseListener.current);
+      notificationListener.current?.remove();
+      responseListener.current?.remove();
     };
   }, []);
 
@@ -503,7 +566,9 @@ const HomeScreen = ({ navigation, route }) => {
 
   const handleEmergencyCall = () => {
     if (!sdt_khancap) {
-      Alert.alert("PMC Thông báo", "Không có số điện thoại khẩn cấp!", [{ text: "Xác nhận" }]);
+      Alert.alert("PMC Thông báo", "Không có số điện thoại khẩn cấp!", [
+        { text: "Xác nhận" },
+      ]);
       return;
     }
     setIsLoading(true);
@@ -532,192 +597,229 @@ const HomeScreen = ({ navigation, route }) => {
   };
 
   return (
-    <ImageBackground source={require("../../assets/bg_new.png")} resizeMode="stretch" style={{ flex: 1, width: "100%" }}>
-        <View style={styles.container}>
-          <View style={styles.content}>
-            {user?.ent_duan?.Logo ? (
-              <Image source={{ uri: user?.ent_duan?.Logo }} resizeMode="contain" style={{ height: adjust(70), width: adjust(180) }} />
-            ) : (
-              <Image source={require("../../assets/pmc_logo.png")} resizeMode="contain" style={{ height: adjust(80), width: adjust(200) }} />
-            )}
-            <Text
-              allowFontScaling={false}
-              style={{
-                fontSize: adjust(20),
-                color: "white",
-                fontWeight: "700",
-                textTransform: "uppercase",
-                paddingTop: 8,
-              }}
-            >
-              Dự án: {user?.ent_duan?.Duan}
-            </Text>
-            <Text
-              allowFontScaling={false}
-              style={{
-                color: "white",
-                fontSize: adjust(16),
-                marginTop: 10,
-              }}
-              numberOfLines={1}
-            >
-              Tài khoản: {user?.UserName}
-            </Text>
-            {(user?.ent_chucvu?.Role === 5 ||
-              // (user?.ent_chucvu?.Role === 1 && user?.arr_Duan != null && user?.arr_Duan != "" && user?.arr_Duan != undefined)) && (
-              (user?.ent_chucvu?.Role === 1 && arrDuan && arrDuan?.length > 1)) && (
-              <View style={{ flexDirection: "row" }}>
-                <SelectDropdown
-                  data={duan.map((item) => item.Duan)} // Dữ liệu dự án
-                  style={{ alignItems: "center", height: "auto" }}
-                  buttonStyle={styles.select}
-                  dropdownStyle={styles.dropdown}
-                  defaultButtonText={user?.ent_duan?.Duan || "Chọn dự án"}
-                  buttonTextStyle={styles.customText}
-                  searchable={true}
-                  onSelect={(selectedItem, index) => {
-                    const selectedProject = duan[index]?.ID_Duan;
-                    funcHandleDuan(selectedProject);
-                  }}
-                  renderDropdownIcon={(isOpened) => (
-                    <FontAwesome name={isOpened ? "chevron-up" : "chevron-down"} color={"#637381"} size={18} style={{ marginRight: 10 }} />
-                  )}
-                  dropdownIconPosition={"right"}
-                  buttonTextAfterSelection={(selectedItem, index) => (
-                    <View
-                      key={index}
-                      style={{
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Text allowFontScaling={false} style={styles.selectedText}>
-                        {selectedItem || "Chọn dự án"}{" "}
-                      </Text>
-                    </View>
-                  )}
-                  renderCustomizedRowChild={(item, index) => (
-                    <View key={index} style={styles.dropdownItem}>
-                      <Text style={styles.dropdownItemText}>{item}</Text>
-                    </View>
-                  )}
-                  search
-                />
-
-                {(user?.ent_chucvu?.Role === 5 || user?.ent_chucvu?.Role === 10) && (
-                  <TouchableOpacity style={styles.resetButton} onPress={() => funcHandleClearDuan("clear")}>
-                    <Text allowFontScaling={false} style={styles.resetButtonText}>
-                      Tổng quan dự án
-                    </Text>
-                  </TouchableOpacity>
-                )}
-              </View>
-            )}
-          </View>
-
-          <View
-            style={[
-              styles.content,
-              {
-                width: "100%",
-                alignContent: "center",
-              },
-            ]}
+    <ImageBackground
+      source={require("../../assets/bg_new.png")}
+      resizeMode="stretch"
+      style={{ flex: 1, width: "100%" }}
+    >
+      <View style={styles.container}>
+        <View style={styles.content}>
+          {user?.ent_duan?.Logo ? (
+            <Image
+              source={{ uri: user?.ent_duan?.Logo }}
+              resizeMode="contain"
+              style={{ height: adjust(70), width: adjust(180) }}
+            />
+          ) : (
+            <Image
+              source={require("../../assets/pmc_logo.png")}
+              resizeMode="contain"
+              style={{ height: adjust(80), width: adjust(200) }}
+            />
+          )}
+          <Text
+            allowFontScaling={false}
+            style={{
+              fontSize: adjust(20),
+              color: "white",
+              fontWeight: "700",
+              textTransform: "uppercase",
+              paddingTop: 8,
+            }}
           >
-            <FlatList
+            Dự án: {user?.ent_duan?.Duan}
+          </Text>
+          <Text
+            allowFontScaling={false}
+            style={{
+              color: "white",
+              fontSize: adjust(16),
+              marginTop: 10,
+            }}
+            numberOfLines={1}
+          >
+            Tài khoản: {user?.UserName}
+          </Text>
+          {(user?.ent_chucvu?.Role === 5 ||
+            // (user?.ent_chucvu?.Role === 1 && user?.arr_Duan != null && user?.arr_Duan != "" && user?.arr_Duan != undefined)) && (
+            (user?.ent_chucvu?.Role === 1 &&
+              arrDuan &&
+              arrDuan?.length > 1)) && (
+            <View style={{ flexDirection: "row" }}>
+              <SelectDropdown
+                data={duan.map((item) => item.Duan)} // Dữ liệu dự án
+                style={{ alignItems: "center", height: "auto" }}
+                buttonStyle={styles.select}
+                dropdownStyle={styles.dropdown}
+                defaultButtonText={user?.ent_duan?.Duan || "Chọn dự án"}
+                buttonTextStyle={styles.customText}
+                searchable={true}
+                onSelect={(selectedItem, index) => {
+                  const selectedProject = duan[index]?.ID_Duan;
+                  funcHandleDuan(selectedProject);
+                }}
+                renderDropdownIcon={(isOpened) => (
+                  <FontAwesome
+                    name={isOpened ? "chevron-up" : "chevron-down"}
+                    color={"#637381"}
+                    size={18}
+                    style={{ marginRight: 10 }}
+                  />
+                )}
+                dropdownIconPosition={"right"}
+                buttonTextAfterSelection={(selectedItem, index) => (
+                  <View
+                    key={index}
+                    style={{
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Text allowFontScaling={false} style={styles.selectedText}>
+                      {selectedItem || "Chọn dự án"}{" "}
+                    </Text>
+                  </View>
+                )}
+                renderCustomizedRowChild={(item, index) => (
+                  <View key={index} style={styles.dropdownItem}>
+                    <Text style={styles.dropdownItemText}>{item}</Text>
+                  </View>
+                )}
+                search
+              />
+
+              {(user?.ent_chucvu?.Role === 5 ||
+                user?.ent_chucvu?.Role === 10) && (
+                <TouchableOpacity
+                  style={styles.resetButton}
+                  onPress={() => funcHandleClearDuan("clear")}
+                >
+                  <Text allowFontScaling={false} style={styles.resetButtonText}>
+                    Tổng quan dự án
+                  </Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          )}
+        </View>
+
+        <View
+          style={[
+            styles.content,
+            {
+              width: "100%",
+              alignContent: "center",
+            },
+          ]}
+        >
+          <FlatList
+            style={{
+              width: "100%",
+              paddingHorizontal: 20,
+            }}
+            numColumns={2}
+            data={(() => {
+              let baseData;
+
+              switch (user?.ent_chucvu?.Role) {
+                case 1:
+                  baseData = dataGD;
+                  break;
+                case 2:
+                  baseData = dataKST;
+                  break;
+                case 3:
+                  baseData = dataDanhMuc;
+                  break;
+                case 5:
+                  baseData = dataBQTKhoi;
+                  break;
+                case 6:
+                  baseData = dataBQTDuAn;
+                  break;
+                default:
+                  baseData = []; // hoặc null nếu muốn
+              }
+
+              if (!checkP0) {
+                baseData = baseData?.filter((item) => item.id !== 7);
+              }
+
+              const currentDate = new Date();
+              const targetDate = new Date("2025-01-01");
+
+              if (currentDate > targetDate) {
+                baseData = baseData?.map((item) => ({
+                  ...item,
+                  status: null,
+                }));
+              }
+
+              return baseData;
+            })()}
+            renderItem={renderItem}
+            ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+            contentContainerStyle={{ gap: 10 }}
+            columnWrapperStyle={{ gap: 10 }}
+          />
+        </View>
+        <TouchableOpacity
+          onPress={() => handleEmergencyCall()}
+          style={{
+            position: "absolute", // Đặt vị trí tuyệt đối
+            bottom: 10,
+            right: 10,
+            zIndex: 9999,
+            elevation: 9999,
+            backgroundColor: "white",
+            borderRadius: 50, // Bo tròn background
+            padding: 10,
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.25,
+            shadowRadius: 3.84,
+          }}
+        >
+          <View style={{ alignItems: "flex-end" }}>
+            <Image
+              source={require("../../assets/icons/ic_emergency_call_58.png")}
               style={{
-                width: "100%",
-                paddingHorizontal: 20,
+                width: adjust(50) * 0.8,
+                height: adjust(50) * 0.8,
+                resizeMode: "contain",
+                transform: [{ scaleX: -1 }],
               }}
-              numColumns={2}
-              data={(() => {
-                let baseData =
-                  user?.ent_chucvu?.Role == 3
-                    ? dataDanhMuc
-                    : user?.ent_chucvu?.Role == 5
-                      ? dataBQTKhoi
-                      : user?.ent_chucvu?.Role == 1
-                        ? dataGD
-                        : user?.ent_chucvu?.Role == 2 && dataKST;
-
-                if (!checkP0) {
-                  baseData = baseData.filter((item) => item.id !== 7);
-                }
-
-                const currentDate = new Date();
-                const targetDate = new Date("2025-01-01");
-
-                if (currentDate > targetDate) {
-                  baseData = baseData.map((item) => ({
-                    ...item,
-                    status: null,
-                  }));
-                }
-
-                return baseData;
-              })()}
-              renderItem={renderItem}
-              ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
-              contentContainerStyle={{ gap: 10 }}
-              columnWrapperStyle={{ gap: 10 }}
             />
           </View>
-          <TouchableOpacity
-            onPress={() => handleEmergencyCall()}
+        </TouchableOpacity>
+        <View
+          style={{
+            flexDirection: "column",
+            marginTop: 20,
+            marginHorizontal: 20,
+          }}
+        >
+          <Text
+            allowFontScaling={false}
             style={{
-              position: "absolute", // Đặt vị trí tuyệt đối
-              bottom: 10,
-              right: 10,
-              zIndex: 9999,
-              elevation: 9999,
-              backgroundColor: "white",
-              borderRadius: 50, // Bo tròn background
-              padding: 10,
-              shadowColor: "#000",
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.25,
-              shadowRadius: 3.84,
+              color: "white",
+              fontSize: adjust(16),
             }}
           >
-            <View style={{ alignItems: "flex-end" }}>
-              <Image
-                source={require("../../assets/icons/ic_emergency_call_58.png")}
-                style={{
-                  width: adjust(50) * 0.8,
-                  height: adjust(50) * 0.8,
-                  resizeMode: "contain",
-                  transform: [{ scaleX: -1 }],
-                }}
-              />
-            </View>
-          </TouchableOpacity>
-          <View
+            Người Giám sát chỉ thực hiện công việc Checklist, Tra cứu và Đổi mật
+            khẩu.
+          </Text>
+          <Text
+            allowFontScaling={false}
             style={{
-              flexDirection: "column",
-              marginTop: 20,
-              marginHorizontal: 20,
+              color: "white",
+              fontSize: adjust(16),
             }}
           >
-            <Text
-              allowFontScaling={false}
-              style={{
-                color: "white",
-                fontSize: adjust(16),
-              }}
-            >
-              Người Giám sát chỉ thực hiện công việc Checklist, Tra cứu và Đổi mật khẩu.
-            </Text>
-            <Text
-              allowFontScaling={false}
-              style={{
-                color: "white",
-                fontSize: adjust(16),
-              }}
-            >
-              Giám đốc Tòa nhà toàn quyền sử dụng.
-            </Text>
-          </View>
+            Giám đốc Tòa nhà toàn quyền sử dụng.
+          </Text>
         </View>
+      </View>
     </ImageBackground>
   );
 };

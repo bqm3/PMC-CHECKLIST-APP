@@ -45,7 +45,9 @@ import ChecklistContext from "../../context/ChecklistContext";
 const ThucHienChecklist = ({ navigation }) => {
   const ref = useRef(null);
   const dispath = useDispatch();
-  const { ent_calv, ent_hangmuc, ent_calv_chuky } = useSelector((state) => state.entReducer);
+  const { ent_calv, ent_hangmuc, ent_calv_chuky } = useSelector(
+    (state) => state.entReducer
+  );
   const { tb_checklistc } = useSelector((state) => state.tbReducer);
   const { user, authToken } = useSelector((state) => state.authReducer);
   const { setDataChecklists, setKhuVucFilterByIDChecklistC, setHangMucFilterByIDChecklistC } = useContext(DataContext);
@@ -134,17 +136,11 @@ const ThucHienChecklist = ({ navigation }) => {
     await AsyncStorage.removeItem("checkNetwork");
   };
 
-  useEffect(() => {
-    init_ca();
-    int_checklistc();
-  }, []);
-
   useFocusEffect(
     useCallback(() => {
-      // init_ca();
       loadData();
+      init_ca();
       int_checklistc();
-
       return () => {};
     }, [dispath])
   );
@@ -264,7 +260,6 @@ const ThucHienChecklist = ({ navigation }) => {
           ]);
         })
         .catch((error) => {
-          console.log("error", error.response);
           setLoadingSubmit(false);
           // Handle the error appropriately, e.g., displaying an error message
           if (error.response) {
@@ -346,7 +341,7 @@ const ThucHienChecklist = ({ navigation }) => {
               response.data.data.ID_ChecklistC,
               response.data.data.ID_KhoiCV,
               response.data.data.ID_ThietLapCa,
-              response.data.data.ID_Hangmucs,
+              response.data.data.ID_Hangmucs
             );
           });
       } catch (error) {
@@ -511,17 +506,19 @@ const ThucHienChecklist = ({ navigation }) => {
   };
 
   useEffect(() => {
-    const backAction = () => {
-      if (modalVisible) {
-        handleClosePopUp();
-        return true;
-      }
-      return false;
-    };
+    if (Platform.OS === "android") {
+      const backAction = () => {
+        if (modalVisible) {
+          handleClosePopUp();
+          return true;
+        }
+        return false;
+      };
 
     const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
 
-    return () => backHandler.remove();
+      return () => backHandler.remove();
+    }
   }, [modalVisible]);
 
   return (

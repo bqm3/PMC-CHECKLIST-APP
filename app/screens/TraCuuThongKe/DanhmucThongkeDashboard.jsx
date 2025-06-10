@@ -8,7 +8,7 @@ import {
   ActivityIndicator,
   ImageBackground,
 } from "react-native";
-import moment from 'moment';
+import moment from "moment";
 import { BASE_URL } from "../../constants/config";
 import axiosClient from "../../api/axiosClient";
 import { DataTable } from "react-native-paper";
@@ -21,7 +21,6 @@ const headerList = [
   { til: "Làm sạch", width: 70 },
   { til: "Dịch vụ", width: 70 },
   { til: "An ninh", width: 70 },
-  { til: "F&B", width: 70 },
 ];
 
 const DanhmucThongkeDashBoard = () => {
@@ -60,9 +59,6 @@ const DanhmucThongkeDashBoard = () => {
             : "",
           "Khối an ninh": project.createdKhois["Khối an ninh"]?.completionRatio
             ? `${project.createdKhois["Khối an ninh"].completionRatio} %`
-            : "",
-          "Khối F&B": project.createdKhois["Khối F&B"]?.completionRatio
-            ? `${project.createdKhois["Khối F&B"].completionRatio} %`
             : "",
         }));
 
@@ -118,7 +114,7 @@ const DanhmucThongkeDashBoard = () => {
                           justifyContent: "center",
                         }}
                       >
-                        {moment(item.date).format('DD-MM-YY')}
+                        {moment(item.date).format("DD-MM-YY")}
                       </DataTable.Cell>
                       <DataTable.Cell
                         style={{
@@ -155,15 +151,6 @@ const DanhmucThongkeDashBoard = () => {
                         }}
                       >
                         {item["Khối an ninh"]}
-                      </DataTable.Cell>
-                      <DataTable.Cell
-                        style={{
-                          width: headerList[5].width,
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        {item["Khối F&B"]}
                       </DataTable.Cell>
                     </DataTable.Row>
                   ))}

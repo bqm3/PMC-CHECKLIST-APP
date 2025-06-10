@@ -12,11 +12,13 @@ const CustomAlertModal = ({ isVisible, title, message, onConfirm }) => {
       <View style={styles.modalContent}>
         <Text style={styles.title}>{title}</Text>
         <View style={styles.messageContainer}>
-          {typeof message === "string" ? (
-            <Text style={styles.message}>{message}</Text>
-          ) : (
-            <Text style={styles.message}>{message}</Text>
-          )}
+          <View style={styles.messageContainer}>
+            {typeof message === "string" ? (
+              <Text style={styles.message}>{message}</Text>
+            ) : (
+              message // đây là JSX, ví dụ: <RenderHTML ... />
+            )}
+          </View>
         </View>
         <View style={styles.buttonContainer}>
           <ButtonSubmit

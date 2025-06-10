@@ -34,7 +34,7 @@ const ModalPopupDetailChecklist = ({
   handleClearBottom,
   user,
   setWidthModal,
-  setHeightModal
+  setHeightModal,
 }) => {
   const ref = useRef(null);
   const [step, setStep] = useState(1);
@@ -48,8 +48,8 @@ const ModalPopupDetailChecklist = ({
   const [isProcessing, setIsProcessing] = useState(false);
   const [flashMode, setFlashMode] = useState(false);
   const cameraRef = useRef(null);
+  const isOnlyNumber = dataItem?.ID_Phanhe === 3 && dataItem?.isCheck === 1;
   let newImageItem = [];
-
   const pickImage = async () => {
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
 
@@ -57,14 +57,13 @@ const ModalPopupDetailChecklist = ({
       alert("You've refused to allow this app to access your camera!");
       return;
     }
-    
+
     if (Platform.OS === "android") {
-      setWidthModal("100%")
-      setHeightModal("90%")
+      setWidthModal("100%");
+      setHeightModal("90%");
       setCamera(true);
       return;
     }
-   
 
     try {
       const result = await ImagePicker.launchCameraAsync({
@@ -74,13 +73,6 @@ const ModalPopupDetailChecklist = ({
       if (!result.canceled) {
         const originalImage = result.assets[0];
 
-        // Resize and compress the image
-        // const resizedImage = await ImageManipulator.manipulateAsync(
-        //   originalImage.uri,
-        //   [{ resize: { width: originalImage.width / 5 } }],
-        //   { compress: 1, format: "png" }
-        // );
-  
         // Update the state with the resized image, ensuring no more than 5 images
         setImages((prevImages) => {
           if (prevImages.length < 5) {
@@ -88,7 +80,7 @@ const ModalPopupDetailChecklist = ({
           }
           return prevImages;
         });
-  
+
         const newImageItem = [...images, originalImage];
         handleItemClick(newImageItem, "option", "Anh", dataItem);
       }
@@ -136,7 +128,7 @@ const ModalPopupDetailChecklist = ({
 
     try {
       setIsProcessing(true);
-      const photo = await cameraRef.current.takePictureAsync(); 
+      const photo = await cameraRef.current.takePictureAsync();
 
       // Tạo tên file ngẫu nhiên
       const fileName = `photo_${Date.now()}.jpg`;
@@ -171,17 +163,17 @@ const ModalPopupDetailChecklist = ({
     } catch (error) {
       console.error("Error processing image:", error);
     } finally {
-      turnOffCamera()
+      turnOffCamera();
     }
   };
 
   const turnOffCamera = () => {
-    setWidthModal("90%")
-    setHeightModal("auto")
+    setWidthModal("90%");
+    setHeightModal("auto");
     setIsProcessing(false);
     setFlashMode(false);
     setCamera(false);
-  }
+  };
 
   const toggleFlash = () => {
     // Chuyển đổi chế độ flash
@@ -206,7 +198,6 @@ const ModalPopupDetailChecklist = ({
               width: "100%",
             }}
           >
-
             <TouchableOpacity style={styles.flashButton} onPress={toggleFlash}>
               <MaterialIcons
                 name={flashMode ? "flash-on" : "flash-off"}
@@ -249,256 +240,289 @@ const ModalPopupDetailChecklist = ({
       <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
         <View
           style={{
-            width: SIZES.width * 0.8,
-            height: "auto",
+            // flex: 1, // <-- Đảm bảo full screen để bắt được nhấn ra ngoài
+            alignItems: "center", // để View con vào giữa nếu muốn
             justifyContent: "center",
-            alignContent: "center",
           }}
         >
-          {step == 1 &&
-            (`${dataItem?.isCheck}` === "0" ? (
-              <View>
-                <Text allowFontScaling={false} style={styles.text}>
-                  Trạng thái
-                </Text>
-                <SelectDropdown
-                  ref={ref}
-                  data={
-                    dataItem?.Giatrinhan
-                      ? dataItem?.Giatrinhan.map((it) => it.trim())
-                      : []
-                  }
-                  buttonStyle={styles.select}
-                  dropdownStyle={{
-                    borderRadius: 8,
-                    maxHeight: 400,
-                  }}
-                  // rowStyle={{ height: 50, justifyContent: "center" }}
-                  defaultButtonText={"Trạng thái"}
-                  buttonTextStyle={styles.customText}
-                  defaultValue={defaultChecklist}
-                  onSelect={(selectedItem, i) => {
-                    dataItem.valueCheck = selectedItem.trim();
-                    handleItemClick(
-                      selectedItem.trim(),
-                      "option",
-                      "valueCheck",
-                      dataItem
-                    );
-                    setDefaultChecklist(selectedItem.trim());
-                  }}
-                  renderDropdownIcon={(isOpened) => {
-                    return (
-                      <FontAwesome
-                        name={isOpened ? "chevron-up" : "chevron-down"}
-                        color={"#637381"}
-                        size={14}
-                        style={{ marginRight: 10 }}
-                      />
-                    );
-                  }}
-                  dropdownIconPosition={"right"}
-                  buttonTextAfterSelection={(selectedItem, index) => {
-                    return (
-                      <View
-                        style={{
-                          justifyContent: "center",
-                          alignContent: "center",
-                          height: 50,
-                        }}
-                      >
-                        <Text allowFontScaling={false} style={[styles.text]}>
-                          {selectedItem}
-                        </Text>
-                      </View>
-                    );
-                  }}
-                  renderCustomizedRowChild={(item, index) => {
-                    return (
-                      <VerticalSelect
-                        value={item}
-                        label={item}
-                        key={item}
-                        selectedItem={defaultChecklist}
-                      />
-                    );
-                  }}
-                />
-              </View>
-            ) : (
-              <View>
-                <Text allowFontScaling={false} style={styles.text}>
-                  Chỉ số
-                </Text>
-                <TextInput
-                  allowFontScaling={false}
-                  value={chiso}
-                  placeholder="Thêm chỉ số"
-                  placeholderTextColor="gray"
-                  blurOnSubmit={true}
-                  onChangeText={(text) => {
-                    setChiso(text);
-                  }}
-                  style={styles.textInput}
-                />
-              </View>
-            ))}
-
-          {step == 1 && (
-            <>
-              <View style={{ marginTop: 10 }}>
-                <Button
-                  onPress={() => setStep(2)}
-                  backgroundColor={COLORS.bg_white}
-                  border={COLORS.bg_button}
-                  color={"black"}
-                  text={"Chụp ảnh, Ghi chú"}
-                  width={"100%"}
-                />
-              </View>
-            </>
-          )}
-          {step == 1 && (
-            <View style={{ marginTop: 10 }}>
-              <Button
-                onPress={() => {
-                  setData();
-                  handleItemClick(objData, "close", objData, dataItem);
-                  close();
-                }}
-                backgroundColor={COLORS.bg_button}
-                border={COLORS.bg_button}
-                color={"white"}
-                text={"Hoàn thành"}
-                width={"100%"}
-              />
-            </View>
-          )}
-          {step == 2 && (
-            <>
-              <View
-                style={{
-                  width: SIZES.width * 0.8,
-                  height: "auto",
-                  justifyContent: "center",
-                  alignContent: "center",
-                  // padding
-                }}
-              >
+          <View
+            style={{
+              width: SIZES.width * 0.8,
+              height: "auto",
+              justifyContent: "center",
+              alignContent: "center",
+            }}
+          >
+            {step == 1 &&
+              (`${dataItem?.isCheck}` === "0" ? (
                 <View>
                   <Text allowFontScaling={false} style={styles.text}>
-                    Ghi chú
+                    Trạng thái
+                  </Text>
+                  <SelectDropdown
+                    ref={ref}
+                    data={
+                      dataItem?.Giatrinhan
+                        ? dataItem?.Giatrinhan.map((it) => it.trim())
+                        : []
+                    }
+                    buttonStyle={styles.select}
+                    dropdownStyle={{
+                      borderRadius: 8,
+                      maxHeight: 400,
+                    }}
+                    // rowStyle={{ height: 50, justifyContent: "center" }}
+                    defaultButtonText={"Trạng thái"}
+                    buttonTextStyle={styles.customText}
+                    defaultValue={defaultChecklist}
+                    onSelect={(selectedItem, i) => {
+                      dataItem.valueCheck = selectedItem.trim();
+                      handleItemClick(
+                        selectedItem.trim(),
+                        "option",
+                        "valueCheck",
+                        dataItem
+                      );
+                      setDefaultChecklist(selectedItem.trim());
+                    }}
+                    renderDropdownIcon={(isOpened) => {
+                      return (
+                        <FontAwesome
+                          name={isOpened ? "chevron-up" : "chevron-down"}
+                          color={"#637381"}
+                          size={14}
+                          style={{ marginRight: 10 }}
+                        />
+                      );
+                    }}
+                    dropdownIconPosition={"right"}
+                    buttonTextAfterSelection={(selectedItem, index) => {
+                      return (
+                        <View
+                          style={{
+                            justifyContent: "center",
+                            alignContent: "center",
+                            height: 50,
+                          }}
+                        >
+                          <Text allowFontScaling={false} style={[styles.text]}>
+                            {selectedItem}
+                          </Text>
+                        </View>
+                      );
+                    }}
+                    renderCustomizedRowChild={(item, index) => {
+                      return (
+                        <VerticalSelect
+                          value={item}
+                          label={item}
+                          key={item}
+                          selectedItem={defaultChecklist}
+                        />
+                      );
+                    }}
+                  />
+                </View>
+              ) : (
+                <View>
+                  <Text allowFontScaling={false} style={styles.text}>
+                    Chỉ số
                   </Text>
                   <TextInput
                     allowFontScaling={false}
-                    value={ghichu}
-                    placeholder="Thêm ghi chú"
+                    value={chiso}
+                    placeholder="Thêm chỉ số"
                     placeholderTextColor="gray"
-                    multiline={true}
                     blurOnSubmit={true}
+                    keyboardType={isOnlyNumber ? "numeric" : "default"}
                     onChangeText={(text) => {
-                      setGhichu(text);
+                      if (isOnlyNumber) {
+                        let numericText = text.replace(/[^0-9.,]/g, "");
+
+                        // Chỉ giữ 1 dấu '.' đầu tiên nếu có nhiều dấu
+                        const firstDot = numericText.indexOf(".");
+                        if (firstDot !== -1) {
+                          numericText =
+                            numericText.slice(0, firstDot + 1) +
+                            numericText.slice(firstDot + 1).replace(/[.]/g, "");
+                        }
+
+                        // Tương tự cho dấu ','
+                        const firstComma = numericText.indexOf(",");
+                        if (firstComma !== -1) {
+                          numericText =
+                            numericText.slice(0, firstComma + 1) +
+                            numericText
+                              .slice(firstComma + 1)
+                              .replace(/[,]/g, "");
+                        }
+
+                        setChiso(numericText);
+                      } else {
+                        setChiso(text);
+                      }
                     }}
-                    style={[
-                      styles.textInput,
-                      {
-                        paddingHorizontal: 10,
-                        height: 70,
-                        textAlignVertical: "top",
-                      },
-                    ]}
+                    style={styles.textInput}
                   />
                 </View>
-                <View>
-                  <Text allowFontScaling={false} style={styles.text}>
-                    Chụp ảnh
-                  </Text>
-                  <View style={{ flexDirection: "row", marginBottom: 5 }}>
-                    <TouchableOpacity
-                      style={{
-                        backgroundColor: "white",
-                        padding: SIZES.padding,
-                        borderRadius: SIZES.borderRadius,
-                        borderColor: COLORS.bg_button,
-                        borderWidth: 1,
-                        width: 60,
-                        alignItems: "center",
-                        justifyContent: "center",
-                        height: 60,
-                        marginEnd: 10,
-                      }}
-                      onPress={() => pickImage()}
-                    >
-                      <Entypo name="camera" size={15} color="black" />
-                    </TouchableOpacity>
-                    <ScrollView horizontal>
-                      {images.map((img, index) => (
-                        <View key={index} style={{ marginEnd: 10 }}>
-                          <Image
-                            source={{ uri: img.uri }}
-                            style={{
-                              width: 100,
-                              height: 140,
-                              position: "relative",
-                              opacity: 0.8,
-                            }}
-                          />
-                          <TouchableOpacity
-                            style={{
-                              position: "absolute",
-                              top: 40,
-                              left: 30,
-                              width: 50,
-                              height: 50,
-                              justifyContent: "center",
-                              alignItems: "center",
-                            }}
-                            onPress={() => removeImage(index)}
-                          >
-                            <FontAwesome
-                              name="remove"
-                              size={adjust(30)}
-                              color="white"
-                            />
-                          </TouchableOpacity>
-                        </View>
-                      ))}
-                    </ScrollView>
-                  </View>
-                </View>
+              ))}
+
+            {step == 1 && (
+              <>
                 <View style={{ marginTop: 10 }}>
                   <Button
-                    onPress={() => {
-                      setData();
-                      handleItemClick(objData, "close", objData, dataItem);
-                      close();
-                    }}
-                    backgroundColor={COLORS.bg_button}
+                    onPress={() => setStep(2)}
+                    backgroundColor={COLORS.bg_white}
                     border={COLORS.bg_button}
-                    color={"white"}
-                    text={"Hoàn thành"}
+                    color={"black"}
+                    text={"Chụp ảnh, Ghi chú"}
                     width={"100%"}
                   />
                 </View>
+              </>
+            )}
+            {step == 1 && (
+              <View style={{ marginTop: 10 }}>
+                <Button
+                  onPress={() => {
+                    setData();
+                    handleItemClick(objData, "close", objData, dataItem);
+                    close();
+                  }}
+                  backgroundColor={COLORS.bg_button}
+                  border={COLORS.bg_button}
+                  color={"white"}
+                  text={"Hoàn thành"}
+                  width={"100%"}
+                />
               </View>
-            </>
-          )}
+            )}
+            {step == 2 && (
+              <>
+                <View
+                  style={{
+                    width: SIZES.width * 0.8,
+                    height: "auto",
+                    justifyContent: "center",
+                    alignContent: "center",
+                    // padding
+                  }}
+                >
+                  <View>
+                    <Text allowFontScaling={false} style={styles.text}>
+                      Ghi chú
+                    </Text>
+                    <TextInput
+                      allowFontScaling={false}
+                      value={ghichu}
+                      placeholder="Thêm ghi chú"
+                      placeholderTextColor="gray"
+                      multiline={true}
+                      blurOnSubmit={true}
+                      onChangeText={(text) => {
+                        setGhichu(text);
+                      }}
+                      style={[
+                        styles.textInput,
+                        {
+                          paddingHorizontal: 10,
+                          height: 70,
+                          textAlignVertical: "top",
+                        },
+                      ]}
+                    />
+                  </View>
+                  <View>
+                    <Text allowFontScaling={false} style={styles.text}>
+                      Chụp ảnh
+                    </Text>
+                    <View style={{ flexDirection: "row", marginBottom: 5 }}>
+                      <TouchableOpacity
+                        style={{
+                          backgroundColor: "white",
+                          padding: SIZES.padding,
+                          borderRadius: SIZES.borderRadius,
+                          borderColor: COLORS.bg_button,
+                          borderWidth: 1,
+                          width: 60,
+                          alignItems: "center",
+                          justifyContent: "center",
+                          height: 60,
+                          marginEnd: 10,
+                        }}
+                        onPress={() => pickImage()}
+                      >
+                        <Entypo name="camera" size={15} color="black" />
+                      </TouchableOpacity>
+                      <ScrollView horizontal>
+                        {images.map((img, index) => (
+                          <View key={index} style={{ marginEnd: 10 }}>
+                            <Image
+                              source={{ uri: img.uri }}
+                              style={{
+                                width: 100,
+                                height: 140,
+                                position: "relative",
+                                opacity: 0.8,
+                              }}
+                            />
+                            <TouchableOpacity
+                              style={{
+                                position: "absolute",
+                                top: 40,
+                                left: 30,
+                                width: 50,
+                                height: 50,
+                                justifyContent: "center",
+                                alignItems: "center",
+                              }}
+                              onPress={() => removeImage(index)}
+                            >
+                              <FontAwesome
+                                name="remove"
+                                size={adjust(30)}
+                                color="white"
+                              />
+                            </TouchableOpacity>
+                          </View>
+                        ))}
+                      </ScrollView>
+                    </View>
+                  </View>
+                  <View style={{ marginTop: 10 }}>
+                    <Button
+                      onPress={() => {
+                        setData();
+                        handleItemClick(objData, "close", objData, dataItem);
+                        close();
+                      }}
+                      backgroundColor={COLORS.bg_button}
+                      border={COLORS.bg_button}
+                      color={"white"}
+                      text={"Hoàn thành"}
+                      width={"100%"}
+                    />
+                  </View>
+                </View>
+              </>
+            )}
 
-          <View style={{ marginTop: 10 }}>
-            <Button
-              onPress={() => {
-                step == 1
-                  ? close()
-                  : (setStep(1),
-                    setData(),
-                    handleItemClick(objData, "close", objData, dataItem));
-              }}
-              backgroundColor={step == 1 ? COLORS.bg_button : COLORS.bg_white}
-              border={COLORS.bg_button}
-              color={step == 1 ? "white" : "black"}
-              text={step == 1 ? "Đóng" : "Quay lại"}
-              width={"100%"}
-            />
+            <View style={{ marginTop: 10 }}>
+              <Button
+                onPress={() => {
+                  step == 1
+                    ? close()
+                    : (setStep(1),
+                      setData(),
+                      handleItemClick(objData, "close", objData, dataItem));
+                }}
+                backgroundColor={step == 1 ? COLORS.bg_button : COLORS.bg_white}
+                border={COLORS.bg_button}
+                color={step == 1 ? "white" : "black"}
+                text={step == 1 ? "Đóng" : "Quay lại"}
+                width={"100%"}
+              />
+            </View>
           </View>
         </View>
       </TouchableWithoutFeedback>

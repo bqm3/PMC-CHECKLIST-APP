@@ -5,7 +5,7 @@ import RenderHTML from "react-native-render-html";
 import { useWindowDimensions } from "react-native";
 
 // const WarningBox = ({ title, content, style }) => {
-  const WarningBox = ({ title = "Cảnh báo", content = "", style = {} }) => {
+const WarningBox = ({ title = "Cảnh báo", content = "", style = {} }) => {
   const [expanded, setExpanded] = useState(false);
   const { width } = useWindowDimensions(); // Lấy chiều rộng màn hình để hiển thị HTML phù hợp
 
@@ -28,7 +28,9 @@ import { useWindowDimensions } from "react-native";
       {/* Nút "Chi tiết..." / "Thu gọn" */}
       {content && (
         <TouchableOpacity onPress={() => setExpanded(!expanded)}>
-          <Text style={styles.toggleText}>{expanded ? "Thu gọn" : "Chi tiết ..."}</Text>
+          <Text style={styles.toggleText}>
+            {expanded ? "Thu gọn" : "Chi tiết ..."}
+          </Text>
         </TouchableOpacity>
       )}
     </View>
@@ -41,7 +43,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFEBE5",
     borderRadius: 8,
     padding: 12,
-    marginVertical: 10,
+    marginBottom: 10,
   },
   warningHeader: {
     flexDirection: "row",

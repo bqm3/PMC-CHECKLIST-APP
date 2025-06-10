@@ -1,4 +1,11 @@
-import React, { useState, useCallback, useMemo, useRef, useEffect, useContext } from "react";
+import React, {
+  useState,
+  useCallback,
+  useMemo,
+  useRef,
+  useEffect,
+  useContext,
+} from "react";
 import {
   View,
   Text,
@@ -15,7 +22,7 @@ import {
   ScrollView,
   Image,
   BackHandler,
-  Modal
+  Modal,
 } from "react-native";
 import { useSelector } from "react-redux";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -29,9 +36,29 @@ import WarningBox from "../../components/Warning/WarningBox";
 // Field categories for grouping data fields
 const fieldCategories = {
   "Thông tin thẻ": ["Sotheotodk", "Sothexemaydk"],
-  "Thông tin kiểm kê tại quầy": ["Sltheoto", "Slthexemay", "Sltheotophanmem", "Slthexemayphanmem"],
-  "Thông tin xe": ["Slxeoto", "Slxeotodien", "Slxemay", "Slxemaydien", "Slxedap", "Slxedapdien"],
-  "Sự cố": ["Slscoto", "Slscotodien", "Slscxemay", "Slscxemaydien", "Slscxedap", "Slscxedapdien", "Slsucokhac"],
+  "Thông tin kiểm kê tại quầy": [
+    "Sltheoto",
+    "Slthexemay",
+    "Sltheotophanmem",
+    "Slthexemayphanmem",
+  ],
+  "Thông tin xe": [
+    "Slxeoto",
+    "Slxeotodien",
+    "Slxemay",
+    "Slxemaydien",
+    "Slxedap",
+    "Slxedapdien",
+  ],
+  "Sự cố": [
+    "Slscoto",
+    "Slscotodien",
+    "Slscxemay",
+    "Slscxemaydien",
+    "Slscxedap",
+    "Slscxedapdien",
+    "Slsucokhac",
+  ],
   "Thông tin khác": ["QuansoTT", "QuansoDB", "Slcongto"],
   "Doanh thu": ["Doanhthu"],
   "Ghi chú": ["Ghichu"],
@@ -119,7 +146,9 @@ const TaoBaoCaoP0 = ({ navigation, route }) => {
 
   useEffect(() => {
     setTotalCars((report.Sltheoto || 0) + (report.Sltheotophanmem || 0));
-    setTotalMotorcycles((report.Slthexemay || 0) + (report.Slthexemayphanmem || 0));
+    setTotalMotorcycles(
+      (report.Slthexemay || 0) + (report.Slthexemayphanmem || 0)
+    );
   }, [report]);
 
   useEffect(() => {
@@ -161,14 +190,21 @@ const TaoBaoCaoP0 = ({ navigation, route }) => {
   };
 
   const handleChange = useCallback((id, value) => {
-    setP0_Data((prevState) => prevState.map((item) => (item.id === id ? { ...item, value: value } : item)));
+    setP0_Data((prevState) =>
+      prevState.map((item) =>
+        item.id === id ? { ...item, value: value } : item
+      )
+    );
   }, []);
 
   const showAlert = (message, key = false) => {
     Alert.alert("PMC Thông báo", message, [
       {
         text: "Xác nhận",
-        onPress: () => (key ? navigation.navigate("Báo cáo S0") : console.log("Cancel Pressed")),
+        onPress: () =>
+          key
+            ? navigation.navigate("Báo cáo S0")
+            : console.log("Cancel Pressed"),
         style: "cancel",
       },
     ]);
@@ -189,24 +225,33 @@ const TaoBaoCaoP0 = ({ navigation, route }) => {
 
   const getSoThe = async () => {
     try {
-      const res = await axios.get(`${BASE_URL}/s0-thaydoithe/${user?.ID_Duan}`, {
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${authToken}`,
-        },
-      });
+      const res = await axios.get(
+        `${BASE_URL}/s0-thaydoithe/${user?.ID_Duan}`,
+        {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
 
       setP0_Data((prevData) =>
         prevData.map((item) => {
           if (item.key === "Sotheotodk")
             return {
               ...item,
-              value: `${res.data?.data?.sltheoto}` != `null` ? `${res.data?.data?.sltheoto}` : "0",
+              value:
+                `${res.data?.data?.sltheoto}` != `null`
+                  ? `${res.data?.data?.sltheoto}`
+                  : "0",
             };
           if (item.key === "Sothexemaydk")
             return {
               ...item,
-              value: `${res.data?.data?.slthexemay}` != `null` ? `${res.data?.data?.slthexemay}` : "0",
+              value:
+                `${res.data?.data?.slthexemay}` != `null`
+                  ? `${res.data?.data?.slthexemay}`
+                  : "0",
             };
           return item;
         })
@@ -237,10 +282,16 @@ const TaoBaoCaoP0 = ({ navigation, route }) => {
       }
     } catch (error) {
       if (error.response) {
-        showAlert(error.response.data?.message || "Lỗi từ máy chủ. Vui lòng thử lại", false);
+        showAlert(
+          error.response.data?.message || "Lỗi từ máy chủ. Vui lòng thử lại",
+          false
+        );
       } else if (error.request) {
         // Lỗi kết nối
-        showAlert("Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối", false);
+        showAlert(
+          "Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối",
+          false
+        );
       } else {
         // Lỗi khác
         showAlert("Đã có lỗi xảy ra. Vui lòng thử lại", false);
@@ -258,9 +309,26 @@ const TaoBaoCaoP0 = ({ navigation, route }) => {
     let check = false;
     const arrKhoiParsed = user?.arr_Khoi?.split(",").map(Number);
 
-    if ((user?.ID_KhoiCV == 4 || arrKhoiParsed.includes(4))&& ["Sltheoto", "Slthexemay", "Sltheotophanmem", "Slthexemayphanmem"].includes(fieldKey)) {
+    if (
+      (user?.ID_KhoiCV == 4 || arrKhoiParsed.includes(4)) &&
+      [
+        "Sltheoto",
+        "Slthexemay",
+        "Sltheotophanmem",
+        "Slthexemayphanmem",
+      ].includes(fieldKey)
+    ) {
       check = true;
-    } else if ((user?.ID_KhoiCV == 3 || arrKhoiParsed.includes(3))&& !["Sltheoto", "Slthexemay", "Sltheotophanmem", "Slthexemayphanmem", "Doanhthu"].includes(fieldKey)) {
+    } else if (
+      (user?.ID_KhoiCV == 3 || arrKhoiParsed.includes(3)) &&
+      ![
+        "Sltheoto",
+        "Slthexemay",
+        "Sltheotophanmem",
+        "Slthexemayphanmem",
+        "Doanhthu",
+      ].includes(fieldKey)
+    ) {
       check = true;
     } else if (user?.ID_KhoiCV == null) {
       check = true;
@@ -311,7 +379,16 @@ const TaoBaoCaoP0 = ({ navigation, route }) => {
                     },
                   ]}
                 >
-                  <Text  ellipsizeMode="tail" numberOfLines={2} style={[styles.itemTitle, { color: editable(fieldKey) ? "black" : "white" ,}]}>{fieldLabels[fieldKey]}</Text>
+                  <Text
+                    ellipsizeMode="tail"
+                    numberOfLines={2}
+                    style={[
+                      styles.itemTitle,
+                      { color: editable(fieldKey) ? "black" : "white" },
+                    ]}
+                  >
+                    {fieldLabels[fieldKey]}
+                  </Text>
                   <TextInput
                     style={[
                       styles.input,
@@ -338,8 +415,15 @@ const TaoBaoCaoP0 = ({ navigation, route }) => {
 
   return (
     <GestureHandlerRootView style={styles.flex}>
-      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.flex}>
-        <ImageBackground source={require("../../../assets/bg.png")} resizeMode="cover" style={styles.flex}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.flex}
+      >
+        <ImageBackground
+          source={require("../../../assets/bg.png")}
+          resizeMode="cover"
+          style={styles.flex}
+        >
           <ScrollView
             ref={scrollViewRef}
             keyboardShouldPersistTaps="handled"
@@ -347,10 +431,18 @@ const TaoBaoCaoP0 = ({ navigation, route }) => {
             contentContainerStyle={styles.scrollContent}
           >
             {/* Render each category */}
-            {Object.keys(fieldCategories).map((category, index) => category !== "Ghi chú" && renderCategory(category, index))}
+            {Object.keys(fieldCategories).map(
+              (category, index) =>
+                category !== "Ghi chú" && renderCategory(category, index)
+            )}
 
             {/* Render Ghi chú separately */}
-            <TouchableOpacity ref={noteContainerRef} style={styles.noteContainer} onPress={handleNotePress} activeOpacity={1}>
+            <TouchableOpacity
+              ref={noteContainerRef}
+              style={styles.noteContainer}
+              onPress={handleNotePress}
+              activeOpacity={1}
+            >
               <Text style={styles.categoryTitle}>Ghi chú</Text>
               <TextInput
                 ref={noteInputRef}
@@ -372,7 +464,9 @@ const TaoBaoCaoP0 = ({ navigation, route }) => {
             <WarningBox
               title="Số lượng thẻ xe ô tô không khớp"
               content={`
-                <span><strong>Tổng:</strong> Thẻ ô tô chưa sử dụng (${report.Sltheoto}) + thẻ ô tô sử dụng trên phần mềm (${report.Sltheotophanmem})
+                <span><strong>Tổng:</strong> Thẻ ô tô chưa sử dụng (${
+                  report.Sltheoto
+                }) + thẻ ô tô sử dụng trên phần mềm (${report.Sltheotophanmem})
                 = ${report.Slxeoto + report.Sltheotophanmem}</span></br>
                 <span>Số thẻ ô tô đã bàn giao = ${report.Sotheotodk}</span></br>
                 <span style="color:red;">Vui lòng kiểm tra lại dữ liệu trước khi gửi</span>
@@ -385,9 +479,15 @@ const TaoBaoCaoP0 = ({ navigation, route }) => {
             <WarningBox
               title="Số lượng thẻ xe máy không khớp"
               content={`
-                <span><strong>Tổng:</strong> Thẻ xe máy chưa sử dụng (${report.Slthexemay}) + thẻ xe máy sử dụng trên phần mềm (${report.Slthexemayphanmem})
+                <span><strong>Tổng:</strong> Thẻ xe máy chưa sử dụng (${
+                  report.Slthexemay
+                }) + thẻ xe máy sử dụng trên phần mềm (${
+                report.Slthexemayphanmem
+              })
                 = ${report.Slthexemay + report.Slthexemayphanmem}</span></br>
-                <span>Số thẻ xe máy đã bàn giao = ${report.Sothexemaydk}</span></br>
+                <span>Số thẻ xe máy đã bàn giao = ${
+                  report.Sothexemaydk
+                }</span></br>
                 <span style="color:red;">Vui lòng kiểm tra lại dữ liệu trước khi gửi</span>
               `}
               style={{ marginHorizontal: 10 }}
@@ -466,10 +566,10 @@ const styles = StyleSheet.create({
   },
   submitButton: {
     backgroundColor: COLORS.bg_button,
-    paddingVertical: 15,
-    marginHorizontal: 15,
+    paddingVertical: 12,
+    marginHorizontal: 10,
     borderRadius: 8,
-    marginTop: 20,
+    marginTop: 10,
     marginBottom: 20,
     alignItems: "center",
   },
