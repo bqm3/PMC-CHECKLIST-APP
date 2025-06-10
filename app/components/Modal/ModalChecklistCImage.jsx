@@ -1,16 +1,4 @@
-import {
-  ScrollView,
-  StyleSheet,
-  Alert,
-  Text,
-  View,
-  TextInput,
-  TouchableOpacity,
-  KeyboardAvoidingView,
-  Platform,
-  Image,
-  Modal,
-} from "react-native";
+import { ScrollView, StyleSheet, Alert, Text, View, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, Image, Modal } from "react-native";
 import { WebView } from "react-native-webview";
 import React, { useRef, useState, useEffect } from "react";
 import { FontAwesome, Entypo } from "@expo/vector-icons";
@@ -20,25 +8,19 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import moment from "moment";
 import * as ImagePicker from "expo-image-picker";
 import * as Location from "expo-location";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const ModalChecklistCImage = ({
-  handlePushDataSave,
-  isLoading,
-  handleChangeImages,
-  dataImages,
-  handlePushDataImagesSave,
-  newActionCheckList,
-}) => {
+const ModalChecklistCImage = ({ handlePushDataSave, isLoading, handleChangeImages, dataImages, handlePushDataImagesSave, newActionCheckList }) => {
   const date = new Date();
   const dateHour = moment(date).format("LTS");
-  const [image1, setImage1] = useState(newActionCheckList[0]?.Anh1);
-  const [image2, setImage2] = useState(newActionCheckList[0]?.Anh2);
-  const [image3, setImage3] = useState(newActionCheckList[0]?.Anh3);
-  const [image4, setImage4] = useState(newActionCheckList[0]?.Anh4);
-  const [openImage1, setOpenImage1] = useState(false);
-  const [openImage2, setOpenImage2] = useState(false);
-  const [openImage3, setOpenImage3] = useState(false);
-  const [openImage4, setOpenImage4] = useState(false);
+  const [image1, setImage1] = useState(newActionCheckList[0]?.Anh1 || null);
+  const [image2, setImage2] = useState(newActionCheckList[0]?.Anh2 || null);
+  const [image3, setImage3] = useState(newActionCheckList[0]?.Anh3 || null);
+  const [image4, setImage4] = useState(newActionCheckList[0]?.Anh4 || null);
+  // const [openImage1, setOpenImage1] = useState(false);
+  // const [openImage2, setOpenImage2] = useState(false);
+  // const [openImage3, setOpenImage3] = useState(false);
+  // const [openImage4, setOpenImage4] = useState(false);
 
   const [image, setImage] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
@@ -46,6 +28,37 @@ const ModalChecklistCImage = ({
   const [location, setLocation] = useState(null);
   const [address, setAddress] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
+
+  useEffect(() => {
+    loadImagesFromStorage();
+  }, []);
+
+  useEffect(() => {
+    if (newActionCheckList[0]) {
+      if (newActionCheckList[0].Anh1) {
+        setImage1(newActionCheckList[0].Anh1);
+        // setOpenImage1(true);
+      }
+      if (newActionCheckList[0].Anh2) {
+        setImage2(newActionCheckList[0].Anh2);
+        // setOpenImage2(true);
+      }
+      if (newActionCheckList[0].Anh3) {
+        setImage3(newActionCheckList[0].Anh3);
+        // setOpenImage3(true);
+      }
+      if (newActionCheckList[0].Anh4) {
+        setImage4(newActionCheckList[0].Anh4);
+        // setOpenImage4(true);
+      }
+    }
+  }, [newActionCheckList]);
+
+  useEffect(() => {
+    if (image1 || image2 || image3 || image4) {
+      saveImagesToStorage();
+    }
+  }, [image1, image2, image3, image4, dataImages]);
 
   const pickImage = async (text, hour, onPress, setOpen) => {
     // Ask the user for the permission to access the camera
@@ -101,12 +114,106 @@ const ModalChecklistCImage = ({
     setImage(image);
   };
 
+  const handleDeleteImage = async (imageNumber) => {
+    try {
+      switch (imageNumber) {
+        case 1:
+          setImage1(null);
+          handleChangeImages("Anh1", null);
+          handleChangeImages("Giochupanh1", null);
+          break;
+        case 2:
+          setImage2(null);
+          handleChangeImages("Anh2", null);
+          handleChangeImages("Giochupanh2", null);
+          break;
+        case 3:
+          setImage3(null);
+          handleChangeImages("Anh3", null);
+          handleChangeImages("Giochupanh3", null);
+          break;
+        case 4:
+          setImage4(null);
+          handleChangeImages("Anh4", null);
+          handleChangeImages("Giochupanh4", null);
+          break;
+      }
+
+      // Xóa dữ liệu trong AsyncStorage
+      const savedImages = await AsyncStorage.getItem("tempChecklistImages");
+      if (savedImages) {
+        const imagesData = JSON.parse(savedImages);
+        const updatedImagesData = {
+          ...imagesData,
+          [`image${imageNumber}`]: null,
+          dataImages: {
+            ...imagesData.dataImages,
+            [`Anh${imageNumber}`]: null,
+            [`Giochupanh${imageNumber}`]: null,
+          },
+        };
+        await AsyncStorage.setItem("tempChecklistImages", JSON.stringify(updatedImagesData));
+      }
+    } catch (error) {
+      console.error("Error deleting image from storage:", error);
+    }
+  };
+
+  const saveImagesToStorage = async () => {
+    try {
+      if (
+        (image1 && typeof image1 !== "string") ||
+        (image2 && typeof image2 !== "string") ||
+        (image3 && typeof image3 !== "string") ||
+        (image4 && typeof image4 !== "string")
+      ) {
+        const imagesData = {
+          image1: image1,
+          image2: image2,
+          image3: image3,
+          image4: image4,
+          // openImage1: openImage1,
+          // openImage2: openImage2,
+          // openImage3: openImage3,
+          // openImage4: openImage4,
+          dataImages: dataImages,
+        };
+        await AsyncStorage.setItem("tempChecklistImages", JSON.stringify(imagesData));
+      }
+    } catch (error) {
+      console.error("Error saving images:", error);
+    }
+  };
+
+  const loadImagesFromStorage = async () => {
+    try {
+      const savedImages = await AsyncStorage.getItem("tempChecklistImages");
+      if (savedImages) {
+        const imagesData = JSON.parse(savedImages);
+        if (!newActionCheckList[0]?.Anh1 && imagesData.image1) setImage1(imagesData.image1);
+        if (!newActionCheckList[0]?.Anh2 && imagesData.image2) setImage2(imagesData.image2);
+        if (!newActionCheckList[0]?.Anh3 && imagesData.image3) setImage3(imagesData.image3);
+        if (!newActionCheckList[0]?.Anh4 && imagesData.image4) setImage4(imagesData.image4);
+
+        // if (imagesData.image1) setOpenImage1(true);
+        // if (imagesData.image2) setOpenImage2(true);
+        // if (imagesData.image3) setOpenImage3(true);
+        // if (imagesData.image4) setOpenImage4(true);
+
+        if (imagesData.dataImages) {
+          Object.keys(imagesData.dataImages).forEach((key) => {
+            handleChangeImages(key, imagesData.dataImages[key]);
+          });
+        }
+      }
+    } catch (error) {
+      console.error("Error loading images:", error);
+    }
+  };
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : null}
-        style={{ flex: 1 }}
-      >
+      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : null} style={{ flex: 1 }}>
         <View style={{ margin: 20 }}>
           <View style={{ justifyContent: "space-around", width: "100%" }}>
             <View
@@ -117,98 +224,78 @@ const ModalChecklistCImage = ({
               }}
             >
               <View style={{ width: "48%" }}>
-                <Text allowFontScaling={false}  style={styles.text}>
+                <Text allowFontScaling={false} style={styles.text}>
                   Ảnh 1
                 </Text>
                 <View style={styles.container}>
-                  <TouchableOpacity
-                    style={{
-                      backgroundColor: "white",
-                      padding: SIZES.padding,
-                      borderRadius: SIZES.borderRadius,
-                      borderColor: COLORS.bg_button,
-                      borderWidth: 1,
-
-                      alignItems: "center",
-                      justifyContent: "center",
-                      height: 100,
-                    }}
-                    onPress={() => {
-                      pickImage(
-                        "Anh1",
-                        "Giochupanh1",
-                        setImage1,
-                        setOpenImage1
-                      );
-                      onPressLocation();
-                    }}
-                  >
-                    <Entypo name="camera" size={24} color="black" />
-                  </TouchableOpacity>
-
-                  {image1 !== null && openImage1 === true && (
-                    <Image
-                      source={{ uri: image1.uri ? image1.uri : image1 }}
-                      style={styles.image}
-                    />
-                  )}
-                  {image1 === null && <></>}
-                  {image1 !== null && openImage1 === false && (
+                  {image1 === null ? (
                     <TouchableOpacity
-                      style={styles.buttonImage}
-                      onPress={() => handleWebView(image1)}
+                      style={styles.cameraButton}
+                      onPress={() => {
+                        pickImage("Anh1", "Giochupanh1", setImage1);
+                        onPressLocation();
+                      }}
                     >
-                      <Text allowFontScaling={false}  style={styles.textImage}>
-                        Xem ảnh
-                      </Text>
+                      <Entypo name="camera" size={24} color="black" />
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity style={styles.imageContainer} onPress={() => handleWebView(image1)} activeOpacity={0.7}>
+                      <Image source={{ uri: typeof image1 === "string" ? image1 : image1?.uri }} style={styles.image} />
+                      {typeof image1 !== "string" && (
+                        <>
+                          <TouchableOpacity
+                            style={styles.retakeButton}
+                            onPress={() => {
+                              pickImage("Anh1", "Giochupanh1", setImage1);
+                              onPressLocation();
+                            }}
+                          >
+                            <Text style={styles.retakeText}>Chụp lại</Text>
+                          </TouchableOpacity>
+                          <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteImage(1)}>
+                            <Text style={styles.deleteText}>X</Text>
+                          </TouchableOpacity>
+                        </>
+                      )}
                     </TouchableOpacity>
                   )}
                 </View>
               </View>
 
               <View style={{ width: "48%" }}>
-                <Text allowFontScaling={false}  style={styles.text}>
+                <Text allowFontScaling={false} style={styles.text}>
                   Ảnh 2
                 </Text>
                 <View style={styles.container}>
-                  <TouchableOpacity
-                    style={{
-                      backgroundColor: "white",
-                      padding: SIZES.padding,
-                      borderRadius: SIZES.borderRadius,
-                      borderColor: COLORS.bg_button,
-                      borderWidth: 1,
-                      alignItems: "center",
-                      justifyContent: "center",
-                      height: 100,
-                    }}
-                    onPress={() => {
-                      pickImage(
-                        "Anh2",
-                        "Giochupanh2",
-                        setImage2,
-                        setOpenImage2
-                      );
-                      onPressLocation();
-                    }}
-                  >
-                    <Entypo name="camera" size={24} color="black" />
-                  </TouchableOpacity>
-                  {image2 !== null && openImage2 === true && (
-                    <Image
-                      source={{ uri: image2.uri ? image2.uri : image2 }}
-                      style={styles.image}
-                    />
-                  )}
-                  {image2 === null && <></>}
-                  {image2 !== null && openImage2 === false && (
+                  {image2 === null ? (
                     <TouchableOpacity
-                      style={styles.buttonImage}
-                      onPress={() => handleWebView(image2)}
+                      style={styles.cameraButton}
+                      onPress={() => {
+                        pickImage("Anh2", "Giochupanh2", setImage2);
+                        onPressLocation();
+                      }}
                     >
-                      <Text allowFontScaling={false}  style={styles.textImage}>
-                        Xem ảnh
-                      </Text>
+                      <Entypo name="camera" size={24} color="black" />
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity style={styles.imageContainer} onPress={() => handleWebView(image2)} activeOpacity={0.7}>
+                      <Image source={{ uri: typeof image2 === "string" ? image2 : image2?.uri }} style={styles.image} />
+                      {typeof image2 !== "string" && (
+                        <>
+                          <TouchableOpacity
+                            style={styles.retakeButton}
+                            onPress={() => {
+                              pickImage("Anh2", "Giochupanh2", setImage2);
+                              onPressLocation();
+                            }}
+                          >
+                            <Text style={styles.retakeText}>Chụp lại</Text>
+                          </TouchableOpacity>
+                          <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteImage(2)}>
+                            <Text style={styles.deleteText}>X</Text>
+                          </TouchableOpacity>
+                        </>
+                      )}
                     </TouchableOpacity>
                   )}
                 </View>
@@ -223,85 +310,78 @@ const ModalChecklistCImage = ({
               }}
             >
               <View style={{ width: "48%" }}>
-                <Text allowFontScaling={false}  style={styles.text}>
+                <Text allowFontScaling={false} style={styles.text}>
                   Ảnh 3
                 </Text>
                 <View style={styles.container}>
-                  <TouchableOpacity
-                    style={{
-                      backgroundColor: "white",
-                      padding: SIZES.padding,
-                      borderRadius: SIZES.borderRadius,
-                      borderColor: COLORS.bg_button,
-                      borderWidth: 1,
-
-                      alignItems: "center",
-                      justifyContent: "center",
-                      height: 100,
-                    }}
-                    onPress={() =>
-                      pickImage("Anh3", "Giochupanh3", setImage3, setOpenImage3)
-                    }
-                  >
-                    <Entypo name="camera" size={24} color="black" />
-                  </TouchableOpacity>
-                  {image3 !== null && openImage3 === true && (
-                    <Image
-                      source={{ uri: image3.uri ? image3.uri : image3 }}
-                      style={styles.image}
-                    />
-                  )}
-                  {image3 === null && <></>}
-                  {image3 !== null && openImage3 === false && (
+                  {image3 === null ? (
                     <TouchableOpacity
-                      style={styles.buttonImage}
-                      onPress={() => handleWebView(image3)}
+                      style={styles.cameraButton}
+                      onPress={() => {
+                        pickImage("Anh3", "Giochupanh3", setImage3);
+                        onPressLocation();
+                      }}
                     >
-                      <Text allowFontScaling={false}  style={styles.textImage}>
-                        Xem ảnh
-                      </Text>
+                      <Entypo name="camera" size={24} color="black" />
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity style={styles.imageContainer} onPress={() => handleWebView(image3)} activeOpacity={0.7}>
+                      <Image source={{ uri: typeof image3 === "string" ? image3 : image3?.uri }} style={styles.image} />
+                      {typeof image3 !== "string" && (
+                        <>
+                          <TouchableOpacity
+                            style={styles.retakeButton}
+                            onPress={() => {
+                              pickImage("Anh3", "Giochupanh3", setImage3);
+                              onPressLocation();
+                            }}
+                          >
+                            <Text style={styles.retakeText}>Chụp lại</Text>
+                          </TouchableOpacity>
+                          <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteImage(3)}>
+                            <Text style={styles.deleteText}>X</Text>
+                          </TouchableOpacity>
+                        </>
+                      )}
                     </TouchableOpacity>
                   )}
                 </View>
               </View>
 
               <View style={{ width: "48%" }}>
-                <Text allowFontScaling={false}  style={styles.text}>
+                <Text allowFontScaling={false} style={styles.text}>
                   Ảnh 4
                 </Text>
                 <View style={styles.container}>
-                  <TouchableOpacity
-                    style={{
-                      backgroundColor: "white",
-                      padding: SIZES.padding,
-                      borderRadius: SIZES.borderRadius,
-                      borderColor: COLORS.bg_button,
-                      borderWidth: 1,
-                      alignItems: "center",
-                      justifyContent: "center",
-                      height: 100,
-                    }}
-                    onPress={() =>
-                      pickImage("Anh4", "Giochupanh4", setImage4, setOpenImage4)
-                    }
-                  >
-                    <Entypo name="camera" size={24} color="black" />
-                  </TouchableOpacity>
-                  {image4 !== null && openImage4 === true && (
-                    <Image
-                      source={{ uri: image4.uri ? image4.uri : image4 }}
-                      style={styles.image}
-                    />
-                  )}
-                  {image4 === null && <></>}
-                  {image4 !== null && openImage4 === false && (
+                  {image4 === null ? (
                     <TouchableOpacity
-                      style={styles.buttonImage}
-                      onPress={() => handleWebView(image4)}
+                      style={styles.cameraButton}
+                      onPress={() => {
+                        pickImage("Anh4", "Giochupanh4", setImage4);
+                        onPressLocation();
+                      }}
                     >
-                      <Text allowFontScaling={false}  style={styles.textImage}>
-                        Xem ảnh
-                      </Text>
+                      <Entypo name="camera" size={24} color="black" />
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity style={styles.imageContainer} onPress={() => handleWebView(image4)} activeOpacity={0.7}>
+                      <Image source={{ uri: typeof image4 === "string" ? image4 : image4?.uri }} style={styles.image} />
+                      {typeof image4 !== "string" && (
+                        <>
+                          <TouchableOpacity
+                            style={styles.retakeButton}
+                            onPress={() => {
+                              pickImage("Anh4", "Giochupanh4", setImage4);
+                              onPressLocation();
+                            }}
+                          >
+                            <Text style={styles.retakeText}>Chụp lại</Text>
+                          </TouchableOpacity>
+                          <TouchableOpacity style={styles.deleteButton} onPress={() => handleDeleteImage(4)}>
+                            <Text style={styles.deleteText}>X</Text>
+                          </TouchableOpacity>
+                        </>
+                      )}
                     </TouchableOpacity>
                   )}
                 </View>
@@ -332,21 +412,19 @@ const ModalChecklistCImage = ({
         >
           <View style={styles.centeredView}>
             <View style={styles.modalView}>
-              <Text allowFontScaling={false}  style={styles.modalText}>
+              <Text allowFontScaling={false} style={styles.modalText}>
                 Hình ảnh checklist
               </Text>
 
               <Image
                 style={{
-                  width: '90%',
-                  height: '90%',
+                  width: "90%",
+                  height: "90%",
                   resizeMode: "cover",
                   justifyContent: "center",
                   alignContent: "center",
                 }}
-                source={{
-                  uri: `https://drive.google.com/thumbnail?id=${image}&sz=w1000`,
-                }}
+                source={{ uri: typeof image4 === "string" ? image4 : image4?.uri }}
               />
             </View>
             <TouchableOpacity
@@ -356,7 +434,7 @@ const ModalChecklistCImage = ({
               }}
               style={styles.buttonImage}
             >
-              <Text allowFontScaling={false}  style={styles.textImage}>
+              <Text allowFontScaling={false} style={styles.textImage}>
                 Close
               </Text>
             </TouchableOpacity>
@@ -475,5 +553,58 @@ const styles = StyleSheet.create({
   modalText: {
     fontSize: 20,
     fontWeight: "600",
+  },
+  container: {
+    width: "100%",
+    marginBottom: 10,
+  },
+  imageContainer: {
+    width: "100%",
+    height: 100,
+    position: "relative",
+  },
+  image: {
+    width: "100%",
+    height: 100,
+    resizeMode: "cover",
+    borderRadius: SIZES.borderRadius,
+  },
+  retakeButton: {
+    position: "absolute",
+    bottom: 5,
+    right: 5,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    padding: 5,
+    borderRadius: 5,
+  },
+  retakeText: {
+    color: "white",
+    fontSize: 12,
+  },
+  deleteButton: {
+    position: "absolute",
+    top: 5,
+    right: 5,
+    backgroundColor: "rgba(255,0,0,0.7)",
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  deleteText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  cameraButton: {
+    backgroundColor: "white",
+    padding: SIZES.padding,
+    borderRadius: SIZES.borderRadius,
+    borderColor: COLORS.bg_button,
+    borderWidth: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    height: 100,
   },
 });

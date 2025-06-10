@@ -17,29 +17,15 @@ import {
   TouchableNativeFeedback,
   BackHandler,
 } from "react-native";
-import React, {
-  useRef,
-  useState,
-  useEffect,
-  useMemo,
-  useCallback,
-  useContext,
-} from "react";
+import React, { useRef, useState, useEffect, useMemo, useCallback, useContext } from "react";
 import { Provider, useDispatch, useSelector } from "react-redux";
-import {
-  BottomSheetModal,
-  BottomSheetView,
-  BottomSheetModalProvider,
-  BottomSheetScrollView,
-} from "@gorhom/bottom-sheet";
+import { BottomSheetModal, BottomSheetView, BottomSheetModalProvider, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import * as FileSystem from "expo-file-system";
 import ButtonChecklist from "../../components/Button/ButtonCheckList";
 import { COLORS, SIZES } from "../../constants/theme";
-import {
-  ent_calv_get, ent_calv_get_chuky
-} from "../../redux/actions/entActions";
+import { ent_calv_get, ent_calv_get_chuky } from "../../redux/actions/entActions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { tb_checklistc_get } from "../../redux/actions/tbActions";
 import axios from "axios";
@@ -53,7 +39,7 @@ import adjust from "../../adjust";
 import { useFocusEffect } from "@react-navigation/native";
 import NetInfo from "@react-native-community/netinfo";
 import CustomAlertModal from "../../components/CustomAlertModal";
-import RenderHTML from 'react-native-render-html';
+import RenderHTML from "react-native-render-html";
 import ChecklistContext from "../../context/ChecklistContext";
 
 const ThucHienChecklist = ({ navigation }) => {
@@ -62,15 +48,9 @@ const ThucHienChecklist = ({ navigation }) => {
   const { ent_calv, ent_hangmuc, ent_calv_chuky } = useSelector((state) => state.entReducer);
   const { tb_checklistc } = useSelector((state) => state.tbReducer);
   const { user, authToken } = useSelector((state) => state.authReducer);
-  const {
-    setDataChecklists,
-    setKhuVucFilterByIDChecklistC,
-    setHangMucFilterByIDChecklistC
-  } = useContext(DataContext);
+  const { setDataChecklists, setKhuVucFilterByIDChecklistC, setHangMucFilterByIDChecklistC } = useContext(DataContext);
 
-  const {
-    setDataChecklistFilterContext
-  } = useContext(ChecklistContext)
+  const { setDataChecklistFilterContext } = useContext(ChecklistContext);
 
   const date = new Date();
   const dateDay = moment(date).format("YYYY-MM-DD");
@@ -109,10 +89,10 @@ const ThucHienChecklist = ({ navigation }) => {
 
   const [isConnected, setConnected] = useState(true);
   useEffect(() => {
-    const unsubscribe = NetInfo.addEventListener(state => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
       setConnected(state.isConnected);
     });
-  
+
     return () => unsubscribe();
   }, []);
 
@@ -132,11 +112,11 @@ const ThucHienChecklist = ({ navigation }) => {
 
   useEffect(() => {
     setDataCalv(tb_checklistc?.data);
-    if(tb_checklistc?.data && tb_checklistc?.data.length > 0){
-      const isCheck = tb_checklistc.data.some(check => check.Tinhtrang == 0)
-      const data = tb_checklistc.data.filter(check => check.Tinhtrang == 0)
-      if(!isCheck){
-        clearCacheDirectory(data)
+    if (tb_checklistc?.data && tb_checklistc?.data.length > 0) {
+      const isCheck = tb_checklistc.data.some((check) => check.Tinhtrang == 0);
+      const data = tb_checklistc.data.filter((check) => check.Tinhtrang == 0);
+      if (!isCheck) {
+        clearCacheDirectory(data);
       }
     }
   }, [tb_checklistc]);
@@ -151,7 +131,6 @@ const ThucHienChecklist = ({ navigation }) => {
   };
 
   const loadData = async () => {
-    
     await AsyncStorage.removeItem("checkNetwork");
   };
 
@@ -180,7 +159,7 @@ const ThucHienChecklist = ({ navigation }) => {
           idempotent: true,
         });
       }
-      
+
       console.log("Đã xóa cache khi ứng dụng đóng.");
     } catch (error) {
       console.error("Lỗi khi xóa cache:", error);
@@ -212,89 +191,68 @@ const ThucHienChecklist = ({ navigation }) => {
       // Iterate over the keys of dataImages object
       if (dataImages.Anh1) {
         const file = {
-          uri:
-            Platform.OS === "android"
-              ? dataImages?.Anh1?.uri
-              : dataImages?.Anh1?.uri.replace("file://", ""),
-          name:
-            dataImages?.Anh1?.fileName ||
-            Math.floor(Math.random() * Math.floor(99999999999999)) + ".jpg",
+          uri: Platform.OS === "android" ? dataImages?.Anh1?.uri : dataImages?.Anh1?.uri.replace("file://", ""),
+          name: dataImages?.Anh1?.fileName || Math.floor(Math.random() * Math.floor(99999999999999)) + ".jpg",
           type: "image/jpg",
         };
 
         // Append image file to formData
         formData.append(`Images`, file);
         formData.append(`Anh1`, file?.name);
-        formData.append("Giochupanh1", dateHour);
+        formData.append("Giochupanh1", dataImages.Giochupanh1);
       }
       if (dataImages.Anh2) {
         const file = {
-          uri:
-            Platform.OS === "android"
-              ? dataImages?.Anh2?.uri
-              : dataImages?.Anh2?.uri.replace("file://", ""),
-          name:
-            dataImages?.Anh2?.fileName ||
-            Math.floor(Math.random() * Math.floor(99999999999999)) + ".jpg",
+          uri: Platform.OS === "android" ? dataImages?.Anh2?.uri : dataImages?.Anh2?.uri.replace("file://", ""),
+          name: dataImages?.Anh2?.fileName || Math.floor(Math.random() * Math.floor(99999999999999)) + ".jpg",
           type: "image/jpg",
         };
 
         // Append image file to formData
         formData.append(`Images`, file);
         formData.append(`Anh2`, file?.name);
-        formData.append("Giochupanh2", dateHour);
+        formData.append("Giochupanh2", dataImages.Giochupanh2);
       }
       if (dataImages.Anh3) {
         const file = {
-          uri:
-            Platform.OS === "android"
-              ? dataImages?.Anh3?.uri
-              : dataImages?.Anh3?.uri.replace("file://", ""),
-          name:
-            dataImages?.Anh3?.fileName ||
-            Math.floor(Math.random() * Math.floor(99999999999999)) + ".jpg",
+          uri: Platform.OS === "android" ? dataImages?.Anh3?.uri : dataImages?.Anh3?.uri.replace("file://", ""),
+          name: dataImages?.Anh3?.fileName || Math.floor(Math.random() * Math.floor(99999999999999)) + ".jpg",
           type: "image/jpg",
         };
 
         // Append image file to formData
         formData.append(`Images`, file);
         formData.append(`Anh3`, file?.name);
-        formData.append("Giochupanh3", dateHour);
+        formData.append("Giochupanh3", dataImages.Giochupanh3);
       }
       if (dataImages.Anh4) {
         const file = {
-          uri:
-            Platform.OS === "android"
-              ? dataImages?.Anh4?.uri
-              : dataImages?.Anh4?.uri.replace("file://", ""),
-          name:
-            dataImages?.Anh4?.fileName ||
-            Math.floor(Math.random() * Math.floor(999999999)) + ".jpg",
+          uri: Platform.OS === "android" ? dataImages?.Anh4?.uri : dataImages?.Anh4?.uri.replace("file://", ""),
+          name: dataImages?.Anh4?.fileName || Math.floor(Math.random() * Math.floor(999999999)) + ".jpg",
           type: "image/jpg",
         };
 
         // Append image file to formData
         formData.append(`Images`, file);
         formData.append(`Anh4`, file?.name);
-        formData.append("Giochupanh4", dateHour);
+        formData.append("Giochupanh4", dataImages.Giochupanh4);
       }
 
+           AsyncStorage.removeItem("tempChecklistImages");
+
       await axios
-        .post(
-          BASE_URL +
-            `/tb_checklistc/update_images/${newActionCheckList[0].ID_ChecklistC}`,
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              Authorization: "Bearer " + authToken,
-            },
-          }
-        )
-        .then((res) => {
+        .post(BASE_URL + `/tb_checklistc/update_images/${newActionCheckList[0].ID_ChecklistC}`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: "Bearer " + authToken,
+          },
+        })
+        .then(async (res) =>  {
+          await AsyncStorage.removeItem("tempChecklistImages");
+          await int_checklistc();
+          setNewActionCheckList([]);
           setLoadingSubmit(false);
-          int_checklistc();
-          // handleCloseSheetImage();
+          handleCloseSheetImage();
           // bottomSheetModalRef2?.current?.close();
           Alert.alert("PMC Thông báo", "Checklist thành công", [
             {
@@ -321,18 +279,14 @@ const ThucHienChecklist = ({ navigation }) => {
             ]);
           } else if (error.request) {
             // Lỗi không nhận được phản hồi từ server
-            Alert.alert(
-              "PMC Thông báo",
-              "Không nhận được phản hồi từ máy chủ",
-              [
-                {
-                  text: "Hủy",
-                  onPress: () => console.log("Cancel Pressed"),
-                  style: "cancel",
-                },
-                { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-              ]
-            );
+            Alert.alert("PMC Thông báo", "Không nhận được phản hồi từ máy chủ", [
+              {
+                text: "Hủy",
+                onPress: () => console.log("Cancel Pressed"),
+                style: "cancel",
+              },
+              { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+            ]);
           } else {
             // Lỗi khi cấu hình request
             Alert.alert("PMC Thông báo", "Lỗi khi gửi yêu cầu", [
@@ -364,7 +318,7 @@ const ThucHienChecklist = ({ navigation }) => {
       let data = {
         Tenca: dataInput.Calv.Tenca,
         ID_Calv: dataInput.Calv.ID_Calv,
-        ID_Duan_KhoiCV: dataInput.ID_Duan_KhoiCV,  //(ID_Chuky)
+        ID_Duan_KhoiCV: dataInput.ID_Duan_KhoiCV, //(ID_Chuky)
         ID_User: user.ID_User,
         ID_Duan: user.ID_Duan,
         ID_KhoiCV: user.ID_KhoiCV,
@@ -393,14 +347,13 @@ const ThucHienChecklist = ({ navigation }) => {
               response.data.data.ID_KhoiCV,
               response.data.data.ID_ThietLapCa,
               response.data.data.ID_Hangmucs,
-              null
             );
           });
       } catch (error) {
         setLoadingSubmit(false);
         if (error.response) {
           setIsModalVisible(true);
-          setMessage(error.response.data.message)
+          setMessage(error.response.data.message);
         } else if (error.request) {
           // Lỗi không nhận được phản hồi từ server
           console.log(error.request);
@@ -430,7 +383,6 @@ const ThucHienChecklist = ({ navigation }) => {
 
   const clearAsyncStorage = async () => {
     try {
-      
       await AsyncStorage.removeItem("checkNetwork");
     } catch (error) {
       console.error("Error clearing AsyncStorage:", error);
@@ -461,6 +413,12 @@ const ThucHienChecklist = ({ navigation }) => {
     setOpacity(1);
   }, []);
 
+  const handleToggleModal = () => {
+    if (bottomSheetModalRef2?.current) {
+      bottomSheetModalRef2.current.present();
+      setOpacity(0.2);
+    }
+  };
 
   const handleAdd = () => {
     setDataInput({
@@ -482,10 +440,10 @@ const ThucHienChecklist = ({ navigation }) => {
   };
 
   const handleChecklistDetail = async (id1, id2, id3, id4) => {
-    setDataChecklists([])
-    setKhuVucFilterByIDChecklistC([])
-    setHangMucFilterByIDChecklistC([])
-    setDataChecklistFilterContext([])
+    setDataChecklists([]);
+    setKhuVucFilterByIDChecklistC([]);
+    setHangMucFilterByIDChecklistC([]);
+    setDataChecklistFilterContext([]);
     if (isConnected) {
       navigation.navigate("Thực hiện khu vực", {
         ID_ChecklistC: id1,
@@ -496,10 +454,7 @@ const ThucHienChecklist = ({ navigation }) => {
 
       setNewActionCheckList([]);
     } else {
-      Alert.alert(
-        "Không có kết nối mạng",
-        "Vui lòng kiểm tra kết nối mạng của bạn."
-      );
+      Alert.alert("Không có kết nối mạng", "Vui lòng kiểm tra kết nối mạng của bạn.");
     }
   };
 
@@ -564,266 +519,228 @@ const ThucHienChecklist = ({ navigation }) => {
       return false;
     };
 
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      backAction
-    );
+    const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
 
     return () => backHandler.remove();
   }, [modalVisible]);
 
   return (
-    <>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : null}
-          style={{ flex: 1 }}
-        >
-          <BottomSheetModalProvider>
-            <ImageBackground
-              source={require("../../../assets/bg.png")}
-              resizeMode="cover"
-              style={{ flex: 1 }}
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <BottomSheetModalProvider>
+        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : null} style={{ flex: 1 }}>
+          <ImageBackground source={require("../../../assets/bg.png")} resizeMode="cover" style={{ flex: 1 }}>
+            <View
+              style={{
+                flex: 1,
+                opacity: opacity,
+              }}
             >
-              <View
-                style={{
-                  flex: 1,
-                  opacity: opacity,
-                }}
-              >
-                <View style={styles.container}>
-                  <TouchableWithoutFeedback
-                    onPress={() => handleCloseSheetImage()}
-                  >
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignContent: "center",
-                        alignItems: "center",
-                        justifyContent: "flex-end",
-                      }}
-                    >
-                      {user?.ID_Chucvu !== 1 && (
-                        <ButtonChecklist
-                          text={"Thêm mới"}
-                          width={"auto"}
-                          color={COLORS.bg_button}
-                          // icon={<Ionicons name="add" size={20} color="white" />}
-                          onPress={() => handleOpenPopUp()}
-                          newActionCheckList={newActionCheckList}
-                        />
-                      )}
-                    </View>
-                  </TouchableWithoutFeedback>
-                  {isLoading ? (
-                    <View
-                      style={{
-                        flex: 1,
-                        justifyContent: "center",
-                        alignItems: "center",
-                        marginBottom: 40,
-                      }}
-                    >
-                      <ActivityIndicator size="large" color={"white"} />
-                    </View>
-                  ) : (
-                    <>
-                      {dataCalv && dataCalv?.length > 0 ? (
-                        <FlatList
-                          horizontal={false}
-                          contentContainerStyle={{ flexGrow: 1 }}
-                          style={{ marginVertical: 10 }}
-                          data={dataCalv}
-                          renderItem={({ item, index }) => (
-                            <ItemCaChecklist
-                              key={index}
-                              item={item}
-                              toggleTodo={toggleTodo}
-                              newActionCheckList={newActionCheckList}
-                            />
-                          )}
-                          keyExtractor={(item, index) => index.toString()}
-                          scrollEventThrottle={16}
-                          scrollEnabled={true}
-                          showsVerticalScrollIndicator={false}
-                        />
-                      ) : (
-                        <View
-                          style={{
-                            flex: 1,
-                            justifyContent: "center",
-                            alignItems: "center",
-                            marginBottom: 120,
-                          }}
-                        >
-                          <Image
-                            source={require("../../../assets/icons/delete_bg.png")}
-                            resizeMode="contain"
-                            style={{ height: 120, width: 120 }}
-                          />
-                          <Text
-                            allowFontScaling={false}
-                            style={[styles.danhmuc, { paddingVertical: 10 }]}
-                          >
-                            Bạn chưa có dữ liệu nào
-                          </Text>
-                        </View>
-                      )}
-                    </>
-                  )}
-                </View>
-              </View>
-
-              <Modal
-                animationType="slide"
-                transparent={true}
-                visible={modalVisible}
-                // onRequestClose={() => {
-                //   //Alert.alert("Modal has been closed.");
-                //   setModalVisible(!modalVisible);
-                // }}
-                onRequestClose={handleClosePopUp}
-              >
-                <CustomAlertModal
-                  isVisible={isModalVisible}
-                  title="PMC Thông báo"
-                  message={<RenderHTML contentWidth={300} source={{ html: message }} />} // Sử dụng RenderHTML
-                  onConfirm={() => setIsModalVisible(false)}
-                />
-                <View style={styles.centeredView}>
+              <View style={styles.container}>
+                <TouchableWithoutFeedback onPress={() => handleCloseSheetImage()}>
                   <View
-                    style={[
-                      styles.modalView,
-                      { width: "80%", height: "auto", minHeight: adjust(420) },
-                    ]}
+                    style={{
+                      flexDirection: "row",
+                      alignContent: "center",
+                      alignItems: "center",
+                      justifyContent: "flex-end",
+                    }}
                   >
-                    <View style={styles.contentContainer}>
-                      <Text
-                        allowFontScaling={false}
+                    {user?.ID_Chucvu !== 1 && (
+                      <ButtonChecklist
+                        text={"Thêm mới"}
+                        width={"auto"}
+                        color={COLORS.bg_button}
+                        // icon={<Ionicons name="add" size={20} color="white" />}
+                        onPress={() => handleOpenPopUp()}
+                        newActionCheckList={newActionCheckList}
+                      />
+                    )}
+                  </View>
+                </TouchableWithoutFeedback>
+                {isLoading ? (
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: "center",
+                      alignItems: "center",
+                      marginBottom: 40,
+                    }}
+                  >
+                    <ActivityIndicator size="large" color={"white"} />
+                  </View>
+                ) : (
+                  <>
+                    {dataCalv && dataCalv?.length > 0 ? (
+                      <FlatList
+                        horizontal={false}
+                        contentContainerStyle={{ flexGrow: 1 }}
+                        style={{ marginVertical: 10 }}
+                        data={dataCalv}
+                        renderItem={({ item, index }) => (
+                          <ItemCaChecklist key={index} item={item} toggleTodo={toggleTodo} newActionCheckList={newActionCheckList} />
+                        )}
+                        keyExtractor={(item, index) => index.toString()}
+                        scrollEventThrottle={16}
+                        scrollEnabled={true}
+                        showsVerticalScrollIndicator={false}
+                      />
+                    ) : (
+                      <View
                         style={{
-                          color: "black",
-                          fontWeight: "600",
-                          fontSize: 20,
-                          textAlign: "center",
-                          paddingTop: 10,
+                          flex: 1,
+                          justifyContent: "center",
+                          alignItems: "center",
+                          marginBottom: 120,
                         }}
                       >
-                        {user?.ent_khoicv?.KhoiCV}
-                      </Text>
-                      <ModalChecklistC
-                        ent_calv_chuky= {ent_calv_chuky}
-                        ent_calv={ent_calv}
-                        dataInput={dataInput}
-                        handleChangeText={handleChangeText}
-                        handlePushDataSave={handlePushDataSave}
-                        isLoading={loadingSubmit}
-                        handleClosePopUp={handleClosePopUp}
-                      />
-                    </View>
+                        <Image source={require("../../../assets/icons/delete_bg.png")} resizeMode="contain" style={{ height: 120, width: 120 }} />
+                        <Text allowFontScaling={false} style={[styles.danhmuc, { paddingVertical: 10 }]}>
+                          Bạn chưa có dữ liệu nào
+                        </Text>
+                      </View>
+                    )}
+                  </>
+                )}
+              </View>
+            </View>
+
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={modalVisible}
+              // onRequestClose={() => {
+              //   //Alert.alert("Modal has been closed.");
+              //   setModalVisible(!modalVisible);
+              // }}
+              onRequestClose={handleClosePopUp}
+            >
+              <CustomAlertModal
+                isVisible={isModalVisible}
+                title="PMC Thông báo"
+                message={<RenderHTML contentWidth={300} source={{ html: message }} />} // Sử dụng RenderHTML
+                onConfirm={() => setIsModalVisible(false)}
+              />
+              <View style={styles.centeredView}>
+                <View style={[styles.modalView, { width: "80%", height: "auto", minHeight: adjust(420) }]}>
+                  <View style={styles.contentContainer}>
+                    <Text
+                      allowFontScaling={false}
+                      style={{
+                        color: "black",
+                        fontWeight: "600",
+                        fontSize: 20,
+                        textAlign: "center",
+                        paddingTop: 10,
+                      }}
+                    >
+                      {user?.ent_khoicv?.KhoiCV}
+                    </Text>
+                    <ModalChecklistC
+                      ent_calv_chuky={ent_calv_chuky}
+                      ent_calv={ent_calv}
+                      dataInput={dataInput}
+                      handleChangeText={handleChangeText}
+                      handlePushDataSave={handlePushDataSave}
+                      isLoading={loadingSubmit}
+                      handleClosePopUp={handleClosePopUp}
+                    />
                   </View>
                 </View>
-              </Modal>
+              </View>
+            </Modal>
 
-              <BottomSheetModal
-                ref={bottomSheetModalRef2}
-                index={0}
-                snapPoints={snapPoints2}
-                onChange={handleSheetChanges2}
+            <BottomSheetModal
+              ref={bottomSheetModalRef2}
+              index={0}
+              snapPoints={snapPoints2}
+              onChange={handleSheetChanges2}
+              enablePanDownToClose={true}
+              enableDynamicSizing={false}
+            >
+              <BottomSheetView style={styles.contentContainer}>
+                <ModalChecklistCImage
+                  dataImages={dataImages}
+                  handleChangeImages={handleChangeImages}
+                  ent_calv={ent_calv}
+                  dataInput={dataInput}
+                  handleChangeText={handleChangeText}
+                  handlePushDataSave={handlePushDataSave}
+                  isLoading={loadingSubmit}
+                  handlePushDataImagesSave={handlePushDataImagesSave}
+                  newActionCheckList={newActionCheckList}
+                />
+              </BottomSheetView>
+            </BottomSheetModal>
+
+            {newActionCheckList?.length > 0 && user?.ID_Chucvu !== 1 && (
+              <View
+                style={{
+                  width: 60,
+                  position: "absolute",
+                  right: 20,
+                  bottom: 50,
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  gap: 10,
+                }}
               >
-                <View style={styles.contentContainer}>
-                  <ModalChecklistCImage
-                    dataImages={dataImages}
-                    handleChangeImages={handleChangeImages}
-                    ent_calv={ent_calv}
-                    dataInput={dataInput}
-                    handleChangeText={handleChangeText}
-                    handlePushDataSave={handlePushDataSave}
-                    isLoading={loadingSubmit}
-                    handlePushDataImagesSave={handlePushDataImagesSave}
-                    newActionCheckList={newActionCheckList}
-                  />
-                </View>
-              </BottomSheetModal>
+                {newActionCheckList[0]?.Tinhtrang === 0 && (
+                  <>
+                    <TouchableOpacity
+                      style={[styles.button, { backgroundColor: COLORS.bg_red }]}
+                      onPress={() => handleChecklistClose(newActionCheckList[0])}
+                    >
+                      {/* <Feather name="lock" size={26} color="white" /> */}
+                      <Image
+                        source={require("../../../assets/icons/ic_lock.png")}
+                        style={{
+                          tintColor: "white",
+                          resizeMode: "contain",
+                        }}
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={[styles.button]}
+                      onPress={() =>
+                        handleChecklistDetail(
+                          newActionCheckList[0]?.ID_ChecklistC,
+                          newActionCheckList[0]?.ID_KhoiCV,
+                          newActionCheckList[0]?.ID_Calv,
+                          newActionCheckList[0]?.ID_Hangmucs
+                        )
+                      }
+                    >
+                      {/* <Feather name="unlock" size={26} color="white" /> */}
+                      <Image
+                        source={require("../../../assets/icons/ic_unlock.png")}
+                        style={{
+                          tintColor: "white",
+                          resizeMode: "contain",
+                        }}
+                      />
+                    </TouchableOpacity>
 
-              {newActionCheckList?.length > 0 && user?.ID_Chucvu !== 1 && (
-                <View
-                  style={{
-                    width: 60,
-                    position: "absolute",
-                    right: 20,
-                    bottom: 50,
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    gap: 10,
-                  }}
-                >
-                  {newActionCheckList[0]?.Tinhtrang === 0 && (
-                    <>
-                      <TouchableOpacity
-                        style={[
-                          styles.button,
-                          { backgroundColor: COLORS.bg_red },
-                        ]}
-                        onPress={() =>
-                          handleChecklistClose(newActionCheckList[0])
-                        }
-                      >
-                        {/* <Feather name="lock" size={26} color="white" /> */}
-                        <Image
-                          source={require("../../../assets/icons/ic_lock.png")}
-                          style={{
-                            tintColor: "white",
-                            resizeMode: "contain",
-                          }}
-                        />
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        style={[styles.button]}
-                        onPress={() =>
-                          handleChecklistDetail(
-                            newActionCheckList[0]?.ID_ChecklistC,
-                            newActionCheckList[0]?.ID_KhoiCV,
-                            newActionCheckList[0]?.ID_Calv,
-                            newActionCheckList[0]?.ID_Hangmucs
-                          )
-                        }
-                      >
-                        {/* <Feather name="unlock" size={26} color="white" /> */}
-                        <Image
-                          source={require("../../../assets/icons/ic_unlock.png")}
-                          style={{
-                            tintColor: "white",
-                            resizeMode: "contain",
-                          }}
-                        />
-                      </TouchableOpacity>
+                    <TouchableOpacity style={styles.button} onPress={() => handleToggleModal()}>
+                      <Image
+                        source={require("../../../assets/icons/ic_camera.png")}
+                        style={{
+                          tintColor: "white",
+                          resizeMode: "contain",
+                        }}
+                      />
+                    </TouchableOpacity>
 
-                      {/* chưa dùng */}
-                      <View style={{height: 50, width: 50}}>
-
-                      </View>
-                      {/* <TouchableOpacity
-                        style={styles.button}
-                        onPress={() => handleToggleModal()}
-                      >
-                        <Image
-                          source={require("../../../assets/icons/ic_camera.png")}
-                          style={{
-                            tintColor: "white",
-                            resizeMode: "contain",
-                          }}
-                        />
-                      </TouchableOpacity> */}
-                    </>
-                  )}
-                </View>
-              )}
-            </ImageBackground>
-          </BottomSheetModalProvider>
+                    {/* chưa dùng */}
+                    <View style={{ height: 50, width: 50 }}></View>
+                  </>
+                )}
+              </View>
+            )}
+          </ImageBackground>
         </KeyboardAvoidingView>
-      </GestureHandlerRootView>
-    </>
+      </BottomSheetModalProvider>
+    </GestureHandlerRootView>
   );
 };
 
@@ -887,6 +804,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
     alignItems: "center",
+    padding: 16,
   },
 });
 
