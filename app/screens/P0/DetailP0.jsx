@@ -273,9 +273,11 @@ const DetailP0 = ({ navigation, route }) => {
     }
 
     let check = false;
-    if (user?.ID_KhoiCV == 4 && ["Sltheoto", "Slthexemay", "Sltheotophanmem", "Slthexemayphanmem"].includes(fieldKey)) {
+    const arrKhoiParsed = user?.arr_Khoi?.split(",").map(Number);
+
+    if ((user?.ID_KhoiCV == 4 || arrKhoiParsed.includes(4))&& ["Sltheoto", "Slthexemay", "Sltheotophanmem", "Slthexemayphanmem"].includes(fieldKey)) {
       check = true;
-    } else if (user?.ID_KhoiCV == 3 && !["Sltheoto", "Slthexemay", "Sltheotophanmem", "Slthexemayphanmem", "Doanhthu"].includes(fieldKey)) {
+    } else if ((user?.ID_KhoiCV == 3 || arrKhoiParsed.includes(3))&& !["Sltheoto", "Slthexemay", "Sltheotophanmem", "Slthexemayphanmem", "Doanhthu"].includes(fieldKey)) {
       check = true;
     } else if (user?.ID_KhoiCV == null) {
       check = true;
@@ -407,8 +409,8 @@ const DetailP0 = ({ navigation, route }) => {
             <WarningBox
               title="Số lượng thẻ xe máy không khớp"
               content={`
-                <span><strong>Tổng:</strong> Thẻ xe máy chưa sử dụng (${report.Sltheoto}) + thẻ xe máy sử dụng trên phần mềm (${report.Slthexemayphanmem})
-                = ${report.Slxeoto + report.Slthexemayphanmem}</span></br>
+                <span><strong>Tổng:</strong> Thẻ xe máy chưa sử dụng (${report.Slthexemay}) + thẻ xe máy sử dụng trên phần mềm (${report.Slthexemayphanmem})
+                = ${report.Slthexemay + report.Slthexemayphanmem}</span></br>
                 <span>Số thẻ xe máy đã bàn giao = ${report.Sothexemaydk}</span></br>
                 <span style="color:red;">Vui lòng kiểm tra lại dữ liệu trước khi gửi</span>
               `}

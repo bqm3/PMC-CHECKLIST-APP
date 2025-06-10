@@ -307,8 +307,10 @@ const TaoBaoCaoP0 = ({ navigation, route }) => {
     }
 
     let check = false;
+    const arrKhoiParsed = user?.arr_Khoi?.split(",").map(Number);
+
     if (
-      user?.ID_KhoiCV == 4 &&
+      (user?.ID_KhoiCV == 4 || arrKhoiParsed.includes(4)) &&
       [
         "Sltheoto",
         "Slthexemay",
@@ -318,7 +320,7 @@ const TaoBaoCaoP0 = ({ navigation, route }) => {
     ) {
       check = true;
     } else if (
-      user?.ID_KhoiCV == 3 &&
+      (user?.ID_KhoiCV == 3 || arrKhoiParsed.includes(3)) &&
       ![
         "Sltheoto",
         "Slthexemay",
@@ -478,11 +480,11 @@ const TaoBaoCaoP0 = ({ navigation, route }) => {
               title="Số lượng thẻ xe máy không khớp"
               content={`
                 <span><strong>Tổng:</strong> Thẻ xe máy chưa sử dụng (${
-                  report.Sltheoto
+                  report.Slthexemay
                 }) + thẻ xe máy sử dụng trên phần mềm (${
                 report.Slthexemayphanmem
               })
-                = ${report.Slxeoto + report.Slthexemayphanmem}</span></br>
+                = ${report.Slthexemay + report.Slthexemayphanmem}</span></br>
                 <span>Số thẻ xe máy đã bàn giao = ${
                   report.Sothexemaydk
                 }</span></br>
