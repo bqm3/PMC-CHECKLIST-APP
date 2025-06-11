@@ -107,13 +107,15 @@ const ThucHienChecklist = ({ navigation }) => {
     }
   };
 
-  const handleChecklistDetail = async (id1, id2, id3, id4) => {
+  const handleChecklistDetail = async (id1, id2, id3, id4, id5, id6) => {
     if (isConnected) {
       navigation.navigate("Thực hiện khu vực lại", {
         ID_ChecklistC: id1,
         ID_KhoiCV: id2,
         ID_ThietLapCa: id3,
         ID_Hangmucs: id4,
+        ID_Phanhe: id5,
+        Chuky: id6
       });
 
       setNewActionCheckList([]);
@@ -263,7 +265,9 @@ const ThucHienChecklist = ({ navigation }) => {
                             newActionCheckList[0]?.ID_ChecklistC,
                             newActionCheckList[0]?.ID_KhoiCV,
                             newActionCheckList[0]?.ID_ThietLapCa,
-                            newActionCheckList[0]?.ID_Hangmucs
+                            newActionCheckList[0]?.ID_Hangmucs,
+                            newActionCheckList[0]?.ent_thietlapca?.ent_duan_khoicv?.ID_Phanhe,
+                            newActionCheckList[0]?.ent_thietlapca?.ent_duan_khoicv?.Chuky
                           )
                         }
                       >

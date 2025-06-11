@@ -493,11 +493,11 @@ export const ent_checklist_mul_hm_return = (
           });
 
           dispatch({
-            type: type.SET_ENT_CHECKLIST_DETAIL_SUCCESS,
-            payload: {
-              ent_checklist_detail: processedData,
-              isLoading: false,
-            },
+            type: type.SET_ENT_CHECKLIST_DETAIL_RETURN_SUCCESS,
+          payload: {
+            ent_checklist_detail_return: processedData,
+            isLoading: false,
+          },
           });
         });
       }
