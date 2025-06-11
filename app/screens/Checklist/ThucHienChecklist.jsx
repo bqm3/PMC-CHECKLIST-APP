@@ -45,9 +45,7 @@ import ChecklistContext from "../../context/ChecklistContext";
 const ThucHienChecklist = ({ navigation }) => {
   const ref = useRef(null);
   const dispath = useDispatch();
-  const { ent_calv, ent_hangmuc, ent_calv_chuky } = useSelector(
-    (state) => state.entReducer
-  );
+  const { ent_calv, ent_hangmuc, ent_calv_chuky } = useSelector((state) => state.entReducer);
   const { tb_checklistc } = useSelector((state) => state.tbReducer);
   const { user, authToken } = useSelector((state) => state.authReducer);
   const { setDataChecklists, setKhuVucFilterByIDChecklistC, setHangMucFilterByIDChecklistC } = useContext(DataContext);
@@ -164,15 +162,11 @@ const ThucHienChecklist = ({ navigation }) => {
 
   const toggleTodo = async (item, index) => {
     // setIsCheckbox(true);
-    const isExistIndex = newActionCheckList.findIndex(
-      (existingItem) => existingItem.ID_ChecklistC === item.ID_ChecklistC
-    );
+    const isExistIndex = newActionCheckList.findIndex((existingItem) => existingItem.ID_ChecklistC === item.ID_ChecklistC);
 
     // Nếu item đã tồn tại, xóa item đó đi
     if (isExistIndex !== -1) {
-      setNewActionCheckList((prevArray) =>
-        prevArray.filter((_, index) => index !== isExistIndex)
-      );
+      setNewActionCheckList((prevArray) => prevArray.filter((_, index) => index !== isExistIndex));
     } else {
       // Nếu item chưa tồn tại, thêm vào mảng mới
       setNewActionCheckList([item]);
@@ -234,7 +228,7 @@ const ThucHienChecklist = ({ navigation }) => {
         formData.append("Giochupanh4", dataImages.Giochupanh4);
       }
 
-           AsyncStorage.removeItem("tempChecklistImages");
+      AsyncStorage.removeItem("tempChecklistImages");
 
       await axios
         .post(BASE_URL + `/tb_checklistc/update_images/${newActionCheckList[0].ID_ChecklistC}`, formData, {
@@ -243,7 +237,7 @@ const ThucHienChecklist = ({ navigation }) => {
             Authorization: "Bearer " + authToken,
           },
         })
-        .then(async (res) =>  {
+        .then(async (res) => {
           await AsyncStorage.removeItem("tempChecklistImages");
           await int_checklistc();
           setNewActionCheckList([]);
@@ -341,7 +335,9 @@ const ThucHienChecklist = ({ navigation }) => {
               response.data.data.ID_ChecklistC,
               response.data.data.ID_KhoiCV,
               response.data.data.ID_ThietLapCa,
-              response.data.data.ID_Hangmucs
+              response.data.data.ID_Hangmucs,
+              response.data.data?.ID_Phanhe,
+              response.data.data?.Chuky
             );
           });
       } catch (error) {
@@ -434,7 +430,7 @@ const ThucHienChecklist = ({ navigation }) => {
     });
   };
 
-  const handleChecklistDetail = async (id1, id2, id3, id4) => {
+  const handleChecklistDetail = async (id1, id2, id3, id4, id5, id6) => {
     setDataChecklists([]);
     setKhuVucFilterByIDChecklistC([]);
     setHangMucFilterByIDChecklistC([]);
@@ -445,6 +441,8 @@ const ThucHienChecklist = ({ navigation }) => {
         ID_KhoiCV: id2,
         ID_ThietLapCa: id3,
         ID_Hangmucs: id4,
+        ID_Phanhe: id5,
+        Chuky: id6
       });
 
       setNewActionCheckList([]);
@@ -515,7 +513,7 @@ const ThucHienChecklist = ({ navigation }) => {
         return false;
       };
 
-    const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
+      const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
 
       return () => backHandler.remove();
     }
@@ -704,7 +702,9 @@ const ThucHienChecklist = ({ navigation }) => {
                           newActionCheckList[0]?.ID_ChecklistC,
                           newActionCheckList[0]?.ID_KhoiCV,
                           newActionCheckList[0]?.ID_Calv,
-                          newActionCheckList[0]?.ID_Hangmucs
+                          newActionCheckList[0]?.ID_Hangmucs,
+                          newActionCheckList[0]?.ent_thietlapca?.ent_duan_khoicv?.ID_Phanhe,
+                          newActionCheckList[0]?.ent_thietlapca?.ent_duan_khoicv?.Chuky
                         )
                       }
                     >

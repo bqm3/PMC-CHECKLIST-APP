@@ -55,7 +55,7 @@ import CustomAlertModal from "../../components/CustomAlertModal";
 import RenderHTML from "react-native-render-html";
 
 const DetailChecklist = ({ route, navigation }) => {
-  const { ID_ChecklistC, ID_Hangmuc, Hangmuc, isScan } = route.params;
+  const { ID_ChecklistC, ID_Hangmuc, Hangmuc, isScan, ID_Phanhe, Chuky } = route.params;
 
   const { isLoadingDetail } = useSelector((state) => state.entReducer);
   const {
@@ -827,7 +827,6 @@ const DetailChecklist = ({ route, navigation }) => {
         formData.append("Key_Image", 1);
         formData.append("ID_ChecklistC", ID_ChecklistC);
         formData.append("ID_Checklist", item.ID_Checklist);
-        formData.append("ID_Phanhe", item.ID_Phanhe);
         formData.append("Ketqua", item.valueCheck || "");
         formData.append("Gioht", item.Gioht);
         formData.append("Ghichu", item.GhichuChitiet || "");
@@ -835,6 +834,8 @@ const DetailChecklist = ({ route, navigation }) => {
         formData.append("Kinhdo", item.Kinhdo || "");
         formData.append("Docao", item.Docao || "");
         formData.append("isScan", isScan || null);
+        formData.append("ID_Phanhe", ID_Phanhe);
+        formData.append("Chuky", Chuky);
 
         if (item.Anh && Array.isArray(item.Anh)) {
           // Use a for...of loop to wait for asynchronous tasks
@@ -947,6 +948,8 @@ const DetailChecklist = ({ route, navigation }) => {
         Kinhdo: location?.coords?.longitude || "",
         Docao: location?.coords?.altitude || "",
         isScan: isScan,
+        ID_Phanhe: ID_Phanhe,
+        Chuky: Chuky,
       },
       {
         headers: {
@@ -1009,7 +1012,6 @@ const DetailChecklist = ({ route, navigation }) => {
           formData.append("Key_Image", 1);
           formData.append("ID_ChecklistC", ID_ChecklistC);
           formData.append("ID_Checklist", item.ID_Checklist);
-          formData.append("ID_Phanhe", item.ID_Phanhe);
           formData.append("Ketqua", item.valueCheck || "");
           formData.append("Gioht", item.Gioht);
           formData.append("Ghichu", item.GhichuChitiet || "");
@@ -1017,6 +1019,8 @@ const DetailChecklist = ({ route, navigation }) => {
           formData.append("Kinhdo", item.Kinhdo || "");
           formData.append("Docao", item.Docao || "");
           formData.append("isScan", isScan || null);
+          formData.append("ID_Phanhe", ID_Phanhe);
+          formData.append("Chuky", Chuky);
 
           if (item.Anh && Array.isArray(item.Anh)) {
             // Use a for...of loop to wait for asynchronous tasks
@@ -1084,6 +1088,8 @@ const DetailChecklist = ({ route, navigation }) => {
             Kinhdo: dataDefault[0].Kinhdo || "",
             Docao: dataDefault[0].Docao || "",
             isScan: isScan || null,
+            ID_Phanhe: ID_Phanhe,
+            Chuky: Chuky,
           },
           {
             headers: {
@@ -1536,6 +1542,7 @@ const DetailChecklist = ({ route, navigation }) => {
                       }}
                     >
                       <FlatList
+                        showsVerticalScrollIndicator={false}
                         style={{
                           margin: 12,
                           flex: 1,

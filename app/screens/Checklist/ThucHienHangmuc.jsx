@@ -27,7 +27,7 @@ import { Camera } from "expo-camera";
 import { Linking } from "react-native";
 
 const ThucHienHangmuc = ({ route, navigation }) => {
-  const { ID_ChecklistC, ID_KhoiCV, ID_Khuvuc, Tenkv } = route.params;
+  const { ID_ChecklistC, ID_KhoiCV, ID_Khuvuc, Tenkv, ID_Phanhe, Chuky } = route.params;
   const {
     dataChecklists,
     hangMucFilterByIDChecklistC,
@@ -94,6 +94,8 @@ const ThucHienHangmuc = ({ route, navigation }) => {
           ID_Hangmuc: resDataHangmuc[0].ID_Hangmuc,
           Hangmuc: resDataHangmuc[0],
           isScan: null,
+          ID_Phanhe,
+          Chuky
         });
         setIsScan(false);
         setModalVisibleQr(false);
@@ -163,6 +165,8 @@ const ThucHienHangmuc = ({ route, navigation }) => {
       ID_Khuvuc: ID_Khuvuc,
       Hangmuc: dataSelect[0],
       isScan: 1,
+      ID_Phanhe,
+      Chuky
     });
     setDataSelect([]);
   };
