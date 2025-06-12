@@ -474,6 +474,7 @@ const ThuchienSucongoai = ({ navigation, route }) => {
                         <DateTimePickerModal
                           isVisible={isDatePickerVisible.Ngaysuco}
                           mode="date"
+                          date={new Date()}
                           isDarkModeEnabled={true}
                           onConfirm={(date) => handleConfirm("Ngaysuco", date, "YYYY-MM-DD")}
                           onCancel={() => hideDatePicker("Ngaysuco", false)}
@@ -515,6 +516,7 @@ const ThuchienSucongoai = ({ navigation, route }) => {
                         <DateTimePickerModal
                           isVisible={isDatePickerVisible.Giosuco}
                           mode="time"
+                          date={new Date()}
                           isDarkModeEnabled={true}
                           onConfirm={(date) => handleConfirm("Giosuco", date, "LT")}
                           onCancel={() => hideDatePicker("Giosuco", false)}

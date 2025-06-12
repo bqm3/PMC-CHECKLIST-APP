@@ -201,6 +201,7 @@ const ModalCalamviec = ({
                   isVisible={isDatePickerVisible.giokt}
                   mode="time"
                   isDarkModeEnabled={true}
+                  date={new Date()}
                   onConfirm={(date) => handleConfirm("giokt", date)}
                   onCancel={hideDatePicker}
                 />

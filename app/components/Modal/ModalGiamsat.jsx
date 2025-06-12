@@ -364,6 +364,7 @@ const ModalGiamsat = ({
                     <DateTimePickerModal
                       isVisible={isDatePickerVisible}
                       mode="date"
+                      date={new Date()}
                       isDarkModeEnabled={true}
                       onConfirm={(date) => handleConfirm("ngaysinh", date)}
                       onCancel={toggleDatePicker}

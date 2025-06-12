@@ -903,6 +903,7 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
                           mode="date"
                           isDarkModeEnabled={true}
                           maximumDate={new Date()}
+                          date={new Date()}
                           onConfirm={(date) => {
                             handleChangeDate("date", moment(date).format("DD-MM-YYYY"));
                             handleChangeDate("isCheck", false);

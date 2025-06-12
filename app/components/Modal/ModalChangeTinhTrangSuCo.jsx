@@ -458,6 +458,7 @@ const ModalChangeTinhTrangSuCo = ({
                     mode="date"
                     isDarkModeEnabled={true}
                     maximumDate={new Date()}
+                    date={new Date()}
                     onConfirm={(date) => {
                       handleChangeDate(
                         "date",
