@@ -101,6 +101,7 @@ const ModalTracuu = ({
                     mode="date"
                     display="inline"
                     isDarkModeEnabled={true}
+                    date={new Date(filters.fromDate) || new Date()}
                     onConfirm={(date) => {
                       handleChangeFilters(
                         "fromDate",
@@ -151,6 +152,7 @@ const ModalTracuu = ({
                     mode="date"
                     display="inline"
                     isDarkModeEnabled={true}
+                    date={new Date(filters.fromDate) || new Date()}
                     onConfirm={(date) => {
                       handleChangeFilters(
                         "toDate",
