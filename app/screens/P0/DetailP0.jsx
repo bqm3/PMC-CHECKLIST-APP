@@ -31,7 +31,8 @@ const fieldCategories = {
   "Thông tin kiểm kê tại quầy": ["Sltheoto", "Slthexemay", "Sltheotophanmem", "Slthexemayphanmem"],
   "Thông tin xe": ["Slxeoto", "Slxeotodien", "Slxemay", "Slxemaydien", "Slxedap", "Slxedapdien"],
   "Sự cố": ["Slscoto", "Slscotodien", "Slscxemay", "Slscxemaydien", "Slscxedap", "Slscxedapdien", "Slsucokhac"],
-  "Thông tin khác": ["QuansoTT", "QuansoDB", "Slcongto"],
+  "Thông tin nhân sự an ninh": ["QuansoTT", "QuansoDB", "Slcongto", "ns_nghiphep", "ns_tangca", "ns_vipham", "ns_phatsinh"],
+  "Số lượng quân tư trang/ SL cấp phát": ["coi", "gay_giao_thong", "ao_mua", "den_pin"],
   "Doanh thu": ["Doanhthu"],
   "Ghi chú": ["Ghichu"],
 };
@@ -62,6 +63,14 @@ const fieldLabels = {
   Ghichu: "Ghi chú",
   Sltheotophanmem: "Thẻ ô tô sử dụng trên phần mềm",
   Slthexemayphanmem: "Thẻ xe máy sử dụng trên phần mềm",
+  ns_nghiphep: "Nhân sự nghỉ phép",
+  ns_tangca: "Nhân sự tăng ca",
+  ns_vipham: "Quân số vi phạm lập biên bản đang có",
+  ns_phatsinh: "Vụ sự phát sinh trong ca",
+  coi: "Còi",
+  gay_giao_thong: "Gậy giao thông",
+  ao_mua: "Áo mưa",
+  den_pin: "Đèn pin",
 };
 
 // Initialize P0 data structure based on field categories
@@ -259,6 +268,26 @@ const DetailP0 = ({ navigation, route }) => {
               ...item,
               value: `${res.data?.data?.slthexemay}` != `null` ? `${res.data?.data?.slthexemay}` : "0",
             };
+          if (item.key === "coi")
+            return {
+              ...item,
+              value: `${res.data?.data?.coi}` != `null` ? `${res.data?.data?.coi}` : "0",
+            };
+          if (item.key === "gay_giao_thong")
+            return {
+              ...item,
+              value: `${res.data?.data?.gay_giao_thong}` != `null` ? `${res.data?.data?.gay_giao_thong}` : "0",
+            };
+          if (item.key === "ao_mua")
+            return {
+              ...item,
+              value: `${res.data?.data?.ao_mua}` != `null` ? `${res.data?.data?.ao_mua}` : "0",
+            };
+          if (item.key === "den_pin")
+            return {
+              ...item,
+              value: `${res.data?.data?.den_pin}` != `null` ? `${res.data?.data?.den_pin}` : "0",
+            };
           return item;
         })
       );
@@ -275,9 +304,15 @@ const DetailP0 = ({ navigation, route }) => {
     let check = false;
     const arrKhoiParsed = user?.arr_Khoi?.split(",").map(Number);
 
-    if ((user?.ID_KhoiCV == 4 || arrKhoiParsed.includes(4))&& ["Sltheoto", "Slthexemay", "Sltheotophanmem", "Slthexemayphanmem"].includes(fieldKey)) {
+    if (
+      (user?.ID_KhoiCV == 4 || arrKhoiParsed.includes(4)) &&
+      ["Sltheoto", "Slthexemay", "Sltheotophanmem", "Slthexemayphanmem"].includes(fieldKey)
+    ) {
       check = true;
-    } else if ((user?.ID_KhoiCV == 3 || arrKhoiParsed.includes(3))&& !["Sltheoto", "Slthexemay", "Sltheotophanmem", "Slthexemayphanmem", "Doanhthu"].includes(fieldKey)) {
+    } else if (
+      (user?.ID_KhoiCV == 3 || arrKhoiParsed.includes(3)) &&
+      !["Sltheoto", "Slthexemay", "Sltheotophanmem", "Slthexemayphanmem", "Doanhthu"].includes(fieldKey)
+    ) {
       check = true;
     } else if (user?.ID_KhoiCV == null) {
       check = true;
@@ -409,7 +444,9 @@ const DetailP0 = ({ navigation, route }) => {
             <WarningBox
               title="Số lượng thẻ xe máy không khớp"
               content={`
-                <span><strong>Tổng:</strong> Thẻ xe máy chưa sử dụng (${report.Slthexemay}) + thẻ xe máy sử dụng trên phần mềm (${report.Slthexemayphanmem})
+                <span><strong>Tổng:</strong> Thẻ xe máy chưa sử dụng (${report.Slthexemay}) + thẻ xe máy sử dụng trên phần mềm (${
+                report.Slthexemayphanmem
+              })
                 = ${report.Slthexemay + report.Slthexemayphanmem}</span></br>
                 <span>Số thẻ xe máy đã bàn giao = ${report.Sothexemaydk}</span></br>
                 <span style="color:red;">Vui lòng kiểm tra lại dữ liệu trước khi gửi</span>
