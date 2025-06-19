@@ -101,6 +101,7 @@ const DetailP0 = ({ navigation, route }) => {
   const { isReload, setIsReload } = useContext(ReloadContext);
   const { user, authToken } = useSelector((state) => state.authReducer);
   const [p0_Data, setP0_Data] = useState(initP0Data());
+  const [qtt, setQTT] = useState();
   const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
   const isToday = moment(data?.Ngaybc).isSame(moment(), "day");
   const [ghichu, setGhichu] = useState(data?.Ghichu);
@@ -256,6 +257,7 @@ const DetailP0 = ({ navigation, route }) => {
         },
       });
 
+      setQTT(res.data?.data);
       setP0_Data((prevData) =>
         prevData.map((item) => {
           if (item.key === "Sotheotodk")
@@ -267,26 +269,6 @@ const DetailP0 = ({ navigation, route }) => {
             return {
               ...item,
               value: `${res.data?.data?.slthexemay}` != `null` ? `${res.data?.data?.slthexemay}` : "0",
-            };
-          if (item.key === "coi")
-            return {
-              ...item,
-              value: `${res.data?.data?.coi}` != `null` ? `${res.data?.data?.coi}` : "0",
-            };
-          if (item.key === "gay_giao_thong")
-            return {
-              ...item,
-              value: `${res.data?.data?.gay_giao_thong}` != `null` ? `${res.data?.data?.gay_giao_thong}` : "0",
-            };
-          if (item.key === "ao_mua")
-            return {
-              ...item,
-              value: `${res.data?.data?.ao_mua}` != `null` ? `${res.data?.data?.ao_mua}` : "0",
-            };
-          if (item.key === "den_pin")
-            return {
-              ...item,
-              value: `${res.data?.data?.den_pin}` != `null` ? `${res.data?.data?.den_pin}` : "0",
             };
           return item;
         })
@@ -341,6 +323,13 @@ const DetailP0 = ({ navigation, route }) => {
       pairs.push(pair);
     }
 
+    const getDisplayLabel = (fieldKey) => {
+      if (fieldKey === "coi" || fieldKey === "gay_giao_thong" || fieldKey === "ao_mua" || fieldKey === "den_pin") {
+        return `${fieldLabels[fieldKey]} - (${qtt?.[fieldKey] || 0})`;
+      }
+      return fieldLabels[fieldKey];
+    };
+
     return (
       <View key={index} style={styles.categoryContainer}>
         <Text style={styles.categoryTitle}>{category}</Text>
@@ -363,7 +352,7 @@ const DetailP0 = ({ navigation, route }) => {
                     },
                   ]}
                 >
-                  <Text style={[styles.itemTitle, { color: editable(fieldKey) ? "black" : "white" }]}>{fieldLabels[fieldKey]}</Text>
+                  <Text style={[styles.itemTitle, { color: editable(fieldKey) ? "black" : "white" }]}> {getDisplayLabel(fieldKey)}</Text>
                   <TextInput
                     style={[
                       styles.input,

@@ -26,6 +26,7 @@ import axios from "axios";
 import axiosClient from "../../api/axiosClient";
 import { ReloadContext } from "../../context/ReloadContext";
 import CardManagementDialog from "./CardManagementDialog";
+import CardQTTDialog from "./CardQTTDialog";
 
 const numberOfItemsPerPage = 7;
 
@@ -38,6 +39,7 @@ const DanhMucBaoCaoP0 = ({ navigation, route }) => {
   // const [isReload, setIsReload] = useState(false);
   const { isReload, setIsReload } = useContext(ReloadContext);
   const [cardDialogOpen, setCardDialogOpen] = useState(false);
+  const [qttDialogOpen, setQTTDialogOpen] = useState(false);
 
   const flatListRef = React.useRef();
 
@@ -164,26 +166,48 @@ const DanhMucBaoCaoP0 = ({ navigation, route }) => {
                   <View style={styles.container}>
                     <View style={user?.ent_chucvu?.Role == 1 ? styles.header1 : styles.header}>
                       {user?.ent_chucvu?.Role == 1 && (
-                        <TouchableOpacity
-                          style={styles.action}
-                          onPress={() => {
-                            handleOpenCardDialog();
-                          }}
-                        >
-                          <Image
-                            source={require("../../../assets/icons/ic_change.png")}
-                            style={[styles.closeIcon, { transform: [{ scale: 0.8 }] }]}
-                          />
-                          <Text
-                            style={{
-                              fontSize: adjust(16),
-                              color: "white",
-                              fontWeight: "600",
+                        <View>
+                          <TouchableOpacity
+                            style={styles.action}
+                            onPress={() => {
+                              handleOpenCardDialog();
                             }}
                           >
-                            Thay đổi SL thẻ
-                          </Text>
-                        </TouchableOpacity>
+                            <Image
+                              source={require("../../../assets/icons/ic_change.png")}
+                              style={[styles.closeIcon, { transform: [{ scale: 0.8 }] }]}
+                            />
+                            <Text
+                              style={{
+                                fontSize: adjust(16),
+                                color: "white",
+                                fontWeight: "600",
+                              }}
+                            >
+                              Thay đổi SL thẻ
+                            </Text>
+                          </TouchableOpacity>
+                          <TouchableOpacity
+                            style={styles.action}
+                            onPress={() => {
+                              setQTTDialogOpen(true)
+                            }}
+                          >
+                            <Image
+                              source={require("../../../assets/icons/ic_change.png")}
+                              style={[styles.closeIcon, { transform: [{ scale: 0.8 }] }]}
+                            />
+                            <Text
+                              style={{
+                                fontSize: adjust(16),
+                                color: "white",
+                                fontWeight: "600",
+                              }}
+                            >
+                              Thay đổi SL quân tư trang
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
                       )}
 
                       <TouchableOpacity style={styles.action} onPress={() => handleCreate()}>
@@ -217,6 +241,7 @@ const DanhMucBaoCaoP0 = ({ navigation, route }) => {
               )}
 
               <CardManagementDialog open={cardDialogOpen} onClose={handleCloseCardDialog} />
+              <CardQTTDialog open={qttDialogOpen} onClose={() => setQTTDialogOpen(false)} />
             </ImageBackground>
           </BottomSheetModalProvider>
         </TouchableWithoutFeedback>
