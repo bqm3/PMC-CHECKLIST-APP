@@ -42,7 +42,7 @@ import ConnectContext from "../../context/ConnectContext";
 import axiosClient from "../../api/axiosClient";
 
 const ThucHienKhuvuc = ({ route, navigation }) => {
-  const { ID_ChecklistC, ID_KhoiCV, ID_Calv, ID_Hangmucs, ID_Phanhe, Chuky } = route.params;
+  const { ID_ChecklistC, ID_KhoiCV, ID_Calv, ID_Hangmucs } = route.params;
 
   const {
     setDataChecklists,
@@ -291,8 +291,6 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
         ID_Calv,
         ID_Khuvuc: resDataKhuvuc[0].ID_Khuvuc,
         ID_Hangmucs,
-        ID_Phanhe,
-        Chuky
       });
     }
 
@@ -305,8 +303,6 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
         hangMucFilterByIDChecklistC,
         Hangmuc: resDataHangmuc[0],
         ID_Hangmuc: resDataHangmuc[0].ID_Hangmuc,
-        ID_Phanhe,
-        Chuky
       });
     }
 
@@ -427,8 +423,6 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
           formData.append("Kinhdo", item.Kinhdo || "");
           formData.append("Docao", item.Docao || "");
           formData.append("isScan", isScan || null);
-          formData.append("ID_Phanhe", item.ID_Phanhe);
-          formData.append("Chuky", item.Chuky);
 
           if (item.Anh && Array.isArray(item.Anh)) {
             for (const [imgIndex, image] of item.Anh.entries()) {
@@ -539,8 +533,6 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
             Kinhdo: ItemDefaultActionDataChecklist[0]?.Kinhdo || null,
             Docao: ItemDefaultActionDataChecklist[0]?.Docao || null,
             isScan: ItemDefaultActionDataChecklist[0]?.isScan || null,
-            ID_Phanhe: ItemDefaultActionDataChecklist[0]?.ID_Phanhe || null,
-            Chuky: ItemDefaultActionDataChecklist[0]?.Chuky || null,
           },
           {
             headers: {
@@ -607,6 +599,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
           formData.append("Key_Image", 1);
           formData.append("ID_ChecklistC", ID_ChecklistC);
           formData.append("ID_Checklist", item.ID_Checklist);
+          formData.append("ID_Phanhe", item.ID_Phanhe);
           formData.append("Ketqua", item.valueCheck || "");
           formData.append("Gioht", item.Gioht);
           formData.append("Ghichu", item.GhichuChitiet || "");
@@ -614,8 +607,6 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
           formData.append("Kinhdo", item.Kinhdo || "");
           formData.append("Docao", item.Docao || "");
           formData.append("isScan", isScan || null);
-          formData.append("ID_Phanhe", item.ID_Phanhe);
-          formData.append("Chuky", item.Chuky);
 
           if (item.Anh && Array.isArray(item.Anh)) {
             // Use a for...of loop to wait for asynchronous tasks
@@ -688,8 +679,6 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
                 Kinhdo: ItemDefaultActionDataChecklist[0]?.Kinhdo || null,
                 Docao: ItemDefaultActionDataChecklist[0]?.Docao || null,
                 isScan: ItemDefaultActionDataChecklist[0]?.isScan || null,
-                ID_Phanhe: ItemDefaultActionDataChecklist[0]?.ID_Phanhe || null,
-                Chuky: ItemDefaultActionDataChecklist[0]?.Chuky || null,
               },
               {
                 headers: {
@@ -859,8 +848,6 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
       ID_Khuvuc: dataSelect[0].ID_Khuvuc,
       Tenkv: `${dataSelect[0]?.Tenkhuvuc} - ${dataSelect[0]?.ent_toanha?.Toanha}`,
       ID_Hangmucs: ID_Hangmucs,
-      ID_Phanhe: ID_Phanhe,
-      Chuky: Chuky
     });
     setDataSelect([]);
   };

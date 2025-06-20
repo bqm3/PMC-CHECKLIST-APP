@@ -48,7 +48,7 @@ import WebView from "react-native-webview";
 import { useHeaderHeight } from "@react-navigation/elements";
 
 const DetailChecklistLai = ({ route, navigation }) => {
-  const { ID_ChecklistC, ID_KhoiCV, ID_Hangmuc, Hangmuc, isScan, ID_Phanhe, Chuky } =
+  const { ID_ChecklistC, ID_KhoiCV, ID_Hangmuc, Hangmuc, isScan } =
     route.params;
 
   const dispath = useDispatch();
@@ -754,6 +754,7 @@ const DetailChecklistLai = ({ route, navigation }) => {
           formData.append("Key_Image", 1);
           formData.append("ID_ChecklistC", ID_ChecklistC);
           formData.append("ID_Checklist", item.ID_Checklist);
+          formData.append("ID_Phanhe", item.ID_Phanhe);
           formData.append("Ketqua", item.valueCheck || "");
           formData.append("Gioht", item.Gioht);
           formData.append("Ghichu", item.GhichuChitiet || "");
@@ -762,8 +763,6 @@ const DetailChecklistLai = ({ route, navigation }) => {
           formData.append("Docao", item.Docao || "");
           formData.append("isScan", isScan || null);
           formData.append("isCheckListLai", 1);
-          formData.append("ID_Phanhe", ID_Phanhe);
-          formData.append("Chuky", Chuky);
           if (item.Anh && Array.isArray(item.Anh)) {
             // Use a for...of loop to wait for asynchronous tasks
             for (const [imgIndex, image] of item.Anh.entries()) {
@@ -866,8 +865,6 @@ const DetailChecklistLai = ({ route, navigation }) => {
         Docao: location?.coords?.altitude || "",
         isScan: isScan,
         isCheckListLai: 1,
-        ID_Phanhe: ID_Phanhe,
-        Chuky: Chuky,
       },
       {
         headers: {
@@ -929,6 +926,7 @@ const DetailChecklistLai = ({ route, navigation }) => {
           formData.append("Key_Image", 1);
           formData.append("ID_ChecklistC", ID_ChecklistC);
           formData.append("ID_Checklist", item.ID_Checklist);
+          formData.append("ID_Phanhe", item.ID_Phanhe);
           formData.append("Ketqua", item.valueCheck || "");
           formData.append("Gioht", item.Gioht);
           formData.append("Ghichu", item.GhichuChitiet || "");
@@ -937,8 +935,6 @@ const DetailChecklistLai = ({ route, navigation }) => {
           formData.append("Docao", item.Docao || "");
           formData.append("isScan", isScan || null);
           formData.append("isCheckListLai", 1);
-          formData.append("ID_Phanhe", ID_Phanhe);
-          formData.append("Chuky", Chuky);
           // Nếu có hình ảnh, thêm vào FormData
           if (item.Anh && Array.isArray(item.Anh)) {
             for (const [imgIndex, image] of item.Anh.entries()) {
@@ -1007,8 +1003,6 @@ const DetailChecklistLai = ({ route, navigation }) => {
             Docao: dataDefault[0].Docao || "",
             isScan: isScan || null,
             isCheckListLai: 1,
-            ID_Phanhe: ID_Phanhe,
-            Chuky: Chuky,
           },
           {
             headers: {
