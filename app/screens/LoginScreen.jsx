@@ -16,14 +16,7 @@ import {
   Modal,
   ActivityIndicator,
 } from "react-native";
-import React, {
-  useEffect,
-  useState,
-  useContext,
-  useRef,
-  useMemo,
-  useCallback,
-} from "react";
+import React, { useEffect, useState, useContext, useRef, useMemo, useCallback } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import * as Location from "expo-location";
 import { Provider, useDispatch, useSelector } from "react-redux";
@@ -31,10 +24,7 @@ import { login } from "../redux/actions/authActions";
 import { COLORS, SIZES } from "../constants/theme";
 import Title from "../components/Title";
 import ButtonSubmit from "../components/Button/ButtonSubmit";
-import BottomSheet, {
-  BottomSheetView,
-  BottomSheetScrollView,
-} from "@gorhom/bottom-sheet";
+import BottomSheet, { BottomSheetView, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import NetInfo from "@react-native-community/netinfo";
 import * as Device from "expo-device";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -53,9 +43,7 @@ const LoginScreen = ({ navigation }) => {
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
   const dispatch = useDispatch();
 
-  const { error, user, message, isLoading } = useSelector(
-    (state) => state.authReducer
-  );
+  const { error, user, message, isLoading } = useSelector((state) => state.authReducer);
 
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(-1);
   const bottomSheetModalRef = useRef(null);
@@ -137,16 +125,12 @@ const LoginScreen = ({ navigation }) => {
 
   const handleSubmit = async () => {
     if (!isConnected) {
-      Alert.alert("PMC Thông báo", "Không có kết nối mạng", [
-        { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-      ]);
+      Alert.alert("PMC Thông báo", "Không có kết nối mạng", [{ text: "Xác nhận", onPress: () => console.log("OK Pressed") }]);
       return;
     }
 
     if (data?.UserName === "" || data?.Password === "") {
-      Alert.alert("PMC Thông báo", "Thiếu thông tin đăng nhập", [
-        { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-      ]);
+      Alert.alert("PMC Thông báo", "Thiếu thông tin đăng nhập", [{ text: "Xác nhận", onPress: () => console.log("OK Pressed") }]);
     } else {
       dispatch(login(data?.UserName, data?.Password, deviceInfo, infoIP));
       await AsyncStorage.setItem("Password", data?.Password);
@@ -161,14 +145,11 @@ const LoginScreen = ({ navigation }) => {
   useEffect(() => {
     const handleNoti = async () => {
       try {
-        const response = await axios.get(
-          BASE_URL + `/noti?version=${version}&platform=${Platform.OS}`,
-          {
-            headers: {
-              Accept: "application/json",
-            },
-          }
-        );
+        const response = await axios.get(BASE_URL + `/noti?version=${version}&platform=${Platform.OS}`, {
+          headers: {
+            Accept: "application/json",
+          },
+        });
 
         if (response.data.status == 1) {
           const data = response.data;
@@ -184,9 +165,7 @@ const LoginScreen = ({ navigation }) => {
 
   useEffect(() => {
     if (message) {
-      Alert.alert("PMC Thông báo", `${message}`, [
-        { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
-      ]);
+      Alert.alert("PMC Thông báo", `${message}`, [{ text: "Xác nhận", onPress: () => console.log("OK Pressed") }]);
     }
   }, [message, error]);
 
@@ -233,18 +212,12 @@ const LoginScreen = ({ navigation }) => {
   };
 
   useEffect(() => {
-    const keyboardDidShowListener = Keyboard.addListener(
-      "keyboardDidShow",
-      () => {
-        setKeyboardVisible(true);
-      }
-    );
-    const keyboardDidHideListener = Keyboard.addListener(
-      "keyboardDidHide",
-      () => {
-        setKeyboardVisible(false);
-      }
-    );
+    const keyboardDidShowListener = Keyboard.addListener("keyboardDidShow", () => {
+      setKeyboardVisible(true);
+    });
+    const keyboardDidHideListener = Keyboard.addListener("keyboardDidHide", () => {
+      setKeyboardVisible(false);
+    });
 
     return () => {
       keyboardDidHideListener.remove();
@@ -318,20 +291,14 @@ const LoginScreen = ({ navigation }) => {
       if (statusLocation === 2) {
         let { status } = await Location.requestForegroundPermissionsAsync();
         if (status === "denied") {
-          setErrorMsg(
-            "Permission denied. Please enable location services in settings."
-          );
-          Alert.alert(
-            "PMC Thông báo",
-            "Bạn cần bật quyền truy cập vị trí trong Cài đặt để tiếp tục sử dụng ứng dụng.",
-            [
-              {
-                text: "Mở cài đặt",
-                onPress: () => Linking.openSettings(), // Open app settings
-              },
-              { text: "Hủy", style: "cancel" },
-            ]
-          );
+          setErrorMsg("Permission denied. Please enable location services in settings.");
+          Alert.alert("PMC Thông báo", "Bạn cần bật quyền truy cập vị trí trong Cài đặt để tiếp tục sử dụng ứng dụng.", [
+            {
+              text: "Mở cài đặt",
+              onPress: () => Linking.openSettings(), // Open app settings
+            },
+            { text: "Hủy", style: "cancel" },
+          ]);
           return;
         }
 
@@ -367,11 +334,9 @@ const LoginScreen = ({ navigation }) => {
       );
       setIsLoadingPW(false);
       if (response.status == 200) {
-        Alert.alert(
-          "Thành công",
-          "Yêu cầu khôi phục mật khẩu đã được gửi. Vui lòng kiểm tra email của bạn.",
-          [{ text: "Xác nhận", onPress: () => handleCloseModal() }]
-        );
+        Alert.alert("Thành công", "Yêu cầu khôi phục mật khẩu đã được gửi. Vui lòng kiểm tra email của bạn.", [
+          { text: "Xác nhận", onPress: () => handleCloseModal() },
+        ]);
       } else {
         Alert.alert("Lỗi", response.data.message || "Đã xảy ra lỗi.");
       }
@@ -385,20 +350,9 @@ const LoginScreen = ({ navigation }) => {
   return (
     <>
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          style={{ flex: 1 }}
-        >
-          <ImageBackground
-            source={require("../../assets/bg_new.png")}
-            resizeMode="cover"
-            style={styles.defaultFlex}
-          >
-            <ScrollView
-              contentContainerStyle={[styles.container]}
-              style={{ opacity: opacity }}
-              scrollEnabled={false}
-            >
+        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
+          <ImageBackground source={require("../../assets/bg_new.png")} resizeMode="cover" style={styles.defaultFlex}>
+            <ScrollView contentContainerStyle={[styles.container]} style={{ opacity: opacity }} scrollEnabled={false}>
               {notification?.status == 1 && (
                 <NotificationComponent
                   notification={notification}
@@ -407,25 +361,34 @@ const LoginScreen = ({ navigation }) => {
                   setNotification={setNotification}
                 />
               )}
-              <Image
+              {/* <Image
                 style={{
-                  width: adjust(120),
-                  height: adjust(70),
+                  width: adjust(300), // Tăng lên 200
+                  height: adjust(200), // Tăng lên 120
+                  filter: "invert(1) grayscale(1) brightness(1.8) contrast(2)",
                   resizeMode: "contain",
                 }}
-                source={require("../../assets/pmc_logo.png")}
-              />
+                source={require("../../assets/logo_checklist.png")}
+              /> */}
 
               <View style={{ marginHorizontal: 20 }}>
-                <Title text={"Đăng nhập"} size={adjust(20)} top={30} />
-
+                {/* <Title text={"Đăng nhập"} size={adjust(20)} top={30} /> */}
+                <Image
+                  style={{
+                    width: adjust(300), // Tăng lên 200
+                    height: adjust(200), // Tăng lên 120
+                    filter: "invert(1) grayscale(1) brightness(1.8) contrast(2)",
+                    resizeMode: "contain",
+                    alignSelf: "center",
+                  }}
+                  source={require("../../assets/logo_checklist.png")}
+                />
                 <View
                   style={{
                     justifyContent: "flex-start",
                   }}
                 >
                   <View style={{ height: adjust(20) }}></View>
-
                   <View style={styles.action}>
                     <TextInput
                       allowFontScaling={false}
@@ -493,16 +456,9 @@ const LoginScreen = ({ navigation }) => {
                     }}
                   >
                     <View style={styles.checkboxContainer}>
-                      <Checkbox
-                        style={styles.checkbox}
-                        isCheck={isChecked}
-                        onPress={handleToggle}
-                      />
+                      <Checkbox style={styles.checkbox} isCheck={isChecked} onPress={handleToggle} />
                       <TouchableOpacity>
-                        <Text
-                          allowFontScaling={false}
-                          style={[styles.label, { textDecorationLine: "none" }]}
-                        >
+                        <Text allowFontScaling={false} style={[styles.label, { textDecorationLine: "none" }]}>
                           Lưu thông tin
                         </Text>
                       </TouchableOpacity>
@@ -523,12 +479,7 @@ const LoginScreen = ({ navigation }) => {
                   </View>
 
                   <View style={{ height: 12 }} />
-                  <ButtonSubmit
-                    backgroundColor={COLORS.bg_button}
-                    text={"Đăng nhập"}
-                    isLoading={isLoading}
-                    onPress={handleSubmit}
-                  />
+                  <ButtonSubmit backgroundColor={COLORS.bg_button} text={"Đăng nhập"} isLoading={isLoading} onPress={handleSubmit} />
 
                   <Text
                     style={{
@@ -544,17 +495,9 @@ const LoginScreen = ({ navigation }) => {
                 </View>
               </View>
 
-              <View
-                style={[
-                  styles.checkboxContainer,
-                  { marginTop: 30, justifyContent: "center" },
-                ]}
-              >
+              <View style={[styles.checkboxContainer, { marginTop: 30, justifyContent: "center" }]}>
                 <TouchableOpacity onPress={handlePresentModalPress}>
-                  <Text
-                    allowFontScaling={false}
-                    style={[styles.label, { textDecorationLine: "none" }]}
-                  >
+                  <Text allowFontScaling={false} style={[styles.label, { textDecorationLine: "none" }]}>
                     Các{" "}
                     <Text allowFontScaling={false} style={styles.label}>
                       điều khoản
@@ -562,22 +505,13 @@ const LoginScreen = ({ navigation }) => {
                     và{" "}
                     <Text allowFontScaling={false} style={styles.label}>
                       điều kiện
-                    </Text>{" "}
-                    của PMC
+                    </Text>
                   </Text>
                 </TouchableOpacity>
               </View>
 
-              <Modal
-                animationType="slide"
-                transparent={true}
-                visible={isForgotPW}
-                onRequestClose={handleCloseModal}
-              >
-                <KeyboardAvoidingView
-                  behavior={Platform.OS === "ios" ? "padding" : "height"}
-                  style={{ flex: 1 }}
-                >
+              <Modal animationType="slide" transparent={true} visible={isForgotPW} onRequestClose={handleCloseModal}>
+                <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
                   <ModalForgotPassword
                     handleCloseModal={handleCloseModal}
                     username={username}

@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "PMC Checklist",
-    "slug": "PMC-CHECKLIST-APP",
-    "version": "2.1.8",
+    "name": "Checklist",
+    "slug": "CHECKLIST-APP",
+    "version": "2.1.9",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
@@ -73,6 +73,16 @@
       "userInterfaceStyle": "automatic"
     },
     "plugins": [
+      [
+        "expo-build-properties", 
+        {
+          "android": {
+            "usesCleartextTraffic": true,
+            "compileSdkVersion": 35,  
+            "targetSdkVersion": 35 
+          }
+        }
+      ],
       [
         "expo-camera",
         {

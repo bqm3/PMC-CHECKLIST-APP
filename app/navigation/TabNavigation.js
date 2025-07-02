@@ -214,7 +214,7 @@ const HomeStack = ({ navigation }) => {
                   color: "white",
                 }}
               >
-                PMC Checklist
+                Checklist
               </Text>
             ),
             headerTitleAlign: "center",
