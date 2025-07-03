@@ -27,6 +27,7 @@
         "backgroundColor": "#ffffff"
       },
       "googleServicesFile": "./google-services.json",
+      "versionCode": 90,
       "package": "com.anonymous.PMCCHECKLISTAPP",
       "permissions": [
         "android.permission.CAMERA",
