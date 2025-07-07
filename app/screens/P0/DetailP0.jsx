@@ -287,12 +287,12 @@ const DetailP0 = ({ navigation, route }) => {
     const arrKhoiParsed = user?.arr_Khoi?.split(",").map(Number);
 
     if (
-      (user?.ID_KhoiCV == 4 || arrKhoiParsed.includes(4)) &&
+      (user?.ID_KhoiCV == 4 || arrKhoiParsed?.includes(4)) &&
       ["Sltheoto", "Slthexemay", "Sltheotophanmem", "Slthexemayphanmem"].includes(fieldKey)
     ) {
       check = true;
     } else if (
-      (user?.ID_KhoiCV == 3 || arrKhoiParsed.includes(3)) &&
+      (user?.ID_KhoiCV == 3 || arrKhoiParsed?.includes(3)) &&
       !["Sltheoto", "Slthexemay", "Sltheotophanmem", "Slthexemayphanmem", "Doanhthu"].includes(fieldKey)
     ) {
       check = true;
