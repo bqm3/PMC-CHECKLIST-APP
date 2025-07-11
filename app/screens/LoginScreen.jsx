@@ -3,7 +3,7 @@ import {
   Text,
   ImageBackground,
   TouchableOpacity,
-  Image,
+  // Image,
   TextInput,
   StyleSheet,
   Keyboard,
@@ -16,6 +16,13 @@ import {
   Modal,
   ActivityIndicator,
 } from "react-native";
+// import {
+//   Invert,
+//   Grayscale,
+//   Brightness,
+//   Contrast
+// } from 'react-native-color-matrix-image-filters';
+import { Svg, Image, Defs, Filter, FeColorMatrix } from "react-native-svg";
 import React, { useEffect, useState, useContext, useRef, useMemo, useCallback } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import * as Location from "expo-location";
@@ -347,6 +354,9 @@ const LoginScreen = ({ navigation }) => {
     }
   };
 
+  const colorMatrixValues = Platform.OS === 'ios' 
+  ? "-1 0 0 0 1 0 -1 0 0 1 0 0 -1 0 1 0 0 0 1 0" // iOS
+  : "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"; // Android
   return (
     <>
       <GestureHandlerRootView style={{ flex: 1 }}>
@@ -373,16 +383,24 @@ const LoginScreen = ({ navigation }) => {
 
               <View style={{ marginHorizontal: 20 }}>
                 {/* <Title text={"Đăng nhập"} size={adjust(20)} top={30} /> */}
-                <Image
+                {/* <Image
                   style={{
                     width: adjust(300), // Tăng lên 200
                     height: adjust(200), // Tăng lên 120
-                    filter: "invert(1) grayscale(1) brightness(1.8) contrast(2)",
+                    // filter: "invert(1) grayscale(1) brightness(1.8) contrast(2)",
                     resizeMode: "contain",
                     alignSelf: "center",
                   }}
                   source={require("../../assets/logo_checklist.png")}
-                />
+                /> */}
+                <Svg width={adjust(300)} height={adjust(200)} alignSelf="center">
+                  <Defs>
+                    <Filter id="colorMatrix">
+                      <FeColorMatrix type="matrix" values={colorMatrixValues} />
+                    </Filter>
+                  </Defs>
+                  <Image width={adjust(300)} height={adjust(200)} href={require("../../assets/logo_checklist.png")} filter="url(#colorMatrix)" />
+                </Svg>
                 <View
                   style={{
                     justifyContent: "flex-start",
