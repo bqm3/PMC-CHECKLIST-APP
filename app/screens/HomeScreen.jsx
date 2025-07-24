@@ -1,23 +1,7 @@
 //import liraries
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  useRef,
-} from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  ImageBackground,
-  Image,
-  Platform,
-  ActivityIndicator,
-  TextInput,
-  TouchableOpacity,
-} from "react-native";
+import React, { createContext, useContext, useState, useEffect, useRef, useCallback } from "react";
+import { useFocusEffect } from '@react-navigation/native';
+import { View, Text, StyleSheet, FlatList, ImageBackground, Image, Platform, ActivityIndicator, TextInput, TouchableOpacity } from "react-native";
 import * as Device from "expo-device";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import {
@@ -69,8 +53,7 @@ async function registerForPushNotificationsAsync() {
   }
 
   if (Device.isDevice) {
-    const { status: existingStatus } =
-      await Notifications.getPermissionsAsync();
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
     let finalStatus = existingStatus;
 
     if (existingStatus !== "granted") {
@@ -80,23 +63,17 @@ async function registerForPushNotificationsAsync() {
 
     // Only show the settings alert if finalStatus is not granted
     if (finalStatus !== "granted") {
-      Alert.alert(
-        "Thông báo",
-        "Bạn đã từ chối nhận thông báo. Hãy bật thông báo trong Cài đặt để tiếp tục.",
-        [
-          {
-            text: "Mở cài đặt",
-            onPress: () => Linking.openSettings(), // Open app settings if the user denies notification permissions
-          },
-          { text: "Hủy", style: "cancel" },
-        ]
-      );
+      Alert.alert("Thông báo", "Bạn đã từ chối nhận thông báo. Hãy bật thông báo trong Cài đặt để tiếp tục.", [
+        {
+          text: "Mở cài đặt",
+          onPress: () => Linking.openSettings(), // Open app settings if the user denies notification permissions
+        },
+        { text: "Hủy", style: "cancel" },
+      ]);
       return;
     }
 
-    const projectId =
-      Constants?.expoConfig?.extra?.eas?.projectId ??
-      Constants?.easConfig?.projectId;
+    const projectId = Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
 
     if (!projectId) {
       handleRegistrationError("Không tìm thấy thông tin máy");
@@ -162,6 +139,12 @@ const dataDanhMuc = [
     path: "Báo cáo S0",
     icon: require("../../assets/icons/o-04.png"),
   },
+  {
+    id: 8,
+    status: "new",
+    path: "Đăng ký thi công",
+    icon: require("../../assets/icons/o-04.png"),
+  },
 ];
 
 const dataGD = [
@@ -193,6 +176,12 @@ const dataGD = [
     id: 7,
     status: "new",
     path: "Báo cáo S0",
+    icon: require("../../assets/icons/o-04.png"),
+  },
+  {
+    id: 8,
+    status: "new",
+    path: "Đăng ký thi công",
     icon: require("../../assets/icons/o-04.png"),
   },
 ];
@@ -241,6 +230,12 @@ const dataKST = [
     path: "Báo cáo S0",
     icon: require("../../assets/icons/o-04.png"),
   },
+  {
+    id: 8,
+    status: "new",
+    path: "Đăng ký thi công",
+    icon: require("../../assets/icons/o-04.png"),
+  },
 ];
 
 //ban quản trị khối
@@ -275,6 +270,12 @@ const dataBQTKhoi = [
     path: "Báo cáo S0",
     icon: require("../../assets/icons/o-04.png"),
   },
+  {
+    id: 8,
+    status: "new",
+    path: "Đăng ký thi công",
+    icon: require("../../assets/icons/o-04.png"),
+  },
 ];
 
 const dataBQTDuAn = [
@@ -302,6 +303,12 @@ const dataBQTDuAn = [
     path: "Báo cáo S0",
     icon: require("../../assets/icons/o-04.png"),
   },
+  {
+    id: 8,
+    status: "new",
+    path: "Đăng ký thi công",
+    icon: require("../../assets/icons/o-04.png"),
+  },
 ];
 
 // create a component
@@ -309,6 +316,7 @@ const HomeScreen = ({ navigation, route }) => {
   const dispath = useDispatch();
   const setIsLoading = route.params.setIsLoading;
   const setColorLoading = route.params.setColorLoading;
+  const fetchNotifications = route.params.fetchNotifications;
   const { user, authToken, passwordCore } = useSelector(
     (state) => state.authReducer
   );
@@ -422,7 +430,14 @@ const HomeScreen = ({ navigation, route }) => {
     funcDuan();
     funcCheckP0();
     int_get_sdt_KhanCap();
+    fetchNotifications();
   }, [refreshScreen]);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchNotifications();
+    }, [])
+  );
 
   useEffect(() => {
     registerForPushNotificationsAsync()
@@ -566,9 +581,7 @@ const HomeScreen = ({ navigation, route }) => {
 
   const handleEmergencyCall = () => {
     if (!sdt_khancap) {
-      Alert.alert("PMC Thông báo", "Không có số điện thoại khẩn cấp!", [
-        { text: "Xác nhận" },
-      ]);
+      Alert.alert("PMC Thông báo", "Không có số điện thoại khẩn cấp!", [{ text: "Xác nhận" }]);
       return;
     }
     setIsLoading(true);
@@ -597,25 +610,13 @@ const HomeScreen = ({ navigation, route }) => {
   };
 
   return (
-    <ImageBackground
-      source={require("../../assets/bg_new.png")}
-      resizeMode="stretch"
-      style={{ flex: 1, width: "100%" }}
-    >
+    <ImageBackground source={require("../../assets/bg_new.png")} resizeMode="stretch" style={{ flex: 1, width: "100%" }}>
       <View style={styles.container}>
         <View style={styles.content}>
           {user?.ent_duan?.Logo ? (
-            <Image
-              source={{ uri: user?.ent_duan?.Logo }}
-              resizeMode="contain"
-              style={{ height: adjust(70), width: adjust(180) }}
-            />
+            <Image source={{ uri: user?.ent_duan?.Logo }} resizeMode="contain" style={{ height: adjust(70), width: adjust(180) }} />
           ) : (
-            <Image
-              source={require("../../assets/pmc_logo.png")}
-              resizeMode="contain"
-              style={{ height: adjust(80), width: adjust(200) }}
-            />
+            <Image source={require("../../assets/pmc_logo.png")} resizeMode="contain" style={{ height: adjust(80), width: adjust(200) }} />
           )}
           <Text
             allowFontScaling={false}
@@ -642,9 +643,7 @@ const HomeScreen = ({ navigation, route }) => {
           </Text>
           {(user?.ent_chucvu?.Role === 5 ||
             // (user?.ent_chucvu?.Role === 1 && user?.arr_Duan != null && user?.arr_Duan != "" && user?.arr_Duan != undefined)) && (
-            (user?.ent_chucvu?.Role === 1 &&
-              arrDuan &&
-              arrDuan?.length > 1)) && (
+            (user?.ent_chucvu?.Role === 1 && arrDuan && arrDuan?.length > 1)) && (
             <View style={{ flexDirection: "row" }}>
               <SelectDropdown
                 data={duan.map((item) => item.Duan)} // Dữ liệu dự án
@@ -659,12 +658,7 @@ const HomeScreen = ({ navigation, route }) => {
                   funcHandleDuan(selectedProject);
                 }}
                 renderDropdownIcon={(isOpened) => (
-                  <FontAwesome
-                    name={isOpened ? "chevron-up" : "chevron-down"}
-                    color={"#637381"}
-                    size={18}
-                    style={{ marginRight: 10 }}
-                  />
+                  <FontAwesome name={isOpened ? "chevron-up" : "chevron-down"} color={"#637381"} size={18} style={{ marginRight: 10 }} />
                 )}
                 dropdownIconPosition={"right"}
                 buttonTextAfterSelection={(selectedItem, index) => (
@@ -688,12 +682,8 @@ const HomeScreen = ({ navigation, route }) => {
                 search
               />
 
-              {(user?.ent_chucvu?.Role === 5 ||
-                user?.ent_chucvu?.Role === 10) && (
-                <TouchableOpacity
-                  style={styles.resetButton}
-                  onPress={() => funcHandleClearDuan("clear")}
-                >
+              {(user?.ent_chucvu?.Role === 5 || user?.ent_chucvu?.Role === 10) && (
+                <TouchableOpacity style={styles.resetButton} onPress={() => funcHandleClearDuan("clear")}>
                   <Text allowFontScaling={false} style={styles.resetButtonText}>
                     Tổng quan dự án
                   </Text>
@@ -806,8 +796,7 @@ const HomeScreen = ({ navigation, route }) => {
               fontSize: adjust(16),
             }}
           >
-            Người Giám sát chỉ thực hiện công việc Checklist, Tra cứu và Đổi mật
-            khẩu.
+            Người Giám sát chỉ thực hiện công việc Checklist, Tra cứu và Đổi mật khẩu.
           </Text>
           <Text
             allowFontScaling={false}

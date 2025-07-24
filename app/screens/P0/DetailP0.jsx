@@ -28,6 +28,7 @@ import WarningBox from "../../components/Warning/WarningBox";
 // Field categories for grouping data fields
 const fieldCategories = {
   "Thông tin thẻ": ["Sotheotodk", "Sothexemaydk"],
+  "Thông tin tồn ảo": ["the_ton_ao", "tien_ton_ao"],
   "Thông tin kiểm kê tại quầy": ["Sltheoto", "Slthexemay", "Sltheotophanmem", "Slthexemayphanmem"],
   "Thông tin xe": ["Slxeoto", "Slxeotodien", "Slxemay", "Slxemaydien", "Slxedap", "Slxedapdien"],
   "Sự cố": ["Slscoto", "Slscotodien", "Slscxemay", "Slscxemaydien", "Slscxedap", "Slscxedapdien", "Slsucokhac"],
@@ -71,6 +72,8 @@ const fieldLabels = {
   gay_giao_thong: "Gậy giao thông",
   ao_mua: "Áo mưa",
   den_pin: "Đèn pin",
+  the_ton_ao: "Thẻ tồn ảo",
+  tien_ton_ao: "Tiền tồn ảo",
 };
 
 // Initialize P0 data structure based on field categories

@@ -25,10 +25,12 @@ import { BASE_URL } from "../../constants/config";
 import { COLORS } from "../../constants/theme";
 import { ReloadContext } from "../../context/ReloadContext";
 import WarningBox from "../../components/Warning/WarningBox";
+import moment from "moment-timezone";
 
 // Field categories for grouping data fields
 const fieldCategories = {
   "Thông tin thẻ": ["Sotheotodk", "Sothexemaydk"],
+  'Thông tin tồn ảo': ['the_ton_ao', 'tien_ton_ao'],
   "Thông tin kiểm kê tại quầy": ["Sltheoto", "Slthexemay", "Sltheotophanmem", "Slthexemayphanmem"],
   "Thông tin xe": ["Slxeoto", "Slxeotodien", "Slxemay", "Slxemaydien", "Slxedap", "Slxedapdien"],
   "Sự cố": ["Slscoto", "Slscotodien", "Slscxemay", "Slscxemaydien", "Slscxedap", "Slscxedapdien", "Slsucokhac"],
@@ -72,6 +74,8 @@ const fieldLabels = {
   gay_giao_thong: "Gậy giao thông",
   ao_mua: "Áo mưa",
   den_pin: "Đèn pin",
+  the_ton_ao: 'Thẻ tồn ảo trên phần mềm',
+  tien_ton_ao: 'Tiền tồn ảo trên phần mềm',
 };
 
 // Initialize P0 data structure based on field categories
@@ -261,9 +265,19 @@ const TaoBaoCaoP0 = ({ navigation, route }) => {
     }
   };
 
+  const isLast5DaysOfMonth = useMemo(() => {
+    const today = moment();
+    const lastDay = today.clone().endOf('month');
+    return lastDay.diff(today, 'days') <= 5;
+  }, []);
+
   const editable = (fieldKey) => {
     if (fieldKey === "Sotheotodk" || fieldKey === "Sothexemaydk") {
       return false;
+    }
+
+    if (fieldCategories['Thông tin tồn ảo']?.includes(fieldKey)) {
+      return isLast5DaysOfMonth;
     }
 
     let check = false;

@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import {
   Image,
@@ -18,25 +19,10 @@ import { Ionicons, FontAwesome5 } from "@expo/vector-icons";
 import adjust from "../adjust";
 import { useSelector } from "react-redux";
 
-import {
-  ThucHienChecklist,
-  DetailChecklist,
-  ThucHienHangmuc,
-  ThucHienKhuvuc,
-} from "../screens/Checklist";
-import {
-  ThucHienChecklistLai,
-  ThucHienKhuvucLai,
-  ThucHienHangmucLai,
-  DetailChecklistLai,
-} from "../screens/ChecklistLai";
+import { ThucHienChecklist, DetailChecklist, ThucHienHangmuc, ThucHienKhuvuc } from "../screens/Checklist";
+import { ThucHienChecklistLai, ThucHienKhuvucLai, ThucHienHangmucLai, DetailChecklistLai } from "../screens/ChecklistLai";
 import { DanhmucUserScreen, DanhmucDuanScreen } from "../screens/PSH";
-import {
-  DetailSucongoai,
-  ThuchienSucongoai,
-  XulySuco,
-  ChangeTinhTrangSuCo,
-} from "../screens/SuCo";
+import { DetailSucongoai, ThuchienSucongoai, XulySuco, ChangeTinhTrangSuCo } from "../screens/SuCo";
 
 import {
   DanhmucChiTietTracuu,
@@ -52,16 +38,16 @@ import {
   NotHangMucTracuuCa,
   NotCheckListTracuuCa,
 } from "../screens/TraCuuThongKe";
-import {
-  BaoCaoChiSoTheoNamThang,
-  DanhMucBaoCaoChiSo,
-  DanhmucHangMucChiSo,
-} from "../screens/Baocaochiso";
+import { BaoCaoChiSoTheoNamThang, DanhMucBaoCaoChiSo, DanhmucHangMucChiSo } from "../screens/Baocaochiso";
 
 import { DanhMucBaoCaoHSSE, TaoBaoCaoHSSE, DetailHSSE } from "../screens/HSSE";
 import { DanhMucBaoCaoP0, TaoBaoCaoP0, DetailP0 } from "../screens/P0";
+import { ListDKTC, ChiTietDKTC } from "../screens/Dangkythicong";
+import { NotificationScreen, DetailNotiScreen } from "../screens/Noti";
 import HomeScreen from "../screens/HomeScreen.jsx";
 import Profile from "../screens/Profile.jsx";
+import axios from "axios";
+import { BASE_URL } from "../constants/config.js";
 
 const Stack = createNativeStackNavigator();
 
@@ -149,9 +135,7 @@ let gsetColorLoading = null;
 
 const handleEmergencyCall = (sdt_khancap) => {
   if (!sdt_khancap) {
-    Alert.alert("PMC Thông báo", "Không có số điện thoại khẩn cấp!", [
-      { text: "Xác nhận" },
-    ]);
+    Alert.alert("PMC Thông báo", "Không có số điện thoại khẩn cấp!", [{ text: "Xác nhận" }]);
     return;
   }
 
@@ -178,8 +162,23 @@ const handleEmergencyCall = (sdt_khancap) => {
 
 const HomeStack = ({ navigation }) => {
   const { sdt_khancap } = useSelector((state) => state.entReducer);
+  const { authToken } = useSelector((state) => state.authReducer);
   const { isLoading, setIsLoading } = useCallState();
   const { colorLoading, setColorLoading } = useColorState();
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  const fetchNotifications = async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/ent_noti`, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+      setUnreadCount(res.data.unreadCount);
+    } catch (err) {
+      setUnreadCount(0);
+    }
+  };
 
   gsetIsLoading = setIsLoading;
   gsetColorLoading = setColorLoading;
@@ -197,6 +196,7 @@ const HomeStack = ({ navigation }) => {
           initialParams={{
             setIsLoading: setIsLoading,
             setColorLoading: setColorLoading,
+            fetchNotifications: fetchNotifications,
           }}
           lazy={false}
           options={({ route, navigation, setIsLoading }) => ({
@@ -219,6 +219,45 @@ const HomeStack = ({ navigation }) => {
             ),
             headerTitleAlign: "center",
             headerRight: () => (
+              <TouchableOpacity
+                style={{
+                  width: adjust(36),
+                  height: adjust(36),
+                }}
+                onPressIn={() => {
+                  navigation.navigate("NotificationScreen");
+                }}
+              >
+                {/* Badge số lượng chưa đọc */}
+                {unreadCount > 0 && (
+                  <View
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      right: 0,
+                      backgroundColor: "red",
+                      width: adjust(16),
+                      height: adjust(16),
+                      borderRadius: adjust(8),
+                      justifyContent: "center",
+                      alignItems: "center",
+                      zIndex: 10,
+                    }}
+                  >
+                    <Text style={{ color: "white", fontSize: 10, fontWeight: "bold" }}>{unreadCount}</Text>
+                  </View>
+                )}
+                <Image
+                  source={require("../../assets/icons/ic_bell.png")}
+                  style={{
+                    width: adjust(36),
+                    height: adjust(36),
+                    tintColor: "white",
+                  }}
+                />
+              </TouchableOpacity>
+            ),
+            headerLeft: () => (
               <TouchableOpacity
                 style={{
                   width: adjust(36),
@@ -548,9 +587,7 @@ const HomeStack = ({ navigation }) => {
                   navigation.goBack();
                 }}
               >
-                {Platform.OS === "ios" && (
-                  <Ionicons name="chevron-back" size={28} color="white" />
-                )}
+                {Platform.OS === "ios" && <Ionicons name="chevron-back" size={28} color="white" />}
               </TouchableOpacity>
             ),
             headerTitleAlign: "center",
@@ -587,9 +624,7 @@ const HomeStack = ({ navigation }) => {
                   navigation.goBack();
                 }}
               >
-                {Platform.OS === "ios" && (
-                  <Ionicons name="chevron-back" size={28} color="white" />
-                )}
+                {Platform.OS === "ios" && <Ionicons name="chevron-back" size={28} color="white" />}
               </TouchableOpacity>
             ),
             headerTitleAlign: "center",
@@ -625,9 +660,7 @@ const HomeStack = ({ navigation }) => {
                   navigation.goBack();
                 }}
               >
-                {Platform.OS === "ios" && (
-                  <Ionicons name="chevron-back" size={28} color="white" />
-                )}
+                {Platform.OS === "ios" && <Ionicons name="chevron-back" size={28} color="white" />}
               </TouchableOpacity>
             ),
             headerTitleAlign: "center",
@@ -663,9 +696,7 @@ const HomeStack = ({ navigation }) => {
                   navigation.goBack();
                 }}
               >
-                {Platform.OS === "ios" && (
-                  <Ionicons name="chevron-back" size={28} color="white" />
-                )}
+                {Platform.OS === "ios" && <Ionicons name="chevron-back" size={28} color="white" />}
               </TouchableOpacity>
             ),
             headerTitleAlign: "center",
@@ -701,9 +732,7 @@ const HomeStack = ({ navigation }) => {
                   navigation.goBack();
                 }}
               >
-                {Platform.OS === "ios" && (
-                  <Ionicons name="chevron-back" size={28} color="white" />
-                )}
+                {Platform.OS === "ios" && <Ionicons name="chevron-back" size={28} color="white" />}
               </TouchableOpacity>
             ),
             headerTitleAlign: "center",
@@ -1130,11 +1159,7 @@ const HomeStack = ({ navigation }) => {
               </Text>
             ),
             headerLeft: () => (
-              <TouchableOpacity
-                onPressIn={() =>
-                  navigation.navigate("Báo cáo HSSE", { isReload: true })
-                }
-              >
+              <TouchableOpacity onPressIn={() => navigation.navigate("Báo cáo HSSE", { isReload: true })}>
                 {Platform.OS === "ios" && (
                   <Image
                     source={require("../../assets/icons/ic_button_back.png")}
@@ -1237,11 +1262,7 @@ const HomeStack = ({ navigation }) => {
               </Text>
             ),
             headerLeft: () => (
-              <TouchableOpacity
-                onPressIn={() =>
-                  navigation.navigate("Báo cáo S0", { isReload: true })
-                }
-              >
+              <TouchableOpacity onPressIn={() => navigation.navigate("Báo cáo S0", { isReload: true })}>
                 {Platform.OS === "ios" && (
                   <Image
                     source={require("../../assets/icons/ic_button_back.png")}
@@ -1283,6 +1304,129 @@ const HomeStack = ({ navigation }) => {
                 }}
               >
                 Chi tiết ngày {route?.params?.data?.Ngaybc}
+              </Text>
+            ),
+            headerLeft: () => headerLeft(navigation),
+            headerTitleAlign: "center",
+            headerStyle: {
+              backgroundColor: COLORS.bg_button,
+            },
+            headerBackTitleVisible: false,
+          })}
+        />
+
+        <Stack.Screen
+          name="Đăng ký thi công"
+          component={ListDKTC}
+          initialParams={{
+            setIsLoading: setIsLoading,
+            setColorLoading: setColorLoading,
+          }}
+          lazy={false}
+          options={({ route, navigation }) => ({
+            headerShown: true,
+            headerTitle: () => (
+              <Text
+                allowFontScaling={false}
+                style={{
+                  fontSize: adjust(20),
+                  fontWeight: "700",
+                  color: "white",
+                }}
+              >
+                Danh sách đăng ký thi công
+              </Text>
+            ),
+            headerLeft: () => headerLeft(navigation),
+            headerTitleAlign: "center",
+            headerStyle: {
+              backgroundColor: COLORS.bg_button,
+            },
+            headerBackTitleVisible: false,
+          })}
+        />
+
+        <Stack.Screen
+          name="ChiTietDKTC"
+          component={ChiTietDKTC}
+          initialParams={{
+            setIsLoading: setIsLoading,
+            setColorLoading: setColorLoading,
+          }}
+          lazy={false}
+          options={({ route, navigation }) => ({
+            headerShown: true,
+            headerTitle: () => (
+              <Text
+                allowFontScaling={false}
+                style={{
+                  fontSize: adjust(20),
+                  fontWeight: "700",
+                  color: "white",
+                }}
+              >
+                {route?.params?.headerTitle}
+              </Text>
+            ),
+            headerLeft: () => headerLeft(navigation),
+            headerTitleAlign: "center",
+            headerStyle: {
+              backgroundColor: COLORS.bg_button,
+            },
+            headerBackTitleVisible: false,
+          })}
+        />
+
+        <Stack.Screen
+          name="NotificationScreen"
+          component={NotificationScreen}
+          initialParams={{
+            setIsLoading: setIsLoading,
+            setColorLoading: setColorLoading,
+          }}
+          lazy={false}
+          options={({ route, navigation }) => ({
+            headerShown: true,
+            headerTitle: () => (
+              <Text
+                allowFontScaling={false}
+                style={{
+                  fontSize: adjust(20),
+                  fontWeight: "700",
+                  color: "white",
+                }}
+              >
+                Thông báo
+              </Text>
+            ),
+            headerLeft: () => headerLeft(navigation),
+            headerTitleAlign: "center",
+            headerStyle: {
+              backgroundColor: COLORS.bg_button,
+            },
+            headerBackTitleVisible: false,
+          })}
+        />
+        <Stack.Screen
+          name="DetailNotiScreen"
+          component={DetailNotiScreen}
+          initialParams={{
+            setIsLoading: setIsLoading,
+            setColorLoading: setColorLoading,
+          }}
+          lazy={false}
+          options={({ route, navigation }) => ({
+            headerShown: true,
+            headerTitle: () => (
+              <Text
+                allowFontScaling={false}
+                style={{
+                  fontSize: adjust(20),
+                  fontWeight: "700",
+                  color: "white",
+                }}
+              >
+                Chi tiết thông báo
               </Text>
             ),
             headerLeft: () => headerLeft(navigation),
