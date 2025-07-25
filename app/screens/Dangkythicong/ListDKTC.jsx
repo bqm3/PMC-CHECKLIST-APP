@@ -460,194 +460,190 @@ const ListDKTC = ({ navigation, route }) => {
         imageStyle={styles.backgroundImageStyle}
         resizeMode="cover"
       >
-        <SafeAreaView style={styles.container}>
-          <StatusBar barStyle="light-content" backgroundColor="rgba(0,0,0,0.1)" translucent />
-
-          {/* Header with semi-transparent overlay */}
-          <Animated.View
-            style={[
-              styles.header,
-              {
-                transform: [{ translateY: slideAnim }],
-                opacity: fadeAnim,
-              },
-            ]}
-          >
-            {/* Search Bar */}
-            <View style={styles.searchContainer}>
-              <Ionicons name="search-outline" size={20} color="#64748B" style={styles.searchIcon} />
-              <TextInput
-                style={styles.searchInput}
-                placeholder="Tìm kiếm tên hồ sơ..."
-                placeholderTextColor="#94A3B8"
-                value={filters.name}
-                onChangeText={handlers.setName}
-                returnKeyType="search"
-              />
-              {filters.name.length > 0 && (
-                <TouchableOpacity onPress={handlers.clearName} style={styles.clearButton}>
-                  <Ionicons name="close-circle" size={20} color="#64748B" />
-                </TouchableOpacity>
-              )}
-            </View>
-
-            {/* Status Filter */}
-            <View style={styles.statusFilterContainer}>
-              {STATUS_OPTIONS.map((option) => (
-                <TouchableOpacity
-                  key={option.value}
-                  style={[
-                    styles.statusFilterButton,
-                    {
-                      backgroundColor: filters.status === option.value ? option.color : option.bgColor,
-                      borderColor: option.color,
-                    },
-                  ]}
-                  onPress={() => handlers.setStatus(option.value)}
-                  activeOpacity={0.7}
-                >
-                  <Text style={[styles.statusFilterText, { color: filters.status === option.value ? "#FFFFFF" : option.color }]}>{option.label}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-
-            {/* Date Filter */}
-            <View style={styles.dateFilterContainer}>
-              <DatePickerButton label="Từ ngày" date={filters.startDate} onPress={handlers.openStartDate} />
-              <DatePickerButton label="Đến ngày" date={filters.endDate} onPress={handlers.openEndDate} />
-            </View>
-
-            {/* Action Buttons */}
-            <View style={styles.actionContainer}>
-              {/* <ActionButton title="Nội quy" icon="document-text-outline" onPress={handlers.openNoiQuy} color="#8B5CF6" /> */}
-              <ActionButton title="QR Code" icon="qr-code-outline" onPress={handlers.openQR} color="#06B6D4" />
-              {isRole && <ActionButton title="Phân quyền" icon="people-outline" onPress={handlers.openPhanQuyen} color="#F97316" />}
-            </View>
-          </Animated.View>
-
-          {/* Content */}
-          <View style={styles.content}>
-            <FlatList
-              data={dataFiltered}
-              renderItem={renderItem}
-              keyExtractor={keyExtractor}
-              getItemLayout={getItemLayout}
-              contentContainerStyle={styles.listContainer}
-              ListEmptyComponent={() => <EmptyState fadeAnim={fadeAnim} />}
-              refreshControl={
-                <RefreshControl
-                  refreshing={refreshing}
-                  onRefresh={onRefresh}
-                  // colors={[COLORS.color_primary]}
-                  colors={[COLORS.bg_button]}
-                  tintColor={COLORS.bg_button}
-                  progressBackgroundColor="#FFFFFF"
-                />
-              }
-              showsVerticalScrollIndicator={false}
-              ItemSeparatorComponent={() => <View style={styles.itemSeparator} />}
-              initialNumToRender={10}
-              maxToRenderPerBatch={5}
-              windowSize={10}
-              removeClippedSubviews={true}
+        {/* Header with semi-transparent overlay */}
+        <Animated.View
+          style={[
+            styles.header,
+            {
+              transform: [{ translateY: slideAnim }],
+              opacity: fadeAnim,
+            },
+          ]}
+        >
+          {/* Search Bar */}
+          <View style={styles.searchContainer}>
+            <Ionicons name="search-outline" size={20} color="#64748B" style={styles.searchIcon} />
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Tìm kiếm tên hồ sơ..."
+              placeholderTextColor="#94A3B8"
+              value={filters.name}
+              onChangeText={handlers.setName}
+              returnKeyType="search"
             />
+            {filters.name.length > 0 && (
+              <TouchableOpacity onPress={handlers.clearName} style={styles.clearButton}>
+                <Ionicons name="close-circle" size={20} color="#64748B" />
+              </TouchableOpacity>
+            )}
           </View>
 
-          {/* Date Picker Modal */}
-          <DateTimePickerModal
-            isVisible={!!datePickerMode}
-            mode="date"
-            date={datePickerMode === "start" ? filters.startDate : filters.endDate}
-            onConfirm={handlers.confirmDate}
-            onCancel={handlers.closeDatePicker}
-            minimumDate={datePickerMode === "end" ? filters.startDate : undefined}
-            maximumDate={undefined}
+          {/* Status Filter */}
+          <View style={styles.statusFilterContainer}>
+            {STATUS_OPTIONS.map((option) => (
+              <TouchableOpacity
+                key={option.value}
+                style={[
+                  styles.statusFilterButton,
+                  {
+                    backgroundColor: filters.status === option.value ? option.color : option.bgColor,
+                    borderColor: option.color,
+                  },
+                ]}
+                onPress={() => handlers.setStatus(option.value)}
+                activeOpacity={0.7}
+              >
+                <Text style={[styles.statusFilterText, { color: filters.status === option.value ? "#FFFFFF" : option.color }]}>{option.label}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          {/* Date Filter */}
+          <View style={styles.dateFilterContainer}>
+            <DatePickerButton label="Từ ngày" date={filters.startDate} onPress={handlers.openStartDate} />
+            <DatePickerButton label="Đến ngày" date={filters.endDate} onPress={handlers.openEndDate} />
+          </View>
+
+          {/* Action Buttons */}
+          <View style={styles.actionContainer}>
+            {/* <ActionButton title="Nội quy" icon="document-text-outline" onPress={handlers.openNoiQuy} color="#8B5CF6" /> */}
+            <ActionButton title="QR Code" icon="qr-code-outline" onPress={handlers.openQR} color="#06B6D4" />
+            {isRole && <ActionButton title="Phân quyền" icon="people-outline" onPress={handlers.openPhanQuyen} color="#F97316" />}
+          </View>
+        </Animated.View>
+
+        {/* Content */}
+        <View style={styles.content}>
+          <FlatList
+            data={dataFiltered}
+            renderItem={renderItem}
+            keyExtractor={keyExtractor}
+            getItemLayout={getItemLayout}
+            contentContainerStyle={styles.listContainer}
+            ListEmptyComponent={() => <EmptyState fadeAnim={fadeAnim} />}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                // colors={[COLORS.color_primary]}
+                colors={[COLORS.bg_button]}
+                tintColor={COLORS.bg_button}
+                progressBackgroundColor="#FFFFFF"
+              />
+            }
+            showsVerticalScrollIndicator={false}
+            ItemSeparatorComponent={() => <View style={styles.itemSeparator} />}
+            initialNumToRender={10}
+            maxToRenderPerBatch={5}
+            windowSize={10}
+            removeClippedSubviews={true}
           />
+        </View>
 
-          {/* Modals */}
-          <CustomModal visible={modals.showQR} onClose={handlers.closeQR} title="QR Đăng ký thi công" icon="qr-code-outline">
-            <View style={styles.modalPlaceholder}>
-              {linkQR ? (
-                <>
-                  <QRCode value={linkQR} size={180} color="#222" backgroundColor="#fff" />
-                  <Text
+        {/* Date Picker Modal */}
+        <DateTimePickerModal
+          isVisible={!!datePickerMode}
+          mode="date"
+          date={datePickerMode === "start" ? filters.startDate : filters.endDate}
+          onConfirm={handlers.confirmDate}
+          onCancel={handlers.closeDatePicker}
+          minimumDate={datePickerMode === "end" ? filters.startDate : undefined}
+          maximumDate={undefined}
+        />
+
+        {/* Modals */}
+        <CustomModal visible={modals.showQR} onClose={handlers.closeQR} title="QR Đăng ký thi công" icon="qr-code-outline">
+          <View style={styles.modalPlaceholder}>
+            {linkQR ? (
+              <>
+                <QRCode value={linkQR} size={180} color="#222" backgroundColor="#fff" />
+                <Text
+                  style={{
+                    marginTop: 16,
+                    fontSize: 13,
+                    color: "#64748B",
+                    textAlign: "center",
+                    wordBreak: "break-all",
+                  }}
+                  numberOfLines={2}
+                  ellipsizeMode="middle"
+                >
+                  {linkQR}
+                </Text>
+              </>
+            ) : (
+              <Text style={styles.modalPlaceholderText}>Không có link QR</Text>
+            )}
+          </View>
+        </CustomModal>
+
+        <CustomModal visible={modals.showPhanQuyen} onClose={handlers.closePhanQuyen} title="Phân quyền phê duyệt" icon="people-outline">
+          <View style={{ marginTop: 8, minWidth: adjust(300), maxWidth: adjust(300) }}>
+            {Array.isArray(user_phe_duyet) && user_phe_duyet.length > 0 ? (
+              user_phe_duyet.map((u) => (
+                <View key={u.userName} style={{ flexDirection: "row", alignItems: "center", marginBottom: 8 }}>
+                  <TouchableOpacity
+                    onPress={() => handleToggleUser(u.userName)}
+                    disabled={savingPhanQuyen}
                     style={{
-                      marginTop: 16,
-                      fontSize: 13,
-                      color: "#64748B",
-                      textAlign: "center",
-                      wordBreak: "break-all",
+                      width: 24,
+                      height: 24,
+                      borderRadius: 6,
+                      borderWidth: 1.5,
+                      borderColor: "#06B6D4",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      marginRight: 10,
+                      backgroundColor: checkedUsers.includes(u.userName) ? "#06B6D4" : "#fff",
                     }}
-                    numberOfLines={2}
-                    ellipsizeMode="middle"
                   >
-                    {linkQR}
-                  </Text>
-                </>
-              ) : (
-                <Text style={styles.modalPlaceholderText}>Không có link QR</Text>
-              )}
-            </View>
-          </CustomModal>
-
-          <CustomModal visible={modals.showPhanQuyen} onClose={handlers.closePhanQuyen} title="Phân quyền phê duyệt" icon="people-outline">
-            <View style={{ marginTop: 8, minWidth: adjust(300), maxWidth: adjust(300) }}>
-              {Array.isArray(user_phe_duyet) && user_phe_duyet.length > 0 ? (
-                user_phe_duyet.map((u) => (
-                  <View key={u.userName} style={{ flexDirection: "row", alignItems: "center", marginBottom: 8 }}>
-                    <TouchableOpacity
-                      onPress={() => handleToggleUser(u.userName)}
-                      disabled={savingPhanQuyen}
-                      style={{
-                        width: 24,
-                        height: 24,
-                        borderRadius: 6,
-                        borderWidth: 1.5,
-                        borderColor: "#06B6D4",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        marginRight: 10,
-                        backgroundColor: checkedUsers.includes(u.userName) ? "#06B6D4" : "#fff",
-                      }}
-                    >
-                      {checkedUsers.includes(u.userName) && <Ionicons name="checkmark" size={18} color="#fff" />}
-                    </TouchableOpacity>
-                    <Text style={{ fontSize: 15, color: "#222" }}>{u.hoTen}</Text>
-                  </View>
-                ))
-              ) : (
-                <Text style={{ color: "#888", textAlign: "center", marginVertical: 16 }}>Không có dữ liệu user</Text>
-              )}
-            </View>
-            <View style={{ flexDirection: "row", justifyContent: "flex-end", marginTop: 18 }}>
-              <TouchableOpacity
-                onPress={handlers.closePhanQuyen}
-                disabled={savingPhanQuyen}
-                style={{
-                  paddingVertical: 10,
-                  paddingHorizontal: 18,
-                  borderRadius: 8,
-                  backgroundColor: "#F1F5F9",
-                  marginRight: 10,
-                }}
-              >
-                <Text style={{ color: "#222", fontWeight: "600" }}>Đóng</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={handleSavePhanQuyen}
-                disabled={savingPhanQuyen}
-                style={{
-                  paddingVertical: 10,
-                  paddingHorizontal: 18,
-                  borderRadius: 8,
-                  backgroundColor: "#06B6D4",
-                }}
-              >
-                {savingPhanQuyen ? <ActivityIndicator size={18} color="#fff" /> : <Text style={{ color: "#fff", fontWeight: "600" }}>Lưu</Text>}
-              </TouchableOpacity>
-            </View>
-          </CustomModal>
-        </SafeAreaView>
+                    {checkedUsers.includes(u.userName) && <Ionicons name="checkmark" size={18} color="#fff" />}
+                  </TouchableOpacity>
+                  <Text style={{ fontSize: 15, color: "#222" }}>{u.hoTen}</Text>
+                </View>
+              ))
+            ) : (
+              <Text style={{ color: "#888", textAlign: "center", marginVertical: 16 }}>Không có dữ liệu user</Text>
+            )}
+          </View>
+          <View style={{ flexDirection: "row", justifyContent: "flex-end", marginTop: 18 }}>
+            <TouchableOpacity
+              onPress={handlers.closePhanQuyen}
+              disabled={savingPhanQuyen}
+              style={{
+                paddingVertical: 10,
+                paddingHorizontal: 18,
+                borderRadius: 8,
+                backgroundColor: "#F1F5F9",
+                marginRight: 10,
+              }}
+            >
+              <Text style={{ color: "#222", fontWeight: "600" }}>Đóng</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={handleSavePhanQuyen}
+              disabled={savingPhanQuyen}
+              style={{
+                paddingVertical: 10,
+                paddingHorizontal: 18,
+                borderRadius: 8,
+                backgroundColor: "#06B6D4",
+              }}
+            >
+              {savingPhanQuyen ? <ActivityIndicator size={18} color="#fff" /> : <Text style={{ color: "#fff", fontWeight: "600" }}>Lưu</Text>}
+            </TouchableOpacity>
+          </View>
+        </CustomModal>
       </ImageBackground>
     </GestureHandlerRootView>
   );
@@ -854,7 +850,7 @@ const styles = StyleSheet.create({
     color: "#64748B",
     flex: 1,
     fontWeight: "500",
-    fontWeight: 'bold'
+    fontWeight: "bold",
   },
   cardFooter: {
     flexDirection: "row",

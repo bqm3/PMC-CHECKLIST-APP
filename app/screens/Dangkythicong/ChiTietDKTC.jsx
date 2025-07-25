@@ -22,7 +22,7 @@ const ChiTietDKTC = ({ route, navigation }) => {
       setIsLoading(true);
       setError(null);
       try {
-      const response = await getDangKyThiCongDetail(id, authToken);
+        const response = await getDangKyThiCongDetail(id, authToken);
         setData(response.data.data);
       } catch (e) {
         setError("Không thể tải dữ liệu");
@@ -141,8 +141,6 @@ const ChiTietDKTC = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="#6366F1" />
-
       {/* Status Badge */}
       <View style={[styles.statusContainer]}>
         {(data?.tinh_trang_pd == 2 || data?.tinh_trang_pd == 3 || data.isChange == 0) && (
