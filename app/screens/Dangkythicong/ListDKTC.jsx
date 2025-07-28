@@ -422,10 +422,10 @@ const ListDKTC = ({ navigation, route }) => {
 
             {/* Card Footer */}
             <View style={styles.cardFooterRow}>
-              <TouchableOpacity style={styles.detailButtonV2} onPress={() => navigation.navigate("ChiTietDKTC", { data: item })} activeOpacity={0.85}>
+              {/* <TouchableOpacity style={styles.detailButtonV2} onPress={() => navigation.navigate("ChiTietDKTC", { data: item })} activeOpacity={0.85}>
                 <Ionicons name="information-circle-outline" size={18} color="#6366F1" style={{ marginRight: 6 }} />
                 <Text style={styles.detailButtonV2Text}>Chi tiết</Text>
-              </TouchableOpacity>
+              </TouchableOpacity> */}
               {/* Nút Hoàn thành nhanh */}
               {item.tinh_trang_pd == 1 && item.isChange == 1 && (
                 <TouchableOpacity style={styles.quickDoneButton} onPress={() => handleQuickComplete(item)} activeOpacity={0.85}>
