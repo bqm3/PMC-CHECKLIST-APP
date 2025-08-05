@@ -388,6 +388,10 @@ const ListDKTC = ({ navigation, route }) => {
             <View style={styles.cardBody}>
               <View style={styles.infoRow}>
                 <Ionicons name="document-text-outline" size={18} color="#64748B" />
+                <Text style={styles.infoText}>Dự án: {item?.ent_duan?.Duan}</Text>
+              </View>
+              <View style={styles.infoRow}>
+                <Ionicons name="document-text-outline" size={18} color="#64748B" />
                 <Text style={styles.infoText}>Loại: {getLoaiText(item.loai)}</Text>
               </View>
               <View style={styles.infoRow}>

@@ -1,6 +1,6 @@
 //import liraries
 import React, { createContext, useContext, useState, useEffect, useRef, useCallback } from "react";
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect } from "@react-navigation/native";
 import { View, Text, StyleSheet, FlatList, ImageBackground, Image, Platform, ActivityIndicator, TextInput, TouchableOpacity } from "react-native";
 import * as Device from "expo-device";
 import { Provider, useDispatch, useSelector } from "react-redux";
@@ -317,9 +317,7 @@ const HomeScreen = ({ navigation, route }) => {
   const setIsLoading = route.params.setIsLoading;
   const setColorLoading = route.params.setColorLoading;
   const fetchNotifications = route.params.fetchNotifications;
-  const { user, authToken, passwordCore } = useSelector(
-    (state) => state.authReducer
-  );
+  const { user, authToken, passwordCore } = useSelector((state) => state.authReducer);
   const { sdt_khancap } = useSelector((state) => state.entReducer);
 
   const { setToken } = useContext(ExpoTokenContext);
@@ -338,13 +336,7 @@ const HomeScreen = ({ navigation, route }) => {
   const responseListener = useRef();
 
   const renderItem = ({ item, index }) => (
-    <ItemHome
-      ID_Chucvu={user?.ID_Chucvu}
-      item={item}
-      index={index}
-      passwordCore={passwordCore}
-      showAlert={showAlert}
-    />
+    <ItemHome ID_Chucvu={user?.ID_Chucvu} item={item} index={index} passwordCore={passwordCore} showAlert={showAlert} />
   );
 
   const int_khuvuc = async () => {
@@ -394,9 +386,7 @@ const HomeScreen = ({ navigation, route }) => {
   const checkPasswordStrength = async () => {
     const password = await AsyncStorage.getItem("Password");
     if (password && !validatePassword(password)) {
-      showAlert(
-        "Mật khẩu của bạn không đủ mạnh. Vui lòng cập nhật mật khẩu mới với độ bảo mật cao hơn."
-      );
+      showAlert("Mật khẩu của bạn không đủ mạnh. Vui lòng cập nhật mật khẩu mới với độ bảo mật cao hơn.");
     }
   };
 
@@ -444,15 +434,13 @@ const HomeScreen = ({ navigation, route }) => {
       .then((token) => setExpoPushToken(token ?? ""))
       .catch((error) => setExpoPushToken(`${error}`));
 
-    notificationListener.current =
-      Notifications.addNotificationReceivedListener((notification) => {
-        setNotification(notification);
-      });
+    notificationListener.current = Notifications.addNotificationReceivedListener((notification) => {
+      setNotification(notification);
+    });
 
-    responseListener.current =
-      Notifications.addNotificationResponseReceivedListener((response) => {
-        console.log(response);
-      });
+    responseListener.current = Notifications.addNotificationResponseReceivedListener((response) => {
+      console.log(response);
+    });
 
     return () => {
       notificationListener.current?.remove();
@@ -618,18 +606,21 @@ const HomeScreen = ({ navigation, route }) => {
           ) : (
             <Image source={require("../../assets/pmc_logo.png")} resizeMode="contain" style={{ height: adjust(80), width: adjust(200) }} />
           )}
-          <Text
-            allowFontScaling={false}
-            style={{
-              fontSize: adjust(20),
-              color: "white",
-              fontWeight: "700",
-              textTransform: "uppercase",
-              paddingTop: 8,
-            }}
-          >
-            Dự án: {user?.ent_duan?.Duan}
-          </Text>
+          {user?.ent_duan?.Duan && (
+            <Text
+              allowFontScaling={false}
+              style={{
+                fontSize: adjust(20),
+                color: "white",
+                fontWeight: "700",
+                textTransform: "uppercase",
+                paddingTop: 8,
+              }}
+            >
+              Dự án: {user?.ent_duan?.Duan}
+            </Text>
+          )}
+
           <Text
             allowFontScaling={false}
             style={{
@@ -639,9 +630,9 @@ const HomeScreen = ({ navigation, route }) => {
             }}
             numberOfLines={1}
           >
-            Tài khoản: {user?.UserName}
+            Tài khoản: {user?.UserName} - {user?.ent_chucvu?.Chucvu}
           </Text>
-          {(user?.ent_chucvu?.Role === 5 ||
+          {(user?.ent_chucvu?.Role === 5 || user?.ent_chucvu?.Role === 10 ||
             // (user?.ent_chucvu?.Role === 1 && user?.arr_Duan != null && user?.arr_Duan != "" && user?.arr_Duan != undefined)) && (
             (user?.ent_chucvu?.Role === 1 && arrDuan && arrDuan?.length > 1)) && (
             <View style={{ flexDirection: "row" }}>
@@ -726,6 +717,9 @@ const HomeScreen = ({ navigation, route }) => {
                   break;
                 case 6:
                   baseData = dataBQTDuAn;
+                  break;
+                case 10:
+                  baseData = dataGD;
                   break;
                 default:
                   baseData = []; // hoặc null nếu muốn
