@@ -121,12 +121,12 @@ const dataDanhMuc = [
     path: "Xử lý sự cố",
     icon: require("../../assets/icons/o-01.png"),
   },
-  {
-    id: 5,
-    status: "new",
-    path: "Báo cáo chỉ số",
-    icon: require("../../assets/icons/o-04.png"),
-  },
+  // {
+  //   id: 5,
+  //   status: "new",
+  //   path: "Báo cáo chỉ số",
+  //   icon: require("../../assets/icons/o-04.png"),
+  // },
   {
     id: 6,
     status: "new",
@@ -166,12 +166,12 @@ const dataGD = [
     path: "Báo cáo HSSE",
     icon: require("../../assets/icons/o-04.png"),
   },
-  {
-    id: 5,
-    status: "new",
-    path: "Báo cáo chỉ số",
-    icon: require("../../assets/icons/o-04.png"),
-  },
+  // {
+  //   id: 5,
+  //   status: "new",
+  //   path: "Báo cáo chỉ số",
+  //   icon: require("../../assets/icons/o-04.png"),
+  // },
   {
     id: 7,
     status: "new",
@@ -212,12 +212,12 @@ const dataKST = [
     path: "Xử lý sự cố",
     icon: require("../../assets/icons/o-01.png"),
   },
-  {
-    id: 5,
-    status: "new",
-    path: "Báo cáo chỉ số",
-    icon: require("../../assets/icons/o-04.png"),
-  },
+  // {
+  //   id: 5,
+  //   status: "new",
+  //   path: "Báo cáo chỉ số",
+  //   icon: require("../../assets/icons/o-04.png"),
+  // },
   {
     id: 6,
     status: "new",
@@ -252,12 +252,12 @@ const dataBQTKhoi = [
     path: "Xử lý sự cố",
     icon: require("../../assets/icons/o-01.png"),
   },
-  {
-    id: 5,
-    status: "new",
-    path: "Báo cáo chỉ số",
-    icon: require("../../assets/icons/o-04.png"),
-  },
+  // {
+  //   id: 5,
+  //   status: "new",
+  //   path: "Báo cáo chỉ số",
+  //   icon: require("../../assets/icons/o-04.png"),
+  // },
   {
     id: 6,
     status: "new",
@@ -285,12 +285,12 @@ const dataBQTDuAn = [
     path: "Tra cứu",
     icon: require("../../assets/icons/o-02.png"),
   },
-  {
-    id: 5,
-    status: "new",
-    path: "Báo cáo chỉ số",
-    icon: require("../../assets/icons/o-04.png"),
-  },
+  // {
+  //   id: 5,
+  //   status: "new",
+  //   path: "Báo cáo chỉ số",
+  //   icon: require("../../assets/icons/o-04.png"),
+  // },
   {
     id: 6,
     status: "new",

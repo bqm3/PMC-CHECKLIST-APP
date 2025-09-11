@@ -1442,7 +1442,7 @@ const DetailChecklist = ({ route, navigation }) => {
                           allowFontScaling={false}
                           style={[styles.text, { fontSize: 17 }]}
                         >
-                          Hạng mục: {Hangmuc?.Hangmuc}
+                          Hạng mục: {Hangmuc?.Hangmuc ? Hangmuc?.Hangmuc : Hangmuc?.ent_hangmuc?.Hangmuc}
                         </Text>
                         {Hangmuc.Important === 1 && (
                           <Image

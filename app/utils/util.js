@@ -1,5 +1,6 @@
 import moment from "moment";
-import { BASE_URL_IMAGE } from "../constants/config";
+import { BASE_URL_IMAGE, BASE_URL } from "../constants/config";
+import axios from "axios";
 
 export const logScreenName = (screenName) => {
   console.log("Screen:", screenName);
@@ -58,4 +59,32 @@ export const funcBaseUri_Image = (key, image) => {
       break;
   }
   return uri;
+};
+
+export const getSharePointList = async (link) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/sharepoint-api?link=${link}`, {
+      responseType: 'arraybuffer',
+    });
+    
+    // Chuyển ArrayBuffer thành base64 string
+    const arrayBuffer = response.data;
+    const bytes = new Uint8Array(arrayBuffer);
+    let binary = '';
+    for (let i = 0; i < bytes.byteLength; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    const base64String = btoa(binary);
+    
+    // Lấy content type từ header
+    const contentType = response.headers['content-type'] || 'image/jpeg';
+    
+    // Tạo data URI
+    const dataUri = `data:${contentType};base64,${base64String}`;
+    
+    return dataUri;
+  } catch (error) {
+    console.error('Error in getSharePointList:', error);
+    throw error;
+  }
 };
