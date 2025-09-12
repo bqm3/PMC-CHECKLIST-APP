@@ -103,7 +103,7 @@ const DetailHSSE = ({ navigation, route }) => {
   useEffect(() => {
     const updatedHSSE = HSSE.map((item) => ({
       ...item,
-      value: data[item.key] !== undefined ? data[item.key].toString() : item.value,
+      value: data[item.key] !== undefined ? data[item.key]?.toString() : item.value,
     }));
     setHsseData(updatedHSSE);
 
@@ -329,7 +329,7 @@ const DetailHSSE = ({ navigation, route }) => {
     hsseData.forEach((item) => {
       if (item.type === "number") {
         const floatValue = parseFloat(item.value.replace(",", "."));
-        formData.append(item.key, floatValue.toString());
+        formData.append(item.key, floatValue?.toString());
       } else if (item.type === "image" && item.value && item.value.uri) {
         // Thêm file ảnh mới nếu có
         formData.append(item.key, {
@@ -343,9 +343,9 @@ const DetailHSSE = ({ navigation, route }) => {
 
         // Thêm giá trị nhận dạng từ ảnh (nếu có)
         if (item.key === "anh_dien" && item.value.gia_tri_dien_ao) {
-          formData.append("gia_tri_dien_ao", item.value.gia_tri_dien_ao.toString());
+          formData.append("gia_tri_dien_ao", item.value.gia_tri_dien_ao?.toString());
         } else if (item.key === "anh_nuoc" && item.value.gia_tri_nuoc_ao) {
-          formData.append("gia_tri_nuoc_ao", item.value.gia_tri_nuoc_ao.toString());
+          formData.append("gia_tri_nuoc_ao", item.value.gia_tri_nuoc_ao?.toString());
         }
       }
     });
