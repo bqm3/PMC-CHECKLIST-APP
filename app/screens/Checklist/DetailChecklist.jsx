@@ -1215,9 +1215,17 @@ const DetailChecklist = ({ route, navigation }) => {
   // close modal bottomsheet
 
   const handlePopupActiveTieuChuan = useCallback((item, index) => {
+    setModalVisible(true);
     setOpacity(0.2);
     setTieuchuan(item.Tieuchuan);
     setIndex(index);
+  }, []);
+
+  const handlePopupClearTieuChuan = useCallback(() => {
+    setModalVisible(false);
+    setOpacity(1);
+    setTieuchuan(null);
+    setIndex(null);
   }, []);
 
   // close modal bottom sheet
@@ -1668,10 +1676,7 @@ const DetailChecklist = ({ route, navigation }) => {
             animationType="slide"
             transparent={true}
             visible={modalVisible}
-            onRequestClose={() => {
-              setModalVisible(!modalVisible);
-              setOpacity(1);
-            }}
+            onRequestClose={() => handlePopupClearTieuChuan()}
           >
             <View style={[styles.centeredView, { height: "100%" }]}>
               <View
@@ -1696,7 +1701,7 @@ const DetailChecklist = ({ route, navigation }) => {
                   backgroundColor={COLORS.bg_button}
                   color={"white"}
                   onPress={() => {
-                    setOpacity(1);
+                    handlePopupClearTieuChuan();
                   }}
                 />
               </View>
