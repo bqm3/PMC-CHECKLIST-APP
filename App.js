@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { StatusBar, AppState, Alert } from "react-native";
+import { StatusBar, AppState, Alert, Platform } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { Provider, useDispatch } from "react-redux";
 import { store } from "./app/redux/store";
@@ -19,6 +19,7 @@ import { DefaultTheme, PaperProvider } from "react-native-paper";
 import * as SplashScreen from "expo-splash-screen";
 import { LogBox } from "react-native";
 import { logoutAction } from "./app/redux/actions/authActions";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 require("moment/locale/vi");
 
 const customTheme = {
@@ -27,53 +28,51 @@ const customTheme = {
 };
 
 SplashScreen.preventAutoHideAsync();
-LogBox.ignoreLogs([
-  "Non-serializable values were found in the navigation state",
-  "TNodeChildrenRenderer: Support for defaultProps",
-]);
+LogBox.ignoreLogs(["Non-serializable values were found in the navigation state", "TNodeChildrenRenderer: Support for defaultProps"]);
 
 // ✅ App chỉ bọc Provider
 export default function App() {
   return (
     <Provider store={store}>
-      <PaperProvider theme={customTheme}>
-        <LoginProvider>
-          <LocationProvider>
-            <ExpoTokenProvider>
-              <ConnectProvider>
-                <ThemeProvider>
-                  <UserProvider>
-                    <DataProvider>
-                      <ReportProvider>
-                        <ReloadProvider>
-                          <ChecklistProvider>
-                            <ChecklistLaiProvider>
-                              <NavigationContainer>
-                                {/* Mọi hook Redux/logic phiên đưa vào đây */}
-                                <RootApp />
-                              </NavigationContainer>
-                            </ChecklistLaiProvider>
-                          </ChecklistProvider>
-                        </ReloadProvider>
-                      </ReportProvider>
-                    </DataProvider>
-                  </UserProvider>
-                </ThemeProvider>
-              </ConnectProvider>
-            </ExpoTokenProvider>
-          </LocationProvider>
-        </LoginProvider>
-      </PaperProvider>
+      <SafeAreaProvider>
+        <PaperProvider theme={customTheme}>
+          <LoginProvider>
+            <LocationProvider>
+              <ExpoTokenProvider>
+                <ConnectProvider>
+                  <ThemeProvider>
+                    <UserProvider>
+                      <DataProvider>
+                        <ReportProvider>
+                          <ReloadProvider>
+                            <ChecklistProvider>
+                              <ChecklistLaiProvider>
+                                <NavigationContainer>
+                                  {/* Mọi hook Redux/logic phiên đưa vào đây */}
+                                  <RootApp />
+                                </NavigationContainer>
+                              </ChecklistLaiProvider>
+                            </ChecklistProvider>
+                          </ReloadProvider>
+                        </ReportProvider>
+                      </DataProvider>
+                    </UserProvider>
+                  </ThemeProvider>
+                </ConnectProvider>
+              </ExpoTokenProvider>
+            </LocationProvider>
+          </LoginProvider>
+        </PaperProvider>
+      </SafeAreaProvider>
     </Provider>
   );
 }
-
 
 function RootApp() {
   const dispatch = useDispatch();
   const appState = useRef(AppState.currentState);
   const lastActiveTime = useRef(Date.now());
-  const TIMEOUT_DURATION = 30 * 60 * 1000; 
+  const TIMEOUT_DURATION = 30 * 60 * 1000;
 
   useEffect(() => {
     (async () => {
@@ -106,9 +105,14 @@ function RootApp() {
   }, [dispatch]);
 
   return (
-    <>
-      <StatusBar />
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+      <StatusBar
+        barStyle={Platform.OS === "ios" ? "dark-content" : "dark-content"}
+        backgroundColor={Platform.OS === "android" ? "#ffffff" : undefined}
+        translucent={Platform.OS === "android" ? false : undefined}
+        hidden={false} // Luôn hiển thị
+      />
       <CheckNavigation />
-    </>
+    </SafeAreaView>
   );
 }
