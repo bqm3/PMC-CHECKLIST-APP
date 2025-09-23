@@ -53,6 +53,7 @@ import WebView from "react-native-webview";
 import { useHeaderHeight } from "@react-navigation/elements";
 import CustomAlertModal from "../../components/CustomAlertModal";
 import RenderHTML from "react-native-render-html";
+import { saveData } from '../../sqlite/SQLiteDataManager';
 
 const DetailChecklist = ({ route, navigation }) => {
   const { ID_ChecklistC, ID_Hangmuc, Hangmuc, isScan } = route.params;
@@ -754,10 +755,11 @@ const DetailChecklist = ({ route, navigation }) => {
           // Lưu lại kết quả cập nhật
           setDataChecklistFilterContext(updatedData1);
           // Dùng trong trường hợp checklist bị văng rá
-          await AsyncStorage.setItem(
-            `dataChecklistStorage_${ID_ChecklistC}`,
-            JSON.stringify(updatedData1)
-          );
+          // await AsyncStorage.setItem(
+          //   `dataChecklistStorage_${ID_ChecklistC}`,
+          //   JSON.stringify(updatedData1)
+          // );
+          await saveDataSQL(updatedData1);
         }
       }
     } catch (error) {
@@ -797,11 +799,20 @@ const DetailChecklist = ({ route, navigation }) => {
     setDataChecklistFilterContext(filteredData);
 
     // Update AsyncStorage in case of checklist issue
-    await AsyncStorage.setItem(
-      `dataChecklistStorage_${ID_ChecklistC}`,
-      JSON.stringify(filteredData)
-    );
+  //   await AsyncStorage.setItem(
+  //     `dataChecklistStorage_${ID_ChecklistC}`,
+  //     JSON.stringify(filteredData)
+  //   );
+    await saveDataSQL(filteredData);
   };
+
+  const saveDataSQL = async (data) => {
+  try {
+    await saveData(ID_ChecklistC, data); // Truyền ID_ChecklistC làm tham số đầu tiên
+  } catch (error) {
+    console.error("Error saving data:", error);
+  }
+};
 
   // api tb_checklistchitiet
   const handleDataChecklistFaild = async (arrData) => {

@@ -40,6 +40,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import NetInfo from "@react-native-community/netinfo";
 import ConnectContext from "../../context/ConnectContext";
 import axiosClient from "../../api/axiosClient";
+import { loadData } from '../../sqlite/SQLiteDataManager';
 
 const ThucHienKhuvuc = ({ route, navigation }) => {
   const { ID_ChecklistC, ID_KhoiCV, ID_Calv, ID_Hangmucs } = route.params;
@@ -215,21 +216,25 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
   );
 
   // Tải lại dữ liệu khi vào lại trang
-  const loadData = async () => {
-    const savedData = await AsyncStorage.getItem(
-      `dataChecklistStorage_${ID_ChecklistC}`
-    );
-    if (savedData !== null && savedData !== undefined && savedData !== "") {
-      setDataChecklists(JSON.parse(savedData));
-      setDataChecklistFilterContext(JSON.parse(savedData));
-    } else {
+  const loadDataSQL = async () => {
+    try {
+      const savedData = await loadData(ID_ChecklistC);
+
+      if (savedData) {
+        setDataChecklists(savedData);
+        setDataChecklistFilterContext(savedData);
+      } else {
+        setDataChecklists(ent_checklist_detail);
+        setDataChecklistFilterContext(ent_checklist_detail);
+      }
+    } catch (error) {
       setDataChecklists(ent_checklist_detail);
       setDataChecklistFilterContext(ent_checklist_detail);
     }
   };
 
   useEffect(() => {
-    loadData();
+    loadDataSQL();
   }, [ent_checklist_detail]);
 
   useEffect(() => {
