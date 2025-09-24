@@ -153,7 +153,7 @@ const TaoBaoCaoHSSE = ({ navigation, route }) => {
 
       if (!result.canceled && result.assets?.[0]) {
         const croppedImage = result.assets[0];
-        await processImage(itemId, originalImage, croppedImage);
+        await processImage(itemId, croppedImage);
       }
     },
     [processImage]
