@@ -41,6 +41,7 @@ import NetInfo from "@react-native-community/netinfo";
 import CustomAlertModal from "../../components/CustomAlertModal";
 import RenderHTML from "react-native-render-html";
 import ChecklistContext from "../../context/ChecklistContext";
+import { deleteAllData } from "../../sqlite/SQLiteDataManager";
 
 const ThucHienChecklist = ({ navigation }) => {
   const ref = useRef(null);
@@ -117,9 +118,10 @@ const ThucHienChecklist = ({ navigation }) => {
     if (tb_checklistc?.data && tb_checklistc?.data.length > 0) {
       const isCheck = tb_checklistc.data.some((check) => check.Tinhtrang == 0);
       const data = tb_checklistc.data.filter((check) => check.Tinhtrang == 0);
-      if (!isCheck) {
-        clearCacheDirectory(data);
-      }
+      // if (!isCheck) {
+      //   clearCacheDirectory(data);
+      // }
+      clearCacheDirectory(data);
     }
   }, [tb_checklistc]);
 
@@ -146,20 +148,8 @@ const ThucHienChecklist = ({ navigation }) => {
   );
 
   // Xóa cache khi không còn ca đang mở
-  const clearCacheDirectory = async (data) => {
-    try {
-      const cacheDir = FileSystem.cacheDirectory;
-      const files = await FileSystem.readDirectoryAsync(cacheDir);
-      for (const file of files) {
-        await FileSystem.deleteAsync(`${cacheDir}${file}`, {
-          idempotent: true,
-        });
-      }
-
-      console.log("Đã xóa cache khi ứng dụng đóng.");
-    } catch (error) {
-      console.error("Lỗi khi xóa cache:", error);
-    }
+  const clearCacheDirectory = async () => {
+    await deleteAllData();
   };
 
   const toggleTodo = async (item, index) => {

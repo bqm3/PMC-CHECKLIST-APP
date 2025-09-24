@@ -20,6 +20,8 @@ import * as SplashScreen from "expo-splash-screen";
 import { LogBox } from "react-native";
 import { logoutAction } from "./app/redux/actions/authActions";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { COLORS } from "./app/constants/theme";
+import { deleteAllData } from "./app/sqlite/SQLiteDataManager";
 require("moment/locale/vi");
 
 const customTheme = {
@@ -80,6 +82,16 @@ function RootApp() {
     })();
   }, []);
 
+  const handleLogout = async () => {
+    try {
+      await deleteAllData();
+      dispatch(logoutAction());
+    } catch (error) {
+      console.error("Error clearing data:", error);
+      dispatch(logoutAction());
+    }
+  };
+
   useEffect(() => {
     const subscription = AppState.addEventListener("change", (nextAppState) => {
       const was = appState.current;
@@ -93,7 +105,7 @@ function RootApp() {
       if ((was === "inactive" || was === "background") && nextAppState === "active") {
         const timeAway = Date.now() - lastActiveTime.current;
         if (timeAway > TIMEOUT_DURATION) {
-          dispatch(logoutAction());
+          handleLogout();
           Alert.alert("Phiên đăng nhập hết hạn", "Vui lòng đăng nhập lại để tiếp tục sử dụng");
         }
       }
@@ -105,7 +117,7 @@ function RootApp() {
   }, [dispatch]);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.bg_button }} edges={["bottom"]}>
       <StatusBar
         barStyle={Platform.OS === "ios" ? "dark-content" : "dark-content"}
         backgroundColor={Platform.OS === "android" ? "#ffffff" : undefined}

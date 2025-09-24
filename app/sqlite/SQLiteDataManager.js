@@ -352,6 +352,52 @@ class SQLiteDataManager {
       return [];
     }
   }
+
+  // Xóa tất cả data (dành cho debug/testing)
+   async deleteAllData() {
+    try {
+      await this.initDatabase();
+      
+      console.log('🗑️ Deleting all data from database...');
+      
+      // Bắt đầu transaction
+      await this.db.runAsync('BEGIN TRANSACTION');
+
+      try {
+        // Xóa tất cả chunks
+        const chunksDeleted = await this.db.runAsync(`DELETE FROM data_chunks`);
+        
+        // Xóa tất cả main records
+        const recordsDeleted = await this.db.runAsync(`DELETE FROM checklist_data`);
+        
+        // Commit transaction
+        await this.db.runAsync('COMMIT');
+        
+        // Vacuum để giải phóng không gian
+        await this.db.runAsync('VACUUM');
+        
+        console.log(`✅ Successfully deleted all data:`);
+        console.log(`   - Records deleted: ${recordsDeleted.changes}`);
+        console.log(`   - Chunks deleted: ${chunksDeleted.changes}`);
+        console.log(`   - Database vacuumed`);
+        
+        return {
+          success: true,
+          recordsDeleted: recordsDeleted.changes,
+          chunksDeleted: chunksDeleted.changes
+        };
+
+      } catch (error) {
+        // Rollback nếu có lỗi
+        await this.db.runAsync('ROLLBACK');
+        throw error;
+      }
+
+    } catch (error) {
+      console.error('❌ Error deleting all data:', error);
+      throw error;
+    }
+  }
 }
 
 // Export instance và functions
@@ -384,5 +430,9 @@ export const emergencyCleanup = async () => {
 export const getAllChecklistIds = async () => {
   return await sqliteManager.getAllChecklistIds();
 };
+
+export const deleteAllData = async () => {
+  return await sqliteManager.deleteAllData();
+}
 
 export default sqliteManager;

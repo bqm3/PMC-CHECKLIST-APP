@@ -209,7 +209,7 @@ const HomeStack = ({ navigation }) => {
               <Text
                 allowFontScaling={false}
                 style={{
-                  fontSize: adjust(18),
+                  fontSize: adjust(20),
                   fontWeight: "700",
                   color: "white",
                 }}
