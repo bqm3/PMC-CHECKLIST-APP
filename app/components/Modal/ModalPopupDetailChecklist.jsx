@@ -20,7 +20,6 @@ import { COLORS, SIZES } from "../../constants/theme";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
 import { CameraView } from "expo-camera";
-import * as FileSystem from "expo-file-system";
 import { MaterialIcons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -123,49 +122,39 @@ const ModalPopupDetailChecklist = ({
     handleClearBottom();
   };
 
-  const handleCapture = async () => {
-    if (isProcessing) return;
+const handleCapture = async () => {
+  if (isProcessing) return;
 
-    try {
-      setIsProcessing(true);
-      const photo = await cameraRef.current.takePictureAsync();
+  try {
+    setIsProcessing(true);
+    const photo = await cameraRef.current.takePictureAsync();
 
-      // Tạo tên file ngẫu nhiên
-      const fileName = `photo_${Date.now()}.jpg`;
-      const cachedImagePath = `${FileSystem.cacheDirectory}${fileName}`;
+    // Sử dụng API mới
+    const fileName = `photo_${Date.now()}.jpg`;
+    
+    // Resize và nén ảnh trực tiếp từ URI gốc
+    const resizedImage = await ImageManipulator.manipulateAsync(
+      photo.uri,
+      [{ resize: { width: Math.min(1024, photo.width) } }],
+      { compress: 0.7, format: "jpeg" }
+    );
 
-      // Copy ảnh vào cache
-      await FileSystem.copyAsync({
-        from: photo.uri,
-        to: cachedImagePath,
-      });
+    // Cập nhật state và xử lý ảnh
+    setImages((prevImages) => {
+      if (prevImages.length < 5) {
+        return [...prevImages, resizedImage];
+      }
+      return prevImages;
+    });
 
-      // Resize và nén ảnh
-      const resizedImage = await ImageManipulator.manipulateAsync(
-        cachedImagePath,
-        [{ resize: { width: Math.min(1024, photo.width) } }],
-        { compress: 0.7, format: "jpeg" }
-      );
-
-      // Xóa ảnh cache
-      await FileSystem.deleteAsync(cachedImagePath);
-
-      // Cập nhật state và xử lý ảnh
-      setImages((prevImages) => {
-        if (prevImages.length < 5) {
-          return [...prevImages, resizedImage];
-        }
-        return prevImages;
-      });
-
-      const newImageItem = [...images, resizedImage];
-      handleItemClick(newImageItem, "option", "Anh", dataItem);
-    } catch (error) {
-      console.error("Error processing image:", error);
-    } finally {
-      turnOffCamera();
-    }
-  };
+    const newImageItem = [...images, resizedImage];
+    handleItemClick(newImageItem, "option", "Anh", dataItem);
+  } catch (error) {
+    console.error("Error processing image:", error);
+  } finally {
+    turnOffCamera();
+  }
+};
 
   const turnOffCamera = () => {
     setWidthModal("90%");

@@ -44,7 +44,7 @@ import DataLicense from "../components/PrivacyPolicy";
 import Checkbox from "../components/Active/Checkbox";
 import ModalForgotPassword from "../components/Modal/ModalForgotPassword";
 
-const version = "2.2.5";
+const version = "2.2.6";
 
 const LoginScreen = ({ navigation }) => {
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
