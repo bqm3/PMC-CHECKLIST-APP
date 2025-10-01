@@ -1,9 +1,8 @@
-//import liraries
-import React, { createContext, useContext, useState, useEffect, useRef, useCallback } from "react";
+import React, { createContext, useContext, useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useFocusEffect } from "@react-navigation/native";
-import { View, Text, StyleSheet, FlatList, ImageBackground, Image, Platform, ActivityIndicator, TextInput, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, FlatList, ImageBackground, Image, Platform, Alert, Linking, TouchableOpacity } from "react-native";
 import * as Device from "expo-device";
-import { Provider, useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   ent_calv_get,
   ent_hangmuc_get,
@@ -11,25 +10,42 @@ import {
   ent_tang_get,
   ent_toanha_get,
   ent_khoicv_get,
-  check_hsse,
   ent_get_sdt_KhanCap,
 } from "../redux/actions/entActions";
 import SelectDropdown from "react-native-select-dropdown";
-import { FontAwesome, AntDesign } from "@expo/vector-icons";
-import { Alert, Linking } from "react-native";
+import { FontAwesome } from "@expo/vector-icons";
 import Constants from "expo-constants";
 import axios from "axios";
 import * as Notifications from "expo-notifications";
 import { BASE_URL } from "../constants/config";
 import ItemHome from "../components/Item/ItemHome";
 import adjust from "../adjust";
-import ReportContext from "../context/ReportContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { login } from "../redux/actions/authActions";
-import { COLORS } from "../constants/theme";
 import ExpoTokenContext from "../context/ExpoTokenContext";
 import { validatePassword } from "../utils/util";
 
+// ================== Constants ==================
+const MENU_ITEMS = {
+  CHECKLIST: { id: 1, path: "Thực hiện Checklist", icon: require("../../assets/icons/o-01.png") },
+  LOOKUP: { id: 2, path: "Tra cứu", icon: require("../../assets/icons/o-02.png") },
+  RECHECK: { id: 3, path: "Checklist Lại", icon: require("../../assets/icons/o-01.png") },
+  INCIDENT: { id: 4, path: "Xử lý sự cố", icon: require("../../assets/icons/o-01.png") },
+  HSSE_REPORT: { id: 6, status: "new", path: "Báo cáo HSSE", icon: require("../../assets/icons/o-04.png") },
+  S0_REPORT: { id: 7, status: "new", path: "Báo cáo S0", icon: require("../../assets/icons/o-04.png") },
+  CONSTRUCTION: { id: 8, status: "new", path: "Đăng ký thi công", icon: require("../../assets/icons/o-04.png") },
+};
+
+const ROLE_MENUS = {
+  1: [MENU_ITEMS.INCIDENT, MENU_ITEMS.LOOKUP, MENU_ITEMS.HSSE_REPORT, MENU_ITEMS.S0_REPORT, MENU_ITEMS.CONSTRUCTION], // GD
+  2: [MENU_ITEMS.CHECKLIST, MENU_ITEMS.LOOKUP, MENU_ITEMS.RECHECK, MENU_ITEMS.INCIDENT, MENU_ITEMS.HSSE_REPORT, MENU_ITEMS.S0_REPORT, MENU_ITEMS.CONSTRUCTION], // KST
+  3: [MENU_ITEMS.CHECKLIST, MENU_ITEMS.LOOKUP, MENU_ITEMS.RECHECK, MENU_ITEMS.INCIDENT, MENU_ITEMS.HSSE_REPORT, MENU_ITEMS.S0_REPORT, MENU_ITEMS.CONSTRUCTION], // Staff
+  5: [MENU_ITEMS.LOOKUP, MENU_ITEMS.INCIDENT, MENU_ITEMS.HSSE_REPORT, MENU_ITEMS.S0_REPORT, MENU_ITEMS.CONSTRUCTION], // BQT Khoi
+  6: [MENU_ITEMS.LOOKUP, MENU_ITEMS.HSSE_REPORT, MENU_ITEMS.S0_REPORT, MENU_ITEMS.CONSTRUCTION], // BQT Du An
+  10: [MENU_ITEMS.INCIDENT, MENU_ITEMS.LOOKUP, MENU_ITEMS.HSSE_REPORT, MENU_ITEMS.S0_REPORT, MENU_ITEMS.CONSTRUCTION], // Admin
+};
+
+// ================== Notification Config ==================
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
@@ -38,13 +54,14 @@ Notifications.setNotificationHandler({
   }),
 });
 
+// ================== Helper Functions ==================
 const handleRegistrationError = (message) => {
   Alert.alert("Lỗi", message);
 };
 
 async function registerForPushNotificationsAsync() {
   if (Platform.OS === "android") {
-    Notifications.setNotificationChannelAsync("default", {
+    await Notifications.setNotificationChannelAsync("default", {
       name: "default",
       importance: Notifications.AndroidImportance.MAX,
       vibrationPattern: [0, 250, 250, 250],
@@ -52,374 +69,171 @@ async function registerForPushNotificationsAsync() {
     });
   }
 
-  if (Device.isDevice) {
-    const { status: existingStatus } = await Notifications.getPermissionsAsync();
-    let finalStatus = existingStatus;
-
-    if (existingStatus !== "granted") {
-      const { status } = await Notifications.requestPermissionsAsync();
-      finalStatus = status;
-    }
-
-    // Only show the settings alert if finalStatus is not granted
-    if (finalStatus !== "granted") {
-      Alert.alert("Thông báo", "Bạn đã từ chối nhận thông báo. Hãy bật thông báo trong Cài đặt để tiếp tục.", [
-        {
-          text: "Mở cài đặt",
-          onPress: () => Linking.openSettings(), // Open app settings if the user denies notification permissions
-        },
-        { text: "Hủy", style: "cancel" },
-      ]);
-      return;
-    }
-
-    const projectId = Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
-
-    if (!projectId) {
-      handleRegistrationError("Không tìm thấy thông tin máy");
-      return;
-    }
-
-    try {
-      const pushTokenString = (
-        await Notifications.getExpoPushTokenAsync({
-          projectId,
-        })
-      ).data;
-      return pushTokenString;
-    } catch (e) {
-      handleRegistrationError(`${e}`);
-    }
-  } else {
+  if (!Device.isDevice) {
     handleRegistrationError("Phải sử dụng thiết bị thật");
+    return;
+  }
+
+  const { status: existingStatus } = await Notifications.getPermissionsAsync();
+  let finalStatus = existingStatus;
+
+  if (existingStatus !== "granted") {
+    const { status } = await Notifications.requestPermissionsAsync();
+    finalStatus = status;
+  }
+
+  if (finalStatus !== "granted") {
+    Alert.alert(
+      "Thông báo",
+      "Bạn đã từ chối nhận thông báo. Hãy bật thông báo trong Cài đặt để tiếp tục.",
+      [
+        { text: "Mở cài đặt", onPress: () => Linking.openSettings() },
+        { text: "Hủy", style: "cancel" },
+      ]
+    );
+    return;
+  }
+
+  const projectId = Constants?.expoConfig?.extra?.eas?.projectId ?? Constants?.easConfig?.projectId;
+
+  if (!projectId) {
+    handleRegistrationError("Không tìm thấy thông tin máy");
+    return;
+  }
+
+  try {
+    const pushTokenString = (await Notifications.getExpoPushTokenAsync({ projectId })).data;
+    return pushTokenString;
+  } catch (e) {
+    handleRegistrationError(`${e}`);
   }
 }
 
-const dataDanhMuc = [
-  {
-    id: 1,
-    status: null,
-    path: "Thực hiện Checklist",
-    icon: require("../../assets/icons/o-01.png"),
-  },
-  {
-    id: 2,
-    status: null,
-    path: "Tra cứu",
-    icon: require("../../assets/icons/o-02.png"),
-  },
+// ================== Custom Hooks ==================
+const useInitializeData = (dispatch, authToken, refreshScreen) => {
+  useEffect(() => {
+    const initAll = async () => {
+      await Promise.all([
+        dispatch(ent_khuvuc_get()),
+        dispatch(ent_hangmuc_get()),
+        dispatch(ent_toanha_get()),
+        dispatch(ent_khoicv_get()),
+        dispatch(ent_tang_get()),
+        dispatch(ent_calv_get()),
+        dispatch(ent_get_sdt_KhanCap()),
+      ]);
+    };
+    initAll();
+  }, [dispatch, refreshScreen]);
+};
 
-  {
-    id: 3,
-    status: null,
-    path: "Checklist Lại",
-    icon: require("../../assets/icons/o-01.png"),
-  },
-  {
-    id: 4,
-    status: null,
-    path: "Xử lý sự cố",
-    icon: require("../../assets/icons/o-01.png"),
-  },
-  // {
-  //   id: 5,
-  //   status: "new",
-  //   path: "Báo cáo chỉ số",
-  //   icon: require("../../assets/icons/o-04.png"),
-  // },
-  {
-    id: 6,
-    status: "new",
-    path: "Báo cáo HSSE",
-    icon: require("../../assets/icons/o-04.png"),
-  },
-  {
-    id: 7,
-    status: "new",
-    path: "Báo cáo S0",
-    icon: require("../../assets/icons/o-04.png"),
-  },
-  {
-    id: 8,
-    status: "new",
-    path: "Đăng ký thi công",
-    icon: require("../../assets/icons/o-04.png"),
-  },
-];
+const useProjectData = (authToken) => {
+  const [duan, setDuan] = useState([]);
 
-const dataGD = [
-  {
-    id: 1,
-    status: null,
-    path: "Xử lý sự cố",
-    icon: require("../../assets/icons/o-01.png"),
-  },
-  {
-    id: 2,
-    status: null,
-    path: "Tra cứu",
-    icon: require("../../assets/icons/o-02.png"),
-  },
-  {
-    id: 6,
-    status: "new",
-    path: "Báo cáo HSSE",
-    icon: require("../../assets/icons/o-04.png"),
-  },
-  // {
-  //   id: 5,
-  //   status: "new",
-  //   path: "Báo cáo chỉ số",
-  //   icon: require("../../assets/icons/o-04.png"),
-  // },
-  {
-    id: 7,
-    status: "new",
-    path: "Báo cáo S0",
-    icon: require("../../assets/icons/o-04.png"),
-  },
-  {
-    id: 8,
-    status: "new",
-    path: "Đăng ký thi công",
-    icon: require("../../assets/icons/o-04.png"),
-  },
-];
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}/ent_duan/thong-tin-du-an`, {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
+        setDuan(response.data.data);
+      } catch (error) {
+        console.error("Fetch projects error:", error);
+      }
+    };
+    fetchProjects();
+  }, [authToken]);
 
-const dataKST = [
-  {
-    id: 1,
-    status: null,
-    path: "Thực hiện Checklist",
-    icon: require("../../assets/icons/o-01.png"),
-  },
-  {
-    id: 2,
-    status: null,
-    path: "Tra cứu",
-    icon: require("../../assets/icons/o-02.png"),
-  },
-  {
-    id: 4,
-    status: null,
-    path: "Checklist Lại",
-    icon: require("../../assets/icons/o-01.png"),
-  },
+  return duan;
+};
 
-  {
-    id: 3,
-    status: null,
-    path: "Xử lý sự cố",
-    icon: require("../../assets/icons/o-01.png"),
-  },
-  // {
-  //   id: 5,
-  //   status: "new",
-  //   path: "Báo cáo chỉ số",
-  //   icon: require("../../assets/icons/o-04.png"),
-  // },
-  {
-    id: 6,
-    status: "new",
-    path: "Báo cáo HSSE",
-    icon: require("../../assets/icons/o-04.png"),
-  },
-  {
-    id: 7,
-    status: "new",
-    path: "Báo cáo S0",
-    icon: require("../../assets/icons/o-04.png"),
-  },
-  {
-    id: 8,
-    status: "new",
-    path: "Đăng ký thi công",
-    icon: require("../../assets/icons/o-04.png"),
-  },
-];
+const useP0Check = (authToken, setIsLoading) => {
+  const [checkP0, setCheckP0] = useState(false);
 
-//ban quản trị khối
-const dataBQTKhoi = [
-  {
-    id: 2,
-    status: null,
-    path: "Tra cứu",
-    icon: require("../../assets/icons/o-02.png"),
-  },
-  {
-    id: 3,
-    status: null,
-    path: "Xử lý sự cố",
-    icon: require("../../assets/icons/o-01.png"),
-  },
-  // {
-  //   id: 5,
-  //   status: "new",
-  //   path: "Báo cáo chỉ số",
-  //   icon: require("../../assets/icons/o-04.png"),
-  // },
-  {
-    id: 6,
-    status: "new",
-    path: "Báo cáo HSSE",
-    icon: require("../../assets/icons/o-04.png"),
-  },
-  {
-    id: 7,
-    status: "new",
-    path: "Báo cáo S0",
-    icon: require("../../assets/icons/o-04.png"),
-  },
-  {
-    id: 8,
-    status: "new",
-    path: "Đăng ký thi công",
-    icon: require("../../assets/icons/o-04.png"),
-  },
-];
+  useEffect(() => {
+    const checkP0Status = async () => {
+      try {
+        setIsLoading(true);
+        const response = await axios.get(`${BASE_URL}/p0/check`, {
+          headers: {
+            Accept: "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
+        if (response.status === 200) {
+          setCheckP0(response.data.data);
+        }
+      } catch (error) {
+        console.error("P0 check error:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    checkP0Status();
+  }, [authToken]);
 
-const dataBQTDuAn = [
-  {
-    id: 2,
-    status: null,
-    path: "Tra cứu",
-    icon: require("../../assets/icons/o-02.png"),
-  },
-  // {
-  //   id: 5,
-  //   status: "new",
-  //   path: "Báo cáo chỉ số",
-  //   icon: require("../../assets/icons/o-04.png"),
-  // },
-  {
-    id: 6,
-    status: "new",
-    path: "Báo cáo HSSE",
-    icon: require("../../assets/icons/o-04.png"),
-  },
-  {
-    id: 7,
-    status: "new",
-    path: "Báo cáo S0",
-    icon: require("../../assets/icons/o-04.png"),
-  },
-  {
-    id: 8,
-    status: "new",
-    path: "Đăng ký thi công",
-    icon: require("../../assets/icons/o-04.png"),
-  },
-];
+  return checkP0;
+};
 
-// create a component
+// ================== Main Component ==================
 const HomeScreen = ({ navigation, route }) => {
-  const dispath = useDispatch();
-  const setIsLoading = route.params.setIsLoading;
-  const setColorLoading = route.params.setColorLoading;
-  const fetchNotifications = route.params.fetchNotifications;
+  const dispatch = useDispatch();
+  const { setIsLoading, setColorLoading, fetchNotifications } = route.params;
   const { user, authToken, passwordCore } = useSelector((state) => state.authReducer);
   const { sdt_khancap } = useSelector((state) => state.entReducer);
-
   const { setToken } = useContext(ExpoTokenContext);
 
   const [expoPushToken, setExpoPushToken] = useState("");
-  const [notification, setNotification] = useState(undefined);
-
-  const [duan, setDuan] = useState([]);
   const [refreshScreen, setRefreshScreen] = useState(false);
-
-  const [checkP0, setCheckP0] = useState(false);
-
-  const [arrDuan, setArrDuan] = useState([]);
 
   const notificationListener = useRef();
   const responseListener = useRef();
 
-  const renderItem = ({ item, index }) => (
-    <ItemHome ID_Chucvu={user?.ID_Chucvu} item={item} index={index} passwordCore={passwordCore} showAlert={showAlert} />
-  );
+  // Custom hooks
+  useInitializeData(dispatch, authToken, refreshScreen);
+  const duan = useProjectData(authToken);
+  const checkP0 = useP0Check(authToken, setIsLoading);
 
-  const int_khuvuc = async () => {
-    await dispath(ent_khuvuc_get());
-  };
+  // ================== Menu Data ==================
+  const menuData = useMemo(() => {
+    let baseData = ROLE_MENUS[user?.ent_chucvu?.Role] || [];
+    
+    if (!checkP0) {
+      baseData = baseData.filter((item) => item.id !== 7);
+    }
 
-  const int_hangmuc = async () => {
-    await dispath(ent_hangmuc_get());
-  };
+    const currentDate = new Date();
+    const targetDate = new Date("2025-01-01");
 
-  const init_toanha = async () => {
-    await dispath(ent_toanha_get());
-  };
+    if (currentDate > targetDate) {
+      baseData = baseData.map((item) => ({ ...item, status: null }));
+    }
 
-  const init_khoicv = async () => {
-    await dispath(ent_khoicv_get());
-  };
+    return baseData;
+  }, [user?.ent_chucvu?.Role, checkP0]);
 
-  const init_tang = async () => {
-    await dispath(ent_tang_get());
-  };
+  // ================== Show Multi-Project Selector ==================
+  const showProjectSelector = useMemo(() => {
+    const role = user?.ent_chucvu?.Role;
+    const hasMultipleProjects = user?.arr_Duan && user.arr_Duan.length > 1;
+    return (role === 5 || role === 10 || (role === 1 && hasMultipleProjects));
+  }, [user]);
 
-  const int_calv = async () => {
-    await dispath(ent_calv_get());
-  };
-
-  const int_get_sdt_KhanCap = async () => {
-    await dispath(ent_get_sdt_KhanCap());
-  };
-
-  // const asyncPassword  = async () => {
-  //   const data = await AsyncStorage.getItem("Password");
-  //   if(data){
-  //     setPasswordCore(data);
-  //   }
-  // }
-
+  // ================== Effects ==================
   useEffect(() => {
-    setArrDuan(user?.arr_Duan);
+    const checkPassword = async () => {
+      const password = await AsyncStorage.getItem("Password");
+      if (password && !validatePassword(password)) {
+        showAlert("Mật khẩu của bạn không đủ mạnh. Vui lòng cập nhật mật khẩu mới với độ bảo mật cao hơn.");
+      }
+    };
+    checkPassword();
   }, []);
 
   useEffect(() => {
-    // asyncPassword();
-    checkPasswordStrength();
-  }, []);
-
-  const checkPasswordStrength = async () => {
-    const password = await AsyncStorage.getItem("Password");
-    if (password && !validatePassword(password)) {
-      showAlert("Mật khẩu của bạn không đủ mạnh. Vui lòng cập nhật mật khẩu mới với độ bảo mật cao hơn.");
-    }
-  };
-
-  const funcDuan = async () => {
-    try {
-      const response = await axios.get(`${BASE_URL}/ent_duan/thong-tin-du-an`, {
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${authToken}`,
-        },
-      });
-      setDuan(response.data.data);
-    } catch (error) {
-      Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra vui lòng thử lại", [
-        {
-          text: "Xác nhận",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel",
-        },
-      ]);
-    }
-  };
-
-  useEffect(() => {
-    int_khuvuc();
-    int_hangmuc();
-    init_toanha();
-    init_khoicv();
-    init_tang();
-    int_calv();
-    funcDuan();
-    funcCheckP0();
-    int_get_sdt_KhanCap();
     fetchNotifications();
   }, [refreshScreen]);
 
@@ -429,17 +243,18 @@ const HomeScreen = ({ navigation, route }) => {
     }, [])
   );
 
+  // Push notifications
   useEffect(() => {
     registerForPushNotificationsAsync()
       .then((token) => setExpoPushToken(token ?? ""))
-      .catch((error) => setExpoPushToken(`${error}`));
+      .catch((error) => console.error("Push token error:", error));
 
     notificationListener.current = Notifications.addNotificationReceivedListener((notification) => {
-      setNotification(notification);
+      console.log("Notification received:", notification);
     });
 
     responseListener.current = Notifications.addNotificationResponseReceivedListener((response) => {
-      console.log(response);
+      console.log("Notification response:", response);
     });
 
     return () => {
@@ -448,31 +263,32 @@ const HomeScreen = ({ navigation, route }) => {
     };
   }, []);
 
+  // Register device token
   useEffect(() => {
-    const dataRes = async () => {
-      await axios
-        .post(
-          BASE_URL + "/ent_user/device-token",
+    const registerDevice = async () => {
+      if (!expoPushToken) return;
+
+      try {
+        await axios.post(
+          `${BASE_URL}/ent_user/device-token`,
           {
             deviceToken: expoPushToken,
             deviceName: Device.modelName,
           },
           {
-            headers: {
-              Authorization: "Bearer " + authToken,
-            },
+            headers: { Authorization: `Bearer ${authToken}` },
           }
-        )
-        .then((response) => {})
-        .catch((err) => console.log("err device", err));
+        );
+        setToken(expoPushToken);
+      } catch (error) {
+        console.error("Device registration error:", error);
+      }
     };
-    if (expoPushToken) {
-      dataRes();
-      setToken(expoPushToken);
-    }
-  }, [authToken, expoPushToken, Device]);
+    registerDevice();
+  }, [authToken, expoPushToken]);
 
-  const funcHandleDuan = async (ID_Duan) => {
+  // ================== Handlers ==================
+  const handleProjectChange = async (ID_Duan) => {
     try {
       setIsLoading(true);
       const response = await axios.put(
@@ -486,29 +302,21 @@ const HomeScreen = ({ navigation, route }) => {
         }
       );
 
-      // Xử lý response nếu thành công
       if (response.status === 200) {
         const UserName = await AsyncStorage.getItem("UserName");
         const Password = await AsyncStorage.getItem("Password");
-        dispath(login(UserName, Password));
+        dispatch(login(UserName, Password));
         Alert.alert("Thông báo", "Cập nhật dự án thành công!");
-        setRefreshScreen(true);
+        setRefreshScreen((prev) => !prev);
       }
     } catch (error) {
-      console.log("error", error.message);
-      Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra, vui lòng thử lại", [
-        {
-          text: "Xác nhận",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel",
-        },
-      ]);
+      Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra, vui lòng thử lại");
     } finally {
       setIsLoading(false);
     }
   };
 
-  const funcHandleClearDuan = async () => {
+  const handleClearProject = async () => {
     try {
       setIsLoading(true);
       const response = await axios.put(
@@ -522,46 +330,15 @@ const HomeScreen = ({ navigation, route }) => {
         }
       );
 
-      // Xử lý response nếu thành công
       if (response.status === 200) {
         const UserName = await AsyncStorage.getItem("UserName");
         const Password = await AsyncStorage.getItem("Password");
-        dispath(login(UserName, Password));
+        dispatch(login(UserName, Password));
         Alert.alert("Thông báo", "Cập nhật dự án thành công!");
-        setRefreshScreen(true);
+        setRefreshScreen((prev) => !prev);
       }
     } catch (error) {
-      console.log("error", error.message);
-      Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra, vui lòng thử lại", [
-        {
-          text: "Xác nhận",
-          onPress: () => console.log("Cancel Pressed"),
-          style: "cancel",
-        },
-      ]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const funcCheckP0 = async () => {
-    try {
-      setIsLoading(true);
-      const response = await axios.get(`${BASE_URL}/p0/check`, {
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${authToken}`,
-        },
-      });
-
-      if (response.status === 200) {
-        setCheckP0(response.data.data);
-      } else {
-        // showAlert("Đã có lỗi xảy ra, vui lòng thử lại");
-      }
-    } catch (error) {
-      // console.error("error", error.message);
-      // showAlert("Đã có lỗi xảy ra, vui lòng thử lại");
+      Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra, vui lòng thử lại");
     } finally {
       setIsLoading(false);
     }
@@ -569,18 +346,17 @@ const HomeScreen = ({ navigation, route }) => {
 
   const handleEmergencyCall = () => {
     if (!sdt_khancap) {
-      Alert.alert("PMC Thông báo", "Không có số điện thoại khẩn cấp!", [{ text: "Xác nhận" }]);
+      Alert.alert("PMC Thông báo", "Không có số điện thoại khẩn cấp!");
       return;
     }
+
     setIsLoading(true);
     const phoneUrl = `tel:${sdt_khancap}`;
     Linking.openURL(phoneUrl)
       .then(() => {
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 1000);
+        setTimeout(() => setIsLoading(false), 1000);
       })
-      .catch((error) => {
+      .catch(() => {
         setIsLoading(false);
         Alert.alert("PMC Thông báo", "Không thể thực hiện cuộc gọi!");
       });
@@ -588,94 +364,81 @@ const HomeScreen = ({ navigation, route }) => {
 
   const showAlert = (message) => {
     Alert.alert("PMC Thông báo", message, [
-      {
-        text: "Hủy",
-        onPress: () => console.log("Cancel Pressed"),
-        style: "cancel",
-      },
+      { text: "Hủy", style: "cancel" },
       { text: "Xác nhận", onPress: () => navigation.navigate("Profile") },
     ]);
   };
 
+  // ================== Render ==================
+  const renderItem = ({ item, index }) => (
+    <ItemHome
+      ID_Chucvu={user?.ID_Chucvu}
+      item={item}
+      index={index}
+      passwordCore={passwordCore}
+      showAlert={showAlert}
+    />
+  );
+
   return (
-    <ImageBackground source={require("../../assets/bg_new.png")} resizeMode="stretch" style={{ flex: 1, width: "100%" }}>
+    <ImageBackground source={require("../../assets/bg_new.png")} resizeMode="stretch" style={styles.background}>
       <View style={styles.container}>
-        <View style={styles.content}>
+        {/* Header Section */}
+        <View style={styles.header}>
           {user?.ent_duan?.Logo ? (
-            <Image source={{ uri: user?.ent_duan?.Logo }} resizeMode="contain" style={{ height: adjust(70), width: adjust(180) }} />
+            <Image source={{ uri: user.ent_duan.Logo }} resizeMode="contain" style={styles.logo} />
           ) : (
-            <Image source={require("../../assets/pmc_logo.png")} resizeMode="contain" style={{ height: adjust(80), width: adjust(200) }} />
+            <Image source={require("../../assets/pmc_logo.png")} resizeMode="contain" style={styles.logoDefault} />
           )}
+
           {user?.ent_duan?.Duan && (
-            <Text
-              allowFontScaling={false}
-              style={{
-                fontSize: adjust(20),
-                color: "white",
-                fontWeight: "700",
-                textTransform: "uppercase",
-                paddingTop: 8,
-              }}
-            >
-              Dự án: {user?.ent_duan?.Duan}
+            <Text allowFontScaling={false} style={styles.projectName}>
+              Dự án: {user.ent_duan.Duan}
             </Text>
           )}
 
-          <Text
-            allowFontScaling={false}
-            style={{
-              color: "white",
-              fontSize: adjust(16),
-              marginTop: 10,
-            }}
-            numberOfLines={1}
-          >
+          <Text allowFontScaling={false} style={styles.accountInfo} numberOfLines={1}>
             Tài khoản: {user?.UserName} - {user?.ent_chucvu?.Chucvu}
           </Text>
-          {(user?.ent_chucvu?.Role === 5 || user?.ent_chucvu?.Role === 10 ||
-            // (user?.ent_chucvu?.Role === 1 && user?.arr_Duan != null && user?.arr_Duan != "" && user?.arr_Duan != undefined)) && (
-            (user?.ent_chucvu?.Role === 1 && arrDuan && arrDuan?.length > 1)) && (
-            <View style={{ flexDirection: "row" }}>
+
+          {/* Project Selector */}
+          {showProjectSelector && (
+            <View style={styles.projectSelectorContainer}>
               <SelectDropdown
-                data={duan.map((item) => item.Duan)} // Dữ liệu dự án
-                style={{ alignItems: "center", height: "auto" }}
+                data={duan.map((item) => item.Duan)}
                 buttonStyle={styles.select}
                 dropdownStyle={styles.dropdown}
                 defaultButtonText={user?.ent_duan?.Duan || "Chọn dự án"}
-                buttonTextStyle={styles.customText}
+                buttonTextStyle={styles.selectText}
                 searchable={true}
                 onSelect={(selectedItem, index) => {
                   const selectedProject = duan[index]?.ID_Duan;
-                  funcHandleDuan(selectedProject);
+                  handleProjectChange(selectedProject);
                 }}
                 renderDropdownIcon={(isOpened) => (
-                  <FontAwesome name={isOpened ? "chevron-up" : "chevron-down"} color={"#637381"} size={18} style={{ marginRight: 10 }} />
+                  <FontAwesome
+                    name={isOpened ? "chevron-up" : "chevron-down"}
+                    color="#637381"
+                    size={18}
+                    style={styles.dropdownIcon}
+                  />
                 )}
-                dropdownIconPosition={"right"}
-                buttonTextAfterSelection={(selectedItem, index) => (
-                  <View
-                    key={index}
-                    style={{
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Text allowFontScaling={false} style={styles.selectedText}>
-                      {selectedItem || "Chọn dự án"}{" "}
-                    </Text>
-                  </View>
+                dropdownIconPosition="right"
+                buttonTextAfterSelection={(selectedItem) => (
+                  <Text allowFontScaling={false} style={styles.selectText}>
+                    {selectedItem || "Chọn dự án"}
+                  </Text>
                 )}
                 renderCustomizedRowChild={(item, index) => (
                   <View key={index} style={styles.dropdownItem}>
                     <Text style={styles.dropdownItemText}>{item}</Text>
                   </View>
                 )}
-                search
               />
 
               {(user?.ent_chucvu?.Role === 5 || user?.ent_chucvu?.Role === 10) && (
-                <TouchableOpacity style={styles.resetButton} onPress={() => funcHandleClearDuan("clear")}>
-                  <Text allowFontScaling={false} style={styles.resetButtonText}>
+                <TouchableOpacity style={styles.clearButton} onPress={handleClearProject}>
+                  <Text allowFontScaling={false} style={styles.clearButtonText}>
                     Tổng quan dự án
                   </Text>
                 </TouchableOpacity>
@@ -684,121 +447,34 @@ const HomeScreen = ({ navigation, route }) => {
           )}
         </View>
 
-        <View
-          style={[
-            styles.content,
-            {
-              width: "100%",
-              alignContent: "center",
-            },
-          ]}
-        >
+        {/* Menu Grid */}
+        <View style={styles.menuContainer}>
           <FlatList
-            style={{
-              width: "100%",
-              paddingHorizontal: 20,
-            }}
+            style={styles.menuList}
             numColumns={2}
-            data={(() => {
-              let baseData;
-
-              switch (user?.ent_chucvu?.Role) {
-                case 1:
-                  baseData = dataGD;
-                  break;
-                case 2:
-                  baseData = dataKST;
-                  break;
-                case 3:
-                  baseData = dataDanhMuc;
-                  break;
-                case 5:
-                  baseData = dataBQTKhoi;
-                  break;
-                case 6:
-                  baseData = dataBQTDuAn;
-                  break;
-                case 10:
-                  baseData = dataGD;
-                  break;
-                default:
-                  baseData = []; // hoặc null nếu muốn
-              }
-
-              if (!checkP0) {
-                baseData = baseData?.filter((item) => item.id !== 7);
-              }
-
-              const currentDate = new Date();
-              const targetDate = new Date("2025-01-01");
-
-              if (currentDate > targetDate) {
-                baseData = baseData?.map((item) => ({
-                  ...item,
-                  status: null,
-                }));
-              }
-
-              return baseData;
-            })()}
+            data={menuData}
             renderItem={renderItem}
-            ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
-            contentContainerStyle={{ gap: 10 }}
-            columnWrapperStyle={{ gap: 10 }}
+            keyExtractor={(item) => item.id.toString()}
+            ItemSeparatorComponent={() => <View style={styles.separator} />}
+            contentContainerStyle={styles.menuContent}
+            columnWrapperStyle={styles.columnWrapper}
           />
         </View>
-        <TouchableOpacity
-          onPress={() => handleEmergencyCall()}
-          style={{
-            position: "absolute", // Đặt vị trí tuyệt đối
-            bottom: 10,
-            right: 10,
-            zIndex: 9999,
-            elevation: 9999,
-            backgroundColor: "white",
-            borderRadius: 50, // Bo tròn background
-            padding: 10,
-            shadowColor: "#000",
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.25,
-            shadowRadius: 3.84,
-          }}
-        >
-          <View style={{ alignItems: "flex-end" }}>
-            <Image
-              source={require("../../assets/icons/ic_emergency_call_58.png")}
-              style={{
-                width: adjust(50) * 0.8,
-                height: adjust(50) * 0.8,
-                resizeMode: "contain",
-                transform: [{ scaleX: -1 }],
-              }}
-            />
-          </View>
+
+        {/* Emergency Call Button */}
+        <TouchableOpacity onPress={handleEmergencyCall} style={styles.emergencyButton}>
+          <Image
+            source={require("../../assets/icons/ic_emergency_call_58.png")}
+            style={styles.emergencyIcon}
+          />
         </TouchableOpacity>
-        <View
-          style={{
-            flexDirection: "column",
-            marginTop: 20,
-            marginHorizontal: 20,
-          }}
-        >
-          <Text
-            allowFontScaling={false}
-            style={{
-              color: "white",
-              fontSize: adjust(16),
-            }}
-          >
+
+        {/* Footer Note */}
+        <View style={styles.footer}>
+          <Text allowFontScaling={false} style={styles.footerText}>
             Người Giám sát chỉ thực hiện công việc Checklist, Tra cứu và Đổi mật khẩu.
           </Text>
-          <Text
-            allowFontScaling={false}
-            style={{
-              color: "white",
-              fontSize: adjust(16),
-            }}
-          >
+          <Text allowFontScaling={false} style={styles.footerText}>
             Giám đốc Tòa nhà toàn quyền sử dụng.
           </Text>
         </View>
@@ -807,27 +483,52 @@ const HomeScreen = ({ navigation, route }) => {
   );
 };
 
-// define your styles
+// ================== Styles ==================
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    width: "100%",
+  },
   container: {
     flex: 1,
-    flexDirection: "column",
     justifyContent: "space-around",
     paddingBottom: 40,
   },
-  content: {
+  header: {
     width: "100%",
     alignItems: "center",
     marginTop: 20,
   },
+  logo: {
+    height: adjust(70),
+    width: adjust(180),
+  },
+  logoDefault: {
+    height: adjust(80),
+    width: adjust(200),
+  },
+  projectName: {
+    fontSize: adjust(20),
+    color: "white",
+    fontWeight: "700",
+    textTransform: "uppercase",
+    paddingTop: 8,
+  },
+  accountInfo: {
+    color: "white",
+    fontSize: adjust(16),
+    marginTop: 10,
+  },
+  projectSelectorContainer: {
+    flexDirection: "row",
+    marginTop: 10,
+  },
   select: {
     height: 50,
-    justifyContent: "center",
     backgroundColor: "#f0f0f0",
     borderRadius: 10,
-    marginTop: adjust(10),
   },
-  customText: {
+  selectText: {
     fontSize: 16,
     color: "#4a4a4a",
   },
@@ -837,61 +538,79 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#e0e0e0",
     marginTop: 5,
-    height: "auto",
   },
-  selectedText: {
-    fontSize: 16,
-    color: "#4a4a4a",
-    textAlign: "center",
+  dropdownIcon: {
+    marginRight: 10,
   },
   dropdownItem: {
     paddingHorizontal: 10,
-    height: "auto",
+    paddingVertical: 12,
   },
   dropdownItemText: {
-    height: "auto",
     fontSize: 16,
     color: "#333",
   },
-  searchContainer: {
-    width: "100%",
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 5,
-    backgroundColor: "#f5f5f5",
-    borderRadius: 10,
-  },
-  searchIcon: {
+  clearButton: {
     marginLeft: 10,
-    backgroundColor: "#fff",
-  },
-  searchInput: {
-    flex: 1,
-    height: 40,
-    marginLeft: 10,
-    paddingHorizontal: 10,
-    borderRadius: 10,
-    backgroundColor: "#fff",
-  },
-  resetButton: {
-    marginTop: 10,
     paddingVertical: 8,
     paddingHorizontal: 20,
     backgroundColor: "rgba(255, 255, 255, 0.2)",
     borderRadius: 8,
-    flexDirection: "row",
-    alignItems: "center",
     borderWidth: 1,
     borderColor: "rgba(255, 255, 255, 0.3)",
-    marginLeft: 10,
+    justifyContent: "center",
   },
-  resetButtonText: {
+  clearButtonText: {
     color: "#fff",
     fontSize: adjust(14),
     fontWeight: "500",
-    marginLeft: 5,
+  },
+  menuContainer: {
+    width: "100%",
+    alignItems: "center",
+  },
+  menuList: {
+    width: "100%",
+    paddingHorizontal: 20,
+  },
+  menuContent: {
+    gap: 10,
+  },
+  columnWrapper: {
+    gap: 10,
+  },
+  separator: {
+    height: 10,
+  },
+  emergencyButton: {
+    position: "absolute",
+    bottom: 10,
+    right: 10,
+    zIndex: 9999,
+    backgroundColor: "white",
+    borderRadius: 50,
+    padding: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  emergencyIcon: {
+    width: adjust(50) * 0.8,
+    height: adjust(50) * 0.8,
+    resizeMode: "contain",
+    transform: [{ scaleX: -1 }],
+  },
+  footer: {
+    marginTop: 20,
+    marginHorizontal: 20,
+  },
+  footerText: {
+    color: "white",
+    fontSize: adjust(16),
+    marginBottom: 5,
   },
 });
 
-//make this component available to the app
 export default HomeScreen;

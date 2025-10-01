@@ -233,18 +233,27 @@ const HomeStack = ({ navigation }) => {
                   <View
                     style={{
                       position: "absolute",
-                      top: 0,
-                      right: 0,
+                      top: -4,
+                      right: -4,
                       backgroundColor: "red",
-                      width: adjust(16),
-                      height: adjust(16),
-                      borderRadius: adjust(8),
+                      minWidth: adjust(18),
+                      height: adjust(18),
+                      borderRadius: adjust(9),
                       justifyContent: "center",
                       alignItems: "center",
                       zIndex: 10,
+                      paddingHorizontal: adjust(4),
                     }}
                   >
-                    <Text style={{ color: "white", fontSize: 10, fontWeight: "bold" }}>{unreadCount}</Text>
+                    <Text
+                      style={{
+                        color: "white",
+                        fontSize: adjust(10),
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {unreadCount > 99 ? "99+" : unreadCount}
+                    </Text>
                   </View>
                 )}
                 <Image
