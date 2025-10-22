@@ -45,3 +45,36 @@ export const updatePhanQuyen = async (data, accessToken) => {
     },
   });
 };
+
+export const addNewCCDC = async (data, accessToken) => {
+  return axios.post(`${BASE_URL}/nt_dangky_tc/cong-cu-create`, data, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+  });
+};
+
+export const updateInfoCCDC = async (congCuId, data, accessToken) => {
+  return axios.put(`${BASE_URL}/nt_dangky_tc/cong-cu-update/${congCuId}`, data, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+  });
+};
+
+export const uploadImage = async (congCuId, imageUri, type, accessToken) => {
+  const formData = new FormData();
+  formData.append("file", {
+    uri: imageUri,
+    type: "image/jpeg",
+    name: "image.jpg",
+  });
+  return axios.post(`${BASE_URL}/nt_dangky_tc/cong-cu-image/${congCuId}/${type}`, formData, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "multipart/form-data",
+    },
+  });
+};

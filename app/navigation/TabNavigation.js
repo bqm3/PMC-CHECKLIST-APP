@@ -40,7 +40,7 @@ import {
 } from "../screens/TraCuuThongKe";
 import { BaoCaoChiSoTheoNamThang, DanhMucBaoCaoChiSo, DanhmucHangMucChiSo } from "../screens/Baocaochiso";
 
-import { DanhMucBaoCaoHSSE, TaoBaoCaoHSSE, DetailHSSE } from "../screens/HSSE";
+import { DanhMucBaoCaoHSSE, TaoBaoCaoHSSE, DetailHSSE, HSSENewDetail } from "../screens/HSSE";
 import { DanhMucBaoCaoP0, TaoBaoCaoP0, DetailP0 } from "../screens/P0";
 import { ListDKTC, ChiTietDKTC } from "../screens/Dangkythicong";
 import { NotificationScreen, DetailNotiScreen } from "../screens/Noti";
@@ -1151,7 +1151,7 @@ const HomeStack = ({ navigation }) => {
 
         <Stack.Screen
           name="Tạo báo cáo HSSE"
-          component={TaoBaoCaoHSSE}
+          component={HSSENewDetail}
           lazy={false}
           options={({ route, navigation }) => ({
             headerShown: true,
@@ -1192,7 +1192,7 @@ const HomeStack = ({ navigation }) => {
 
         <Stack.Screen
           name="Chi tiết dữ liệu HSSE"
-          component={DetailHSSE}
+          component={HSSENewDetail}
           lazy={false}
           options={({ route, navigation }) => ({
             headerShown: true,

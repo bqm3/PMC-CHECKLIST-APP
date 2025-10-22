@@ -22,6 +22,7 @@ import {
 //   Brightness,
 //   Contrast
 // } from 'react-native-color-matrix-image-filters';
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Svg, Image, Defs, Filter, FeColorMatrix } from "react-native-svg";
 import React, { useEffect, useState, useContext, useRef, useMemo, useCallback } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -43,8 +44,10 @@ import axios from "axios";
 import DataLicense from "../components/PrivacyPolicy";
 import Checkbox from "../components/Active/Checkbox";
 import ModalForgotPassword from "../components/Modal/ModalForgotPassword";
+import Constants from "expo-constants";
 
-const version = "2.2.6";
+const version = "2.2.7";
+// const version = Constants.expoConfig?.version;
 
 const LoginScreen = ({ navigation }) => {
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
@@ -132,12 +135,32 @@ const LoginScreen = ({ navigation }) => {
 
   const handleSubmit = async () => {
     if (!isConnected) {
-      Alert.alert("PMC Thông báo", "Không có kết nối mạng", [{ text: "Xác nhận", onPress: () => console.log("OK Pressed") }]);
+      Alert.alert("Thông báo", "Không có kết nối mạng", [{ text: "Xác nhận", onPress: () => console.log("OK Pressed") }]);
       return;
     }
 
+    // if (notification?.status == 1 || notification == null) {
+    //   Alert.alert("Thông báo", "Vui lòng cập nhật phiên bản mới để tiếp tục sử dụng ứng dụng.", [
+    //     {
+    //       text: "Hủy",
+    //       style: "cancel",
+    //     },
+    //     {
+    //       text: "Xác nhận",
+    //       onPress: () => {
+    //         const url = Platform.select({
+    //           ios: "https://apps.apple.com/vn/app/checklist-pmc/id6503722675",
+    //           android: "https://play.google.com/store/apps/details?id=com.anonymous.PMCCHECKLISTAPP&pcampaignid=web_share",
+    //         });
+    //         Linking.openURL(url).catch((err) => console.error("Không thể mở liên kết:", err));
+    //       },
+    //     },
+    //   ]);
+    //   return;
+    // }
+
     if (data?.UserName === "" || data?.Password === "") {
-      Alert.alert("PMC Thông báo", "Thiếu thông tin đăng nhập", [{ text: "Xác nhận", onPress: () => console.log("OK Pressed") }]);
+      Alert.alert("Thông báo", "Thiếu thông tin đăng nhập", [{ text: "Xác nhận", onPress: () => console.log("OK Pressed") }]);
     } else {
       dispatch(login(data?.UserName, data?.Password, deviceInfo, infoIP));
       await AsyncStorage.setItem("Password", data?.Password);
@@ -158,10 +181,8 @@ const LoginScreen = ({ navigation }) => {
           },
         });
 
-        if (response.data.status == 1) {
-          const data = response.data;
-          setNotification(data);
-        }
+        const data = response.data;
+        setNotification(data);
       } catch (err) {
         console.log("err", err);
       }
@@ -172,7 +193,7 @@ const LoginScreen = ({ navigation }) => {
 
   useEffect(() => {
     if (message) {
-      Alert.alert("PMC Thông báo", `${message}`, [{ text: "Xác nhận", onPress: () => console.log("OK Pressed") }]);
+      Alert.alert("Thông báo", `${message}`, [{ text: "Xác nhận", onPress: () => console.log("OK Pressed") }]);
     }
   }, [message, error]);
 
@@ -270,12 +291,9 @@ const LoginScreen = ({ navigation }) => {
 
   useEffect(() => {
     if (statusLocation === 0) {
-      Alert.alert("PMC Thông báo", "Hãy cấp quyền định vị vị trí của bạn!!", [
+      Alert.alert("Thông báo", "Hãy cấp quyền định vị vị trí của bạn!!", [
         {
           text: "Xác nhận",
-          onPress: () => {
-            setStatusLocation(2);
-          },
         },
       ]);
     }
@@ -299,7 +317,7 @@ const LoginScreen = ({ navigation }) => {
         let { status } = await Location.requestForegroundPermissionsAsync();
         if (status === "denied") {
           setErrorMsg("Permission denied. Please enable location services in settings.");
-          Alert.alert("PMC Thông báo", "Bạn cần bật quyền truy cập vị trí trong Cài đặt để tiếp tục sử dụng ứng dụng.", [
+          Alert.alert("Thông báo", "Bạn cần bật quyền truy cập vị trí trong Cài đặt để tiếp tục sử dụng ứng dụng.", [
             {
               text: "Mở cài đặt",
               onPress: () => Linking.openSettings(), // Open app settings
@@ -354,24 +372,32 @@ const LoginScreen = ({ navigation }) => {
     }
   };
 
-  const colorMatrixValues = Platform.OS === 'ios' 
-  ? "-1 0 0 0 1 0 -1 0 0 1 0 0 -1 0 1 0 0 0 1 0" // iOS
-  : "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"; // Android
+  const colorMatrixValues =
+    Platform.OS === "ios"
+      ? "-1 0 0 0 1 0 -1 0 0 1 0 0 -1 0 1 0 0 0 1 0" // iOS
+      : "0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0"; // Android
   return (
     <>
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
-          <ImageBackground source={require("../../assets/bg_new.png")} resizeMode="cover" style={styles.defaultFlex}>
-            <ScrollView contentContainerStyle={[styles.container]} style={{ opacity: opacity }} scrollEnabled={false}>
-              {notification?.status == 1 && (
-                <NotificationComponent
-                  notification={notification}
-                  animation={animation}
-                  setAnimation={setAnimation}
-                  setNotification={setNotification}
-                />
-              )}
-              {/* <Image
+        {/* <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}> */}
+        <ImageBackground source={require("../../assets/bg_new.png")} resizeMode="cover" style={styles.defaultFlex}>
+          <KeyboardAwareScrollView
+            contentContainerStyle={styles.container}
+            style={{ opacity: opacity }}
+            enableOnAndroid={true}
+            enableAutomaticScroll={true}
+            extraScrollHeight={20}
+            keyboardShouldPersistTaps="handled"
+          >
+            {notification?.status == 1 && (
+              <NotificationComponent
+                notification={notification}
+                animation={animation}
+                setAnimation={setAnimation}
+                setNotification={setNotification}
+              />
+            )}
+            {/* <Image
                 style={{
                   width: adjust(300), // Tăng lên 200
                   height: adjust(200), // Tăng lên 120
@@ -381,9 +407,9 @@ const LoginScreen = ({ navigation }) => {
                 source={require("../../assets/logo_checklist.png")}
               /> */}
 
-              <View style={{ marginHorizontal: 20 }}>
-                {/* <Title text={"Đăng nhập"} size={adjust(20)} top={30} /> */}
-                {/* <Image
+            <View style={{ marginHorizontal: 20 }}>
+              {/* <Title text={"Đăng nhập"} size={adjust(20)} top={30} /> */}
+              {/* <Image
                   style={{
                     width: adjust(300), // Tăng lên 200
                     height: adjust(200), // Tăng lên 120
@@ -393,171 +419,172 @@ const LoginScreen = ({ navigation }) => {
                   }}
                   source={require("../../assets/logo_checklist.png")}
                 /> */}
-                <Svg width={adjust(300)} height={adjust(200)} alignSelf="center">
-                  <Defs>
-                    <Filter id="colorMatrix">
-                      <FeColorMatrix type="matrix" values={colorMatrixValues} />
-                    </Filter>
-                  </Defs>
-                  <Image width={adjust(300)} height={adjust(200)} href={require("../../assets/logo_checklist.png")} filter="url(#colorMatrix)" />
-                </Svg>
+              <Svg width={adjust(300)} height={adjust(200)} alignSelf="center">
+                <Defs>
+                  <Filter id="colorMatrix">
+                    <FeColorMatrix type="matrix" values={colorMatrixValues} />
+                  </Filter>
+                </Defs>
+                <Image width={adjust(300)} height={adjust(200)} href={require("../../assets/logo_checklist.png")} filter="url(#colorMatrix)" />
+              </Svg>
+              <View
+                style={{
+                  justifyContent: "flex-start",
+                }}
+              >
+                <View style={{ height: adjust(20) }}></View>
+                <View style={styles.action}>
+                  <TextInput
+                    allowFontScaling={false}
+                    placeholder="Nhập tài khoản"
+                    placeholderTextColor="gray"
+                    style={[styles.textInput]}
+                    autoCapitalize="sentences"
+                    onChangeText={(val) => handleChangeText("UserName", val)}
+                    defaultValue={data?.UserName}
+                    autoCorrect={false}
+                    secureTextEntry={false}
+                    underLineColorAndroid="transparent"
+                  />
+                </View>
+
+                <View style={styles.action}>
+                  <TextInput
+                    allowFontScaling={false}
+                    placeholder="Nhập mật khẩu"
+                    placeholderTextColor="gray"
+                    style={[styles.textInput]}
+                    autoCapitalize="sentences"
+                    value={data?.Password}
+                    onChangeText={(val) => handleChangeText("Password", val)}
+                    secureTextEntry={!show}
+                    // onSubmitEditing={() => handleSubmit()}
+                  />
+                  <TouchableOpacity
+                    style={{
+                      width: 40,
+                      height: 40,
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                    onPress={() => setShow(!show)}
+                  >
+                    {!show ? (
+                      <Image
+                        style={{
+                          width: adjust(28),
+                          height: adjust(28),
+                          resizeMode: "contain",
+                        }}
+                        source={require("../../assets/eye.png")}
+                      />
+                    ) : (
+                      <Image
+                        style={{
+                          width: adjust(28),
+                          height: adjust(28),
+                          resizeMode: "contain",
+                        }}
+                        source={require("../../assets/hidden.png")}
+                      />
+                    )}
+                  </TouchableOpacity>
+                </View>
+
                 <View
                   style={{
-                    justifyContent: "flex-start",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    paddingTop: adjust(12),
                   }}
                 >
-                  <View style={{ height: adjust(20) }}></View>
-                  <View style={styles.action}>
-                    <TextInput
-                      allowFontScaling={false}
-                      placeholder="Nhập tài khoản"
-                      placeholderTextColor="gray"
-                      style={[styles.textInput]}
-                      autoCapitalize="sentences"
-                      onChangeText={(val) => handleChangeText("UserName", val)}
-                      defaultValue={data?.UserName}
-                      autoCorrect={false}
-                      secureTextEntry={false}
-                      underLineColorAndroid="transparent"
-                    />
-                  </View>
-
-                  <View style={styles.action}>
-                    <TextInput
-                      allowFontScaling={false}
-                      placeholder="Nhập mật khẩu"
-                      placeholderTextColor="gray"
-                      style={[styles.textInput]}
-                      autoCapitalize="sentences"
-                      value={data?.Password}
-                      onChangeText={(val) => handleChangeText("Password", val)}
-                      secureTextEntry={!show}
-                      // onSubmitEditing={() => handleSubmit()}
-                    />
-                    <TouchableOpacity
-                      style={{
-                        width: 40,
-                        height: 40,
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                      onPress={() => setShow(!show)}
-                    >
-                      {!show ? (
-                        <Image
-                          style={{
-                            width: adjust(28),
-                            height: adjust(28),
-                            resizeMode: "contain",
-                          }}
-                          source={require("../../assets/eye.png")}
-                        />
-                      ) : (
-                        <Image
-                          style={{
-                            width: adjust(28),
-                            height: adjust(28),
-                            resizeMode: "contain",
-                          }}
-                          source={require("../../assets/hidden.png")}
-                        />
-                      )}
+                  <View style={styles.checkboxContainer}>
+                    <Checkbox style={styles.checkbox} isCheck={isChecked} onPress={handleToggle} />
+                    <TouchableOpacity>
+                      <Text allowFontScaling={false} style={[styles.label, { textDecorationLine: "none" }]}>
+                        Lưu thông tin
+                      </Text>
                     </TouchableOpacity>
                   </View>
 
-                  <View
+                  <Pressable
+                    onPress={() => {
+                      setIsForgotPW(true);
+                    }}
                     style={{
-                      flexDirection: "row",
-                      justifyContent: "space-between",
                       alignItems: "center",
-                      paddingTop: adjust(12),
                     }}
                   >
-                    <View style={styles.checkboxContainer}>
-                      <Checkbox style={styles.checkbox} isCheck={isChecked} onPress={handleToggle} />
-                      <TouchableOpacity>
-                        <Text allowFontScaling={false} style={[styles.label, { textDecorationLine: "none" }]}>
-                          Lưu thông tin
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
-
-                    <Pressable
-                      onPress={() => {
-                        setIsForgotPW(true);
-                      }}
-                      style={{
-                        alignItems: "center",
-                      }}
-                    >
-                      <Text allowFontScaling={false} style={[styles.label]}>
-                        Quên mật khẩu
-                      </Text>
-                    </Pressable>
-                  </View>
-
-                  <View style={{ height: 12 }} />
-                  <ButtonSubmit backgroundColor={COLORS.bg_button} text={"Đăng nhập"} isLoading={isLoading} onPress={handleSubmit} />
-
-                  <Text
-                    style={{
-                      color: "white",
-                      fontWeight: "500",
-                      textAlign: "right",
-                      paddingTop: 10,
-                    }}
-                    allowFontScaling={false}
-                  >
-                    Phiên bản: {version}
-                  </Text>
-                </View>
-              </View>
-
-              <View style={[styles.checkboxContainer, { marginTop: 30, justifyContent: "center" }]}>
-                <TouchableOpacity onPress={handlePresentModalPress}>
-                  <Text allowFontScaling={false} style={[styles.label, { textDecorationLine: "none" }]}>
-                    Các{" "}
-                    <Text allowFontScaling={false} style={styles.label}>
-                      điều khoản
-                    </Text>{" "}
-                    và{" "}
-                    <Text allowFontScaling={false} style={styles.label}>
-                      điều kiện
+                    <Text allowFontScaling={false} style={[styles.label]}>
+                      Quên mật khẩu
                     </Text>
-                  </Text>
-                </TouchableOpacity>
+                  </Pressable>
+                </View>
+
+                <View style={{ height: 12 }} />
+                <ButtonSubmit backgroundColor={COLORS.bg_button} text={"Đăng nhập"} isLoading={isLoading} onPress={handleSubmit} />
+
+                <Text
+                  style={{
+                    color: "white",
+                    fontWeight: "500",
+                    textAlign: "right",
+                    paddingTop: 10,
+                  }}
+                  allowFontScaling={false}
+                >
+                  Phiên bản: {version}
+                </Text>
               </View>
+            </View>
 
-              <Modal animationType="slide" transparent={true} visible={isForgotPW} onRequestClose={handleCloseModal}>
-                <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
-                  <ModalForgotPassword
-                    handleCloseModal={handleCloseModal}
-                    username={username}
-                    setUsername={setUsername}
-                    email={email}
-                    setEmail={setEmail}
-                    handleForgotPassword={handleForgotPassword}
-                    isLoadingPW={isLoadingPW}
-                  />
-                </KeyboardAvoidingView>
-              </Modal>
-            </ScrollView>
+            <View style={[styles.checkboxContainer, { marginTop: 30, justifyContent: "center" }]}>
+              <TouchableOpacity onPress={handlePresentModalPress}>
+                <Text allowFontScaling={false} style={[styles.label, { textDecorationLine: "none" }]}>
+                  Các{" "}
+                  <Text allowFontScaling={false} style={styles.label}>
+                    điều khoản
+                  </Text>{" "}
+                  và{" "}
+                  <Text allowFontScaling={false} style={styles.label}>
+                    điều kiện
+                  </Text>
+                </Text>
+              </TouchableOpacity>
+            </View>
 
-            <BottomSheet
-              ref={bottomSheetModalRef}
-              index={isBottomSheetOpen}
-              snapPoints={snapPoints}
-              onChange={handleSheetChanges}
-              enableDynamicSizing={false}
-              enablePanDownToClose={true}
-              onClose={handleCloseBottomSheet}
-            >
-              <BottomSheetScrollView showsVerticalScrollIndicator={false}>
-                <DataLicense />
-              </BottomSheetScrollView>
-            </BottomSheet>
-          </ImageBackground>
-        </KeyboardAvoidingView>
+            <Modal animationType="slide" transparent={true} visible={isForgotPW} onRequestClose={handleCloseModal}>
+              <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={{ flex: 1 }}>
+                <ModalForgotPassword
+                  handleCloseModal={handleCloseModal}
+                  username={username}
+                  setUsername={setUsername}
+                  email={email}
+                  setEmail={setEmail}
+                  handleForgotPassword={handleForgotPassword}
+                  isLoadingPW={isLoadingPW}
+                />
+              </KeyboardAvoidingView>
+            </Modal>
+            {/* </ScrollView> */}
+          </KeyboardAwareScrollView>
+
+          <BottomSheet
+            ref={bottomSheetModalRef}
+            index={isBottomSheetOpen}
+            snapPoints={snapPoints}
+            onChange={handleSheetChanges}
+            enableDynamicSizing={false}
+            enablePanDownToClose={true}
+            onClose={handleCloseBottomSheet}
+          >
+            <BottomSheetScrollView showsVerticalScrollIndicator={false}>
+              <DataLicense />
+            </BottomSheetScrollView>
+          </BottomSheet>
+        </ImageBackground>
+        {/* </KeyboardAvoidingView> */}
       </GestureHandlerRootView>
     </>
   );

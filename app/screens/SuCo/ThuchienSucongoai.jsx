@@ -423,10 +423,10 @@ const ThuchienSucongoai = ({ navigation, route }) => {
               >
                 <View>
                   <View style={styles.checkboxContainer}>
-                    <View style={{ flexDirection: "row", alignItems: "center" }}>
+                    {/* <View style={{ flexDirection: "row", alignItems: "center" }}>
                       <Checkbox disabled={false} value={isCheck} onValueChange={(newValue) => setIsCheck(newValue)} />
                       <Text style={styles.text}> Nhập hạng mục</Text>
-                    </View>
+                    </View> */}
                     <View style={{ flexDirection: "row", alignItems: "center" }}>
                       <Checkbox disabled={false} value={isMucDo} onValueChange={(newValue) => setIsMucDo(newValue)} />
                       <Text style={styles.text}> Nghiêm trọng</Text>
@@ -478,6 +478,7 @@ const ThuchienSucongoai = ({ navigation, route }) => {
                           isDarkModeEnabled={true}
                           onConfirm={(date) => handleConfirm("Ngaysuco", date, "YYYY-MM-DD")}
                           onCancel={() => hideDatePicker("Ngaysuco", false)}
+                          maximumDate={new Date()}
                         />
                       </TouchableOpacity>
                     </View>
