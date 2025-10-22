@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, Modal, TouchableOpacity, ActivityIndicator, Alert, StatusBar, Dimensions } from "react-native";
 import { WebView } from "react-native-webview";
-import Icon from "react-native-vector-icons/MaterialIcons";
+import { MaterialIcons as Icon } from '@expo/vector-icons';
 import { getSharePointList } from "../../utils/util";
 
 const { width, height } = Dimensions.get("window");

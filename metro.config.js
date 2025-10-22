@@ -1,47 +1,39 @@
-const {getDefaultConfig} = require('expo/metro-config');
+const { getDefaultConfig } = require("expo/metro-config");
+const config = getDefaultConfig(__dirname);
 
-module.exports = (async () => {
-    const defaultConfig = await getDefaultConfig(__dirname);
+// Cấu hình transformer
+config.transformer = {
+  ...config.transformer,
+  experimentalImportSupport: false,
+  inlineRequires: true,
+  babelTransformerPath: require.resolve("react-native-svg-transformer"),
+  minifierConfig: {
+    keep_classnames: true, // FIX typeorm
+    keep_fnames: true, // FIX typeorm
+    mangle: {
+      keep_classnames: true, // FIX typeorm
+      keep_fnames: true, // FIX typeorm
+    },
+    output: {
+      ascii_only: true,
+      quote_style: 3,
+      wrap_iife: true,
+    },
+    sourceMap: {
+      includeSources: false,
+    },
+    toplevel: false,
+    compress: {
+      reduce_funcs: false,
+    },
+  },
+};
 
-    const {transformer, resolver} = defaultConfig;
+// Cấu hình resolver
+config.resolver = {
+  ...config.resolver,
+  assetExts: [...config.resolver.assetExts.filter((ext) => ext !== "svg"), "db"],
+  sourceExts: [...config.resolver.sourceExts, "svg", "jsx", "js", "ts", "tsx", "cjs", "json"],
+};
 
-    defaultConfig.transformer = {
-        ...transformer,
-        experimentalImportSupport: false,
-        inlineRequires: true,
-        babelTransformerPath: require.resolve('react-native-svg-transformer'),
-        minifierConfig: {
-            keep_classnames: true, // FIX typeorm
-            keep_fnames: true, // FIX typeorm
-            mangle: {
-                // toplevel: false,
-                keep_classnames: true, // FIX typeorm
-                keep_fnames: true, // FIX typeorm
-            },
-            output: {
-                ascii_only: true,
-                quote_style: 3,
-                wrap_iife: true,
-            },
-            sourceMap: {
-                includeSources: false,
-            },
-            toplevel: false,
-            compress: {
-                // reduce_funcs inlines single-use functions, which cause perf regressions.
-                reduce_funcs: false,
-            },
-        }
-    };
-
-    // added this for eas migration - not sure what it does
-    defaultConfig.resolver.assetExts.push('db');
-
-    defaultConfig.resolver = {
-        ...resolver,
-        assetExts: resolver.assetExts.filter(ext => ext !== 'svg'),
-        sourceExts: [...resolver.sourceExts, 'svg', 'jsx', 'js', 'ts', 'tsx', 'cjs', 'json'],
-    };
-
-    return defaultConfig;
-})();
+module.exports = config;

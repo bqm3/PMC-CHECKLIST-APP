@@ -16,7 +16,7 @@ import {
 import { getDangKyThiCongDetail, updateDangKyThiCongStatus, uploadImage, addNewCCDC, updateInfoCCDC } from "./api";
 import { useSelector } from "react-redux";
 import SelectDropdown from "react-native-select-dropdown";
-import Icon from "react-native-vector-icons/MaterialIcons";
+import { MaterialIcons as Icon } from '@expo/vector-icons';
 import * as ImagePicker from "expo-image-picker";
 import DocumentViewer from "./DocumentViewer";
 import moment from "moment-timezone";
