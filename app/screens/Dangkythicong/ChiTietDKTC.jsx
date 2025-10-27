@@ -13,10 +13,11 @@ import {
   Modal,
   Platform,
 } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { getDangKyThiCongDetail, updateDangKyThiCongStatus, uploadImage, addNewCCDC, updateInfoCCDC } from "./api";
 import { useSelector } from "react-redux";
 import SelectDropdown from "react-native-select-dropdown";
-import { MaterialIcons as Icon } from '@expo/vector-icons';
+import { MaterialIcons as Icon } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import DocumentViewer from "./DocumentViewer";
 import moment from "moment-timezone";
@@ -475,7 +476,9 @@ const ChiTietDKTC = ({ route, navigation }) => {
                     <InfoRow label="Số lượng" value={item.so_luong?.toString() || "0"} />
                     {item.ngay_vao && <InfoRow label="Ngày" value={formatDate(item.ngay_vao)} />}
                     {item.ngay_ra && <InfoRow label="Ngày ra" value={formatDate(item.ngay_ra)} />}
-                    {item.users && <InfoRow label="Người thực hiện" value={Array.isArray(item.users) && item.users.length ? item.users.join(", ") : "-"} /> }
+                    {item.users && (
+                      <InfoRow label="Người thực hiện" value={Array.isArray(item.users) && item.users.length ? item.users.join(", ") : "-"} />
+                    )}
                     {item.ghi_chu && <InfoRow label="Ghi chú" value={item.ghi_chu} />}
                   </View>
                   {/* Nếu đã hoàn thành thì ẩn phần ảnh */}
@@ -543,7 +546,17 @@ const ChiTietDKTC = ({ route, navigation }) => {
                 <Icon name="close" size={24} color="#6B7280" />
               </TouchableOpacity>
             </View>
-            <ScrollView style={styles.modalBody}>
+
+            <KeyboardAwareScrollView
+              style={styles.modalBody}
+              contentContainerStyle={{ paddingBottom: 20 }}
+              keyboardShouldPersistTaps="handled"
+              showsVerticalScrollIndicator={false}
+              enableOnAndroid={true}
+              enableAutomaticScroll={true}
+              extraScrollHeight={20}
+              extraHeight={150}
+            >
               {!editingCongCu && (
                 <View style={styles.formGroup}>
                   <Text style={styles.formLabel}>
@@ -606,7 +619,8 @@ const ChiTietDKTC = ({ route, navigation }) => {
                   editable={!saving}
                 />
               </View>
-            </ScrollView>
+            </KeyboardAwareScrollView>
+
             <View style={styles.modalFooter}>
               <TouchableOpacity style={styles.cancelButton} onPress={handleCloseCongCuModal} disabled={saving}>
                 <Text style={styles.cancelButtonText}>Hủy</Text>
