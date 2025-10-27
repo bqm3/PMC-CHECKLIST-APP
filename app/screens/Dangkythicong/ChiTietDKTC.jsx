@@ -12,11 +12,15 @@ import {
   Image,
   Modal,
   Platform,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import { BottomSheetModal, BottomSheetView, BottomSheetModalProvider, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { getDangKyThiCongDetail, updateDangKyThiCongStatus, uploadImage, addNewCCDC, updateInfoCCDC } from "./api";
 import { useSelector } from "react-redux";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import SelectDropdown from "react-native-select-dropdown";
 import { MaterialIcons as Icon } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
@@ -28,6 +32,7 @@ const { width } = Dimensions.get("window");
 
 const ChiTietDKTC = ({ route, navigation }) => {
   const { id } = route.params || {};
+  const insets = useSafeAreaInsets();
   const { setIsLoading } = route.params;
   const { authToken } = useSelector((state) => state.authReducer);
   const [data, setData] = useState(null);
@@ -539,106 +544,106 @@ const ChiTietDKTC = ({ route, navigation }) => {
       </ScrollView>
 
       <Modal visible={congCuModalVisible} transparent={true} animationType="slide" onRequestClose={handleCloseCongCuModal}>
-        <KeyboardAwareScrollView
-          contentContainerStyle={styles.modalOverlay}
-          enableOnAndroid={true}
-          enableAutomaticScroll={true}
-          extraScrollHeight={Platform.OS === "ios" ? 20 : 0}
-          keyboardShouldPersistTaps="handled"
-        >
-          <View style={styles.modalContent}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>{editingCongCu ? "Sửa công cụ" : "Thêm công cụ mới"}</Text>
-            </View>
-
-            <ScrollView
-              style={styles.modalBody}
-              contentContainerStyle={{ paddingBottom: 20 }}
-              keyboardShouldPersistTaps="handled"
-              showsVerticalScrollIndicator={false}
-              nestedScrollEnabled={true}
-            >
-              {!editingCongCu && (
-                <View style={styles.formGroup}>
-                  <Text style={styles.formLabel}>
-                    Tên công cụ <Text style={styles.required}>*</Text>
-                  </Text>
-                  <TextInput
-                    style={styles.formInput}
-                    placeholder="Nhập tên công cụ"
-                    value={congCuForm.ten_cong_cu}
-                    onChangeText={(text) => setCongCuForm({ ...congCuForm, ten_cong_cu: text })}
-                    editable={!saving}
-                  />
-                </View>
-              )}
-              {editingCongCu && (
-                <View style={styles.formGroup}>
-                  <Text style={styles.formLabel}>Tên công cụ</Text>
-                  <View style={styles.readonlyInput}>
-                    <Text style={styles.readonlyText}>{editingCongCu.ten_cong_cu}</Text>
-                    <Icon name="lock" size={16} color="#9CA3AF" />
+        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.kavContainer}>
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <View style={styles.modalOverlay}>
+              <TouchableWithoutFeedback onPress={() => {}}>
+                <View style={styles.modalContent}>
+                  <View style={styles.modalHeader}>
+                    <Text style={styles.modalTitle}>{editingCongCu ? "Sửa công cụ" : "Thêm công cụ mới"}</Text>
                   </View>
-                  <Text style={styles.helperText}>Tên công cụ không thể thay đổi</Text>
-                </View>
-              )}
-              {!editingCongCu && (
-                <View style={styles.formGroup}>
-                  <Text style={styles.formLabel}>
-                    Số lượng <Text style={styles.required}>*</Text>
-                  </Text>
-                  <TextInput
-                    style={styles.formInput}
-                    placeholder="Nhập số lượng"
-                    value={congCuForm.so_luong}
-                    onChangeText={(text) => setCongCuForm({ ...congCuForm, so_luong: text })}
-                    keyboardType="numeric"
-                    editable={!saving}
-                  />
-                </View>
-              )}
-              {editingCongCu && (
-                <View style={styles.formGroup}>
-                  <Text style={styles.formLabel}>Số lượng</Text>
-                  <View style={styles.readonlyInput}>
-                    <Text style={styles.readonlyText}>{editingCongCu.so_luong}</Text>
-                    <Icon name="lock" size={16} color="#9CA3AF" />
-                  </View>
-                  <Text style={styles.helperText}>Số lượng không thể thay đổi</Text>
-                </View>
-              )}
-              <View style={styles.formGroup}>
-                <Text style={styles.formLabel}>Ghi chú</Text>
-                <TextInput
-                  style={[styles.formInput, styles.textArea]}
-                  placeholder="Nhập ghi chú (không bắt buộc)"
-                  value={congCuForm.ghi_chu}
-                  onChangeText={(text) => setCongCuForm({ ...congCuForm, ghi_chu: text })}
-                  multiline
-                  numberOfLines={4}
-                  textAlignVertical="top"
-                  editable={!saving}
-                />
-              </View>
-            </ScrollView>
 
-            <View style={styles.modalFooter}>
-              <TouchableOpacity style={styles.cancelButton} onPress={handleCloseCongCuModal} disabled={saving}>
-                <Text style={styles.cancelButtonText}>Hủy</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={[styles.saveButton, saving && styles.saveButtonDisabled]} onPress={handleSaveCongCu} disabled={saving}>
-                {saving ? (
-                  <ActivityIndicator color="#fff" size="small" />
-                ) : (
-                  <>
-                    <Icon name="save" size={18} color="#fff" />
-                    <Text style={styles.saveButtonText}>{editingCongCu ? "Cập nhật" : "Thêm mới"}</Text>
-                  </>
-                )}
-              </TouchableOpacity>
+                  <ScrollView
+                    style={styles.modalBody}
+                    contentContainerStyle={{ paddingBottom: 20 }}
+                    keyboardShouldPersistTaps="handled"
+                    showsVerticalScrollIndicator={false}
+                    nestedScrollEnabled={true}
+                  >
+                    {!editingCongCu && (
+                      <View style={styles.formGroup}>
+                        <Text style={styles.formLabel}>
+                          Tên công cụ <Text style={styles.required}>*</Text>
+                        </Text>
+                        <TextInput
+                          style={styles.formInput}
+                          placeholder="Nhập tên công cụ"
+                          value={congCuForm.ten_cong_cu}
+                          onChangeText={(text) => setCongCuForm({ ...congCuForm, ten_cong_cu: text })}
+                          editable={!saving}
+                        />
+                      </View>
+                    )}
+                    {editingCongCu && (
+                      <View style={styles.formGroup}>
+                        <Text style={styles.formLabel}>Tên công cụ</Text>
+                        <View style={styles.readonlyInput}>
+                          <Text style={styles.readonlyText}>{editingCongCu.ten_cong_cu}</Text>
+                          <Icon name="lock" size={16} color="#9CA3AF" />
+                        </View>
+                        <Text style={styles.helperText}>Tên công cụ không thể thay đổi</Text>
+                      </View>
+                    )}
+                    {!editingCongCu && (
+                      <View style={styles.formGroup}>
+                        <Text style={styles.formLabel}>
+                          Số lượng <Text style={styles.required}>*</Text>
+                        </Text>
+                        <TextInput
+                          style={styles.formInput}
+                          placeholder="Nhập số lượng"
+                          value={congCuForm.so_luong}
+                          onChangeText={(text) => setCongCuForm({ ...congCuForm, so_luong: text })}
+                          keyboardType="numeric"
+                          editable={!saving}
+                        />
+                      </View>
+                    )}
+                    {editingCongCu && (
+                      <View style={styles.formGroup}>
+                        <Text style={styles.formLabel}>Số lượng</Text>
+                        <View style={styles.readonlyInput}>
+                          <Text style={styles.readonlyText}>{editingCongCu.so_luong}</Text>
+                          <Icon name="lock" size={16} color="#9CA3AF" />
+                        </View>
+                        <Text style={styles.helperText}>Số lượng không thể thay đổi</Text>
+                      </View>
+                    )}
+                    <View style={styles.formGroup}>
+                      <Text style={styles.formLabel}>Ghi chú</Text>
+                      <TextInput
+                        style={[styles.formInput, styles.textArea]}
+                        placeholder="Nhập ghi chú (không bắt buộc)"
+                        value={congCuForm.ghi_chu}
+                        onChangeText={(text) => setCongCuForm({ ...congCuForm, ghi_chu: text })}
+                        multiline
+                        numberOfLines={4}
+                        textAlignVertical="top"
+                        editable={!saving}
+                      />
+                    </View>
+                  </ScrollView>
+
+                  <View style={styles.modalFooter}>
+                    <TouchableOpacity style={styles.cancelButton} onPress={handleCloseCongCuModal} disabled={saving}>
+                      <Text style={styles.cancelButtonText}>Hủy</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={[styles.saveButton, saving && styles.saveButtonDisabled]} onPress={handleSaveCongCu} disabled={saving}>
+                      {saving ? (
+                        <ActivityIndicator color="#fff" size="small" />
+                      ) : (
+                        <>
+                          <Icon name="save" size={18} color="#fff" />
+                          <Text style={styles.saveButtonText}>{editingCongCu ? "Cập nhật" : "Thêm mới"}</Text>
+                        </>
+                      )}
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </TouchableWithoutFeedback>
             </View>
-          </View>
-        </KeyboardAwareScrollView>
+          </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
       </Modal>
 
       <Modal visible={imageModalVisible} transparent={true} animationType="fade" onRequestClose={() => setImageModalVisible(false)}>
@@ -664,6 +669,9 @@ const InfoRow = ({ label, value, icon }) => (
 );
 
 const styles = StyleSheet.create({
+  kavContainer: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     backgroundColor: "#F9FAFB",
@@ -990,7 +998,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
     maxHeight: "85%",
-    paddingBottom: Platform.OS === "ios" ? 34 : 0,
+    // paddingBottom: Platform.OS === "ios" ? 34 : 0,
   },
   modalHeader: {
     flexDirection: "row",
