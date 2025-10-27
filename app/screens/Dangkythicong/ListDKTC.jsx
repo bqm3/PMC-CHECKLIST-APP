@@ -621,7 +621,7 @@ const ListDKTC = ({ navigation, route }) => {
             )}
           </View>
           <View style={{ flexDirection: "row", justifyContent: "flex-end", marginTop: 18 }}>
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={handlers.closePhanQuyen}
               disabled={savingPhanQuyen}
               style={{
@@ -633,7 +633,7 @@ const ListDKTC = ({ navigation, route }) => {
               }}
             >
               <Text style={{ color: "#222", fontWeight: "600" }}>Đóng</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity
               onPress={handleSavePhanQuyen}
               disabled={savingPhanQuyen}

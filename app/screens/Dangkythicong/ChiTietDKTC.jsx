@@ -13,6 +13,7 @@ import {
   Modal,
   Platform,
 } from "react-native";
+import { BottomSheetModal, BottomSheetView, BottomSheetModalProvider, BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { getDangKyThiCongDetail, updateDangKyThiCongStatus, uploadImage, addNewCCDC, updateInfoCCDC } from "./api";
 import { useSelector } from "react-redux";
@@ -538,24 +539,24 @@ const ChiTietDKTC = ({ route, navigation }) => {
       </ScrollView>
 
       <Modal visible={congCuModalVisible} transparent={true} animationType="slide" onRequestClose={handleCloseCongCuModal}>
-        <View style={styles.modalOverlay}>
+        <KeyboardAwareScrollView
+          contentContainerStyle={styles.modalOverlay}
+          enableOnAndroid={true}
+          enableAutomaticScroll={true}
+          extraScrollHeight={Platform.OS === "ios" ? 20 : 0}
+          keyboardShouldPersistTaps="handled"
+        >
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>{editingCongCu ? "Sửa công cụ" : "Thêm công cụ mới"}</Text>
-              <TouchableOpacity onPress={handleCloseCongCuModal}>
-                <Icon name="close" size={24} color="#6B7280" />
-              </TouchableOpacity>
             </View>
 
-            <KeyboardAwareScrollView
+            <ScrollView
               style={styles.modalBody}
               contentContainerStyle={{ paddingBottom: 20 }}
               keyboardShouldPersistTaps="handled"
               showsVerticalScrollIndicator={false}
-              enableOnAndroid={true}
-              enableAutomaticScroll={true}
-              extraScrollHeight={20}
-              extraHeight={150}
+              nestedScrollEnabled={true}
             >
               {!editingCongCu && (
                 <View style={styles.formGroup}>
@@ -619,7 +620,7 @@ const ChiTietDKTC = ({ route, navigation }) => {
                   editable={!saving}
                 />
               </View>
-            </KeyboardAwareScrollView>
+            </ScrollView>
 
             <View style={styles.modalFooter}>
               <TouchableOpacity style={styles.cancelButton} onPress={handleCloseCongCuModal} disabled={saving}>
@@ -637,7 +638,7 @@ const ChiTietDKTC = ({ route, navigation }) => {
               </TouchableOpacity>
             </View>
           </View>
-        </View>
+        </KeyboardAwareScrollView>
       </Modal>
 
       <Modal visible={imageModalVisible} transparent={true} animationType="fade" onRequestClose={() => setImageModalVisible(false)}>
