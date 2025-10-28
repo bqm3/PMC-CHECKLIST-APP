@@ -543,12 +543,19 @@ const ChiTietDKTC = ({ route, navigation }) => {
         </View>
       </ScrollView>
 
-      <Modal visible={congCuModalVisible} transparent={true} animationType="slide" onRequestClose={handleCloseCongCuModal}>
-        <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.kavContainer}>
-          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <View style={styles.modalOverlay}>
+      <Modal visible={congCuModalVisible} transparent={true} animationType="fade" onRequestClose={handleCloseCongCuModal}>
+        <KeyboardAwareScrollView
+          contentContainerStyle={styles.modalOverlayCentered}
+          enableOnAndroid={true}
+          enableAutomaticScroll={true}
+          extraScrollHeight={20}
+          keyboardShouldPersistTaps="handled"
+          scrollEnabled={false}
+        >
+          <TouchableWithoutFeedback onPress={handleCloseCongCuModal}>
+            <View style={styles.modalBackdrop}>
               <TouchableWithoutFeedback onPress={() => {}}>
-                <View style={styles.modalContent}>
+                <View style={styles.modalContentCentered}>
                   <View style={styles.modalHeader}>
                     <Text style={styles.modalTitle}>{editingCongCu ? "Sửa công cụ" : "Thêm công cụ mới"}</Text>
                   </View>
@@ -643,7 +650,7 @@ const ChiTietDKTC = ({ route, navigation }) => {
               </TouchableWithoutFeedback>
             </View>
           </TouchableWithoutFeedback>
-        </KeyboardAvoidingView>
+        </KeyboardAwareScrollView>
       </Modal>
 
       <Modal visible={imageModalVisible} transparent={true} animationType="fade" onRequestClose={() => setImageModalVisible(false)}>
@@ -1000,6 +1007,34 @@ const styles = StyleSheet.create({
     maxHeight: "85%",
     // paddingBottom: Platform.OS === "ios" ? 34 : 0,
   },
+  modalOverlayCentered: {
+    flexGrow: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
+  },
+
+  modalBackdrop: {
+    flex: 1,
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
+
+  modalContentCentered: {
+    backgroundColor: "#fff",
+    borderRadius: 16,
+    width: "100%",
+    maxWidth: 500,
+    maxHeight: "80%",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+
   modalHeader: {
     flexDirection: "row",
     alignItems: "center",
@@ -1008,6 +1043,126 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     borderBottomWidth: 1,
     borderBottomColor: "#E5E7EB",
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+  },
+
+  closeButton: {
+    padding: 4,
+  },
+
+  modalTitle: {
+    fontSize: 17,
+    fontWeight: "600",
+    color: "#1F2937",
+  },
+
+  modalBody: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    maxHeight: 400,
+  },
+
+  modalFooter: {
+    flexDirection: "row",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderTopWidth: 1,
+    borderTopColor: "#E5E7EB",
+    gap: 10,
+    borderBottomLeftRadius: 16,
+    borderBottomRightRadius: 16,
+  },
+
+  formGroup: {
+    marginBottom: 16,
+  },
+
+  formLabel: {
+    fontSize: 13,
+    fontWeight: "500",
+    color: "#374151",
+    marginBottom: 6,
+  },
+
+  required: {
+    color: "#EF4444",
+  },
+
+  formInput: {
+    borderWidth: 1,
+    borderColor: "#D1D5DB",
+    borderRadius: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    fontSize: 14,
+    color: "#1F2937",
+    backgroundColor: "#fff",
+  },
+
+  textArea: {
+    minHeight: 80,
+    textAlignVertical: "top",
+  },
+
+  readonlyInput: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+    borderRadius: 6,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    backgroundColor: "#F9FAFB",
+  },
+
+  readonlyText: {
+    fontSize: 14,
+    color: "#6B7280",
+  },
+
+  helperText: {
+    fontSize: 11,
+    color: "#9CA3AF",
+    marginTop: 3,
+    fontStyle: "italic",
+  },
+
+  cancelButton: {
+    flex: 1,
+    paddingVertical: 11,
+    borderRadius: 6,
+    borderWidth: 1,
+    borderColor: "#D1D5DB",
+    alignItems: "center",
+  },
+
+  cancelButtonText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#6B7280",
+  },
+
+  saveButton: {
+    flex: 1,
+    flexDirection: "row",
+    paddingVertical: 11,
+    borderRadius: 6,
+    backgroundColor: "#6366F1",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 5,
+  },
+
+  saveButtonDisabled: {
+    opacity: 0.6,
+  },
+
+  saveButtonText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#fff",
   },
   modalTitle: {
     fontSize: 17,
