@@ -390,12 +390,7 @@ const ThuchienSucongoai = ({ navigation, route }) => {
 
   const showAlert = (message) => {
     Alert.alert("PMC Thông báo", message, [
-      {
-        text: "Hủy",
-        onPress: () => console.log("Cancel Pressed"),
-        style: "cancel",
-      },
-      { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
+      { text: "Xác nhận", onPress: () => navigation.goBack() },
     ]);
   };
 
