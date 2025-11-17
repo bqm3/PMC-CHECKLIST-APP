@@ -3,9 +3,21 @@ import * as SQLite from 'expo-sqlite';
 class SQLiteDataManager {
   constructor() {
     this.db = null;
-    this.CHUNK_SIZE = 500000; // 500KB mỗi chunk để tránh lỗi
+    this.CHUNK_SIZE = 500000; // 500KB mỗi chunk
     this.MAX_CHUNKS = 10;
     this.isInitialized = false;
+    this.operationQueue = Promise.resolve(); // ✅ Thêm queue
+  }
+
+  // ✅ Queue để tránh race condition
+  async queueOperation(operation) {
+    this.operationQueue = this.operationQueue
+      .then(operation)
+      .catch((error) => {
+        console.error('Queue operation error:', error);
+        throw error;
+      });
+    return this.operationQueue;
   }
 
   // Khởi tạo database
@@ -15,7 +27,7 @@ class SQLiteDataManager {
     try {
       this.db = await SQLite.openDatabaseAsync('checklist_data.db');
       
-      // Tạo bảng chính để lưu data
+      // Tạo bảng chính
       await this.db.execAsync(`
         CREATE TABLE IF NOT EXISTS checklist_data (
           id INTEGER PRIMARY KEY,
@@ -27,7 +39,7 @@ class SQLiteDataManager {
         );
       `);
 
-      // Tạo bảng để lưu chunks
+      // Tạo bảng chunks
       await this.db.execAsync(`
         CREATE TABLE IF NOT EXISTS data_chunks (
           id INTEGER PRIMARY KEY,
@@ -39,7 +51,7 @@ class SQLiteDataManager {
         );
       `);
 
-      // Tạo index để tăng performance
+      // Tạo index
       await this.db.execAsync(`
         CREATE INDEX IF NOT EXISTS idx_checklist_id ON data_chunks(checklist_id);
         CREATE INDEX IF NOT EXISTS idx_chunk_index ON data_chunks(checklist_id, chunk_index);
@@ -54,10 +66,9 @@ class SQLiteDataManager {
     }
   }
 
-  // Cleanup old data - giữ lại chỉ 5 records gần nhất
+  // Cleanup old data
   async cleanupOldData() {
     try {
-      // Lấy danh sách các checklist_id cũ (giữ lại 5 gần nhất)
       const oldRecords = await this.db.getAllAsync(`
         SELECT checklist_id 
         FROM checklist_data 
@@ -66,14 +77,10 @@ class SQLiteDataManager {
       `);
 
       if (oldRecords.length > 0) {
-        const oldIds = oldRecords.map(row => `'${row.checklist_id}'`).join(',');
-        
-        // Xóa chunks cũ
-        await this.db.runAsync(`DELETE FROM data_chunks WHERE checklist_id IN (${oldIds})`);
-        
-        // Xóa main records cũ
-        await this.db.runAsync(`DELETE FROM checklist_data WHERE checklist_id IN (${oldIds})`);
-        
+        for (const record of oldRecords) {
+          await this.db.runAsync(`DELETE FROM data_chunks WHERE checklist_id = ?`, [record.checklist_id]);
+          await this.db.runAsync(`DELETE FROM checklist_data WHERE checklist_id = ?`, [record.checklist_id]);
+        }
         console.log(`🗑️ Cleaned up ${oldRecords.length} old records`);
       }
     } catch (error) {
@@ -91,7 +98,6 @@ class SQLiteDataManager {
         FROM checklist_data
       `);
 
-      // Ước tính kích thước
       const chunkSizes = await this.db.getAllAsync(`
         SELECT checklist_id, LENGTH(chunk_data) as size 
         FROM data_chunks 
@@ -105,13 +111,6 @@ class SQLiteDataManager {
       console.log(`📦 Total Records: ${result.total_records}`);
       console.log(`🧩 Total Chunks: ${result.total_chunks}`);
       console.log(`📊 Estimated Size: ${(totalSize / 1024).toFixed(2)} KB`);
-      
-      if (chunkSizes.length > 0) {
-        console.log('🔝 Top 5 largest chunks:');
-        chunkSizes.slice(0, 5).forEach((chunk, index) => {
-          console.log(`${index + 1}. ${chunk.checklist_id}: ${(chunk.size / 1024).toFixed(2)} KB`);
-        });
-      }
 
       return { total_records: result.total_records, total_chunks: result.total_chunks, totalSize };
       
@@ -121,71 +120,61 @@ class SQLiteDataManager {
     }
   }
 
-  // Lưu data
+  // ✅ FIX: Lưu data với queue và transaction đúng cách
   async saveData(checklistId, data) {
-    try {
-      await this.initDatabase();
-      
-      // Cleanup trước khi lưu
-      await this.cleanupOldData();
-      
-      const dataString = JSON.stringify(data);
-      console.log(`💾 Saving data for ${checklistId}: ${(dataString.length / 1024).toFixed(2)} KB`);
-
-      // Kiểm tra kích thước data
-      if (dataString.length > this.CHUNK_SIZE * this.MAX_CHUNKS) {
-        throw new Error(`Data too large: ${(dataString.length / 1024 / 1024).toFixed(2)}MB (max: ${(this.CHUNK_SIZE * this.MAX_CHUNKS / 1024 / 1024).toFixed(2)}MB)`);
-      }
-
-      // Bắt đầu transaction
-      await this.db.runAsync('BEGIN TRANSACTION');
-
+    return this.queueOperation(async () => {
       try {
-        // Xóa data cũ nếu có
-        await this.deleteData(checklistId, false); // false = không commit transaction
+        await this.initDatabase();
+        await this.cleanupOldData();
+        
+        const dataString = JSON.stringify(data);
+        console.log(`💾 Saving data for ${checklistId}: ${(dataString.length / 1024).toFixed(2)} KB`);
 
-        if (dataString.length > this.CHUNK_SIZE) {
-          // Lưu dạng chunks
-          await this.saveChunkedData(checklistId, dataString);
-        } else {
-          // Lưu dạng single chunk
-          await this.saveSingleData(checklistId, dataString);
+        if (dataString.length > this.CHUNK_SIZE * this.MAX_CHUNKS) {
+          throw new Error(`Data too large: ${(dataString.length / 1024 / 1024).toFixed(2)}MB`);
         }
 
-        // Commit transaction
-        await this.db.runAsync('COMMIT');
-        console.log('✅ Data saved successfully');
+        // ✅ Transaction đúng cách
+        try {
+          // Xóa data cũ trước (KHÔNG dùng transaction riêng)
+          await this.db.runAsync(`DELETE FROM data_chunks WHERE checklist_id = ?`, [checklistId]);
+          await this.db.runAsync(`DELETE FROM checklist_data WHERE checklist_id = ?`, [checklistId]);
+
+          // Lưu data mới
+          if (dataString.length > this.CHUNK_SIZE) {
+            await this.saveChunkedData(checklistId, dataString);
+          } else {
+            await this.saveSingleData(checklistId, dataString);
+          }
+
+          console.log('✅ Data saved successfully');
+
+        } catch (error) {
+          throw error;
+        }
 
       } catch (error) {
-        // Rollback nếu có lỗi
-        await this.db.runAsync('ROLLBACK');
+        console.error("❌ Error saving data:", error);
+        
+        if (error.message.includes('database or disk is full') || error.message.includes('SQLITE_FULL')) {
+          console.log('💾 Database full - attempting emergency cleanup...');
+          await this.emergencyCleanup();
+          throw new Error('Database full - please try again after cleanup');
+        }
+        
         throw error;
       }
-
-    } catch (error) {
-      console.error("❌ Error saving data:", error);
-      
-      // Xử lý lỗi SQLITE_FULL
-      if (error.message.includes('database or disk is full') || error.message.includes('SQLITE_FULL')) {
-        console.log('💾 Database full - attempting emergency cleanup...');
-        await this.emergencyCleanup();
-        throw new Error('Database full - please try again after cleanup');
-      }
-      
-      throw error;
-    }
+    });
   }
 
   // Lưu data đơn
   async saveSingleData(checklistId, dataString) {
-    // Insert main record
     await this.db.runAsync(`
       INSERT OR REPLACE INTO checklist_data 
       (checklist_id, data_type, chunk_count, updated_at) 
       VALUES (?, 'single', 1, CURRENT_TIMESTAMP)
     `, [checklistId]);
 
-    // Insert single chunk
     await this.db.runAsync(`
       INSERT OR REPLACE INTO data_chunks 
       (checklist_id, chunk_index, chunk_data) 
@@ -202,14 +191,12 @@ class SQLiteDataManager {
 
     console.log(`📦 Splitting into ${chunks.length} chunks`);
 
-    // Insert main record
     await this.db.runAsync(`
       INSERT OR REPLACE INTO checklist_data 
       (checklist_id, data_type, chunk_count, updated_at) 
       VALUES (?, 'chunked', ?, CURRENT_TIMESTAMP)
     `, [checklistId, chunks.length]);
 
-    // Insert chunks
     for (let i = 0; i < chunks.length; i++) {
       await this.db.runAsync(`
         INSERT OR REPLACE INTO data_chunks 
@@ -219,87 +206,75 @@ class SQLiteDataManager {
     }
   }
 
-  // Đọc data
+  // ✅ FIX: Đọc data với queue
   async loadData(checklistId) {
-    try {
-      await this.initDatabase();
+    return this.queueOperation(async () => {
+      try {
+        await this.initDatabase();
 
-      // Lấy thông tin main record
-      const mainRecord = await this.db.getFirstAsync(`
-        SELECT data_type, chunk_count 
-        FROM checklist_data 
-        WHERE checklist_id = ?
-      `, [checklistId]);
+        const mainRecord = await this.db.getFirstAsync(`
+          SELECT data_type, chunk_count 
+          FROM checklist_data 
+          WHERE checklist_id = ?
+        `, [checklistId]);
 
-      if (!mainRecord) {
-        console.log(`📭 No data found for ${checklistId}`);
+        if (!mainRecord) {
+          console.log(`📭 No data found for ${checklistId}`);
+          return null;
+        }
+
+        const chunks = await this.db.getAllAsync(`
+          SELECT chunk_data 
+          FROM data_chunks 
+          WHERE checklist_id = ? 
+          ORDER BY chunk_index ASC
+        `, [checklistId]);
+
+        if (chunks.length === 0) {
+          console.log(`📭 No chunks found for ${checklistId}`);
+          return null;
+        }
+
+        if (chunks.length !== mainRecord.chunk_count) {
+          console.warn(`⚠️ Chunk count mismatch for ${checklistId}: expected ${mainRecord.chunk_count}, found ${chunks.length}`);
+        }
+
+        const dataString = chunks.map(chunk => chunk.chunk_data).join('');
+        const data = JSON.parse(dataString);
+
+        console.log(`📖 Loaded data for ${checklistId}: ${(dataString.length / 1024).toFixed(2)} KB`);
+        return data;
+
+      } catch (error) {
+        console.error("❌ Error loading data:", error);
         return null;
       }
-
-      // Lấy các chunks
-      const chunks = await this.db.getAllAsync(`
-        SELECT chunk_data 
-        FROM data_chunks 
-        WHERE checklist_id = ? 
-        ORDER BY chunk_index ASC
-      `, [checklistId]);
-
-      if (chunks.length === 0) {
-        console.log(`📭 No chunks found for ${checklistId}`);
-        return null;
-      }
-
-      // Kiểm tra tính toàn vẹn
-      if (chunks.length !== mainRecord.chunk_count) {
-        console.warn(`⚠️ Chunk count mismatch for ${checklistId}: expected ${mainRecord.chunk_count}, found ${chunks.length}`);
-      }
-
-      // Ghép dữ liệu
-      const dataString = chunks.map(chunk => chunk.chunk_data).join('');
-      const data = JSON.parse(dataString);
-
-      console.log(`📖 Loaded data for ${checklistId}: ${(dataString.length / 1024).toFixed(2)} KB`);
-      return data;
-
-    } catch (error) {
-      console.error("❌ Error loading data:", error);
-      return null;
-    }
+    });
   }
 
-  // Xóa data
-  async deleteData(checklistId, shouldCommit = true) {
-    try {
-      if (shouldCommit) {
-        await this.db.runAsync('BEGIN TRANSACTION');
-      }
+  // ✅ FIX: Xóa data đơn giản hơn (bỏ transaction phức tạp)
+  async deleteData(checklistId) {
+    return this.queueOperation(async () => {
+      try {
+        await this.initDatabase();
+        
+        await this.db.runAsync(`DELETE FROM data_chunks WHERE checklist_id = ?`, [checklistId]);
+        await this.db.runAsync(`DELETE FROM checklist_data WHERE checklist_id = ?`, [checklistId]);
 
-      // Xóa chunks
-      await this.db.runAsync(`DELETE FROM data_chunks WHERE checklist_id = ?`, [checklistId]);
-      
-      // Xóa main record
-      await this.db.runAsync(`DELETE FROM checklist_data WHERE checklist_id = ?`, [checklistId]);
-
-      if (shouldCommit) {
-        await this.db.runAsync('COMMIT');
         console.log(`🗑️ Deleted data for ${checklistId}`);
-      }
 
-    } catch (error) {
-      if (shouldCommit) {
-        await this.db.runAsync('ROLLBACK');
+      } catch (error) {
+        console.error(`Error deleting data for ${checklistId}:`, error);
+        throw error;
       }
-      console.error(`Error deleting data for ${checklistId}:`, error);
-      throw error;
-    }
+    });
   }
 
-  // Emergency cleanup - xóa tất cả trừ record gần nhất
+  // Emergency cleanup
   async emergencyCleanup() {
     try {
       console.log('🚨 Emergency cleanup started...');
 
-      // Giữ lại chỉ 1 record gần nhất
       const keepRecord = await this.db.getFirstAsync(`
         SELECT checklist_id 
         FROM checklist_data 
@@ -308,25 +283,14 @@ class SQLiteDataManager {
       `);
 
       if (keepRecord) {
-        // Xóa tất cả trừ record này
-        await this.db.runAsync(`
-          DELETE FROM data_chunks 
-          WHERE checklist_id != ?
-        `, [keepRecord.checklist_id]);
-        
-        await this.db.runAsync(`
-          DELETE FROM checklist_data 
-          WHERE checklist_id != ?
-        `, [keepRecord.checklist_id]);
+        await this.db.runAsync(`DELETE FROM data_chunks WHERE checklist_id != ?`, [keepRecord.checklist_id]);
+        await this.db.runAsync(`DELETE FROM checklist_data WHERE checklist_id != ?`, [keepRecord.checklist_id]);
       } else {
-        // Xóa tất cả
         await this.db.runAsync(`DELETE FROM data_chunks`);
         await this.db.runAsync(`DELETE FROM checklist_data`);
       }
 
-      // Vacuum để giải phóng không gian
-      await this.db.runAsync('VACUUM');
-      
+      await this.db.execAsync('VACUUM');
       console.log('🚨 Emergency cleanup completed');
       
     } catch (error) {
@@ -353,33 +317,22 @@ class SQLiteDataManager {
     }
   }
 
-  // Xóa tất cả data (dành cho debug/testing)
-   async deleteAllData() {
-    try {
-      await this.initDatabase();
-      
-      console.log('🗑️ Deleting all data from database...');
-      
-      // Bắt đầu transaction
-      await this.db.runAsync('BEGIN TRANSACTION');
-
+  // Xóa tất cả data
+  async deleteAllData() {
+    return this.queueOperation(async () => {
       try {
-        // Xóa tất cả chunks
-        const chunksDeleted = await this.db.runAsync(`DELETE FROM data_chunks`);
+        await this.initDatabase();
         
-        // Xóa tất cả main records
+        console.log('🗑️ Deleting all data from database...');
+        
+        const chunksDeleted = await this.db.runAsync(`DELETE FROM data_chunks`);
         const recordsDeleted = await this.db.runAsync(`DELETE FROM checklist_data`);
         
-        // Commit transaction
-        await this.db.runAsync('COMMIT');
-        
-        // Vacuum để giải phóng không gian
-        await this.db.runAsync('VACUUM');
+        await this.db.execAsync('VACUUM');
         
         console.log(`✅ Successfully deleted all data:`);
         console.log(`   - Records deleted: ${recordsDeleted.changes}`);
         console.log(`   - Chunks deleted: ${chunksDeleted.changes}`);
-        console.log(`   - Database vacuumed`);
         
         return {
           success: true,
@@ -388,15 +341,10 @@ class SQLiteDataManager {
         };
 
       } catch (error) {
-        // Rollback nếu có lỗi
-        await this.db.runAsync('ROLLBACK');
+        console.error('❌ Error deleting all data:', error);
         throw error;
       }
-
-    } catch (error) {
-      console.error('❌ Error deleting all data:', error);
-      throw error;
-    }
+    });
   }
 }
 

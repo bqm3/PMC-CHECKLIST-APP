@@ -33,11 +33,9 @@ import QRCodeScreen from "../QRCodeScreen";
 import DataContext from "../../context/DataContext";
 import ChecklistContext from "../../context/ChecklistContext";
 import adjust from "../../adjust";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import NetInfo from "@react-native-community/netinfo";
 import ConnectContext from "../../context/ConnectContext";
-import axiosClient from "../../api/axiosClient";
-import { loadData } from "../../sqlite/SQLiteDataManager";
+import { loadData, saveData } from "../../sqlite/SQLiteDataManager";
 
 const ThucHienKhuvuc = ({ route, navigation }) => {
   const { ID_ChecklistC, ID_KhoiCV, ID_Calv, ID_Hangmucs } = route.params;
@@ -157,25 +155,21 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
   }, [dataChecklists]);
 
   useEffect(() => {
-    const fetchNetworkStatus = async () => {
+    const checkSubmitStatus = async () => {
       try {
-        // Retrieve the item from AsyncStorage
-        const network = await AsyncStorage.getItem("checkNetwork");
-        const savedData = await AsyncStorage.getItem(`dataChecklistStorage_${ID_ChecklistC}`);
-        if ((network === "close" && isConnect) || (savedData !== null && savedData !== undefined && savedData !== "" && savedData?.length > 0)) {
-          setSubmit(true);
-        }
+        // Kiểm tra nếu có checklist đã được check
+        const hasCheckedItems = dataChecklistFilterContext.some((item) => item.valueCheck !== null);
 
-        if (network === null && (savedData == null || savedData == undefined || savedData == "")) {
+        if (hasCheckedItems || isConnect) {
+          setSubmit(true);
+        } else {
           setSubmit(false);
         }
       } catch (error) {
         setSubmit(false);
       }
     };
-
-    // Call the async function
-    fetchNetworkStatus();
+    checkSubmitStatus();
   }, [dataChecklistFilterContext, isConnect]);
 
   useFocusEffect(
@@ -190,16 +184,26 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
     try {
       const savedData = await loadData(ID_ChecklistC);
 
-      if (savedData) {
+      if (savedData && savedData.length > 0) {
+        // ✅ Có dữ liệu trong SQLite - ưu tiên sử dụng
         setDataChecklists(savedData);
         setDataChecklistFilterContext(savedData);
       } else {
+        // ✅ Không có dữ liệu SQLite - lấy từ API/Redux
+        if (ent_checklist_detail && ent_checklist_detail.length > 0) {
+          setDataChecklists(ent_checklist_detail);
+          setDataChecklistFilterContext(ent_checklist_detail);
+          // Lưu vào SQLite lần đầu
+          await saveData(ID_ChecklistC, ent_checklist_detail);
+        }
+      }
+    } catch (error) {
+      console.error("Error loading data:", error);
+      // Fallback to Redux if SQLite fails
+      if (ent_checklist_detail && ent_checklist_detail.length > 0) {
         setDataChecklists(ent_checklist_detail);
         setDataChecklistFilterContext(ent_checklist_detail);
       }
-    } catch (error) {
-      setDataChecklists(ent_checklist_detail);
-      setDataChecklistFilterContext(ent_checklist_detail);
     }
   };
 
@@ -285,9 +289,6 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
         setLoadingSubmit(true);
 
         if (defaultActionDataChecklist.length === 0 && dataChecklistFaild.length === 0) {
-          await AsyncStorage.removeItem("checkNetwork");
-          await AsyncStorage.removeItem(`dataChecklistStorage_${ID_ChecklistC}`);
-
           Alert.alert("PMC Thông báo", "Không có checklist để kiểm tra!", [{ text: "OK", onPress: () => console.log("OK Pressed") }]);
           setLoadingSubmit(false);
           setSubmit(false);
@@ -317,8 +318,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
           await hadlChecklistAll(groupedByID_Hangmuc, dataChecklistFaild);
         }
       } else {
-        Alert.alert("Không có kết nối mạng", "Vui lòng kiểm tra kết nối mạng của bạn.");
-        await AsyncStorage.setItem("checkNetwork", "close");
+        Alert.alert("Không có kết nối mạng", "Dữ liệu đã được lưu. Vui lòng hoàn thành khi có kết nối mạng.");
       }
     } catch (error) {
       console.error("Lỗi khi kiểm tra kết nối mạng:", error);
@@ -384,8 +384,6 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
             },
           })
           .then(async (res) => {
-            await AsyncStorage.removeItem("checkNetwork");
-
             setSubmit(false);
             await postHandleSubmit();
             setLoadingSubmit(false);
@@ -462,7 +460,6 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
 
       postHandleSubmit();
       setLoadingSubmit(false);
-      await AsyncStorage.removeItem("checkNetwork");
 
       setSubmit(false);
       saveConnect(false);
@@ -586,7 +583,6 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
 
       await postHandleSubmit();
       setLoadingSubmit(false);
-      await AsyncStorage.removeItem("checkNetwork");
 
       setSubmit(false);
       saveConnect(false);
@@ -641,14 +637,14 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
     const dataChecklistFilterContextReset = dataChecklistFilterContext.filter((item) => !idsToRemove.has(item.ID_Checklist));
 
     setDataChecklistFilterContext(dataChecklistFilterContextReset);
-    await AsyncStorage.removeItem(`dataChecklistStorage_${ID_ChecklistC}`);
+
+    // ✅ THÊM DÒNG NÀY: Cập nhật SQLite sau khi xóa checklist đã submit
+    await saveData(ID_ChecklistC, dataChecklistFilterContextReset);
     setDataChecklistDefault([]);
     setDataChecklistFaild([]);
 
     if (dataChecklistFilterContextReset) {
-      // Lấy danh sách ID_Hangmuc từ dataChecklists
       const checklistIDs = dataChecklistFilterContextReset.map((item) => item.ID_Hangmuc);
-
       const filterDataHangMuc = hangMucFilterByIDChecklistC.filter((item) => checklistIDs.includes(item.ID_Hangmuc));
       const validKhuvucIDs = filterDataHangMuc.map((item) => item.ID_Khuvuc);
       setHangMucFilterByIDChecklistC(filterDataHangMuc);
@@ -656,12 +652,10 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
       const filterDataKhuVuc = khuVucFilterByIDChecklistC.filter((item) => validKhuvucIDs.includes(item.ID_Khuvuc));
 
       setKhuVucFilterByIDChecklistC(filterDataKhuVuc);
-      // Lọc danh sách hạng mục dựa trên ID_Khuvuc có trong validKhuvucIDs
+
       const filteredHangMuc = filterDataKhuVuc.map((khuvuc) => {
-        // Đếm số lượng hạng mục còn lại trong từng khu vực
         const hangMucCount = filterDataHangMuc.filter((hangmuc) => hangmuc.ID_Khuvuc === khuvuc.ID_Khuvuc).length;
 
-        // Gắn số lượng hạng mục vào từng khu vực
         return {
           ...khuvuc,
           hangMucCount,

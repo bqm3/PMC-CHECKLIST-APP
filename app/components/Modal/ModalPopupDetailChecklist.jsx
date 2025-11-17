@@ -37,9 +37,7 @@ const ModalPopupDetailChecklist = ({
 }) => {
   const ref = useRef(null);
   const [step, setStep] = useState(1);
-  const [defaultChecklist, setDefaultChecklist] = useState(
-    dataItem?.valueCheck
-  );
+  const [defaultChecklist, setDefaultChecklist] = useState(dataItem?.valueCheck);
   const [images, setImages] = useState([]);
   const [ghichu, setGhichu] = useState();
   const [chiso, setChiso] = useState();
@@ -89,12 +87,14 @@ const ModalPopupDetailChecklist = ({
   };
 
   const removeImage = (indexToRemove) => {
-    setImages((prevImages) =>
-      prevImages.filter((_, index) => index !== indexToRemove)
-    );
-    const filterImages = images.filter((_, index) => index !== indexToRemove);
-    // Cập nhật dataItem sau khi xóa ảnh
-    handleItemClick(filterImages, "option", "Anh", dataItem);
+    setImages((prevImages) => {
+      const updatedImages = prevImages.filter((_, index) => index !== indexToRemove);
+
+      // ✅ LƯU NGAY SAU KHI XÓA
+      handleItemClick(updatedImages, "option", "Anh", dataItem);
+
+      return updatedImages;
+    });
   };
 
   const objData = {
@@ -122,39 +122,50 @@ const ModalPopupDetailChecklist = ({
     handleClearBottom();
   };
 
-const handleCapture = async () => {
-  if (isProcessing) return;
+  const handleCapture = async () => {
+    if (isProcessing) return;
 
-  try {
-    setIsProcessing(true);
-    const photo = await cameraRef.current.takePictureAsync();
+    try {
+      setIsProcessing(true);
+      const photo = await cameraRef.current.takePictureAsync();
 
-    // Sử dụng API mới
-    const fileName = `photo_${Date.now()}.jpg`;
-    
-    // Resize và nén ảnh trực tiếp từ URI gốc
-    const resizedImage = await ImageManipulator.manipulateAsync(
-      photo.uri,
-      [{ resize: { width: Math.min(1024, photo.width) } }],
-      { compress: 0.7, format: "jpeg" }
-    );
+      // Sử dụng API mới
+      const fileName = `photo_${Date.now()}.jpg`;
 
-    // Cập nhật state và xử lý ảnh
-    setImages((prevImages) => {
-      if (prevImages.length < 5) {
-        return [...prevImages, resizedImage];
-      }
-      return prevImages;
-    });
+      // Resize và nén ảnh trực tiếp từ URI gốc
+      const resizedImage = await ImageManipulator.manipulateAsync(photo.uri, [{ resize: { width: Math.min(1024, photo.width) } }], {
+        compress: 0.7,
+        format: "jpeg",
+      });
 
-    const newImageItem = [...images, resizedImage];
-    handleItemClick(newImageItem, "option", "Anh", dataItem);
-  } catch (error) {
-    console.error("Error processing image:", error);
-  } finally {
-    turnOffCamera();
-  }
-};
+      // Cập nhật state và xử lý ảnh
+      // setImages((prevImages) => {
+      //   if (prevImages.length < 5) {
+      //     return [...prevImages, resizedImage];
+      //   }
+      //   return prevImages;
+      // });
+
+      // const newImageItem = [...images, resizedImage];
+      // handleItemClick(newImageItem, "option", "Anh", dataItem);
+
+      setImages((prevImages) => {
+        if (prevImages.length < 5) {
+          const newImages = [...prevImages, resizedImage];
+
+          // ✅ LƯU NGAY VÀO CONTEXT & SQLITE
+          handleItemClick(newImages, "option", "Anh", dataItem);
+
+          return newImages;
+        }
+        return prevImages;
+      });
+    } catch (error) {
+      console.error("Error processing image:", error);
+    } finally {
+      turnOffCamera();
+    }
+  };
 
   const turnOffCamera = () => {
     setWidthModal("90%");
@@ -171,13 +182,7 @@ const handleCapture = async () => {
 
   if (camera === true) {
     return (
-      <CameraView
-        ref={cameraRef}
-        style={[styles.camera]}
-        enableTorch={flashMode}
-        enableZoom={true}
-        preset="medium"
-      >
+      <CameraView ref={cameraRef} style={[styles.camera]} enableTorch={flashMode} enableZoom={true} preset="medium">
         <View style={styles.buttonContainer}>
           <View
             style={{
@@ -188,35 +193,21 @@ const handleCapture = async () => {
             }}
           >
             <TouchableOpacity style={styles.flashButton} onPress={toggleFlash}>
-              <MaterialIcons
-                name={flashMode ? "flash-on" : "flash-off"}
-                size={36}
-                color="white"
-              />
+              <MaterialIcons name={flashMode ? "flash-on" : "flash-off"} size={36} color="white" />
             </TouchableOpacity>
 
             <View style={{ flex: 1, alignItems: "center" }}>
               <TouchableOpacity
-                style={[
-                  styles.captureButton,
-                  isProcessing && styles.buttonDisabled,
-                ]}
+                style={[styles.captureButton, isProcessing && styles.buttonDisabled]}
                 disabled={isProcessing}
                 onPress={() => handleCapture()}
               >
-                <MaterialIcons
-                  name="camera"
-                  size={36}
-                  color={isProcessing ? "gray" : "white"}
-                />
+                <MaterialIcons name="camera" size={36} color={isProcessing ? "gray" : "white"} />
               </TouchableOpacity>
             </View>
           </View>
 
-          <TouchableOpacity
-            style={styles.closeButton}
-            onPress={() => turnOffCamera()}
-          >
+          <TouchableOpacity style={styles.closeButton} onPress={() => turnOffCamera()}>
             <AntDesign name="close" size={24} color="white" />
           </TouchableOpacity>
         </View>
@@ -250,11 +241,7 @@ const handleCapture = async () => {
                   </Text>
                   <SelectDropdown
                     ref={ref}
-                    data={
-                      dataItem?.Giatrinhan
-                        ? dataItem?.Giatrinhan.map((it) => it.trim())
-                        : []
-                    }
+                    data={dataItem?.Giatrinhan ? dataItem?.Giatrinhan.map((it) => it.trim()) : []}
                     buttonStyle={styles.select}
                     dropdownStyle={{
                       borderRadius: 8,
@@ -266,23 +253,11 @@ const handleCapture = async () => {
                     defaultValue={defaultChecklist}
                     onSelect={(selectedItem, i) => {
                       dataItem.valueCheck = selectedItem.trim();
-                      handleItemClick(
-                        selectedItem.trim(),
-                        "option",
-                        "valueCheck",
-                        dataItem
-                      );
+                      handleItemClick(selectedItem.trim(), "option", "valueCheck", dataItem);
                       setDefaultChecklist(selectedItem.trim());
                     }}
                     renderDropdownIcon={(isOpened) => {
-                      return (
-                        <FontAwesome
-                          name={isOpened ? "chevron-up" : "chevron-down"}
-                          color={"#637381"}
-                          size={14}
-                          style={{ marginRight: 10 }}
-                        />
-                      );
+                      return <FontAwesome name={isOpened ? "chevron-up" : "chevron-down"} color={"#637381"} size={14} style={{ marginRight: 10 }} />;
                     }}
                     dropdownIconPosition={"right"}
                     buttonTextAfterSelection={(selectedItem, index) => {
@@ -301,14 +276,7 @@ const handleCapture = async () => {
                       );
                     }}
                     renderCustomizedRowChild={(item, index) => {
-                      return (
-                        <VerticalSelect
-                          value={item}
-                          label={item}
-                          key={item}
-                          selectedItem={defaultChecklist}
-                        />
-                      );
+                      return <VerticalSelect value={item} label={item} key={item} selectedItem={defaultChecklist} />;
                     }}
                   />
                 </View>
@@ -331,19 +299,13 @@ const handleCapture = async () => {
                         // Chỉ giữ 1 dấu '.' đầu tiên nếu có nhiều dấu
                         const firstDot = numericText.indexOf(".");
                         if (firstDot !== -1) {
-                          numericText =
-                            numericText.slice(0, firstDot + 1) +
-                            numericText.slice(firstDot + 1).replace(/[.]/g, "");
+                          numericText = numericText.slice(0, firstDot + 1) + numericText.slice(firstDot + 1).replace(/[.]/g, "");
                         }
 
                         // Tương tự cho dấu ','
                         const firstComma = numericText.indexOf(",");
                         if (firstComma !== -1) {
-                          numericText =
-                            numericText.slice(0, firstComma + 1) +
-                            numericText
-                              .slice(firstComma + 1)
-                              .replace(/[,]/g, "");
+                          numericText = numericText.slice(0, firstComma + 1) + numericText.slice(firstComma + 1).replace(/[,]/g, "");
                         }
 
                         setChiso(numericText);
@@ -467,11 +429,7 @@ const handleCapture = async () => {
                               }}
                               onPress={() => removeImage(index)}
                             >
-                              <FontAwesome
-                                name="remove"
-                                size={adjust(30)}
-                                color="white"
-                              />
+                              <FontAwesome name="remove" size={adjust(30)} color="white" />
                             </TouchableOpacity>
                           </View>
                         ))}
@@ -499,11 +457,7 @@ const handleCapture = async () => {
             <View style={{ marginTop: 10 }}>
               <Button
                 onPress={() => {
-                  step == 1
-                    ? close()
-                    : (setStep(1),
-                      setData(),
-                      handleItemClick(objData, "close", objData, dataItem));
+                  step == 1 ? close() : (setStep(1), setData(), handleItemClick(objData, "close", objData, dataItem));
                 }}
                 backgroundColor={step == 1 ? COLORS.bg_button : COLORS.bg_white}
                 border={COLORS.bg_button}

@@ -46,9 +46,7 @@ import { deleteAllData } from "../../sqlite/SQLiteDataManager";
 const ThucHienChecklist = ({ navigation }) => {
   const ref = useRef(null);
   const dispath = useDispatch();
-  const { ent_calv, ent_hangmuc, ent_calv_chuky } = useSelector(
-    (state) => state.entReducer
-  );
+  const { ent_calv, ent_hangmuc, ent_calv_chuky } = useSelector((state) => state.entReducer);
   const { tb_checklistc } = useSelector((state) => state.tbReducer);
   const { user, authToken } = useSelector((state) => state.authReducer);
   const { setDataChecklists, setKhuVucFilterByIDChecklistC, setHangMucFilterByIDChecklistC } = useContext(DataContext);
@@ -121,7 +119,7 @@ const ThucHienChecklist = ({ navigation }) => {
       // if (!isCheck) {
       //   clearCacheDirectory(data);
       // }
-      clearCacheDirectory(data);
+      // clearCacheDirectory(data);
     }
   }, [tb_checklistc]);
 
@@ -143,6 +141,7 @@ const ThucHienChecklist = ({ navigation }) => {
       loadData();
       init_ca();
       int_checklistc();
+      clearCacheDirectory();
       return () => {};
     }, [dispath])
   );
@@ -154,15 +153,11 @@ const ThucHienChecklist = ({ navigation }) => {
 
   const toggleTodo = async (item, index) => {
     // setIsCheckbox(true);
-    const isExistIndex = newActionCheckList.findIndex(
-      (existingItem) => existingItem.ID_ChecklistC === item.ID_ChecklistC
-    );
+    const isExistIndex = newActionCheckList.findIndex((existingItem) => existingItem.ID_ChecklistC === item.ID_ChecklistC);
 
     // Nếu item đã tồn tại, xóa item đó đi
     if (isExistIndex !== -1) {
-      setNewActionCheckList((prevArray) =>
-        prevArray.filter((_, index) => index !== isExistIndex)
-      );
+      setNewActionCheckList((prevArray) => prevArray.filter((_, index) => index !== isExistIndex));
     } else {
       // Nếu item chưa tồn tại, thêm vào mảng mới
       setNewActionCheckList([item]);
@@ -224,7 +219,7 @@ const ThucHienChecklist = ({ navigation }) => {
         formData.append("Giochupanh4", dataImages.Giochupanh4);
       }
 
-           AsyncStorage.removeItem("tempChecklistImages");
+      AsyncStorage.removeItem("tempChecklistImages");
 
       await axios
         .post(BASE_URL + `/tb_checklistc/update_images/${newActionCheckList[0].ID_ChecklistC}`, formData, {
@@ -233,7 +228,7 @@ const ThucHienChecklist = ({ navigation }) => {
             Authorization: "Bearer " + authToken,
           },
         })
-        .then(async (res) =>  {
+        .then(async (res) => {
           await AsyncStorage.removeItem("tempChecklistImages");
           await int_checklistc();
           setNewActionCheckList([]);
@@ -505,7 +500,7 @@ const ThucHienChecklist = ({ navigation }) => {
         return false;
       };
 
-    const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
+      const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
 
       return () => backHandler.remove();
     }
