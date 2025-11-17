@@ -103,7 +103,7 @@ const XulySuco = ({ navigation }) => {
         setUserPhone(response.data.data);
       } catch (error) {
         console.error("Error fetching user phone:", error);
-        Alert.alert("PMC Thông báo", "Có lỗi xảy ra!", [
+        Alert.alert("Thông báo", "Có lỗi xảy ra!", [
           {
             text: "Xác nhận",
             onPress: () => {
@@ -134,7 +134,7 @@ const XulySuco = ({ navigation }) => {
         });
     } catch (error) {
       if (error.code === "ECONNABORTED") {
-        Alert.alert("PMC Thông báo", "Request bị timeout, vui lòng thử lại!", [
+        Alert.alert("Thông báo", "Request bị timeout, vui lòng thử lại!", [
           {
             text: "Xác nhận",
             onPress: () => {
@@ -143,7 +143,7 @@ const XulySuco = ({ navigation }) => {
           },
         ]);
       } else {
-        Alert.alert("PMC Thông báo", "Có lỗi xảy ra!", [
+        Alert.alert("Thông báo", "Có lỗi xảy ra!", [
           {
             text: "Xác nhận",
             onPress: () => {
@@ -157,13 +157,13 @@ const XulySuco = ({ navigation }) => {
 
   const handleEmergencyCall = () => {
     if (!sdt_khancap) {
-      Alert.alert("PMC Thông báo", "Không có số điện thoại khẩn cấp!", [{ text: "Xác nhận" }]);
+      Alert.alert("Thông báo", "Không có số điện thoại khẩn cấp!", [{ text: "Xác nhận" }]);
       return;
     }
 
     const phoneUrl = `tel:${sdt_khancap}`;
     Linking.openURL(phoneUrl).catch((error) => {
-      Alert.alert("PMC Thông báo", "Không thể thực hiện cuộc gọi!");
+      Alert.alert("Thông báo", "Không thể thực hiện cuộc gọi!");
     });
   };
 

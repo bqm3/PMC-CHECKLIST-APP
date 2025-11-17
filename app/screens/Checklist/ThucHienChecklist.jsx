@@ -235,7 +235,7 @@ const ThucHienChecklist = ({ navigation }) => {
           setLoadingSubmit(false);
           handleCloseSheetImage();
           // bottomSheetModalRef2?.current?.close();
-          Alert.alert("PMC Thông báo", "Checklist thành công", [
+          Alert.alert("Thông báo", "Checklist thành công", [
             {
               text: "Hủy",
               onPress: () => console.log("Cancel Pressed"),
@@ -249,7 +249,7 @@ const ThucHienChecklist = ({ navigation }) => {
           // Handle the error appropriately, e.g., displaying an error message
           if (error.response) {
             // Lỗi từ phía server (có response từ server)
-            Alert.alert("PMC Thông báo", error.response.data.message, [
+            Alert.alert("Thông báo", error.response.data.message, [
               {
                 text: "Hủy",
                 onPress: () => console.log("Cancel Pressed"),
@@ -259,7 +259,7 @@ const ThucHienChecklist = ({ navigation }) => {
             ]);
           } else if (error.request) {
             // Lỗi không nhận được phản hồi từ server
-            Alert.alert("PMC Thông báo", "Không nhận được phản hồi từ máy chủ", [
+            Alert.alert("Thông báo", "Không nhận được phản hồi từ máy chủ", [
               {
                 text: "Hủy",
                 onPress: () => console.log("Cancel Pressed"),
@@ -269,7 +269,7 @@ const ThucHienChecklist = ({ navigation }) => {
             ]);
           } else {
             // Lỗi khi cấu hình request
-            Alert.alert("PMC Thông báo", "Lỗi khi gửi yêu cầu", [
+            Alert.alert("Thông báo", "Lỗi khi gửi yêu cầu", [
               {
                 text: "Hủy",
                 onPress: () => console.log("Cancel Pressed"),
@@ -286,7 +286,7 @@ const ThucHienChecklist = ({ navigation }) => {
 
   const handlePushDataSave = async () => {
     if (dataInput.ID_Calv === null) {
-      Alert.alert("PMC Thông báo", "Chưa chọn ca làm việc", [
+      Alert.alert("Thông báo", "Chưa chọn ca làm việc", [
         {
           text: "Hủy",
           onPress: () => console.log("Cancel Pressed"),
@@ -337,7 +337,7 @@ const ThucHienChecklist = ({ navigation }) => {
         } else if (error.request) {
           // Lỗi không nhận được phản hồi từ server
           console.log(error.request);
-          Alert.alert("PMC Thông báo", "Không nhận được phản hồi từ máy chủ", [
+          Alert.alert("Thông báo", "Không nhận được phản hồi từ máy chủ", [
             {
               text: "Hủy",
               onPress: () => console.log("Cancel Pressed"),
@@ -348,7 +348,7 @@ const ThucHienChecklist = ({ navigation }) => {
         } else {
           // Lỗi khi cấu hình request
           console.log("Error", error.message);
-          Alert.alert("PMC Thông báo", "Lỗi khi gửi yêu cầu", [
+          Alert.alert("Thông báo", "Lỗi khi gửi yêu cầu", [
             {
               text: "Hủy",
               onPress: () => console.log("Cancel Pressed"),
@@ -455,7 +455,7 @@ const ThucHienChecklist = ({ navigation }) => {
       .then(() => {
         int_checklistc();
         setNewActionCheckList([]);
-        Alert.alert("PMC Thông báo", "Khóa ca thành công", [
+        Alert.alert("Thông báo", "Khóa ca thành công", [
           {
             text: "Hủy",
             onPress: () => console.log("Cancel Pressed"),
@@ -465,7 +465,7 @@ const ThucHienChecklist = ({ navigation }) => {
         ]);
       })
       .catch((err) => {
-        Alert.alert("PMC Thông báo", "Khóa ca thất bại. Vui lòng thử lại!!", [
+        Alert.alert("Thông báo", "Khóa ca thất bại. Vui lòng thử lại!!", [
           {
             text: "Hủy",
             onPress: () => console.log("Cancel Pressed"),
@@ -477,7 +477,7 @@ const ThucHienChecklist = ({ navigation }) => {
   };
 
   const handleChecklistClose = (item) => {
-    Alert.alert("PMC Thông báo", "Bạn muốn khóa ca checklist ?", [
+    Alert.alert("Thông báo", "Bạn muốn khóa ca checklist ?", [
       {
         text: "Hủy",
         onPress: () => console.log("Cancel Pressed"),
@@ -598,7 +598,7 @@ const ThucHienChecklist = ({ navigation }) => {
             >
               <CustomAlertModal
                 isVisible={isModalVisible}
-                title="PMC Thông báo"
+                title="Thông báo"
                 message={<RenderHTML contentWidth={300} source={{ html: message }} />} // Sử dụng RenderHTML
                 onConfirm={() => setIsModalVisible(false)}
               />

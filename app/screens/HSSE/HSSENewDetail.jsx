@@ -411,7 +411,7 @@ const HSSEReport = ({ navigation, route }) => {
   );
 
   const showAlert = (alertMessage, navigateBack = false) => {
-    Alert.alert("PMC Thông báo", alertMessage, [
+    Alert.alert("Thông báo", alertMessage, [
       {
         text: "Xác nhận",
         onPress: () => (navigateBack ? navigation.navigate("Báo cáo HSSE") : null),
@@ -425,7 +425,7 @@ const HSSEReport = ({ navigation, route }) => {
       ? `Bạn có chắc muốn cập nhật báo cáo ngày ${moment(reportData?.Ngay_ghi_nhan).format("DD/MM/YYYY")}?`
       : "Bạn có chắc chắn muốn gửi không?";
 
-    Alert.alert("PMC Thông báo", message, [
+    Alert.alert("Thông báo", message, [
       { text: "Hủy", style: "cancel" },
       { text: "Đồng ý", onPress: () => handleSubmit() },
     ]);
@@ -707,7 +707,7 @@ const HSSEReport = ({ navigation, route }) => {
           {/* Alert Modal */}
           <CustomAlertModal
             isVisible={isModalVisible}
-            title="PMC Thông báo"
+            title="Thông báo"
             message={<RenderHTML contentWidth={300} source={{ html: message }} />}
             onConfirm={() => {
               setIsModalVisible(false);

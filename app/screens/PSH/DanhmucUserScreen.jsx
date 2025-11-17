@@ -104,7 +104,7 @@ const DanhmucUserScreen = ({ navigation }) => {
 
   const handlePushDataSave = async () => {
     if (dataInput.UserName === "" || dataInput.Password === "") {
-      Alert.alert("PMC Thông báo", "Thiếu thông tin người dùng", [
+      Alert.alert("Thông báo", "Thiếu thông tin người dùng", [
         {
           text: "Hủy",
           onPress: () => console.log("Cancel Pressed"),
@@ -113,7 +113,7 @@ const DanhmucUserScreen = ({ navigation }) => {
         { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
       ]);
     } else if (dataInput.Password !== dataInput.rePassword) {
-      Alert.alert("PMC Thông báo", "Mật khẩu phải trùng nhau", [
+      Alert.alert("Thông báo", "Mật khẩu phải trùng nhau", [
         {
           text: "Hủy",
           onPress: () => console.log("Cancel Pressed"),
@@ -142,7 +142,7 @@ const DanhmucUserScreen = ({ navigation }) => {
         handleAdd();
         handleCloseModal();
         setLoadingSubmit(false);
-        Alert.alert("PMC Thông báo", "Tạo tài khoản user thành công!!", [
+        Alert.alert("Thông báo", "Tạo tài khoản user thành công!!", [
           {
             text: "Hủy",
             onPress: () => console.log("Cancel Pressed"),
@@ -153,7 +153,7 @@ const DanhmucUserScreen = ({ navigation }) => {
       } catch (error) {
         if (error.response) {
           setLoadingSubmit(false);
-          Alert.alert("PMC Thông báo", error.response.data.message, [
+          Alert.alert("Thông báo", error.response.data.message, [
             {
               text: "Hủy",
               onPress: () => console.log("Cancel Pressed"),
@@ -187,7 +187,7 @@ const DanhmucUserScreen = ({ navigation }) => {
 
   const handlePushDataEdit = async () => {
     if (dataInput.UserName === "" || dataInput.Password === null) {
-      Alert.alert("PMC Thông báo", "Thiếu thông tin ca làm việc", [
+      Alert.alert("Thông báo", "Thiếu thông tin ca làm việc", [
         {
           text: "Hủy",
           onPress: () => console.log("Cancel Pressed"),
@@ -196,7 +196,7 @@ const DanhmucUserScreen = ({ navigation }) => {
         { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
       ]);
     } else if (dataInput.Password !== dataInput.rePassword) {
-      Alert.alert("PMC Thông báo", "Mật khẩu phải trùng nhau", [
+      Alert.alert("Thông báo", "Mật khẩu phải trùng nhau", [
         {
           text: "Hủy",
           onPress: () => console.log("Cancel Pressed"),
@@ -227,7 +227,7 @@ const DanhmucUserScreen = ({ navigation }) => {
           handleAdd();
           handleCloseModal();
           setLoadingSubmit(false);
-          Alert.alert("PMC Thông báo", response.data.message, [
+          Alert.alert("Thông báo", response.data.message, [
             {
               text: "Hủy",
               onPress: () => console.log("Cancel Pressed"),
@@ -238,7 +238,7 @@ const DanhmucUserScreen = ({ navigation }) => {
         })
         .catch((err) => {
           setLoadingSubmit(false);
-          Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
+          Alert.alert("Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
             {
               text: "Hủy",
               onPress: () => console.log("Cancel Pressed"),
@@ -251,7 +251,7 @@ const DanhmucUserScreen = ({ navigation }) => {
   };
 
   const handleAlertDelete = async (id) => {
-    Alert.alert("PMC Thông báo", "Bạn có muốn xóa người dùng", [
+    Alert.alert("Thông báo", "Bạn có muốn xóa người dùng", [
       {
         text: "Hủy",
         onPress: () => console.log("Cancel Pressed"),
@@ -271,7 +271,7 @@ const DanhmucUserScreen = ({ navigation }) => {
       })
       .then((response) => {
         init_users();
-        Alert.alert("PMC Thông báo", response.data.message, [
+        Alert.alert("Thông báo", response.data.message, [
           {
             text: "Hủy",
             onPress: () => console.log("Cancel Pressed"),
@@ -281,7 +281,7 @@ const DanhmucUserScreen = ({ navigation }) => {
         ]);
       })
       .catch((err) => {
-        Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
+        Alert.alert("Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
           {
             text: "Hủy",
             onPress: () => console.log("Cancel Pressed"),

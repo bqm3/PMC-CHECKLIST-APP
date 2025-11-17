@@ -516,7 +516,7 @@ const DetailChecklist = ({ route, navigation }) => {
     try {
       saveConnect(true);
       if (location == null) {
-        Alert.alert("PMC Thông báo", "Vui lòng đợi để xác định vị trí. Hãy xác thực lại trong vòng 1-2 giây!", [
+        Alert.alert("Thông báo", "Vui lòng đợi để xác định vị trí. Hãy xác thực lại trong vòng 1-2 giây!", [
           { text: "OK", onPress: () => setLoadingSubmit(false) },
         ]);
         return;
@@ -527,7 +527,7 @@ const DetailChecklist = ({ route, navigation }) => {
           saveConnect(false);
 
           if (defaultActionDataChecklist.length === 0 && dataChecklistFaild.length === 0) {
-            Alert.alert("PMC Thông báo", "Không có checklist để kiểm tra!", [{ text: "OK", onPress: () => console.log("OK Pressed") }]);
+            Alert.alert("Thông báo", "Không có checklist để kiểm tra!", [{ text: "OK", onPress: () => console.log("OK Pressed") }]);
             setLoadingSubmit(false);
             return;
           }
@@ -662,7 +662,7 @@ const DetailChecklist = ({ route, navigation }) => {
 
       if (isCheckValueCheck) {
         setLoadingSubmit(false);
-        Alert.alert("PMC Thông báo", "Chưa có dữ liệu checklist", [{ text: "Xác nhận", onPress: () => console.log("OK Pressed") }]);
+        Alert.alert("Thông báo", "Chưa có dữ liệu checklist", [{ text: "Xác nhận", onPress: () => console.log("OK Pressed") }]);
         return;
       }
       // Duyệt qua tất cả các item
@@ -729,7 +729,7 @@ const DetailChecklist = ({ route, navigation }) => {
           message = "Lỗi hệ thống. Vui lòng liên hệ quản trị viên!";
         }
 
-        Alert.alert("PMC Thông báo", message, [
+        Alert.alert("Thông báo", message, [
           {
             text: "Hủy",
             onPress: () => console.log("Cancel Pressed"),
@@ -739,12 +739,12 @@ const DetailChecklist = ({ route, navigation }) => {
         ]);
       } else if (error.request) {
         // Lỗi không nhận được phản hồi từ server
-        Alert.alert("PMC Thông báo", "Không thể kết nối đến server. Vui lòng kiểm tra mạng và thử lại!", [
+        Alert.alert("Thông báo", "Không thể kết nối đến server. Vui lòng kiểm tra mạng và thử lại!", [
           { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
         ]);
       } else {
         // Lỗi khác (cấu hình, mã code, v.v.)
-        Alert.alert("PMC Thông báo", "Đã xảy ra lỗi không xác định. Vui lòng thử lại hoặc liên hệ hỗ trợ!", [
+        Alert.alert("Thông báo", "Đã xảy ra lỗi không xác định. Vui lòng thử lại hoặc liên hệ hỗ trợ!", [
           { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
         ]);
       }
@@ -787,7 +787,7 @@ const DetailChecklist = ({ route, navigation }) => {
       setLoadingSubmit(false);
       handleRemove();
       // Hiển thị cảnh báo sau khi tất cả các yêu cầu hoàn thành
-      Alert.alert("PMC Thông báo", "Checklist thành công", [
+      Alert.alert("Thông báo", "Checklist thành công", [
         {
           text: "Hủy",
           onPress: () => console.log("Cancel Pressed"),
@@ -801,7 +801,7 @@ const DetailChecklist = ({ route, navigation }) => {
       setLoadingSubmit(false);
       if (error.response) {
         // Lỗi từ phía server (có response từ server)
-        Alert.alert("PMC Thông báo", error.response.data.message, [
+        Alert.alert("Thông báo", error.response.data.message, [
           {
             text: "Hủy",
             onPress: () => console.log("Cancel Pressed"),
@@ -823,7 +823,7 @@ const DetailChecklist = ({ route, navigation }) => {
 
       if (isCheckValueCheck) {
         setLoadingSubmit(false);
-        Alert.alert("PMC Thông báo", "Chưa có dữ liệu checklist", [{ text: "Xác nhận", onPress: () => console.log("OK Pressed") }]);
+        Alert.alert("Thông báo", "Chưa có dữ liệu checklist", [{ text: "Xác nhận", onPress: () => console.log("OK Pressed") }]);
       } else {
         // Lặp qua từng phần tử trong dataChecklistFaild để thêm vào FormData
         for (const [index, item] of dataFaild.entries()) {
@@ -910,7 +910,7 @@ const DetailChecklist = ({ route, navigation }) => {
               handleRemove();
 
               // Hiển thị thông báo thành công
-              Alert.alert("PMC Thông báo", "Checklist thành công", [
+              Alert.alert("Thông báo", "Checklist thành công", [
                 {
                   text: "Hủy",
                   onPress: () => console.log("Cancel Pressed"),
@@ -938,7 +938,7 @@ const DetailChecklist = ({ route, navigation }) => {
                 message = "Lỗi hệ thống. Vui lòng liên hệ quản trị viên!";
               }
 
-              Alert.alert("PMC Thông báo", message, [
+              Alert.alert("Thông báo", message, [
                 {
                   text: "Hủy",
                   onPress: () => console.log("Cancel Pressed"),
@@ -948,12 +948,12 @@ const DetailChecklist = ({ route, navigation }) => {
               ]);
             } else if (error.request) {
               // Lỗi không nhận được phản hồi từ server
-              Alert.alert("PMC Thông báo", "Không thể kết nối đến server. Vui lòng kiểm tra mạng và thử lại!", [
+              Alert.alert("Thông báo", "Không thể kết nối đến server. Vui lòng kiểm tra mạng và thử lại!", [
                 { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
               ]);
             } else {
               // Lỗi khác (cấu hình, mã code, v.v.)
-              Alert.alert("PMC Thông báo", "Đã xảy ra lỗi không xác định. Vui lòng thử lại hoặc liên hệ hỗ trợ!", [
+              Alert.alert("Thông báo", "Đã xảy ra lỗi không xác định. Vui lòng thử lại hoặc liên hệ hỗ trợ!", [
                 { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
               ]);
             }
@@ -961,7 +961,7 @@ const DetailChecklist = ({ route, navigation }) => {
       }
     } catch (error) {
       setLoadingSubmit(false);
-      Alert.alert("PMC Thông báo", "An error occurred. Please try again later.", [
+      Alert.alert("Thông báo", "An error occurred. Please try again later.", [
         {
           text: "Hủy",
           onPress: () => console.log("Cancel Pressed"),
@@ -1490,7 +1490,7 @@ const DetailChecklist = ({ route, navigation }) => {
 
           <CustomAlertModal
             isVisible={isModalVisible}
-            title="PMC Thông báo"
+            title="Thông báo"
             message={<RenderHTML contentWidth={300} source={{ html: messageData }} />}
             onConfirm={() => {
               setIsModalVisible(false);

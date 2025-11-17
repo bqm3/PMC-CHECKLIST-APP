@@ -179,7 +179,7 @@ const TaoBaoCaoP0 = ({ navigation, route }) => {
   }, []);
 
   const showAlert = (message, key = false) => {
-    Alert.alert("PMC Thông báo", message, [
+    Alert.alert("Thông báo", message, [
       {
         text: "Xác nhận",
         onPress: () => (key ? navigation.navigate("Báo cáo S0") : console.log("Cancel Pressed")),
@@ -189,7 +189,7 @@ const TaoBaoCaoP0 = ({ navigation, route }) => {
   };
 
   const checkSubmit = async () => {
-    Alert.alert("PMC Thông báo", "Bạn có chắc chắn muốn gửi không?", [
+    Alert.alert("Thông báo", "Bạn có chắc chắn muốn gửi không?", [
       {
         text: "Hủy",
         onPress: () => {

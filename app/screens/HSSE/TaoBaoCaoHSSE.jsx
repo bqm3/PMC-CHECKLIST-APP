@@ -236,7 +236,7 @@ const TaoBaoCaoHSSE = ({ navigation, route }) => {
   }, [filteredHsseData]);
 
   const showAlert = (message, key = false) => {
-    Alert.alert("PMC Thông báo", message, [
+    Alert.alert("Thông báo", message, [
       {
         text: "Xác nhận",
         onPress: () => (key ? navigation.navigate("Báo cáo HSSE") : console.log("Cancel Pressed")),
@@ -246,7 +246,7 @@ const TaoBaoCaoHSSE = ({ navigation, route }) => {
   };
 
   const checkSubmit = async () => {
-    Alert.alert("PMC Thông báo", "Bạn có chắc chắn muốn gửi không?", [
+    Alert.alert("Thông báo", "Bạn có chắc chắn muốn gửi không?", [
       {
         text: "Hủy",
         onPress: () => {
@@ -410,7 +410,7 @@ const TaoBaoCaoHSSE = ({ navigation, route }) => {
 
           <CustomAlertModal
             isVisible={isModalVisible}
-            title="PMC Thông báo"
+            title="Thông báo"
             message={<RenderHTML contentWidth={300} source={{ html: message }} />}
             onConfirm={() => {
               setIsModalVisible(false);

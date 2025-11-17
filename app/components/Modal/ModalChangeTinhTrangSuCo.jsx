@@ -109,7 +109,7 @@ const ModalChangeTinhTrangSuCo = ({
 
   const handleSubmit = () => {
     if (isCheckhangmuc == undefined) {
-      Alert.alert("PMC Thông báo", "Phải chọn hạng mục", [
+      Alert.alert("Thông báo", "Phải chọn hạng mục", [
         {
           text: "Hủy",
           onPress: () => {

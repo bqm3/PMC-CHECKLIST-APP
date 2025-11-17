@@ -194,7 +194,7 @@ const DanhmucHangMucChiSo = ({ navigation }) => {
   };
 
   const showAlert = (message, key = false) => {
-    Alert.alert("PMC Thông báo", message, [
+    Alert.alert("Thông báo", message, [
       {
         text: "Xác nhận",
         onPress: () =>

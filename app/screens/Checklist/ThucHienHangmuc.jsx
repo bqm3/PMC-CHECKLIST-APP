@@ -47,7 +47,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
   useEffect(() => {
     if (hangMucFilterByIDChecklistC) {
       // Lọc các mục có ID_Khuvuc trùng khớp
-      const filteredByKhuvuc = hangMucFilterByIDChecklistC?.filter(
+      const filteredByKhuvuc = hangMucFilterByIDChecklistC.filter(
         (item) => item.ID_Khuvuc == ID_Khuvuc
       );
       if (filteredByKhuvuc?.length == 0) {
@@ -81,7 +81,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
             : `Hạng mục có QR code: "${cleanedValue}" này không thuộc ca làm việc`;
 
           
-        Alert.alert("PMC Thông báo", alertMessage, [
+        Alert.alert("Thông báo", alertMessage, [
           { text: "Hủy", style: "cancel" },
           { text: "Xác nhận" },
         ]);
@@ -102,7 +102,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
     } catch (error) {
       if (error.response) {
         // Lỗi từ phía server (có response từ server)
-        Alert.alert("PMC Thông báo", error.response.data.message, [
+        Alert.alert("Thông báo", error.response.data.message, [
           {
             text: "Hủy",
             onPress: () => console.log("Cancel Pressed"),
@@ -112,7 +112,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
         ]);
       } else if (error.request) {
         // Lỗi không nhận được phản hồi từ server
-        Alert.alert("PMC Thông báo", "Không nhận được phản hồi từ máy chủ", [
+        Alert.alert("Thông báo", "Không nhận được phản hồi từ máy chủ", [
           {
             text: "Hủy",
             onPress: () => console.log("Cancel Pressed"),
@@ -122,7 +122,7 @@ const ThucHienHangmuc = ({ route, navigation }) => {
         ]);
       } else {
         // Lỗi khi cấu hình request
-        Alert.alert("PMC Thông báo", "Lỗi khi gửi yêu cầu", [
+        Alert.alert("Thông báo", "Lỗi khi gửi yêu cầu", [
           {
             text: "Hủy",
             onPress: () => console.log("Cancel Pressed"),

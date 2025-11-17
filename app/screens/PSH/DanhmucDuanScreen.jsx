@@ -81,7 +81,7 @@ const DanhmucDuanScreen = ({ navigation }) => {
 
   const handlePushDataSave = async () => {
     if (dataInput.Duan === "") {
-      Alert.alert("PMC Thông báo", "Thiếu tên dự án", [
+      Alert.alert("Thông báo", "Thiếu tên dự án", [
         {
           text: "Hủy",
           onPress: () => console.log("Cancel Pressed"),
@@ -106,7 +106,7 @@ const DanhmucDuanScreen = ({ navigation }) => {
           handleAdd();
           handleCloseModal();
           setLoadingSubmit(false);
-          Alert.alert("PMC Thông báo", response.data.message, [
+          Alert.alert("Thông báo", response.data.message, [
             {
               text: "Hủy",
               onPress: () => console.log("Cancel Pressed"),
@@ -118,7 +118,7 @@ const DanhmucDuanScreen = ({ navigation }) => {
         .catch((err) => {
           console.log("err", err);
           setLoadingSubmit(false);
-          Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
+          Alert.alert("Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
             {
               text: "Hủy",
               onPress: () => console.log("Cancel Pressed"),
@@ -143,7 +143,7 @@ const DanhmucDuanScreen = ({ navigation }) => {
 
   const handlePushDataEdit = async (id) => {
     if (dataInput.Duan === "") {
-      Alert.alert("PMC Thông báo", "Thiếu tên dự án", [
+      Alert.alert("Thông báo", "Thiếu tên dự án", [
         {
           text: "Hủy",
           onPress: () => console.log("Cancel Pressed"),
@@ -168,7 +168,7 @@ const DanhmucDuanScreen = ({ navigation }) => {
           handleAdd();
           handleCloseModal();
           setLoadingSubmit(false);
-          Alert.alert("PMC Thông báo", response.data.message, [
+          Alert.alert("Thông báo", response.data.message, [
             {
               text: "Hủy",
               onPress: () => console.log("Cancel Pressed"),
@@ -179,7 +179,7 @@ const DanhmucDuanScreen = ({ navigation }) => {
         })
         .catch((err) => {
           setLoadingSubmit(false);
-          Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
+          Alert.alert("Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
             {
               text: "Hủy",
               onPress: () => console.log("Cancel Pressed"),
@@ -192,7 +192,7 @@ const DanhmucDuanScreen = ({ navigation }) => {
   };
 
   const handleAlertDelete = async (id) => {
-    Alert.alert("PMC Thông báo", "Bạn có muốn xóa dự án làm việc", [
+    Alert.alert("Thông báo", "Bạn có muốn xóa dự án làm việc", [
       {
         text: "Hủy",
         onPress: () => console.log("Cancel Pressed"),
@@ -214,7 +214,7 @@ const DanhmucDuanScreen = ({ navigation }) => {
         init_duan();
         handleAdd();
         handleCloseModal();
-        Alert.alert("PMC Thông báo", response.data.message, [
+        Alert.alert("Thông báo", response.data.message, [
           {
             text: "Hủy",
             onPress: () => console.log("Cancel Pressed"),
@@ -224,7 +224,7 @@ const DanhmucDuanScreen = ({ navigation }) => {
         ]);
       })
       .catch((err) => {
-        Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
+        Alert.alert("Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
           {
             text: "Hủy",
             onPress: () => console.log("Cancel Pressed"),

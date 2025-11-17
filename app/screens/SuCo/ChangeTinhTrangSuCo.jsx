@@ -244,7 +244,7 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
   };
 
   const handleAlertUpdate = () => {
-    Alert.alert("PMC Thông báo", "Bạn có chắc muốn cập nhật sự cố này ?", [
+    Alert.alert("Thông báo", "Bạn có chắc muốn cập nhật sự cố này ?", [
       {
         text: "Hủy",
         onPress: () => console.log("Cancel Pressed"),
@@ -260,7 +260,7 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
 
   const handleSubmit = () => {
     if (isCheckhangmuc == undefined && item?.TenHangmuc == null) {
-      Alert.alert("PMC Thông báo", "Phải chọn hạng mục", [
+      Alert.alert("Thông báo", "Phải chọn hạng mục", [
         {
           text: "Hủy",
           onPress: () => {
@@ -281,7 +281,7 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
 
   const handleSubmitStatus = async () => {
     if (saveStatus == null) {
-      Alert.alert("PMC Thông báo", "Phải chọn trạng thái", [
+      Alert.alert("Thông báo", "Phải chọn trạng thái", [
         {
           text: "Hủy",
           onPress: () => console.log("Cancel Pressed"),
@@ -317,7 +317,7 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
             status3: false,
           });
           resetDataInput();
-          Alert.alert("PMC Thông báo", "Cập nhật trạng thái thành công", [
+          Alert.alert("Thông báo", "Cập nhật trạng thái thành công", [
             {
               text: "Xác nhận",
               onPress: () => {
@@ -331,7 +331,7 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
           setLoadingStatus(false);
           if (error.response) {
             // Lỗi từ phía server (có response từ server)
-            Alert.alert("PMC Thông báo", error.response.data.message, [
+            Alert.alert("Thông báo", error.response.data.message, [
               {
                 text: "Hủy",
                 onPress: () => console.log("Cancel Pressed"),
@@ -341,7 +341,7 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
             ]);
           } else if (error.request) {
             // Lỗi không nhận được phản hồi từ server
-            Alert.alert("PMC Thông báo", "Không nhận được phản hồi từ máy chủ", [
+            Alert.alert("Thông báo", "Không nhận được phản hồi từ máy chủ", [
               {
                 text: "Hủy",
                 onPress: () => console.log("Cancel Pressed"),
@@ -351,7 +351,7 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
             ]);
           } else {
             // Lỗi khi cấu hình request
-            Alert.alert("PMC Thông báo", "Lỗi khi gửi yêu cầu", [
+            Alert.alert("Thông báo", "Lỗi khi gửi yêu cầu", [
               {
                 text: "Hủy",
                 onPress: () => console.log("Cancel Pressed"),
@@ -366,7 +366,7 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
 
   const handleSubmitStatusImage = async () => {
     if (saveStatus == null) {
-      Alert.alert("PMC Thông báo", "Phải chọn trạng thái", [
+      Alert.alert("Thông báo", "Phải chọn trạng thái", [
         {
           text: "Hủy",
           onPress: () => {
@@ -422,7 +422,7 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
 
       setLoadingStatus(false);
       resetDataInput();
-      Alert.alert("PMC Thông báo", "Cập nhật trạng thái thành công", [
+      Alert.alert("Thông báo", "Cập nhật trạng thái thành công", [
         {
           text: "Xác nhận",
           onPress: () => {
@@ -432,7 +432,7 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
       ]);
     } catch (error) {
       setLoadingStatus(false);
-      Alert.alert("PMC Thông báo", "Có lỗi xảy ra", [
+      Alert.alert("Thông báo", "Có lỗi xảy ra", [
         {
           text: "Hủy",
           onPress: () => {

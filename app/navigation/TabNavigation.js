@@ -135,7 +135,7 @@ let gsetColorLoading = null;
 
 const handleEmergencyCall = (sdt_khancap) => {
   if (!sdt_khancap) {
-    Alert.alert("PMC Thông báo", "Không có số điện thoại khẩn cấp!", [{ text: "Xác nhận" }]);
+    Alert.alert("Thông báo", "Không có số điện thoại khẩn cấp!", [{ text: "Xác nhận" }]);
     return;
   }
 
@@ -156,7 +156,7 @@ const handleEmergencyCall = (sdt_khancap) => {
       if (gsetIsLoading) {
         gsetIsLoading(false);
       }
-      Alert.alert("PMC Thông báo", "Không thể thực hiện cuộc gọi!");
+      Alert.alert("Thông báo", "Không thể thực hiện cuộc gọi!");
     });
 };
 

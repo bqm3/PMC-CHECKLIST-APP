@@ -382,10 +382,10 @@ export const ent_checklist_mul_hm = (
             ...item,
             Giatrinhan: item?.Giatrinhan?.split("/").map((item) =>
               item
-                .split(" ") // Chia chuỗi thành mảng từ
+                .split(" ")
                 .map(
                   (word) =>
-                    word.charAt(0).toUpperCase() + word.slice(1).toLowerCase() // Viết hoa chữ cái đầu và viết thường các chữ còn lại
+                    word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
                 )
                 .join(" ")
                 .trim()
@@ -409,6 +409,7 @@ export const ent_checklist_mul_hm = (
             Gioht: moment().format("LTS"),
           };
         });
+        
         dispatch({
           type: type.SET_ENT_CHECKLIST_DETAIL_SUCCESS,
           payload: {
@@ -416,7 +417,14 @@ export const ent_checklist_mul_hm = (
             isLoading: false,
           },
         });
+        
+        // ✅ TRẢ VỀ data để component sử dụng
+        return { success: true, data: processedData };
       }
+      
+      // ✅ Trường hợp không có token
+      return { success: false, data: null };
+      
     } catch (err) {
       dispatch({
         type: type.SET_ENT_CHECKLIST_FAIL,
@@ -425,7 +433,7 @@ export const ent_checklist_mul_hm = (
           isLoading: false,
         },
       });
-      console.log("ent_checklist_get_detail 2", err.response.data.message);
+      return { success: false, data: null, error: err };
     }
   };
 };

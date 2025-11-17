@@ -80,7 +80,7 @@ const ThucHienHangmucLai = ({ route, navigation }) => {
         setOpacity(1);
       } else if (resData?.length === 0) {
         Alert.alert(
-          "PMC Thông báo",
+          "Thông báo",
           `Hạng mục có QrCode: "${cleanedValue}" không thuộc khu vực "${Tenkv}"`,
           [
             {
@@ -98,7 +98,7 @@ const ThucHienHangmucLai = ({ route, navigation }) => {
     } catch (error) {
       if (error.response) {
         // Lỗi từ phía server (có response từ server)
-        Alert.alert("PMC Thông báo", error.response.data.message, [
+        Alert.alert("Thông báo", error.response.data.message, [
           {
             text: "Hủy",
             onPress: () => console.log("Cancel Pressed"),
@@ -108,7 +108,7 @@ const ThucHienHangmucLai = ({ route, navigation }) => {
         ]);
       } else if (error.request) {
         // Lỗi không nhận được phản hồi từ server
-        Alert.alert("PMC Thông báo", "Không nhận được phản hồi từ máy chủ", [
+        Alert.alert("Thông báo", "Không nhận được phản hồi từ máy chủ", [
           {
             text: "Hủy",
             onPress: () => console.log("Cancel Pressed"),
@@ -118,7 +118,7 @@ const ThucHienHangmucLai = ({ route, navigation }) => {
         ]);
       } else {
         // Lỗi khi cấu hình request
-        Alert.alert("PMC Thông báo", "Lỗi khi gửi yêu cầu", [
+        Alert.alert("Thông báo", "Lỗi khi gửi yêu cầu", [
           {
             text: "Hủy",
             onPress: () => console.log("Cancel Pressed"),

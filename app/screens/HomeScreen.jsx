@@ -310,7 +310,7 @@ const HomeScreen = ({ navigation, route }) => {
         setRefreshScreen((prev) => !prev);
       }
     } catch (error) {
-      Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra, vui lòng thử lại");
+      Alert.alert("Thông báo", "Đã có lỗi xảy ra, vui lòng thử lại");
     } finally {
       setIsLoading(false);
     }
@@ -338,7 +338,7 @@ const HomeScreen = ({ navigation, route }) => {
         setRefreshScreen((prev) => !prev);
       }
     } catch (error) {
-      Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra, vui lòng thử lại");
+      Alert.alert("Thông báo", "Đã có lỗi xảy ra, vui lòng thử lại");
     } finally {
       setIsLoading(false);
     }
@@ -346,7 +346,7 @@ const HomeScreen = ({ navigation, route }) => {
 
   const handleEmergencyCall = () => {
     if (!sdt_khancap) {
-      Alert.alert("PMC Thông báo", "Không có số điện thoại khẩn cấp!");
+      Alert.alert("Thông báo", "Không có số điện thoại khẩn cấp!");
       return;
     }
 
@@ -358,12 +358,12 @@ const HomeScreen = ({ navigation, route }) => {
       })
       .catch(() => {
         setIsLoading(false);
-        Alert.alert("PMC Thông báo", "Không thể thực hiện cuộc gọi!");
+        Alert.alert("Thông báo", "Không thể thực hiện cuộc gọi!");
       });
   };
 
   const showAlert = (message) => {
-    Alert.alert("PMC Thông báo", message, [
+    Alert.alert("Thông báo", message, [
       { text: "Hủy", style: "cancel" },
       { text: "Xác nhận", onPress: () => navigation.navigate("Profile") },
     ]);

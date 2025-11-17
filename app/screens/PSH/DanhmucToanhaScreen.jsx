@@ -88,7 +88,7 @@ const DanhmucToanhaScreen = ({ navigation }) => {
       dataInput.ID_Duan === null ||
       dataInput.Toanha === "" 
     ) {
-      Alert.alert("PMC Thông báo", "Thiếu thông tin tòa nhà", [
+      Alert.alert("Thông báo", "Thiếu thông tin tòa nhà", [
         {
           text: "Hủy",
           onPress: () => console.log("Cancel Pressed"),
@@ -116,7 +116,7 @@ const DanhmucToanhaScreen = ({ navigation }) => {
           handleAdd();
           handleCloseModal();
           setLoadingSubmit(false)
-          Alert.alert("PMC Thông báo", response.data.message, [
+          Alert.alert("Thông báo", response.data.message, [
             {
               text: "Hủy",
               onPress: () => console.log("Cancel Pressed"),
@@ -128,7 +128,7 @@ const DanhmucToanhaScreen = ({ navigation }) => {
         .catch((err) => {
           console.log('err',err)
           setLoadingSubmit(false)
-          Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
+          Alert.alert("Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
             {
               text: "Hủy",
               onPress: () => console.log("Cancel Pressed"),
@@ -156,7 +156,7 @@ const DanhmucToanhaScreen = ({ navigation }) => {
 
   const handlePushDataEdit = async (id) => {
     if (dataInput.Toanha === "" || dataInput.ID_Duan === null) {
-      Alert.alert("PMC Thông báo", "Thiếu thông tin tòa nhà", [
+      Alert.alert("Thông báo", "Thiếu thông tin tòa nhà", [
         {
           text: "Hủy",
           onPress: () => console.log("Cancel Pressed"),
@@ -183,7 +183,7 @@ const DanhmucToanhaScreen = ({ navigation }) => {
           handleAdd();
           handleCloseModal();
           setLoadingSubmit(false)
-          Alert.alert("PMC Thông báo", response.data.message, [
+          Alert.alert("Thông báo", response.data.message, [
             {
               text: "Hủy",
               onPress: () => console.log("Cancel Pressed"),
@@ -194,7 +194,7 @@ const DanhmucToanhaScreen = ({ navigation }) => {
         })
         .catch((err) => {
           setLoadingSubmit(false)
-          Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
+          Alert.alert("Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
             {
               text: "Hủy",
               onPress: () => console.log("Cancel Pressed"),
@@ -207,7 +207,7 @@ const DanhmucToanhaScreen = ({ navigation }) => {
   };
 
   const handleAlertDelete = async (id) => {
-    Alert.alert("PMC Thông báo", "Bạn có muốn xóa khu vực làm việc", [
+    Alert.alert("Thông báo", "Bạn có muốn xóa khu vực làm việc", [
       {
         text: "Hủy",
         onPress: () => console.log("Cancel Pressed"),
@@ -229,7 +229,7 @@ const DanhmucToanhaScreen = ({ navigation }) => {
         init_toanha();
         handleAdd();
         handleCloseModal();
-        Alert.alert("PMC Thông báo", response.data.message, [
+        Alert.alert("Thông báo", response.data.message, [
           {
             text: "Hủy",
             onPress: () => console.log("Cancel Pressed"),
@@ -239,7 +239,7 @@ const DanhmucToanhaScreen = ({ navigation }) => {
         ]);
       })
       .catch((err) => {
-        Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
+        Alert.alert("Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
           {
             text: "Hủy",
             onPress: () => console.log("Cancel Pressed"),

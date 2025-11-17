@@ -74,7 +74,7 @@ const Profile = () => {
   const handleSubmit = async () => {
     setIsLoading(true);
     if (dataPassword.newpassword !== dataPassword.re_newpassword) {
-      Alert.alert("PMC Thông báo", "Mật khẩu phải trùng nhau", [
+      Alert.alert("Thông báo", "Mật khẩu phải trùng nhau", [
         { text: "Xác nhận", onPress: () => console.log("Cancel Pressed") },
       ]);
       setIsLoading(false);
@@ -83,7 +83,7 @@ const Profile = () => {
 
     if (!validatePassword(dataPassword.newpassword)) {
       Alert.alert(
-        "PMC Thông báo",
+        "Thông báo",
         "Mật khẩu ít nhất 6 ký tự và bao gồm ít nhất một chữ cái.",
         [{ text: "Xác nhận", onPress: () => console.log("Invalid password") }]
       );
@@ -106,13 +106,13 @@ const Profile = () => {
         .then((response) => {
           handleAdd();
           setIsLoading(false);
-          Alert.alert("PMC Thông báo", response.data.message, [
+          Alert.alert("Thông báo", response.data.message, [
             { text: "Xác nhận", onPress: () => logout() },
           ]);
         })
         .catch((err) => {
           setIsLoading(false);
-          Alert.alert("PMC Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
+          Alert.alert("Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
             {
               text: "Hủy",
               onPress: () => console.log("Cancel Pressed"),

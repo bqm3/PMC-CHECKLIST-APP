@@ -188,7 +188,7 @@ const DetailP0 = ({ navigation, route }) => {
   };
 
   const showAlert = (message, key = false) => {
-    Alert.alert("PMC Thông báo", message, [
+    Alert.alert("Thông báo", message, [
       {
         text: "Xác nhận",
         onPress: () => (key ? navigation.navigate("Báo cáo S0") : console.log("Cancel Pressed")),
@@ -198,7 +198,7 @@ const DetailP0 = ({ navigation, route }) => {
   };
 
   const handleAlertUpdate = () => {
-    Alert.alert("PMC Thông báo", "Bạn có chắc muốn cập nhật báo cáo ngày " + moment(data?.Ngaybc).format("DD/MM/YYYY") + "?", [
+    Alert.alert("Thông báo", "Bạn có chắc muốn cập nhật báo cáo ngày " + moment(data?.Ngaybc).format("DD/MM/YYYY") + "?", [
       {
         text: "Hủy",
         onPress: () => console.log("Cancel Pressed"),

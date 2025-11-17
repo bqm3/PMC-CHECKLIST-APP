@@ -132,7 +132,7 @@ const ModalBaocaochiso = ({
   };
 
   const showAlert = (message) => {
-    Alert.alert("PMC Thông báo", message, [
+    Alert.alert("Thông báo", message, [
       {
         text: "Xác nhận",
         onPress: () => console.log("Cancel Pressed"),

@@ -229,7 +229,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
         });
       } else if (resDataKhuvuc.length === 0 && resDataHangmuc.length === 0) {
         Alert.alert(
-          "PMC Thông báo",
+          "Thông báo",
           `Khu vực hoặc hạng mục có qrcode: "${cleanedValue}" không thuộc ca làm việc`,
           [
             {
@@ -247,7 +247,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
     } catch (error) {
       if (error.response) {
         // Lỗi từ phía server (có response từ server)
-        Alert.alert("PMC Thông báo", error.response.data.message, [
+        Alert.alert("Thông báo", error.response.data.message, [
           {
             text: "Hủy",
             onPress: () => console.log("Cancel Pressed"),
@@ -257,7 +257,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
         ]);
       } else if (error.request) {
         // Lỗi không nhận được phản hồi từ server
-        Alert.alert("PMC Thông báo", "Không nhận được phản hồi từ máy chủ", [
+        Alert.alert("Thông báo", "Không nhận được phản hồi từ máy chủ", [
           {
             text: "Hủy",
             onPress: () => console.log("Cancel Pressed"),
@@ -267,7 +267,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
         ]);
       } else {
         // Lỗi khi cấu hình request
-        Alert.alert("PMC Thông báo", "Lỗi khi gửi yêu cầu", [
+        Alert.alert("Thông báo", "Lỗi khi gửi yêu cầu", [
           {
             text: "Hủy",
             onPress: () => console.log("Cancel Pressed"),
@@ -303,7 +303,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
           await AsyncStorage.removeItem("checkNetwork");
 
           // Hiển thị thông báo cho người dùng
-          Alert.alert("PMC Thông báo", "Không có checklist để kiểm tra!", [
+          Alert.alert("Thông báo", "Không có checklist để kiểm tra!", [
             { text: "OK", onPress: () => console.log("OK Pressed") },
           ]);
           setLoadingSubmit(false);
@@ -360,7 +360,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
 
       if (isCheckValueCheck) {
         setLoadingSubmit(false);
-        Alert.alert("PMC Thông báo", "Chưa có dữ liệu checklist", [
+        Alert.alert("Thông báo", "Chưa có dữ liệu checklist", [
           { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
         ]);
       } else {
@@ -427,7 +427,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
             setSubmit(false);
             postHandleSubmit();
             setLoadingSubmit(false);
-            Alert.alert("PMC Thông báo", "Checklist thành công", [
+            Alert.alert("Thông báo", "Checklist thành công", [
               {
                 text: "Hủy",
                 onPress: () => console.log("Cancel Pressed"),
@@ -439,7 +439,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
           .catch((err) => {
             setLoadingSubmit(false);
             Alert.alert(
-              "PMC Thông báo",
+              "Thông báo",
               "Checklist thất bại. Vui lòng kiểm tra lại hình ảnh hoặc ghi chú!!!",
               [{ text: "Xác nhận", onPress: () => console.log("OK Pressed") }]
             );
@@ -449,7 +449,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
       setLoadingSubmit(false);
       if (error.response) {
         // Handle error response from the server
-        Alert.alert("PMC Thông báo", error.response.data.message, [
+        Alert.alert("Thông báo", error.response.data.message, [
           {
             text: "Hủy",
             onPress: () => console.log("Cancel Pressed"),
@@ -511,7 +511,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
       setSubmit(false);
       saveConnect(false);
 
-      Alert.alert("PMC Thông báo", "Checklist thành công", [
+      Alert.alert("Thông báo", "Checklist thành công", [
         {
           text: "Hủy",
           onPress: () => console.log("Cancel Pressed"),
@@ -523,7 +523,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
       setLoadingSubmit(false);
       if (error.response) {
         // Lỗi từ phía server (có response từ server)
-        Alert.alert("PMC Thông báo", error.response.data.message, [
+        Alert.alert("Thông báo", error.response.data.message, [
           {
             text: "Hủy",
             onPress: () => console.log("Cancel Pressed"),
@@ -548,7 +548,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
 
       if (isCheckValueCheck) {
         setLoadingSubmit(false);
-        Alert.alert("PMC Thông báo", "Chưa có dữ liệu checklist", [
+        Alert.alert("Thông báo", "Chưa có dữ liệu checklist", [
           { text: "Xác nhận", onPress: () => console.log("OK Pressed") },
         ]);
       } else {
@@ -655,7 +655,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
               setSubmit(false);
               saveConnect(false);
               // Hiển thị thông báo thành công
-              Alert.alert("PMC Thông báo", "Checklist thành công", [
+              Alert.alert("Thông báo", "Checklist thành công", [
                 {
                   text: "Hủy",
                   onPress: () => console.log("Cancel Pressed"),
@@ -671,7 +671,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
 
             if (error.response) {
               // Xử lý lỗi từ server
-              Alert.alert("PMC Thông báo", error.response.data.message, [
+              Alert.alert("Thông báo", error.response.data.message, [
                 {
                   text: "Hủy",
                   onPress: () => console.log("Cancel Pressed"),
@@ -682,7 +682,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
             } else if (error.request) {
               // Xử lý lỗi yêu cầu (không nhận được phản hồi từ server)
               Alert.alert(
-                "PMC Thông báo",
+                "Thông báo",
                 "Network error. Please try again later.",
                 [
                   {
@@ -698,7 +698,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
               );
             } else {
               Alert.alert(
-                "PMC Thông báo",
+                "Thông báo",
                 "An error occurred. Please try again later.",
                 [
                   {
@@ -719,7 +719,7 @@ const ThucHienKhuvucLai = ({ route, navigation }) => {
       console.log("error", error);
       setLoadingSubmit(false);
       Alert.alert(
-        "PMC Thông báo",
+        "Thông báo",
         "An error occurred. Please try again later.",
         [
           {
