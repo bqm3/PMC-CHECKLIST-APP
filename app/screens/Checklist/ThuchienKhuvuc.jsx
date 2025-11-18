@@ -88,17 +88,7 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
       }
 
       e.preventDefault();
-      Alert.alert("Thông báo", "Thoát khỏi khu vực sẽ mất hết checklist đã kiểm tra. Vui lòng xác nhận", [
-        {
-          text: "Hủy",
-          onPress: () => console.log("Hủy Pressed"),
-          style: "cancel",
-        },
-        {
-          text: "Xác nhận",
-          onPress: () => navigation.dispatch(e.data.action),
-        },
-      ]);
+      showAlert("Thoát khỏi khu vực sẽ mất hết checklist đã kiểm tra. Vui lòng xác nhận", () => navigation.dispatch(e.data.action));
     });
 
     return unsubscribe;
@@ -382,20 +372,6 @@ const ThucHienKhuvuc = ({ route, navigation }) => {
     }
   }, [isLoadingDetail]);
 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener("beforeRemove", (e) => {
-      const filteredItems = dataChecklistFilterContext.filter((item) => item.valueCheck !== null);
-
-      if (filteredItems.length === 0 || e.data.action.type !== "GO_BACK") {
-        return;
-      }
-
-      e.preventDefault();
-      showAlert("Thoát khỏi khu vực sẽ mất hết checklist đã kiểm tra. Vui lòng xác nhận", () => navigation.dispatch(e.data.action));
-    });
-
-    return unsubscribe;
-  }, [navigation, dataChecklistFilterContext]);
 
   useFocusEffect(
     React.useCallback(() => {
