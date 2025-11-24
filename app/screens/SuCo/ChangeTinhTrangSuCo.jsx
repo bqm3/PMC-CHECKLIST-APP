@@ -24,7 +24,7 @@ import { COLORS, SIZES } from "../../constants/theme";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import VerticalSelect from "../../components/Vertical/VerticalSelect";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { Entypo, AntDesign, FontAwesome, Feather } from "@expo/vector-icons";
+import { Entypo, AntDesign, FontAwesome, Feather, Ionicons } from "@expo/vector-icons";
 import ButtonSubmit from "../../components/Button/ButtonSubmit";
 import Checkbox from "expo-checkbox";
 import adjust from "../../adjust";
@@ -895,13 +895,14 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
                               width: adjust(50),
                             }}
                           >
-                            <AntDesign name="calendar" size={24} color="black" />
+                            <Ionicons name="calendar-outline" size={24} color="black" />
                           </TouchableOpacity>
                         </View>
                         <DateTimePickerModal
                           isVisible={ngayXuLy.isCheck}
                           mode="date"
-                          isDarkModeEnabled={true}
+                          locale="vi_VN"
+                          display={Platform.OS === "ios" ? "inline" : "calendar"}
                           maximumDate={new Date()}
                           date={new Date()}
                           onConfirm={(date) => {
@@ -909,6 +910,8 @@ const ChangeTinhTrangSuCo = ({ navigation }) => {
                             handleChangeDate("isCheck", false);
                           }}
                           onCancel={() => handleChangeDate("isCheck", false)}
+                          confirmTextIOS="Xác nhận"
+                          cancelTextIOS="Hủy"
                         />
                       </TouchableOpacity>
                     </View>

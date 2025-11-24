@@ -20,11 +20,11 @@ import React, { useState, useEffect, useCallback, useContext, useRef } from "rea
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import { Entypo, AntDesign, FontAwesome } from "@expo/vector-icons";
+import { Entypo, AntDesign, FontAwesome, Ionicons } from "@expo/vector-icons";
 import { Provider, useDispatch, useSelector } from "react-redux";
 import Checkbox from "expo-checkbox";
 import adjust from "../../adjust";
-import moment from "moment";
+import moment from "moment-timezone";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import * as ImagePicker from "expo-image-picker";
 import * as ImageManipulator from "expo-image-manipulator";
@@ -40,6 +40,9 @@ import { axiosClient } from "../../api/axiosClient";
 import { nowDate } from "../../utils/util";
 import ModalCallSucongoai from "../../components/Modal/ModalCallSucongoai";
 import ExpoTokenContext from "../../context/ExpoTokenContext";
+import CustomTimePickerModal from "../../components/Modal/CustomTimePickerModal";
+
+const TIMEZONE = "Asia/Ho_Chi_Minh";
 
 const ThuchienSucongoai = ({ navigation, route }) => {
   const dispath = useDispatch();
@@ -123,7 +126,13 @@ const ThuchienSucongoai = ({ navigation, route }) => {
   };
 
   const handleConfirm = (key, date, format) => {
-    handleChangeText(key, moment(date).format(format));
+    if (key === "Giosuco" && typeof date === "string") {
+      // Custom time picker trả về string "HH:mm"
+      handleChangeText(key, date);
+    } else {
+      // Date picker trả về Date object
+      handleChangeText(key, moment(date).format(format));
+    }
     hideDatePicker(key, false);
   };
 
@@ -277,7 +286,7 @@ const ThuchienSucongoai = ({ navigation, route }) => {
       await submitData(payload);
 
       resetDataInput();
-      showAlert("Gửi sự cố thành công!");
+      showAlert("Gửi sự cố thành công!", true);
     } catch (error) {
       handleError(error);
     } finally {
@@ -388,10 +397,8 @@ const ThuchienSucongoai = ({ navigation, route }) => {
     }
   };
 
-  const showAlert = (message) => {
-    Alert.alert("Thông báo", message, [
-      { text: "Xác nhận", onPress: () => navigation.goBack() },
-    ]);
+  const showAlert = (message, isSuccess = false) => {
+    Alert.alert("Thông báo", message, [{ text: "Xác nhận", onPress: () => (isSuccess == true ? navigation.goBack() : null) }]);
   };
 
   return (
@@ -463,17 +470,20 @@ const ThuchienSucongoai = ({ navigation, route }) => {
                               width: adjust(50),
                             }}
                           >
-                            <AntDesign name="calendar" size={24} color="black" />
+                            <Ionicons name="calendar-outline" size={24} color="black" />
                           </TouchableOpacity>
                         </View>
                         <DateTimePickerModal
                           isVisible={isDatePickerVisible.Ngaysuco}
                           mode="date"
-                          date={new Date()}
-                          isDarkModeEnabled={true}
+                          locale="vi_VN"
+                          display={Platform.OS === "ios" ? "inline" : "calendar"}
+                          date={dataInput.Ngaysuco ? moment.tz(dataInput.Ngaysuco, "YYYY-MM-DD", TIMEZONE).toDate() : moment.tz(TIMEZONE).toDate()}
                           onConfirm={(date) => handleConfirm("Ngaysuco", date, "YYYY-MM-DD")}
                           onCancel={() => hideDatePicker("Ngaysuco", false)}
-                          maximumDate={new Date()}
+                          maximumDate={moment.tz(TIMEZONE).toDate()}
+                          confirmTextIOS="Xác nhận"
+                          cancelTextIOS="Hủy"
                         />
                       </TouchableOpacity>
                     </View>
@@ -506,15 +516,13 @@ const ThuchienSucongoai = ({ navigation, route }) => {
                               width: adjust(50),
                             }}
                           >
-                            <AntDesign name="calendar" size={24} Giosuco color="black" />
+                            <AntDesign name="clock-circle" size={24} color="black" />
                           </TouchableOpacity>
                         </View>
-                        <DateTimePickerModal
+                        <CustomTimePickerModal
                           isVisible={isDatePickerVisible.Giosuco}
-                          mode="time"
-                          date={new Date()}
-                          isDarkModeEnabled={true}
-                          onConfirm={(date) => handleConfirm("Giosuco", date, "LT")}
+                          selectedDate={dataInput.Ngaysuco}
+                          onConfirm={(timeString) => handleConfirm("Giosuco", timeString)}
                           onCancel={() => hideDatePicker("Giosuco", false)}
                         />
                       </TouchableOpacity>

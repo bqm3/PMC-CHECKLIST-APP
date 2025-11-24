@@ -46,7 +46,7 @@ import Checkbox from "../components/Active/Checkbox";
 import ModalForgotPassword from "../components/Modal/ModalForgotPassword";
 import Constants from "expo-constants";
 
-const version = "2.2.9";
+const version = "2.3.0";
 // const version = Constants.expoConfig?.version;
 
 const LoginScreen = ({ navigation }) => {
