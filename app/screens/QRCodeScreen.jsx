@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { Text, View, StyleSheet } from "react-native";
 import { CameraView, Camera } from "expo-camera";
 import { COLORS } from "../constants/theme";
@@ -10,15 +10,40 @@ export default function QRCodeScreen({
   handlePushDataFilterQr,
   setIsScan,
 }) {
-  // const [hasPermission, setHasPermission] = useState(null);
   const [scanned, setScanned] = useState(false);
+  const processingRef = useRef(false); // Flag để tránh gọi nhiều lần
+  const lastScannedRef = useRef(null); // Lưu mã QR vừa quét
 
   const handleBarCodeScanned = ({ type, data }) => {
-    setIsScan(true);
-    setScanned(true);
-    if ((type, data)) {
-      handlePushDataFilterQr(data);
+    // Nếu đang xử lý hoặc đã quét rồi thì return
+    if (processingRef.current || scanned) {
+      return;
     }
+
+    // Nếu cùng mã QR trong vòng 2 giây thì bỏ qua
+    if (lastScannedRef.current === data) {
+      return;
+    }
+
+    // Đánh dấu đang xử lý
+    processingRef.current = true;
+    lastScannedRef.current = data;
+    setScanned(true);
+    setIsScan(true);
+
+    // Gọi callback
+    handlePushDataFilterQr(data);
+
+    // Reset flag sau 2 giây (phòng trường hợp cần quét lại)
+    setTimeout(() => {
+      processingRef.current = false;
+    }, 2000);
+  };
+
+  const handleRescan = () => {
+    setScanned(false);
+    processingRef.current = false;
+    lastScannedRef.current = null;
   };
 
   return (
@@ -32,7 +57,7 @@ export default function QRCodeScreen({
           style={[StyleSheet.absoluteFillObject, { borderRadius: 12 }]}
         />
       </View>
-      {/* {scanned && ( */}
+
       <View
         style={{
           position: "absolute",
@@ -50,16 +75,18 @@ export default function QRCodeScreen({
           onPress={() => {
             setModalVisibleQr(false);
             setOpacity(1);
+            setScanned(false);
+            processingRef.current = false;
+            lastScannedRef.current = null;
           }}
         />
         <Button
           text={"Quét lại"}
           backgroundColor={COLORS.bg_button}
           color={"white"}
-          onPress={() => setScanned(false)}
+          onPress={handleRescan}
         />
       </View>
-      {/* )} */}
     </View>
   );
 }

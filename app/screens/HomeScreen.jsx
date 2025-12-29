@@ -12,7 +12,6 @@ import {
   ent_khoicv_get,
   ent_get_sdt_KhanCap,
 } from "../redux/actions/entActions";
-import SelectDropdown from "react-native-select-dropdown";
 import { FontAwesome } from "@expo/vector-icons";
 import Constants from "expo-constants";
 import axios from "axios";
@@ -25,6 +24,7 @@ import { login } from "../redux/actions/authActions";
 import ExpoTokenContext from "../context/ExpoTokenContext";
 import { validatePassword } from "../utils/util";
 import { MenuIcons } from '../components/MenuIcons';
+import { Dropdown } from 'react-native-element-dropdown';
 
 // ================== Constants ==================
 const MENU_ITEMS = {
@@ -42,7 +42,6 @@ const MENU_ITEMS = {
       S0: { id: 7, path: "Báo cáo S0", icon: MenuIcons.s0, title: "S0", requireP0: true },
       AN_CONGCU: { id: 9, path: "an_ninh_cong_cu", icon: MenuIcons.security_tool, title: "An ninh công cụ" },
       AN_DAOTAO: { id: 10, path: "an_ninh_dao_tao", icon: MenuIcons.training, title: "Đào tạo giao ca" },
-      // AN_VIPHAm: { id: 11, path: "an_ninh_vi_pham", icon: MenuIcons.violation, title: "An ninh vi phạm" },
     },
   },
   CONSTRUCTION: { id: 8, path: "Đăng ký thi công", icon: MenuIcons.construction, },
@@ -196,6 +195,8 @@ const HomeScreen = ({ navigation, route }) => {
 
   const [expoPushToken, setExpoPushToken] = useState("");
   const [refreshScreen, setRefreshScreen] = useState(false);
+  const [selectedProject, setSelectedProject] = useState(null);
+  const [isFocus, setIsFocus] = useState(false);
 
   const notificationListener = useRef();
   const responseListener = useRef();
@@ -225,6 +226,14 @@ const HomeScreen = ({ navigation, route }) => {
     const hasMultipleProjects = user?.arr_Duan && user.arr_Duan.length > 1;
     return role === 5 || role === 10 || (role === 1 && hasMultipleProjects);
   }, [user]);
+
+  // ================== Dropdown Data ==================
+  const dropdownData = useMemo(() => {
+    return duan.map((item) => ({
+      label: item.Duan,
+      value: item.ID_Duan,
+    }));
+  }, [duan]);
 
   // ================== Effects ==================
   useEffect(() => {
@@ -290,6 +299,13 @@ const HomeScreen = ({ navigation, route }) => {
     };
     registerDevice();
   }, [authToken, expoPushToken]);
+
+  // Set initial selected project
+  useEffect(() => {
+    if (user?.ent_duan?.ID_Duan) {
+      setSelectedProject(user.ent_duan.ID_Duan);
+    }
+  }, [user?.ent_duan?.ID_Duan]);
 
   // ================== Handlers ==================
   const handleProjectChange = async (ID_Duan) => {
@@ -405,32 +421,34 @@ const HomeScreen = ({ navigation, route }) => {
           {/* Project Selector */}
           {showProjectSelector && (
             <View style={styles.projectSelectorContainer}>
-              <SelectDropdown
-                data={duan.map((item) => item.Duan)}
-                buttonStyle={styles.select}
-                dropdownStyle={styles.dropdown}
-                defaultButtonText={user?.ent_duan?.Duan || "Chọn dự án"}
-                buttonTextStyle={styles.selectText}
-                searchable={true}
-                onSelect={(selectedItem, index) => {
-                  const selectedProject = duan[index]?.ID_Duan;
-                  handleProjectChange(selectedProject);
+              <Dropdown
+                style={[styles.dropdown, isFocus && styles.dropdownFocused]}
+                placeholderStyle={styles.placeholderStyle}
+                selectedTextStyle={styles.selectedTextStyle}
+                inputSearchStyle={styles.inputSearchStyle}
+                iconStyle={styles.iconStyle}
+                data={dropdownData}
+                search
+                maxHeight={300}
+                labelField="label"
+                valueField="value"
+                placeholder={!isFocus ? user?.ent_duan?.Duan || "Chọn dự án" : "..."}
+                searchPlaceholder="Tìm kiếm..."
+                value={selectedProject}
+                onFocus={() => setIsFocus(true)}
+                onBlur={() => setIsFocus(false)}
+                onChange={(item) => {
+                  setSelectedProject(item.value);
+                  setIsFocus(false);
+                  handleProjectChange(item.value);
                 }}
-                renderDropdownIcon={(isOpened) => (
-                  <FontAwesome name={isOpened ? "chevron-up" : "chevron-down"} color="#637381" size={18} style={styles.dropdownIcon} />
-                )}
-                dropdownIconPosition="right"
-                buttonTextAfterSelection={(selectedItem) => (
-                  <Text allowFontScaling={false} style={styles.selectText}>
-                    {selectedItem || "Chọn dự án"}
-                  </Text>
-                )}
-                renderCustomizedRowChild={(item, index) => (
-                  <View key={index} style={styles.dropdownItem}>
-                    <Text numberOfLines={2} ellipsizeMode="tail" style={styles.dropdownItemText}>
-                      {item}
-                    </Text>
-                  </View>
+                renderLeftIcon={() => (
+                  <FontAwesome
+                    style={styles.icon}
+                    color={isFocus ? "#4a4a4a" : "#637381"}
+                    name="building"
+                    size={20}
+                  />
                 )}
               />
 
@@ -457,8 +475,6 @@ const HomeScreen = ({ navigation, route }) => {
             ItemSeparatorComponent={() => <View style={styles.separator} />}
             contentContainerStyle={styles.menuContent}
             columnWrapperStyle={styles.columnWrapper}
-            // showsVerticalScrollIndicator={false}
-            // showsHorizontalScrollIndicator={false}
           />
         </View>
 
@@ -520,36 +536,40 @@ const styles = StyleSheet.create({
   projectSelectorContainer: {
     flexDirection: "row",
     marginTop: 10,
+    paddingHorizontal: 20,
+    width: "100%",
   },
-  select: {
+  dropdown: {
+    flex: 1,
     height: 50,
     backgroundColor: "#f0f0f0",
     borderRadius: 10,
+    paddingHorizontal: 12,
+    borderWidth: 1,
+    borderColor: "#e0e0e0",
   },
-  selectText: {
+  dropdownFocused: {
+    borderColor: "#4a4a4a",
+  },
+  icon: {
+    marginRight: 8,
+  },
+  placeholderStyle: {
+    fontSize: 16,
+    color: "#9CA3AF",
+  },
+  selectedTextStyle: {
     fontSize: 16,
     color: "#4a4a4a",
   },
-  dropdown: {
-    borderRadius: 8,
-    maxHeight: 300,
-    borderWidth: 1,
-    borderColor: "#e0e0e0",
-    marginTop: 5,
+  iconStyle: {
+    width: 20,
+    height: 20,
   },
-  dropdownIcon: {
-    marginRight: 10,
-  },
-  dropdownItem: {
-    height: 22 * 2 + 20, // = 64
-    paddingHorizontal: 10,
-    justifyContent: "center",
-  },
-  dropdownItemText: {
+  inputSearchStyle: {
+    height: 40,
     fontSize: 16,
-    color: "#333",
-    lineHeight: 22,
-    includeFontPadding: false,
+    borderRadius: 8,
   },
   clearButton: {
     marginLeft: 10,
@@ -580,9 +600,7 @@ const styles = StyleSheet.create({
   columnWrapper: {
     gap: 10,
   },
-  separator: {
-    // height: 10,
-  },
+  separator: {},
   emergencyButton: {
     position: "absolute",
     bottom: 10,
