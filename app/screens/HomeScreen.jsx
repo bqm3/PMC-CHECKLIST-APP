@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useRef, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { View, Text, StyleSheet, FlatList, ImageBackground, Image, Platform, Alert, Linking, TouchableOpacity } from "react-native";
 import * as Device from "expo-device";
@@ -24,25 +24,37 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { login } from "../redux/actions/authActions";
 import ExpoTokenContext from "../context/ExpoTokenContext";
 import { validatePassword } from "../utils/util";
+import { MenuIcons } from '../components/MenuIcons';
 
 // ================== Constants ==================
 const MENU_ITEMS = {
-  CHECKLIST: { id: 1, path: "Thực hiện Checklist", icon: require("../../assets/icons/o-01.png") },
-  LOOKUP: { id: 2, path: "Tra cứu", icon: require("../../assets/icons/o-02.png") },
-  RECHECK: { id: 3, path: "Checklist Lại", icon: require("../../assets/icons/o-01.png") },
-  INCIDENT: { id: 4, path: "Xử lý sự cố", icon: require("../../assets/icons/o-01.png") },
-  HSSE_REPORT: { id: 6, status: "new", path: "Báo cáo HSSE", icon: require("../../assets/icons/o-04.png") },
-  S0_REPORT: { id: 7, status: "new", path: "Báo cáo S0", icon: require("../../assets/icons/o-04.png") },
-  CONSTRUCTION: { id: 8, status: "new", path: "Đăng ký thi công", icon: require("../../assets/icons/o-04.png") },
+  CHECKLIST: { id: 1, path: "Thực hiện Checklist", icon: MenuIcons.checklist, },
+  LOOKUP: { id: 2, path: "Tra cứu", icon: MenuIcons.lookup, },
+  RECHECK: { id: 3, path: "Checklist Lại", icon: MenuIcons.recheck, },
+  INCIDENT: { id: 4, path: "Xử lý sự cố", icon: MenuIcons.incident, title: "Xử lý sự cố" },
+  REPORT: {
+    id: 5,
+    path: "Báo cáo",
+    icon: MenuIcons.report,
+    isMenu: true,
+    children: {
+      HSSE: { id: 6, path: "Báo cáo HSSE", icon: MenuIcons.hsse, title: "HSSE" },
+      S0: { id: 7, path: "Báo cáo S0", icon: MenuIcons.s0, title: "S0", requireP0: true },
+      AN_CONGCU: { id: 9, path: "an_ninh_cong_cu", icon: MenuIcons.security_tool, title: "An ninh công cụ" },
+      AN_DAOTAO: { id: 10, path: "an_ninh_dao_tao", icon: MenuIcons.training, title: "Đào tạo giao ca" },
+      // AN_VIPHAm: { id: 11, path: "an_ninh_vi_pham", icon: MenuIcons.violation, title: "An ninh vi phạm" },
+    },
+  },
+  CONSTRUCTION: { id: 8, path: "Đăng ký thi công", icon: MenuIcons.construction, },
 };
 
 const ROLE_MENUS = {
-  1: [MENU_ITEMS.INCIDENT, MENU_ITEMS.LOOKUP, MENU_ITEMS.HSSE_REPORT, MENU_ITEMS.S0_REPORT, MENU_ITEMS.CONSTRUCTION], // GD
-  2: [MENU_ITEMS.CHECKLIST, MENU_ITEMS.LOOKUP, MENU_ITEMS.RECHECK, MENU_ITEMS.INCIDENT, MENU_ITEMS.HSSE_REPORT, MENU_ITEMS.S0_REPORT, MENU_ITEMS.CONSTRUCTION], // KST
-  3: [MENU_ITEMS.CHECKLIST, MENU_ITEMS.LOOKUP, MENU_ITEMS.RECHECK, MENU_ITEMS.INCIDENT, MENU_ITEMS.HSSE_REPORT, MENU_ITEMS.S0_REPORT, MENU_ITEMS.CONSTRUCTION], // Staff
-  5: [MENU_ITEMS.LOOKUP, MENU_ITEMS.INCIDENT, MENU_ITEMS.HSSE_REPORT, MENU_ITEMS.S0_REPORT, MENU_ITEMS.CONSTRUCTION], // BQT Khoi
-  6: [MENU_ITEMS.LOOKUP, MENU_ITEMS.HSSE_REPORT, MENU_ITEMS.S0_REPORT, MENU_ITEMS.CONSTRUCTION], // BQT Du An
-  10: [MENU_ITEMS.INCIDENT, MENU_ITEMS.LOOKUP, MENU_ITEMS.HSSE_REPORT, MENU_ITEMS.S0_REPORT, MENU_ITEMS.CONSTRUCTION], // Admin
+  1: [MENU_ITEMS.INCIDENT, MENU_ITEMS.LOOKUP, MENU_ITEMS.REPORT, MENU_ITEMS.CONSTRUCTION],
+  2: [MENU_ITEMS.CHECKLIST, MENU_ITEMS.LOOKUP, MENU_ITEMS.RECHECK, MENU_ITEMS.INCIDENT, MENU_ITEMS.REPORT, MENU_ITEMS.CONSTRUCTION],
+  3: [MENU_ITEMS.CHECKLIST, MENU_ITEMS.LOOKUP, MENU_ITEMS.RECHECK, MENU_ITEMS.INCIDENT, MENU_ITEMS.REPORT, MENU_ITEMS.CONSTRUCTION],
+  5: [MENU_ITEMS.LOOKUP, MENU_ITEMS.INCIDENT, MENU_ITEMS.REPORT, MENU_ITEMS.CONSTRUCTION],
+  6: [MENU_ITEMS.LOOKUP, MENU_ITEMS.REPORT, MENU_ITEMS.CONSTRUCTION],
+  10: [MENU_ITEMS.INCIDENT, MENU_ITEMS.LOOKUP, MENU_ITEMS.REPORT, MENU_ITEMS.CONSTRUCTION],
 };
 
 // ================== Notification Config ==================
@@ -83,14 +95,10 @@ async function registerForPushNotificationsAsync() {
   }
 
   if (finalStatus !== "granted") {
-    Alert.alert(
-      "Thông báo",
-      "Bạn đã từ chối nhận thông báo. Hãy bật thông báo trong Cài đặt để tiếp tục.",
-      [
-        { text: "Mở cài đặt", onPress: () => Linking.openSettings() },
-        { text: "Hủy", style: "cancel" },
-      ]
-    );
+    Alert.alert("Thông báo", "Bạn đã từ chối nhận thông báo. Hãy bật thông báo trong Cài đặt để tiếp tục.", [
+      { text: "Mở cài đặt", onPress: () => Linking.openSettings() },
+      { text: "Hủy", style: "cancel" },
+    ]);
     return;
   }
 
@@ -184,7 +192,7 @@ const HomeScreen = ({ navigation, route }) => {
   const { setIsLoading, setColorLoading, fetchNotifications } = route.params;
   const { user, authToken, passwordCore } = useSelector((state) => state.authReducer);
   const { sdt_khancap } = useSelector((state) => state.entReducer);
-  const { setToken } = useContext(ExpoTokenContext);
+  const { setToken } = React.useContext(ExpoTokenContext);
 
   const [expoPushToken, setExpoPushToken] = useState("");
   const [refreshScreen, setRefreshScreen] = useState(false);
@@ -200,10 +208,6 @@ const HomeScreen = ({ navigation, route }) => {
   // ================== Menu Data ==================
   const menuData = useMemo(() => {
     let baseData = ROLE_MENUS[user?.ent_chucvu?.Role] || [];
-    
-    if (!checkP0) {
-      baseData = baseData.filter((item) => item.id !== 7);
-    }
 
     const currentDate = new Date();
     const targetDate = new Date("2025-01-01");
@@ -213,13 +217,13 @@ const HomeScreen = ({ navigation, route }) => {
     }
 
     return baseData;
-  }, [user?.ent_chucvu?.Role, checkP0]);
+  }, [user?.ent_chucvu?.Role]);
 
   // ================== Show Multi-Project Selector ==================
   const showProjectSelector = useMemo(() => {
     const role = user?.ent_chucvu?.Role;
     const hasMultipleProjects = user?.arr_Duan && user.arr_Duan.length > 1;
-    return (role === 5 || role === 10 || (role === 1 && hasMultipleProjects));
+    return role === 5 || role === 10 || (role === 1 && hasMultipleProjects);
   }, [user]);
 
   // ================== Effects ==================
@@ -370,14 +374,11 @@ const HomeScreen = ({ navigation, route }) => {
   };
 
   // ================== Render ==================
-  const renderItem = ({ item, index }) => (
-    <ItemHome
-      ID_Chucvu={user?.ID_Chucvu}
-      item={item}
-      index={index}
-      passwordCore={passwordCore}
-      showAlert={showAlert}
-    />
+  const renderItem = useCallback(
+    ({ item, index }) => (
+      <ItemHome item={item} index={index} roleUser={user?.ent_chucvu?.Role} passwordCore={passwordCore} showAlert={showAlert} checkP0={checkP0} />
+    ),
+    [passwordCore, user?.ent_chucvu?.Role, checkP0]
   );
 
   return (
@@ -416,12 +417,7 @@ const HomeScreen = ({ navigation, route }) => {
                   handleProjectChange(selectedProject);
                 }}
                 renderDropdownIcon={(isOpened) => (
-                  <FontAwesome
-                    name={isOpened ? "chevron-up" : "chevron-down"}
-                    color="#637381"
-                    size={18}
-                    style={styles.dropdownIcon}
-                  />
+                  <FontAwesome name={isOpened ? "chevron-up" : "chevron-down"} color="#637381" size={18} style={styles.dropdownIcon} />
                 )}
                 dropdownIconPosition="right"
                 buttonTextAfterSelection={(selectedItem) => (
@@ -431,7 +427,9 @@ const HomeScreen = ({ navigation, route }) => {
                 )}
                 renderCustomizedRowChild={(item, index) => (
                   <View key={index} style={styles.dropdownItem}>
-                    <Text style={styles.dropdownItemText}>{item}</Text>
+                    <Text numberOfLines={2} ellipsizeMode="tail" style={styles.dropdownItemText}>
+                      {item}
+                    </Text>
                   </View>
                 )}
               />
@@ -453,20 +451,20 @@ const HomeScreen = ({ navigation, route }) => {
             style={styles.menuList}
             numColumns={2}
             data={menuData}
+            extraData={passwordCore}
             renderItem={renderItem}
             keyExtractor={(item) => item.id.toString()}
             ItemSeparatorComponent={() => <View style={styles.separator} />}
             contentContainerStyle={styles.menuContent}
             columnWrapperStyle={styles.columnWrapper}
+            // showsVerticalScrollIndicator={false}
+            // showsHorizontalScrollIndicator={false}
           />
         </View>
 
         {/* Emergency Call Button */}
         <TouchableOpacity onPress={handleEmergencyCall} style={styles.emergencyButton}>
-          <Image
-            source={require("../../assets/icons/ic_emergency_call_58.png")}
-            style={styles.emergencyIcon}
-          />
+          <Image source={require("../../assets/icons/ic_emergency_call_58.png")} style={styles.emergencyIcon} />
         </TouchableOpacity>
 
         {/* Footer Note */}
@@ -543,12 +541,15 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   dropdownItem: {
+    height: 22 * 2 + 20, // = 64
     paddingHorizontal: 10,
-    paddingVertical: 12,
+    justifyContent: "center",
   },
   dropdownItemText: {
     fontSize: 16,
     color: "#333",
+    lineHeight: 22,
+    includeFontPadding: false,
   },
   clearButton: {
     marginLeft: 10,
@@ -580,7 +581,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   separator: {
-    height: 10,
+    // height: 10,
   },
   emergencyButton: {
     position: "absolute",

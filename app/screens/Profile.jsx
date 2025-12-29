@@ -112,7 +112,7 @@ const Profile = () => {
         })
         .catch((err) => {
           setIsLoading(false);
-          Alert.alert("Thông báo", "Đã có lỗi xảy ra. Vui lòng thử lại!!", [
+          Alert.alert("Thông báo", `${err.response.data.message || "Đã xảy ra lỗi."}`, [
             {
               text: "Hủy",
               onPress: () => console.log("Cancel Pressed"),

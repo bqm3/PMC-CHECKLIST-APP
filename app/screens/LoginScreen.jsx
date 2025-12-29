@@ -46,7 +46,7 @@ import Checkbox from "../components/Active/Checkbox";
 import ModalForgotPassword from "../components/Modal/ModalForgotPassword";
 import Constants from "expo-constants";
 
-const version = "2.3.0";
+const version = "2.3.1";
 // const version = Constants.expoConfig?.version;
 
 const LoginScreen = ({ navigation }) => {
@@ -83,6 +83,7 @@ const LoginScreen = ({ navigation }) => {
   const [deviceInfo, setDeviceInfo] = useState({});
   const [ip, setIp] = useState("");
   const [infoIP, setInfoIP] = useState("");
+  const [location, setLocation] = useState(null);
 
   useEffect(() => {
     const getDeviceInformation = async () => {
@@ -133,6 +134,31 @@ const LoginScreen = ({ navigation }) => {
     return () => unsubscribe();
   }, []);
 
+  useEffect(() => {
+    const getLocationInfo = async () => {
+      try {
+        let { status } = await Location.requestForegroundPermissionsAsync();
+
+        if (status === "granted") {
+          const locationData = await Location.getCurrentPositionAsync({
+            accuracy: Location.Accuracy.Balanced,
+          });
+
+          setLocation({
+            latitude: locationData.coords.latitude,
+            longitude: locationData.coords.longitude,
+            accuracy: locationData.coords.accuracy,
+            timestamp: locationData.timestamp,
+          });
+        }
+      } catch (error) {
+        console.error("Error getting location:", error);
+      }
+    };
+
+    getLocationInfo();
+  }, []);
+
   const handleSubmit = async () => {
     if (!isConnected) {
       Alert.alert("Thông báo", "Không có kết nối mạng", [{ text: "Xác nhận", onPress: () => console.log("OK Pressed") }]);
@@ -162,7 +188,7 @@ const LoginScreen = ({ navigation }) => {
     if (data?.UserName === "" || data?.Password === "") {
       Alert.alert("Thông báo", "Thiếu thông tin đăng nhập", [{ text: "Xác nhận", onPress: () => console.log("OK Pressed") }]);
     } else {
-      dispatch(login(data?.UserName, data?.Password, deviceInfo, infoIP));
+      dispatch(login(data?.UserName, data?.Password, deviceInfo, infoIP, location));
       await AsyncStorage.setItem("Password", data?.Password);
       await AsyncStorage.setItem("UserName", data?.UserName);
       if (isChecked) {
