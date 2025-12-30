@@ -37,7 +37,7 @@ const DanhMucBaoCaoHSSE = ({ navigation, route }) => {
   const [showReport, setShowReport] = useState(false);
 
   // const [isReload, setIsReload] = useState(false);
-  const { isReload, setIsReload } = useContext(ReloadContext);
+  const { reloadKey } = useContext(ReloadContext);
 
 
   const init_hsse = async () => {
@@ -53,13 +53,7 @@ const DanhMucBaoCaoHSSE = ({ navigation, route }) => {
   useEffect(() => {
     init_hsse();
     init_check_hsse();
-  }, [dispatch]);
-
-  useEffect(() => {
-    if (isReload) {
-      init_hsse();
-    }
-  }, [isReload]);
+  }, [dispatch, reloadKey]);
 
   useEffect(() => {
     if (hsse) {
@@ -93,12 +87,10 @@ const DanhMucBaoCaoHSSE = ({ navigation, route }) => {
     navigation.navigate("Chi tiết dữ liệu HSSE", {
       data: item,
     });
-    setIsReload(false)
   };
 
   const handleCreate = async () => {
     navigation.navigate("Tạo báo cáo HSSE");
-    setIsReload(false)
   };
 
   const renderItem = useCallback(

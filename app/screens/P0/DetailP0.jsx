@@ -29,12 +29,13 @@ import WarningBox from "../../components/Warning/WarningBox";
 const fieldCategories = {
   "Thông tin thẻ": ["Sotheotodk", "Sothexemaydk"],
   "Thông tin tồn ảo": ["the_ton_ao", "tien_ton_ao"],
-  "Thông tin kiểm kê tại quầy": ["Sltheoto", "Slthexemay", "Sltheotophanmem", "Slthexemayphanmem"],
+  "Thông tin kiểm kê tại quầy": ["Sltheoto", "Slthexemay", "Sltheotophanmem", "Slthexemayphanmem", "Doanhthu"],
   "Thông tin xe": ["Slxeoto", "Slxeotodien", "Slxemay", "Slxemaydien", "Slxedap", "Slxedapdien"],
   "Sự cố": ["Slscoto", "Slscotodien", "Slscxemay", "Slscxemaydien", "Slscxedap", "Slscxedapdien", "Slsucokhac"],
-  "Thông tin nhân sự an ninh": ["QuansoTT", "QuansoDB", "Slcongto", "ns_nghiphep", "ns_tangca", "ns_vipham", "ns_phatsinh"],
-  "Số lượng quân tư trang/ SL cấp phát": ["coi", "gay_giao_thong", "ao_mua", "den_pin"],
-  "Doanh thu": ["Doanhthu"],
+  // "Thông tin nhân sự an ninh": ["QuansoTT", "QuansoDB", "Slcongto", "ns_nghiphep", "ns_tangca", "ns_vipham", "ns_phatsinh"],
+  // "Số lượng quân tư trang/ SL cấp phát": ["coi", "gay_giao_thong", "ao_mua", "den_pin"],
+  // "Doanh thu": ["Doanhthu"],
+  "Khác": ["Slcongto"],
   "Ghi chú": ["Ghichu"],
 };
 
@@ -101,7 +102,7 @@ const initP0Data = () => {
 
 const DetailP0 = ({ navigation, route }) => {
   const { data } = route.params;
-  const { isReload, setIsReload } = useContext(ReloadContext);
+  const { reload } = useContext(ReloadContext);
   const { user, authToken } = useSelector((state) => state.authReducer);
   const [p0_Data, setP0_Data] = useState(initP0Data());
   const [qtt, setQTT] = useState();
@@ -232,7 +233,7 @@ const DetailP0 = ({ navigation, route }) => {
       // Kiểm tra response status
       if (response.status == 200 || response.status == 201) {
         showAlert("Cập nhật thành công", true);
-        setIsReload(true);
+        reload();
       } else {
         showAlert("Có lỗi xảy ra khi cập nhật", false);
       }

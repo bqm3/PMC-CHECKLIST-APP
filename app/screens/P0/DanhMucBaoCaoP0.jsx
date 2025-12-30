@@ -37,7 +37,7 @@ const DanhMucBaoCaoP0 = ({ navigation, route }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
   // const [isReload, setIsReload] = useState(false);
-  const { isReload, setIsReload } = useContext(ReloadContext);
+  const { reloadKey } = useContext(ReloadContext);
   const [cardDialogOpen, setCardDialogOpen] = useState(false);
   const [qttDialogOpen, setQTTDialogOpen] = useState(false);
 
@@ -45,13 +45,13 @@ const DanhMucBaoCaoP0 = ({ navigation, route }) => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [reloadKey]);
 
-  useEffect(() => {
-    if (isReload) {
-      fetchData();
-    }
-  }, [isReload]);
+  // useEffect(() => {
+  //   if (isReload) {
+  //     fetchData();
+  //   }
+  // }, [isReload]);
 
   const fetchData = async (reset = false, refresh = false) => {
     if (isLoading) return;
@@ -78,14 +78,10 @@ const DanhMucBaoCaoP0 = ({ navigation, route }) => {
     navigation.navigate("Chi tiết dữ liệu S0", {
       data: item,
     });
-    setIsReload(false);
   };
 
   const handleCreate = () => {
-    navigation.navigate("Tạo báo cáo S0", {
-      setIsReload,
-    });
-    setIsReload(false);
+    navigation.navigate("Tạo báo cáo S0", {});
   };
 
   const renderFooter = () => {
@@ -187,7 +183,7 @@ const DanhMucBaoCaoP0 = ({ navigation, route }) => {
                               Thay đổi SL thẻ
                             </Text>
                           </TouchableOpacity>
-                          <TouchableOpacity
+                          {/* <TouchableOpacity
                             style={styles.action}
                             onPress={() => {
                               setQTTDialogOpen(true)
@@ -206,7 +202,7 @@ const DanhMucBaoCaoP0 = ({ navigation, route }) => {
                             >
                               Thay đổi SL quân tư trang
                             </Text>
-                          </TouchableOpacity>
+                          </TouchableOpacity> */}
                         </View>
                       )}
 

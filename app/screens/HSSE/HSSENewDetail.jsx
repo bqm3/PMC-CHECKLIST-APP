@@ -80,7 +80,7 @@ const HSSEReport = ({ navigation, route }) => {
   const isDetailMode = !!route?.params?.data;
   const reportData = route?.params?.data;
 
-  const { isReload, setIsReload } = useContext(ReloadContext);
+  const { reload } = useContext(ReloadContext);
   const { authToken } = useSelector((state) => state.authReducer);
   const [hsseData, setHsseData] = useState(HSSE);
   const [isLoadingSubmit, setIsLoadingSubmit] = useState(false);
@@ -484,7 +484,7 @@ const HSSEReport = ({ navigation, route }) => {
       });
 
       if (response.status === 200 || response.status === 201) {
-        setIsReload(true);
+        reload(true);
         setMessage(response.data.htmlResponse);
         if (response.data.htmlResponse === "") {
           showAlert(isDetailMode ? "✅ Cập nhật báo cáo thành công" : "✅ Gửi báo cáo thành công", true);
