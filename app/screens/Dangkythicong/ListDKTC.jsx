@@ -87,7 +87,7 @@ const StatusBadge = React.memo(({ status }) => {
   return (
     <View style={[styles.statusBadge, { backgroundColor: statusStyle.bgColor }]}>
       <Ionicons name={statusStyle.icon} size={adjust(14)} color={statusStyle.color} />
-      <Text style={[styles.statusText, { color: statusStyle.color }]}>{statusStyle.label}</Text>
+      <CustomText style={[styles.statusText, { color: statusStyle.color }]}>{statusStyle.label}</CustomText >
     </View>
   );
 });
@@ -96,17 +96,17 @@ const StatusBadge = React.memo(({ status }) => {
 const ActionButton = React.memo(({ title, icon, onPress, color = COLORS.color_primary }) => (
   <TouchableOpacity style={[styles.actionButton, { borderColor: color, backgroundColor: `${color}15` }]} onPress={onPress} activeOpacity={0.7}>
     <Ionicons name={icon} size={adjust(18)} color={color} />
-    <Text style={[styles.actionButtonText, { color }]}>{title}</Text>
+    <CustomText style={[styles.actionButtonText, { color }]}>{title}</CustomText >
   </TouchableOpacity>
 ));
 
 // Optimized DatePickerButton component
 const DatePickerButton = React.memo(({ label, date, onPress }) => (
   <TouchableOpacity style={styles.datePickerButton} onPress={onPress} activeOpacity={0.7}>
-    <Text style={styles.datePickerLabel}>{label}</Text>
+    <CustomText style={styles.datePickerLabel}>{label}</CustomText >
     <View style={styles.datePickerValue}>
       <Ionicons name="calendar-outline" size={adjust(16)} color={COLORS.color_primary} />
-      <Text style={styles.datePickerText}>{date ? moment(date).format("DD/MM/YYYY") : "Chọn ngày"}</Text>
+      <CustomText style={styles.datePickerText}>{date ? moment(date).format("DD/MM/YYYY") : "Chọn ngày"}</CustomText >
     </View>
   </TouchableOpacity>
 ));
@@ -115,8 +115,8 @@ const DatePickerButton = React.memo(({ label, date, onPress }) => (
 const EmptyState = React.memo(({ fadeAnim }) => (
   <Animated.View style={[styles.emptyState, { opacity: fadeAnim }]}>
     <Ionicons name="document-outline" size={80} color="#94A3B8" />
-    <Text style={styles.emptyTitle}>Không có dữ liệu</Text>
-    <Text style={styles.emptySubtitle}>Thử thay đổi bộ lọc hoặc kéo xuống để làm mới</Text>
+    <CustomText style={styles.emptyTitle}>Không có dữ liệu</CustomText >
+    <CustomText style={styles.emptySubtitle}>Thử thay đổi bộ lọc hoặc kéo xuống để làm mới</CustomText >
   </Animated.View>
 ));
 
@@ -130,6 +130,13 @@ const getLoaiText = (loai) => {
       return "Không rõ";
   }
 };
+
+const CustomText = ({ children, style, ...props }) => (
+  <Text {...props} style={style} allowFontScaling={false}>
+    {children}
+  </Text>
+);
+
 const ListDKTC = ({ navigation, route }) => {
   const { authToken, user } = useSelector((state) => state.authReducer);
   const { setIsLoading, setColorLoading } = route.params;
@@ -377,9 +384,9 @@ const ListDKTC = ({ navigation, route }) => {
             {/* Card Header */}
             <View style={styles.cardHeader}>
               <View style={styles.cardTitleContainer}>
-                <Text style={styles.cardTitle} numberOfLines={2}>
+                <CustomText style={styles.cardTitle} numberOfLines={2}>
                   {item.ten_ho_so_dk || "Không có tên"}
-                </Text>
+                </CustomText >
                 <StatusBadge status={item.tinh_trang_pd} />
               </View>
             </View>
@@ -388,39 +395,39 @@ const ListDKTC = ({ navigation, route }) => {
             <View style={styles.cardBody}>
               <View style={styles.infoRow}>
                 <Ionicons name="document-text-outline" size={18} color="#64748B" />
-                <Text style={styles.infoText}>Dự án: {item?.ent_duan?.Duan}</Text>
+                <CustomText style={styles.infoText}>Dự án: {item?.ent_duan?.Duan}</CustomText >
               </View>
               <View style={styles.infoRow}>
                 <Ionicons name="document-text-outline" size={18} color="#64748B" />
-                <Text style={styles.infoText}>Loại: {getLoaiText(item.loai)}</Text>
+                <CustomText style={styles.infoText}>Loại: {getLoaiText(item.loai)}</CustomText >
               </View>
               <View style={styles.infoRow}>
                 <Ionicons name="home-outline" size={18} color="#64748B" />
-                <Text style={styles.infoText}>
+                <CustomText style={styles.infoText}>
                   Căn hộ: {item?.ent_toanha.Toanha} {item?.nt_canho.ma_can_ho}
-                </Text>
+                </CustomText >
               </View>
               <View style={styles.infoRow}>
                 <Ionicons name="person-outline" size={18} color="#64748B" />
-                <Text style={styles.infoText}>
+                <CustomText style={styles.infoText}>
                   Chủ hộ/Phụ trách VP: {item.ten_chu_ho || "Không rõ"} {"\n"}
                   SĐT: {item.sdt_chu_ho || "Không rõ"}
-                </Text>
+                </CustomText >
               </View>
               <View style={styles.infoRow}>
                 <Ionicons name="business-outline" size={18} color="#64748B" />
-                <Text style={styles.infoText}>
+                <CustomText style={styles.infoText}>
                   Nhà thầu: {item?.nt_list?.ten_nt || "Không rõ"} {"\n"}
                   MST/CCCD/SĐT: {item?.nt_list?.mst_cccd_sdt || "Không rõ"}
-                </Text>
+                </CustomText >
               </View>
 
               <View style={styles.infoRow}>
                 <Ionicons name="calendar-outline" size={18} color="#64748B" />
-                <Text style={styles.infoText}>
+                <CustomText style={styles.infoText}>
                   {item.tu_ngay ? moment(item.tu_ngay).format("DD/MM/YYYY") : "Không rõ ngày"} -
                   {item.den_ngay ? moment(item.den_ngay).format("DD/MM/YYYY") : "Không rõ ngày"}
-                </Text>
+                </CustomText >
               </View>
             </View>
 
@@ -434,7 +441,7 @@ const ListDKTC = ({ navigation, route }) => {
               {item.tinh_trang_pd == 1 && item.isChange == 1 && (
                 <TouchableOpacity style={styles.quickDoneButton} onPress={() => handleQuickComplete(item)} activeOpacity={0.85}>
                   <Ionicons name="checkmark-done-circle" size={18} color="#fff" style={{ marginRight: 6 }} />
-                  <Text style={styles.quickDoneButtonText}>Hoàn thành</Text>
+                  <CustomText style={styles.quickDoneButtonText}>Hoàn thành</CustomText >
                 </TouchableOpacity>
               )}
             </View>
@@ -480,6 +487,7 @@ const ListDKTC = ({ navigation, route }) => {
             <TextInput
               style={styles.searchInput}
               placeholder="Tìm kiếm tên hồ sơ..."
+              allowFontScaling={false}
               placeholderTextColor="#94A3B8"
               value={filters.name}
               onChangeText={handlers.setName}
@@ -507,7 +515,7 @@ const ListDKTC = ({ navigation, route }) => {
                 onPress={() => handlers.setStatus(option.value)}
                 activeOpacity={0.7}
               >
-                <Text style={[styles.statusFilterText, { color: filters.status === option.value ? "#FFFFFF" : option.color }]}>{option.label}</Text>
+                <CustomText style={[styles.statusFilterText, { color: filters.status === option.value ? "#FFFFFF" : option.color }]}>{option.label}</CustomText >
               </TouchableOpacity>
             ))}
           </View>
@@ -571,7 +579,7 @@ const ListDKTC = ({ navigation, route }) => {
             {linkQR ? (
               <>
                 <QRCode value={linkQR} size={180} color="#222" backgroundColor="#fff" />
-                <Text
+                <CustomText
                   style={{
                     marginTop: 16,
                     fontSize: 13,
@@ -583,10 +591,10 @@ const ListDKTC = ({ navigation, route }) => {
                   ellipsizeMode="middle"
                 >
                   {linkQR}
-                </Text>
+                </CustomText >
               </>
             ) : (
-              <Text style={styles.modalPlaceholderText}>Không có link QR</Text>
+              <CustomText style={styles.modalPlaceholderText}>Không có link QR</CustomText >
             )}
           </View>
         </CustomModal>
@@ -613,11 +621,11 @@ const ListDKTC = ({ navigation, route }) => {
                   >
                     {checkedUsers.includes(u.userName) && <Ionicons name="checkmark" size={18} color="#fff" />}
                   </TouchableOpacity>
-                  <Text style={{ fontSize: 15, color: "#222" }}>{u.hoTen}</Text>
+                  <CustomText style={{ fontSize: 15, color: "#222" }}>{u.hoTen}</CustomText >
                 </View>
               ))
             ) : (
-              <Text style={{ color: "#888", textAlign: "center", marginVertical: 16 }}>Không có dữ liệu user</Text>
+              <CustomText style={{ color: "#888", textAlign: "center", marginVertical: 16 }}>Không có dữ liệu user</CustomText >
             )}
           </View>
           <View style={{ flexDirection: "row", justifyContent: "flex-end", marginTop: 18 }}>
@@ -644,7 +652,7 @@ const ListDKTC = ({ navigation, route }) => {
                 backgroundColor: "#06B6D4",
               }}
             >
-              {savingPhanQuyen ? <ActivityIndicator size={18} color="#fff" /> : <Text style={{ color: "#fff", fontWeight: "600" }}>Lưu</Text>}
+              {savingPhanQuyen ? <ActivityIndicator size={18} color="#fff" /> : <CustomText style={{ color: "#fff", fontWeight: "600" }}>Lưu</CustomText >}
             </TouchableOpacity>
           </View>
         </CustomModal>

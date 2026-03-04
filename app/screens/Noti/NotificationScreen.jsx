@@ -21,6 +21,12 @@ import adjust from "../../adjust";
 import { fetchNotifications, markNotificationAsRead, markAllNotificationsAsRead, deleteNotification as deleteNotificationApi } from "./api";
 import { COLORS } from "../../constants/theme";
 
+const CustomText = ({ children, style, ...props }) => (
+  <Text {...props} style={style} allowFontScaling={false}>
+    {children}
+  </Text>
+);
+
 // Helper function for time formatting
 const formatTime = (dateString) => {
   if (!dateString) return "";
@@ -53,7 +59,7 @@ const NotificationItem = memo(({ item, onPress, onDelete }) => {
       >
         <LinearGradient colors={["#EF4444", "#DC2626"]} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.swipeDeleteGradient}>
           <Ionicons name="trash-outline" size={24} color="#fff" />
-          <Text style={styles.swipeDeleteText}>Xóa</Text>
+          <CustomText style={styles.swipeDeleteText}>Xóa</CustomText>
         </LinearGradient>
       </TouchableOpacity>
     ),
@@ -77,15 +83,15 @@ const NotificationItem = memo(({ item, onPress, onDelete }) => {
             </View>
 
             <View style={styles.content}>
-              <Text style={[styles.title, isUnread && styles.unreadTitle]} numberOfLines={2}>
+              <CustomText style={[styles.title, isUnread && styles.unreadTitle]} numberOfLines={2}>
                 {item.title || "(Không có tiêu đề)"}
-              </Text>
-              <Text style={styles.contentText} numberOfLines={2}>
+              </CustomText>
+              <CustomText style={styles.contentText} numberOfLines={2}>
                 {item.message || "(Không có nội dung)"}
-              </Text>
+              </CustomText>
               <View style={styles.footer}>
                 <Ionicons name="time-outline" size={14} color="#94A3B8" />
-                <Text style={styles.time}>{formatTime(item.created_at)}</Text>
+                <CustomText style={styles.time}>{formatTime(item.created_at)}</CustomText>
               </View>
             </View>
           </View>
@@ -194,13 +200,13 @@ const NotificationScreen = ({ navigation, route }) => {
       <LinearGradient colors={["#EF4444", "#DC2626"]} style={styles.headerActions} start={{ x: 0, y: 0 }} end={{ x: 1, y: 0 }}>
         <View style={styles.headerLeft}>
           <View style={styles.badgeContainer}>
-            <Text style={styles.badgeText}>{unreadCount}</Text>
+            <CustomText style={styles.badgeText}>{unreadCount}</CustomText>
           </View>
-          <Text style={styles.unreadCount}>thông báo chưa đọc</Text>
+          <CustomText style={styles.unreadCount}>thông báo chưa đọc</CustomText>
         </View>
         <TouchableOpacity style={styles.markAllButton} onPress={markAllAsRead} activeOpacity={0.8}>
           <Ionicons name="checkmark-done" size={16} color="#EF4444" />
-          <Text style={styles.markAllText}>Đánh dấu tất cả</Text>
+          <CustomText style={styles.markAllText}>Đánh dấu tất cả</CustomText>
         </TouchableOpacity>
       </LinearGradient>
     );

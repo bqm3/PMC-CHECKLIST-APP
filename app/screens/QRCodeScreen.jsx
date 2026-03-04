@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { CameraView, Camera } from "expo-camera";
 import { COLORS } from "../constants/theme";
 import Button from "../components/Button/Button";
@@ -11,6 +12,7 @@ export default function QRCodeScreen({
   setIsScan,
 }) {
   const [scanned, setScanned] = useState(false);
+  const [torch, setTorch] = useState(false);
   const processingRef = useRef(false); // Flag để tránh gọi nhiều lần
   const lastScannedRef = useRef(null); // Lưu mã QR vừa quét
 
@@ -50,12 +52,19 @@ export default function QRCodeScreen({
     <View style={styles.container}>
       <View style={{ width: "100%", height: "100%" }}>
         <CameraView
+          enableTorch={torch}
           onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
           barcodeScannerSettings={{
             barcodeTypes: ["qr", "pdf417"],
           }}
           style={[StyleSheet.absoluteFillObject, { borderRadius: 12 }]}
         />
+        <TouchableOpacity
+          style={styles.torchButton}
+          onPress={() => setTorch(!torch)}
+        >
+          <Ionicons name={torch ? "flash" : "flash-off"} size={28} color="white" />
+        </TouchableOpacity>
       </View>
 
       <View
@@ -99,5 +108,16 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
+  },
+  torchButton: {
+    position: "absolute",
+    top: 20,
+    right: 20,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    padding: 12,
+    borderRadius: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 10,
   },
 });

@@ -8,6 +8,11 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { anDaoTaoAPI, fetchProjects } from "./api";
 import { ReloadContext } from "../../context/ReloadContext";
 
+const CustomText = ({ children, style, ...props }) => (
+  <Text {...props} style={style} allowFontScaling={false}>
+    {children}
+  </Text>
+);
 
 // Màu chủ đạo
 const COLORS = {
@@ -182,36 +187,36 @@ const AN_DAOTAO_SCREEN = ({ route, navigation }) => {
     <TouchableOpacity style={styles.card} onPress={() => handleViewDetail(item)} activeOpacity={0.7}>
       <View style={styles.cardHeader}>
         <View style={styles.projectBadge}>
-          <Text style={styles.projectBadgeText} numberOfLines={1}>
+          <CustomText style={styles.projectBadgeText} numberOfLines={1}>
             🏢 {item.ent_duan?.Duan || "N/A"}
-          </Text>
+          </CustomText>
         </View>
-        <Text style={styles.dateText}>{moment(item.ngay_dt).format("DD/MM HH:mm")}</Text>
+        <CustomText style={styles.dateText}>{moment(item.ngay_dt).format("DD/MM HH:mm")}</CustomText>
       </View>
 
       <View style={styles.cardBody}>
-        <Text style={styles.sectionTitle}>Nội dung đào tạo:</Text>
+        <CustomText style={styles.sectionTitle}>Nội dung đào tạo:</CustomText>
         {item.noidung_daotao && item.noidung_daotao?.length > 0 ? (
           item.noidung_daotao.map((content, idx) => (
-            <Text key={idx} style={styles.contentText} numberOfLines={2}>
+            <CustomText key={idx} style={styles.contentText} numberOfLines={2}>
               • {content.noi_dung}
-            </Text>
+            </CustomText>
           ))
         ) : (
-          <Text style={styles.naText}>Chưa có nội dung</Text>
+          <CustomText style={styles.naText}>Chưa có nội dung</CustomText>
         )}
       </View>
 
       <View style={styles.cardFooter}>
         <View style={styles.trainerInfo}>
-          <Text style={styles.trainerLabel}>Người ĐT:</Text>
-          <Text style={styles.trainerName} numberOfLines={1}>
+          <CustomText style={styles.trainerLabel}>Người ĐT:</CustomText>
+          <CustomText style={styles.trainerName} numberOfLines={1}>
             {item.nguoi_dt?.ho_ten || "N/A"}
-          </Text>
+          </CustomText>
         </View>
         <View style={styles.securityInfo}>
-          <Text style={styles.trainerLabel}>An ninh:</Text>
-          <Text style={styles.securityCount}>{item.ns_anninh?.length || 0} nhân sự</Text>
+          <CustomText style={styles.trainerLabel}>An ninh:</CustomText>
+          <CustomText style={styles.securityCount}>{item.ns_anninh?.length || 0} nhân sự</CustomText>
         </View>
       </View>
     </TouchableOpacity>
@@ -222,10 +227,11 @@ const AN_DAOTAO_SCREEN = ({ route, navigation }) => {
       <View style={styles.filterSection}>
         {/* Search Box */}
         <View style={styles.searchBox}>
-          <Text style={styles.searchIcon}>🔍</Text>
+          <CustomText style={styles.searchIcon}>🔍</CustomText>
           <TextInput
             style={styles.searchInput}
             placeholder="Tìm dự án, nội dung..."
+            allowFontScaling={false}
             value={filters.search}
             onChangeText={(text) => setFilters((prev) => ({ ...prev, search: text }))}
             placeholderTextColor="#999"
@@ -264,21 +270,21 @@ const AN_DAOTAO_SCREEN = ({ route, navigation }) => {
                 }));
               }}
               renderLeftIcon={() => (
-                <Text style={styles.dropdownLeftIcon}>🏢</Text>
+                <CustomText style={styles.dropdownLeftIcon}>🏢</CustomText>
               )}
               renderItem={(item) => (
                 <View style={[
                   styles.dropdownItem,
                   item.value === filters.id_du_an && styles.dropdownItemSelected
                 ]}>
-                  <Text style={[
+                  <CustomText style={[
                     styles.dropdownItemText,
                     item.value === filters.id_du_an && styles.dropdownItemTextSelected
                   ]}>
                     {item.label}
-                  </Text>
+                  </CustomText>
                   {item.value === filters.id_du_an && (
-                    <Text style={styles.dropdownItemCheck}>✓</Text>
+                    <CustomText style={styles.dropdownItemCheck}>✓</CustomText>
                   )}
                 </View>
               )}
@@ -289,35 +295,35 @@ const AN_DAOTAO_SCREEN = ({ route, navigation }) => {
         {/* Date Range Filter */}
         <View style={styles.dateRow}>
           <TouchableOpacity onPress={handleResetFilters} style={styles.resetButton}>
-            <Text style={styles.resetText}>🔄</Text>
+            <CustomText style={styles.resetText}>🔄</CustomText>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.dateChip} onPress={() => setShowFromDate(true)}>
-            <Text style={styles.dateLabel}>Từ: </Text>
-            <Text style={styles.dateValue}>{moment(filters.tu_ngay).format("DD/MM/YYYY")}</Text>
+            <CustomText style={styles.dateLabel}>Từ: </CustomText>
+            <CustomText style={styles.dateValue}>{moment(filters.tu_ngay).format("DD/MM/YYYY")}</CustomText>
           </TouchableOpacity>
 
           <View style={styles.dateDivider} />
 
           <TouchableOpacity style={styles.dateChip} onPress={() => setShowToDate(true)}>
-            <Text style={styles.dateLabel}>Đến: </Text>
-            <Text style={styles.dateValue}>{moment(filters.den_ngay).format("DD/MM/YYYY")}</Text>
+            <CustomText style={styles.dateLabel}>Đến: </CustomText>
+            <CustomText style={styles.dateValue}>{moment(filters.den_ngay).format("DD/MM/YYYY")}</CustomText>
           </TouchableOpacity>
         </View>
       </View>
 
       <View style={styles.listWrapper}>
         <View style={styles.resultBar}>
-          <Text style={styles.resultText}>
+          <CustomText style={styles.resultText}>
             Tìm thấy {pagination.totalRecords} kết quả
             {pagination.totalPages > 1 && ` (Trang ${pagination.currentPage}/${pagination.totalPages})`}
-          </Text>
+          </CustomText>
         </View>
 
         {loading && filters.page === 1 ? (
           <View style={styles.centerLoading}>
             <ActivityIndicator size="large" color={COLORS.primary} />
-            <Text style={{ marginTop: 10, color: COLORS.textSec }}>Đang tải dữ liệu...</Text>
+            <CustomText style={{ marginTop: 10, color: COLORS.textSec }}>Đang tải dữ liệu...</CustomText>
           </View>
         ) : (
           <FlatList
@@ -332,19 +338,19 @@ const AN_DAOTAO_SCREEN = ({ route, navigation }) => {
               loading && filters.page > 1 ? (
                 <View style={styles.loadingMore}>
                   <ActivityIndicator size="small" color={COLORS.primary} />
-                  <Text style={styles.loadingMoreText}>Đang tải thêm...</Text>
+                  <CustomText style={styles.loadingMoreText}>Đang tải thêm...</CustomText>
                 </View>
               ) : pagination.currentPage >= pagination.totalPages && baoCaos.length > 0 ? (
                 <View style={styles.endOfList}>
-                  <Text style={styles.endOfListText}>Đã hiển thị hết dữ liệu</Text>
+                  <CustomText style={styles.endOfListText}>Đã hiển thị hết dữ liệu</CustomText>
                 </View>
               ) : null
             }
             ListEmptyComponent={
               !loading ? (
                 <View style={styles.emptyState}>
-                  <Text style={{ fontSize: 40 }}>📂</Text>
-                  <Text style={styles.emptyText}>Không có dữ liệu</Text>
+                  <CustomText style={{ fontSize: 40 }}>📂</CustomText>
+                  <CustomText style={styles.emptyText}>Không có dữ liệu</CustomText>
                 </View>
               ) : null
             }
@@ -353,7 +359,7 @@ const AN_DAOTAO_SCREEN = ({ route, navigation }) => {
       </View>
 
       <TouchableOpacity style={styles.fab} onPress={handleCreateNew} activeOpacity={0.8}>
-        <Text style={styles.fabIcon}>+</Text>
+        <CustomText style={styles.fabIcon}>+</CustomText>
       </TouchableOpacity>
 
       <DateTimePickerModal

@@ -117,13 +117,8 @@ function RootApp() {
   }, [dispatch]);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.bg_button }} edges={["bottom"]}>
-      <StatusBar
-        barStyle={Platform.OS === "ios" ? "dark-content" : "dark-content"}
-        backgroundColor={Platform.OS === "android" ? "#ffffff" : undefined}
-        translucent={Platform.OS === "android" ? false : undefined}
-        hidden={false} // Luôn hiển thị
-      />
+    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.bg_button }} edges={["left", "right"]}>
+      <StatusBar barStyle="light-content" backgroundColor={COLORS.bg_button} translucent={Platform.OS === "android"} />
       <CheckNavigation />
     </SafeAreaView>
   );
