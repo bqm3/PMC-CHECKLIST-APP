@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Image, Text, TouchableOpacity, Platform, Alert, View, Linking, ActivityIndicator, StatusBar } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -6,6 +6,7 @@ import { COLORS } from "../constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import adjust from "../adjust";
 import { useSelector } from "react-redux";
+import { LoadingProvider, useLoading } from "../context/LoadingContext";
 
 import { ThucHienChecklist, DetailChecklist, ThucHienHangmuc, ThucHienKhuvuc } from "../screens/Checklist";
 import { ThucHienChecklistLai, ThucHienKhuvucLai, ThucHienHangmucLai, DetailChecklistLai } from "../screens/ChecklistLai";
@@ -36,28 +37,6 @@ import { BASE_URL } from "../constants/config.js";
 
 const Stack = createNativeStackNavigator();
 
-// ─── Global loading setters ────────────────────────────────────────────────
-let gsetIsLoading = null;
-let gsetColorLoading = null;
-
-const handleEmergencyCall = (sdt_khancap) => {
-  if (!sdt_khancap) {
-    Alert.alert("Thông báo", "Không có số điện thoại khẩn cấp!", [{ text: "Xác nhận" }]);
-    return;
-  }
-  if (gsetIsLoading) gsetIsLoading(true);
-  Linking.openURL(`tel:${sdt_khancap}`)
-    .then(() =>
-      setTimeout(() => {
-        if (gsetIsLoading) gsetIsLoading(false);
-      }, 2000),
-    )
-    .catch(() => {
-      if (gsetIsLoading) gsetIsLoading(false);
-      Alert.alert("Thông báo", "Không thể thực hiện cuộc gọi!");
-    });
-};
-
 // ─── Custom Header (100% React Native — không có native iOS button) ────────
 const CustomHeader = ({
   title,
@@ -69,6 +48,28 @@ const CustomHeader = ({
   customBackTarget,
 }) => {
   const insets = useSafeAreaInsets();
+  const { setIsLoading } = useLoading();
+
+  const handleEmergencyCall = useCallback(
+    (sdt) => {
+      if (!sdt) {
+        Alert.alert("Thông báo", "Không có số điện thoại khẩn cấp!", [{ text: "Xác nhận" }]);
+        return;
+      }
+      setIsLoading(true);
+      Linking.openURL(`tel:${sdt}`)
+        .then(() =>
+          setTimeout(() => {
+            setIsLoading(false);
+          }, 2000),
+        )
+        .catch(() => {
+          setIsLoading(false);
+          Alert.alert("Thông báo", "Không thể thực hiện cuộc gọi!");
+        });
+    },
+    [setIsLoading],
+  );
 
   const renderLeft = () => {
     switch (leftType) {
@@ -270,42 +271,40 @@ const screenConfigs = [
     rightType: "none",
     customBackTarget: "Báo cáo HSSE",
   },
-  { name: "Báo cáo S0", component: DanhMucBaoCaoP0, title: "Dữ liệu S0", leftType: "back", rightType: "none", hasInitialParams: true },
+  { name: "Báo cáo S0", component: DanhMucBaoCaoP0, title: "Dữ liệu S0", leftType: "back", rightType: "none" },
   {
     name: "Tạo báo cáo S0",
     component: TaoBaoCaoP0,
     title: "Tạo báo cáo S0",
     leftType: "customBack",
     rightType: "none",
-    hasInitialParams: true,
     customBackTarget: "Báo cáo S0",
   },
 
   // ── Tra cứu ──
-  { name: "Tra cứu", component: DanhmucTracuuVsThongke, title: "Thống kê và tra cứu", leftType: "back", rightType: "none", hasInitialParams: true },
+  { name: "Tra cứu", component: DanhmucTracuuVsThongke, title: "Thống kê và tra cứu", leftType: "back", rightType: "none" },
 
   // ── PSH ──
   { name: "Quản lý người dùng", component: DanhmucUserScreen, title: "Quản lý người dùng", leftType: "back", rightType: "none" },
   { name: "Danh mục dự án", component: DanhmucDuanScreen, title: "Danh mục dự án", leftType: "back", rightType: "none" },
 
   // ── Đăng ký thi công ──
-  { name: "Đăng ký thi công", component: ListDKTC, title: "Danh sách đăng ký thi công", leftType: "back", rightType: "none", hasInitialParams: true },
+  { name: "Đăng ký thi công", component: ListDKTC, title: "Danh sách đăng ký thi công", leftType: "back", rightType: "none" },
 
   // ── Thông báo ──
-  { name: "NotificationScreen", component: NotificationScreen, title: "Thông báo", leftType: "back", rightType: "none", hasInitialParams: true },
-  { name: "DetailNotiScreen", component: DetailNotiScreen, title: "Chi tiết thông báo", leftType: "back", rightType: "none", hasInitialParams: true },
+  { name: "NotificationScreen", component: NotificationScreen, title: "Thông báo", leftType: "back", rightType: "none" },
+  { name: "DetailNotiScreen", component: DetailNotiScreen, title: "Chi tiết thông báo", leftType: "back", rightType: "none" },
 
   // ── An ninh ──
-  { name: "an_ninh_dao_tao", component: ANDaoTao, title: "Đào tạo giao ca", leftType: "back", rightType: "none", hasInitialParams: true },
+  { name: "an_ninh_dao_tao", component: ANDaoTao, title: "Đào tạo giao ca", leftType: "back", rightType: "none" },
   {
     name: "an_ninh_dao_tao_form",
     component: ANDaoTaoGiaoCaForm,
     title: "Đào tạo giao ca",
     leftType: "back",
     rightType: "none",
-    hasInitialParams: true,
   },
-  { name: "an_ninh_cong_cu", component: ANCongCu, title: "An ninh công cụ", leftType: "back", rightType: "none", hasInitialParams: true },
+  { name: "an_ninh_cong_cu", component: ANCongCu, title: "An ninh công cụ", leftType: "back", rightType: "none" },
 
   // ── Dynamic title screens ──
   {
@@ -328,7 +327,6 @@ const screenConfigs = [
     dynamicTitle: (route) => `Chi tiết ngày ${route?.params?.data?.Ngaybc}`,
     leftType: "back",
     rightType: "none",
-    hasInitialParams: true,
   },
   {
     name: "ChiTietDKTC",
@@ -336,20 +334,28 @@ const screenConfigs = [
     dynamicTitle: (route) => route?.params?.headerTitle,
     leftType: "back",
     rightType: "none",
-    hasInitialParams: true,
   },
 ];
 
 // ─── HomeStack ─────────────────────────────────────────────────────────────
 const HomeStack = () => {
+  return (
+    <LoadingProvider>
+      <HomeStackContent />
+    </LoadingProvider>
+  );
+};
+
+const HomeStackContent = () => {
   const { sdt_khancap } = useSelector((state) => state.entReducer);
   const { authToken } = useSelector((state) => state.authReducer);
-  const [isLoading, setIsLoading] = useState(false);
-  const [colorLoading, setColorLoading] = useState(COLORS.bg_button);
+  const { isLoading, colorLoading, setIsLoading, setColorLoading } = useLoading();
   const [unreadCount, setUnreadCount] = useState(0);
 
-  gsetIsLoading = setIsLoading;
-  gsetColorLoading = setColorLoading;
+  // Set default loading color if not set
+  React.useEffect(() => {
+    setColorLoading(COLORS.bg_button);
+  }, [setColorLoading]);
 
   const fetchNotifications = async () => {
     try {
@@ -368,17 +374,13 @@ const HomeStack = () => {
       <Stack.Navigator
         initialRouteName="Trang chính"
         screenOptions={{
-          // Tắt hoàn toàn native header — dùng custom header bên dưới
           headerShown: false,
         }}
       >
         {screenConfigs.map((config) => {
-          // Chuẩn bị initialParams
           let initialParams = {};
           if (config.name === "Trang chính") {
-            initialParams = { setIsLoading, setColorLoading, fetchNotifications };
-          } else if (config.hasInitialParams) {
-            initialParams = { setIsLoading, setColorLoading };
+            initialParams = { fetchNotifications };
           }
 
           return (
@@ -387,15 +389,11 @@ const HomeStack = () => {
               name={config.name}
               component={config.component}
               initialParams={initialParams}
-              lazy={false}
               options={({ route, navigation }) => {
                 const title = config.dynamicTitle ? config.dynamicTitle(route) : config.title || config.name;
 
                 return {
-                  // Bật lại headerShown để render custom header prop
                   headerShown: true,
-                  // prop `header` thay thế hoàn toàn native header
-                  // → không còn UIBarButtonItem, không còn hiệu ứng iOS 26
                   header: () => (
                     <CustomHeader
                       title={title}

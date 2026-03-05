@@ -26,6 +26,7 @@ import { MaterialIcons as Icon } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
 import DocumentViewer from "./DocumentViewer";
 import moment from "moment-timezone";
+import { useLoading } from "../../context/LoadingContext";
 import { set } from "lodash";
 
 const { width } = Dimensions.get("window");
@@ -33,8 +34,9 @@ const { width } = Dimensions.get("window");
 const ChiTietDKTC = ({ route, navigation }) => {
   const { id } = route.params || {};
   const insets = useSafeAreaInsets();
-  const { setIsLoading } = route.params;
+  const { setIsLoading } = useLoading();
   const { authToken } = useSelector((state) => state.authReducer);
+
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   const [newStatus, setNewStatus] = useState(null);

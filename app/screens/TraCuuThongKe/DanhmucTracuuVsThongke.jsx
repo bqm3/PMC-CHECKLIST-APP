@@ -8,6 +8,7 @@ import {
   ScrollView,
 } from "react-native";
 import { COLORS } from "../../constants/theme";
+import { useLoading } from "../../context/LoadingContext";
 import DanhmucThongkeDashBoard from "./DanhmucThongkeDashboard";
 import DanhmucTraCuu from "./DanhmucTraCuu";
 import DanhmucTraCuuCa from "./DanhmucTracuuCa";
@@ -47,9 +48,9 @@ const TabButtons = ({
 };
 
 const DanhmucTracuuVsThongke = ({ route, navigation }) => {
-  const setIsLoading = route.params.setIsLoading;
-  const setColorLoading = route.params.setColorLoading;
+  const { setIsLoading, setColorLoading } = useLoading();
   const [selectedTab, setSelectedTab] = useState("Tra cứu");
+
   const [opacity, setOpacity] = useState(1);
 
   useEffect(() => {

@@ -2,14 +2,12 @@
   "cli": {
     "version": ">= 7.8.3",
     "promptToConfigurePushNotifications": false,
-    // "appVersionSource": "remote"
     "appVersionSource": "local"
   },
   "build": {
     "development": {
       "developmentClient": true,
       "distribution": "internal"
-     
     },
     "preview": {
       "distribution": "internal",
@@ -29,7 +27,10 @@
       "distribution": "internal"
     },
     "production": {
-      "autoIncrement": false
+      "autoIncrement": false,
+      "android": {
+        "buildType": "app-bundle"
+      }
     },
     "simulator": {
       "ios": {
@@ -47,7 +48,6 @@
       "android": {
         "serviceAccountKeyPath": "../pmc-cskh-firebase-adminsdk-y7378-5122f6edc7.json"
       }
-      
     }
   }
 }

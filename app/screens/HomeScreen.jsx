@@ -22,6 +22,7 @@ import adjust from "../adjust";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { login } from "../redux/actions/authActions";
 import ExpoTokenContext from "../context/ExpoTokenContext";
+import { useLoading } from "../context/LoadingContext";
 import { validatePassword } from "../utils/util";
 import { MenuIcons } from '../components/MenuIcons';
 import { Dropdown } from 'react-native-element-dropdown';
@@ -188,7 +189,9 @@ const useP0Check = (authToken, setIsLoading) => {
 // ================== Main Component ==================
 const HomeScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
-  const { setIsLoading, setColorLoading, fetchNotifications } = route.params;
+  const { fetchNotifications } = route.params;
+  const { setIsLoading, setColorLoading } = useLoading();
+
   const { user, authToken, passwordCore } = useSelector((state) => state.authReducer);
   const { sdt_khancap } = useSelector((state) => state.entReducer);
   const { setToken } = React.useContext(ExpoTokenContext);

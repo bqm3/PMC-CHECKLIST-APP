@@ -21,6 +21,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { useSelector } from "react-redux";
 import { COLORS, SIZES } from "../../constants/theme";
+import { useLoading } from "../../context/LoadingContext";
 import { getDangKyThiCong, getUser, updatePhanQuyen, updateDangKyThiCongStatus } from "./api";
 import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 import moment from "moment-timezone";
@@ -139,7 +140,8 @@ const CustomText = ({ children, style, ...props }) => (
 
 const ListDKTC = ({ navigation, route }) => {
   const { authToken, user } = useSelector((state) => state.authReducer);
-  const { setIsLoading, setColorLoading } = route.params;
+  const { setIsLoading } = useLoading();
+
 
   // Animation refs - optimized
   const fadeAnim = useRef(new Animated.Value(0)).current;

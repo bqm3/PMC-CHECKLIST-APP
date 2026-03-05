@@ -24,6 +24,7 @@ import axios from "axios";
 import { BASE_URL } from "../../constants/config";
 import { COLORS } from "../../constants/theme";
 import { ReloadContext } from "../../context/ReloadContext";
+import { useLoading } from "../../context/LoadingContext";
 import WarningBox from "../../components/Warning/WarningBox";
 import moment from "moment-timezone";
 
@@ -104,7 +105,8 @@ const initP0Data = () => {
 
 const TaoBaoCaoP0 = ({ navigation, route }) => {
   const { reload } = useContext(ReloadContext);
-  const { setIsLoading, setColorLoading } = route.params;
+  const { setIsLoading } = useLoading();
+
   const { user, authToken } = useSelector((state) => state.authReducer);
   const [p0_Data, setP0_Data] = useState(initP0Data());
   const [qtt, setQTT] = useState();
