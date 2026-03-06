@@ -120,18 +120,24 @@ async function registerForPushNotificationsAsync() {
 // ================== Custom Hooks ==================
 const useInitializeData = (dispatch, authToken, refreshScreen) => {
   useEffect(() => {
+    let isMounted = true;
     const initAll = async () => {
-      await Promise.all([
-        dispatch(ent_khuvuc_get()),
-        dispatch(ent_hangmuc_get()),
-        dispatch(ent_toanha_get()),
-        dispatch(ent_khoicv_get()),
-        dispatch(ent_tang_get()),
-        dispatch(ent_calv_get()),
-        dispatch(ent_get_sdt_KhanCap()),
-      ]);
+      try {
+        await Promise.all([
+          dispatch(ent_khuvuc_get()),
+          dispatch(ent_hangmuc_get()),
+          dispatch(ent_toanha_get()),
+          dispatch(ent_khoicv_get()),
+          dispatch(ent_tang_get()),
+          dispatch(ent_calv_get()),
+          dispatch(ent_get_sdt_KhanCap()),
+        ]);
+      } catch (error) {
+        if (isMounted) console.error("Init data error:", error);
+      }
     };
     initAll();
+    return () => { isMounted = false; };
   }, [dispatch, refreshScreen]);
 };
 
@@ -139,6 +145,7 @@ const useProjectData = (authToken) => {
   const [duan, setDuan] = useState([]);
 
   useEffect(() => {
+    let isMounted = true;
     const fetchProjects = async () => {
       try {
         const response = await axios.get(`${BASE_URL}/ent_duan/thong-tin-du-an`, {
@@ -147,12 +154,13 @@ const useProjectData = (authToken) => {
             Authorization: `Bearer ${authToken}`,
           },
         });
-        setDuan(response.data.data);
+        if (isMounted) setDuan(response.data.data);
       } catch (error) {
-        console.error("Fetch projects error:", error);
+        if (isMounted) console.error("Fetch projects error:", error);
       }
     };
     fetchProjects();
+    return () => { isMounted = false; };
   }, [authToken]);
 
   return duan;
@@ -162,25 +170,27 @@ const useP0Check = (authToken, setIsLoading) => {
   const [checkP0, setCheckP0] = useState(false);
 
   useEffect(() => {
+    let isMounted = true;
     const checkP0Status = async () => {
       try {
-        setIsLoading(true);
+        if (isMounted) setIsLoading(true);
         const response = await axios.get(`${BASE_URL}/p0/check`, {
           headers: {
             Accept: "application/json",
             Authorization: `Bearer ${authToken}`,
           },
         });
-        if (response.status === 200) {
+        if (isMounted && response.status === 200) {
           setCheckP0(response.data.data);
         }
       } catch (error) {
-        console.error("P0 check error:", error);
+        if (isMounted) console.error("P0 check error:", error);
       } finally {
-        setIsLoading(false);
+        if (isMounted) setIsLoading(false);
       }
     };
     checkP0Status();
+    return () => { isMounted = false; };
   }, [authToken]);
 
   return checkP0;

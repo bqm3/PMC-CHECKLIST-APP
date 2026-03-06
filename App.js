@@ -14,6 +14,7 @@ import { ExpoTokenProvider } from "./app/context/ExpoTokenContext";
 import { DataProvider } from "./app/context/DataContext";
 import { ChecklistProvider } from "./app/context/ChecklistContext";
 import { ChecklistLaiProvider } from "./app/context/ChecklistLaiContext";
+import { LoadingProvider } from "./app/context/LoadingContext";
 import CheckNavigation from "./app/navigation/CheckNavigation";
 import { DefaultTheme, PaperProvider } from "react-native-paper";
 import * as SplashScreen from "expo-splash-screen";
@@ -49,10 +50,11 @@ export default function App() {
                           <ReloadProvider>
                             <ChecklistProvider>
                               <ChecklistLaiProvider>
-                                <NavigationContainer>
-                                  {/* Mọi hook Redux/logic phiên đưa vào đây */}
-                                  <RootApp />
-                                </NavigationContainer>
+                                <LoadingProvider>
+                                  <NavigationContainer>
+                                    <RootApp />
+                                  </NavigationContainer>
+                                </LoadingProvider>
                               </ChecklistLaiProvider>
                             </ChecklistProvider>
                           </ReloadProvider>

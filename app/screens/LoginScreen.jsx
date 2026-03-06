@@ -86,6 +86,7 @@ const LoginScreen = ({ navigation }) => {
   const [location, setLocation] = useState(null);
 
   useEffect(() => {
+    let isMounted = true;
     const getDeviceInformation = async () => {
       try {
         const info = {
@@ -97,33 +98,43 @@ const LoginScreen = ({ navigation }) => {
           osVersion: Device.osVersion,
           deviceType: Device.deviceType,
         };
-        setDeviceInfo(info);
+        if (isMounted) setDeviceInfo(info);
       } catch (error) {
-        console.error("Error getting device info:", error);
+        if (isMounted) console.error("Error getting device info:", error);
       }
     };
 
     getDeviceInformation();
+    return () => { isMounted = false; };
   }, []);
 
   useEffect(() => {
+    let isMounted = true;
     axios
       .get("https://api.ipify.org?format=json")
       .then((response) => {
-        setIp(response.data.ip); // Lưu IP vào state
+        if (isMounted) setIp(response.data.ip);
       })
       .catch((error) => {
-        console.error("Error fetching IP:", error);
+        if (isMounted) console.error("Error fetching IP:", error);
       });
+    return () => { isMounted = false; };
   }, []);
 
   useEffect(() => {
+    let isMounted = true;
     const getIpInfo = async (ip) => {
-      const response = await axios.get(`https://ipinfo.io/${ip}/json`);
-      const { readme, ...filteredInfo } = response.data;
-      setInfoIP(filteredInfo);
+      if (!ip) return;
+      try {
+        const response = await axios.get(`https://ipinfo.io/${ip}/json`);
+        const { readme, ...filteredInfo } = response.data;
+        if (isMounted) setInfoIP(filteredInfo);
+      } catch (error) {
+        if (isMounted) console.error("Error fetching IP info:", error);
+      }
     };
     getIpInfo(ip);
+    return () => { isMounted = false; };
   }, [ip]);
 
   useEffect(() => {
@@ -135,6 +146,7 @@ const LoginScreen = ({ navigation }) => {
   }, []);
 
   useEffect(() => {
+    let isMounted = true;
     const getLocationInfo = async () => {
       try {
         let { status } = await Location.requestForegroundPermissionsAsync();
@@ -144,19 +156,22 @@ const LoginScreen = ({ navigation }) => {
             accuracy: Location.Accuracy.Balanced,
           });
 
-          setLocation({
-            latitude: locationData.coords.latitude,
-            longitude: locationData.coords.longitude,
-            accuracy: locationData.coords.accuracy,
-            timestamp: locationData.timestamp,
-          });
+          if (isMounted) {
+            setLocation({
+              latitude: locationData.coords.latitude,
+              longitude: locationData.coords.longitude,
+              accuracy: locationData.coords.accuracy,
+              timestamp: locationData.timestamp,
+            });
+          }
         }
       } catch (error) {
-        console.error("Error getting location:", error);
+        if (isMounted) console.error("Error getting location:", error);
       }
     };
 
     getLocationInfo();
+    return () => { isMounted = false; };
   }, []);
 
   const handleSubmit = async () => {

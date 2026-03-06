@@ -6,7 +6,7 @@ import { COLORS } from "../constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import adjust from "../adjust";
 import { useSelector } from "react-redux";
-import { LoadingProvider, useLoading } from "../context/LoadingContext";
+import { useLoading } from "../context/LoadingContext";
 
 import { ThucHienChecklist, DetailChecklist, ThucHienHangmuc, ThucHienKhuvuc } from "../screens/Checklist";
 import { ThucHienChecklistLai, ThucHienKhuvucLai, ThucHienHangmucLai, DetailChecklistLai } from "../screens/ChecklistLai";
@@ -337,13 +337,8 @@ const screenConfigs = [
   },
 ];
 
-// ─── HomeStack ─────────────────────────────────────────────────────────────
 const HomeStack = () => {
-  return (
-    <LoadingProvider>
-      <HomeStackContent />
-    </LoadingProvider>
-  );
+  return <HomeStackContent />;
 };
 
 const HomeStackContent = () => {
