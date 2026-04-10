@@ -87,12 +87,11 @@ const BaotriThietbiScreen = ({ navigation }) => {
             <View style={styles.metaInfo}>
                 <Ionicons name="clipboard-outline" size={adjust(14)} color="#3b82f6" />
                 <Text style={[styles.metaText, { color: "#3b82f6", fontWeight: "600" }]} numberOfLines={1}>
-                    Thiết bị: {item.tong_thiet_bi || 0} | Xong: {item.tong_da_xong || 0}/{item.tong_dau_viec || 0}
+                    Tiến độ: {item.tong_da_xong || 0}/{item.tong_dau_viec || 0}
                 </Text>
             </View>
             <View style={[styles.metaInfo, { justifyContent: "flex-end" }]}>
-                <MaterialCommunityIcons name="account-outline" size={adjust(14)} color="#6b7280" />
-                <Text style={styles.metaText} numberOfLines={1}>Người tạo: {item.ent_user?.UserName || "---"}</Text>
+                 <Text style={styles.metaText}>Thiết bị: {item.tong_thiet_bi || 0}</Text>
             </View>
         </View>
 
@@ -101,6 +100,15 @@ const BaotriThietbiScreen = ({ navigation }) => {
                 <Text style={styles.noteText} numberOfLines={1}>Ghi chú: {item.ghi_chu}</Text>
             </View>
         ) : null}
+
+        <View style={styles.creatorRow}>
+            <View style={styles.metaInfo}>
+                <MaterialCommunityIcons name="account-outline" size={adjust(12)} color="#94a3b8" />
+                <Text style={styles.creatorTaskText} numberOfLines={1}>{item.ent_user?.UserName || "---"}</Text>
+                <Ionicons name="time-outline" size={adjust(12)} color="#94a3b8" style={{ marginLeft: adjust(10) }} />
+                <Text style={styles.creatorTaskText} numberOfLines={1}>{moment(item.created_at).format("HH:mm:ss DD/MM/YYYY")}</Text>
+            </View>
+        </View>
       </TouchableOpacity>
     );
   };
@@ -284,6 +292,17 @@ const styles = StyleSheet.create({
     fontSize: adjust(12),
     color: "#6b7280",
     fontStyle: "italic",
+  },
+  creatorRow: {
+    marginTop: adjust(8),
+    borderTopWidth: 1,
+    borderTopColor: "#f8fafc",
+    paddingTop: adjust(6),
+  },
+  creatorTaskText: {
+    fontSize: adjust(11),
+    color: "#94a3b8",
+    marginLeft: adjust(4),
   },
   fabContainer: {
     position: "absolute",

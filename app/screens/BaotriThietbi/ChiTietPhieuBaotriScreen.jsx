@@ -286,6 +286,8 @@ const ChiTietPhieuBaotriScreen = ({ route, navigation }) => {
                     <Ionicons name="person-outline" size={14} color="#64748b" />
                     <Text style={styles.infoLabel}>Người tạo: </Text>
                     <Text style={styles.infoValue}>{data?.ent_user?.UserName || "---"}</Text>
+                    <Text style={[styles.infoLabel, { marginLeft: adjust(12) }]}>Lúc: </Text>
+                    <Text style={styles.infoValue}>{data?.created_at ? moment(data.created_at).format("HH:mm:ss DD/MM/YYYY") : "---"}</Text>
                 </View>
                 <View style={styles.statsRow}>
                     <View style={styles.statItem}>

@@ -191,6 +191,13 @@ const DanhSachThietbiScreen = ({ navigation }) => {
             </Text>
           </View>
 
+          <View style={styles.detailRow}>
+            <Ionicons name="time-outline" size={adjust(14)} color="#9ca3af" />
+            <Text style={styles.detailText} numberOfLines={1}>
+              Ngày nhập hệ thống: {item.created_at ? moment(item.created_at).format("DD/MM/YYYY") : "---"}
+            </Text>
+          </View>
+
           <View style={styles.expandRow}>
             <Text style={styles.expandText}>
               {groups.length} nhóm hạng mục - {groups.reduce((acc, g) => acc + (g.bt_thietbi_thietlap?.length || 0), 0)} nhiệm vụ
