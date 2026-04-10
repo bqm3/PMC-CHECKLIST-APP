@@ -125,6 +125,37 @@ export const MenuIcons = {
       <Path d="M28 18V10L32 14L36 10V18" fill="#6366f1" opacity="0.2" stroke="#6366f1" strokeWidth="1.5" strokeLinejoin="round"/>
     </Svg>
   ),
+
+  bt_thiet_bi: (props) => (
+    <Svg width={props.width || 64} height={props.height || 64} viewBox="0 0 64 64" {...props}>
+      <Circle cx="32" cy="32" r="26" fill="#f59e0b" opacity="0.1"/>
+      <Circle cx="32" cy="32" r="26" stroke="#f59e0b" strokeWidth="2" fill="none"/>
+      {/* Wrench body */}
+      <Path 
+        d="M38 20L31 27M33 18L30 21M35 16L32 19" 
+        stroke="#f59e0b" 
+        strokeWidth="2.5" 
+        strokeLinecap="round"
+      />
+      <Path 
+        d="M48 24C48 29.5 43.5 34 38 34C36.5 34 35 33.5 34 33L20 47C19 48 17 48 16 47C15 46 15 44 16 43L30 29C29.5 28 29 26.5 29 25C29 19.5 33.5 15 39 15C41 15 43 15.5 44.5 17L48 24Z" 
+        stroke="#f59e0b" 
+        strokeWidth="2.5" 
+        fill="none" 
+        strokeLinecap="round" 
+        strokeLinejoin="round"
+      />
+      <Circle cx="38.5" cy="24.5" r="3" fill="#f59e0b"/>
+      {/* Gear teeth */}
+      <Path 
+        d="M32 45L32 41M32 55L32 51M40 48L36 48M28 48L24 48M37.6 42.4L34.8 45.2M29.2 50.8L26.4 53.6M37.6 53.6L34.8 50.8M29.2 42.4L26.4 39.6" 
+        stroke="#f59e0b" 
+        strokeWidth="2" 
+        strokeLinecap="round"
+      />
+      <Circle cx="32" cy="48" r="4" stroke="#f59e0b" strokeWidth="2" fill="none"/>
+    </Svg>
+  ),
 };
 
 // Mapping từ path/key sang icon component
@@ -161,6 +192,9 @@ export const ICON_MAP = {
   
   'Báo cáo': MenuIcons.report,
   'report': MenuIcons.report,
+  
+  'Bảo trì thiết bị': MenuIcons.bt_thiet_bi,
+  'bt_thiet_bi': MenuIcons.bt_thiet_bi,
 };
 
 // Helper function để lấy icon

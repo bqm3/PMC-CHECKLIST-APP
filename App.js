@@ -119,7 +119,7 @@ function RootApp() {
   }, [dispatch]);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.bg_button }} edges={["left", "right"]}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.bg_button }} edges={["left", "right", "bottom"]}>
       <StatusBar barStyle="light-content" backgroundColor={COLORS.bg_button} translucent={Platform.OS === "android"} />
       <CheckNavigation />
     </SafeAreaView>

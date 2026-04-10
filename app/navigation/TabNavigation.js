@@ -30,6 +30,13 @@ import { DanhMucBaoCaoP0, TaoBaoCaoP0, DetailP0 } from "../screens/P0";
 import { ListDKTC, ChiTietDKTC } from "../screens/Dangkythicong";
 import { NotificationScreen, DetailNotiScreen } from "../screens/Noti";
 import { ANDaoTao, ANDaoTaoGiaoCaForm, ANCongCu } from "../screens/Anninh";
+import {
+  BaotriThietbiScreen,
+  TaoPhieuBaotriScreen,
+  DanhSachThietbiScreen,
+  ChiTietPhieuBaotriScreen,
+  ThucHienBaotriThietbiScreen,
+} from "../screens/BaotriThietbi";
 import HomeScreen from "../screens/HomeScreen.jsx";
 import Profile from "../screens/Profile.jsx";
 import axios from "axios";
@@ -305,6 +312,13 @@ const screenConfigs = [
     rightType: "none",
   },
   { name: "an_ninh_cong_cu", component: ANCongCu, title: "An ninh công cụ", leftType: "back", rightType: "none" },
+
+  // ── Bảo trì thiết bị ──
+  { name: "bt_thiet_bi", component: BaotriThietbiScreen, title: "Bảo trì thiết bị", leftType: "back", rightType: "none" },
+  { name: "tao_phieu_bt", component: TaoPhieuBaotriScreen, title: "Tạo phiếu bảo trì", leftType: "back", rightType: "none" },
+  { name: "ds_thiet_bi", component: DanhSachThietbiScreen, title: "Danh sách thiết bị dự án", leftType: "back", rightType: "none" },
+  { name: "chi_tiet_phieu_bt", component: ChiTietPhieuBaotriScreen, title: "Chi tiết phiếu bảo trì", leftType: "back", rightType: "none" },
+  { name: "thuc_hien_bt_thiet_bi", component: ThucHienBaotriThietbiScreen, title: "Thực hiện bảo trì thiết bị", leftType: "back", rightType: "none" },
 
   // ── Dynamic title screens ──
   {

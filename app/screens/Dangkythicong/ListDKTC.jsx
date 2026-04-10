@@ -16,6 +16,7 @@ import {
   Alert,
   ImageBackground,
   ActivityIndicator,
+  ScrollView,
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
@@ -503,23 +504,43 @@ const ListDKTC = ({ navigation, route }) => {
           </View>
 
           {/* Status Filter */}
-          <View style={styles.statusFilterContainer}>
-            {STATUS_OPTIONS.map((option) => (
-              <TouchableOpacity
-                key={option.value}
-                style={[
-                  styles.statusFilterButton,
-                  {
-                    backgroundColor: filters.status === option.value ? option.color : option.bgColor,
-                    borderColor: option.color,
-                  },
-                ]}
-                onPress={() => handlers.setStatus(option.value)}
-                activeOpacity={0.7}
-              >
-                <CustomText style={[styles.statusFilterText, { color: filters.status === option.value ? "#FFFFFF" : option.color }]}>{option.label}</CustomText >
-              </TouchableOpacity>
-            ))}
+          <View style={styles.statusFilterWrapper}>
+            <View style={styles.statusFilterRow}>
+              {STATUS_OPTIONS.slice(0, 3).map((option) => (
+                <TouchableOpacity
+                  key={option.value}
+                  style={[
+                    styles.statusFilterButton,
+                    {
+                      backgroundColor: filters.status === option.value ? option.color : option.bgColor,
+                      borderColor: option.color,
+                    },
+                  ]}
+                  onPress={() => handlers.setStatus(option.value)}
+                  activeOpacity={0.7}
+                >
+                  <CustomText style={[styles.statusFilterText, { color: filters.status === option.value ? "#FFFFFF" : option.color }]} numberOfLines={1}>{option.label}</CustomText >
+                </TouchableOpacity>
+              ))}
+            </View>
+            <View style={[styles.statusFilterRow, { marginTop: adjust(8) }]}>
+              {STATUS_OPTIONS.slice(3).map((option) => (
+                <TouchableOpacity
+                  key={option.value}
+                  style={[
+                    styles.statusFilterButton,
+                    {
+                      backgroundColor: filters.status === option.value ? option.color : option.bgColor,
+                      borderColor: option.color,
+                    },
+                  ]}
+                  onPress={() => handlers.setStatus(option.value)}
+                  activeOpacity={0.7}
+                >
+                  <CustomText style={[styles.statusFilterText, { color: filters.status === option.value ? "#FFFFFF" : option.color }]} numberOfLines={1}>{option.label}</CustomText >
+                </TouchableOpacity>
+              ))}
+            </View>
           </View>
 
           {/* Date Filter */}
@@ -716,16 +737,18 @@ const styles = StyleSheet.create({
     padding: adjust(6),
     borderRadius: adjust(12),
   },
-  statusFilterContainer: {
+  statusFilterWrapper: {
+    marginTop: adjust(16),
+  },
+  statusFilterRow: {
     flexDirection: "row",
     paddingHorizontal: adjust(16),
-    marginTop: adjust(16),
     gap: adjust(8),
   },
   statusFilterButton: {
     flex: 1,
     paddingVertical: adjust(10),
-    paddingHorizontal: adjust(12),
+    paddingHorizontal: adjust(4),
     borderRadius: adjust(24),
     borderWidth: 1.5,
     alignItems: "center",

@@ -43,13 +43,14 @@ const MENU_ITEMS = {
       S0: { id: 7, path: "Báo cáo S0", icon: MenuIcons.s0, title: "S0", requireP0: true },
       AN_CONGCU: { id: 9, path: "an_ninh_cong_cu", icon: MenuIcons.security_tool, title: "An ninh công cụ" },
       AN_DAOTAO: { id: 10, path: "an_ninh_dao_tao", icon: MenuIcons.training, title: "Đào tạo giao ca" },
+      BT_THIETBI: { id: 11, path: "bt_thiet_bi", icon: MenuIcons.bt_thiet_bi, title: "Bảo trì thiết bị" },
     },
   },
   CONSTRUCTION: { id: 8, path: "Đăng ký thi công", icon: MenuIcons.construction, },
 };
 
 const ROLE_MENUS = {
-  1: [MENU_ITEMS.INCIDENT, MENU_ITEMS.LOOKUP, MENU_ITEMS.REPORT, MENU_ITEMS.CONSTRUCTION],
+  1: [MENU_ITEMS.RECHECK, MENU_ITEMS.INCIDENT, MENU_ITEMS.LOOKUP, MENU_ITEMS.REPORT, MENU_ITEMS.CONSTRUCTION],
   2: [MENU_ITEMS.CHECKLIST, MENU_ITEMS.LOOKUP, MENU_ITEMS.RECHECK, MENU_ITEMS.INCIDENT, MENU_ITEMS.REPORT, MENU_ITEMS.CONSTRUCTION],
   3: [MENU_ITEMS.CHECKLIST, MENU_ITEMS.LOOKUP, MENU_ITEMS.RECHECK, MENU_ITEMS.INCIDENT, MENU_ITEMS.REPORT, MENU_ITEMS.CONSTRUCTION],
   5: [MENU_ITEMS.LOOKUP, MENU_ITEMS.INCIDENT, MENU_ITEMS.REPORT, MENU_ITEMS.CONSTRUCTION],
