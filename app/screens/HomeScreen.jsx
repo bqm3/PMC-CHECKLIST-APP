@@ -26,6 +26,8 @@ import { useLoading } from "../context/LoadingContext";
 import { validatePassword } from "../utils/util";
 import { MenuIcons } from '../components/MenuIcons';
 import { Dropdown } from 'react-native-element-dropdown';
+import moment from "moment";
+import { bt_thietbi_da_API } from "./BaotriThietbi/api";
 
 // ================== Constants ==================
 const MENU_ITEMS = {
@@ -204,6 +206,7 @@ const HomeScreen = ({ navigation, route }) => {
   const { setIsLoading, setColorLoading } = useLoading();
 
   const { user, authToken, passwordCore } = useSelector((state) => state.authReducer);
+  const hasProject = user?.ID_Duan;
   const { sdt_khancap } = useSelector((state) => state.entReducer);
   const { setToken } = React.useContext(ExpoTokenContext);
 
@@ -211,6 +214,7 @@ const HomeScreen = ({ navigation, route }) => {
   const [refreshScreen, setRefreshScreen] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
   const [isFocus, setIsFocus] = useState(false);
+  const [dueDevicesCount, setDueDevicesCount] = useState(0);
 
   const notificationListener = useRef();
   const responseListener = useRef();
@@ -264,10 +268,36 @@ const HomeScreen = ({ navigation, route }) => {
     fetchNotifications();
   }, [refreshScreen]);
 
+  const fetchDueDevicesCount = async () => {
+    if (!authToken) return;
+    if (!hasProject) return;
+    try {
+      const response = await bt_thietbi_da_API.getAll(authToken);
+      const devices = response.data.data || [];
+      const todayStr = moment().format("YYYY-MM-DD");
+      let count = 0;
+      devices.forEach((device) => {
+        let hasTaskToday = false;
+        device.bt_nhomhm_tbi_da?.forEach((group) => {
+          group.bt_thietbi_thietlap?.forEach((task) => {
+            if (task.ngay_du_kien_tiep_theo === todayStr) {
+                hasTaskToday = true;
+            }
+          });
+        });
+        if (hasTaskToday) count++;
+      });
+      setDueDevicesCount(count);
+    } catch (error) {
+      console.error("Fetch due devices error:", error);
+    }
+  };
+
   useFocusEffect(
     useCallback(() => {
       fetchNotifications();
-    }, [])
+      fetchDueDevicesCount();
+    }, [authToken])
   );
 
   // Push notifications
@@ -431,6 +461,19 @@ const HomeScreen = ({ navigation, route }) => {
           <Text allowFontScaling={false} style={styles.accountInfo} numberOfLines={1}>
             Tài khoản: {user?.UserName} - {user?.ent_chucvu?.Chucvu}
           </Text>
+
+          {dueDevicesCount > 0 && hasProject && (
+            <TouchableOpacity 
+              style={styles.homeDueAlert}
+              onPress={() => navigation.navigate("bt_thiet_bi")}
+            >
+              <FontAwesome name="bell" size={adjust(16)} color="#ef4444" />
+              <Text allowFontScaling={false} style={styles.homeDueAlertText}>
+                Hôm nay có <Text style={{ fontWeight: 'bold' }}>{dueDevicesCount}</Text> thiết bị cần bảo trì
+              </Text>
+              <FontAwesome name="angle-right" size={adjust(18)} color="#ef4444" />
+            </TouchableOpacity>
+          )}
 
           {/* Project Selector */}
           {showProjectSelector && (
@@ -643,6 +686,29 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: adjust(16),
     marginBottom: 5,
+  },
+  homeDueAlert: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.95)',
+    marginHorizontal: adjust(20),
+    marginTop: adjust(15),
+    padding: adjust(12),
+    borderRadius: adjust(12),
+    borderWidth: 1,
+    borderColor: '#fee2e2',
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    width: '90%',
+  },
+  homeDueAlertText: {
+    flex: 1,
+    fontSize: adjust(14),
+    color: '#991b1b',
+    marginLeft: adjust(10),
   },
 });
 

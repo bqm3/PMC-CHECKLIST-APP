@@ -46,6 +46,10 @@ const TaoPhieuBaotriScreen = ({ navigation }) => {
           });
         });
       });
+
+      if (autoSelected.length === 0) {
+        setMaintenanceType("adhoc");
+      }
       setSelectedTasks(autoSelected);
     } catch (error) {
       console.error("Lỗi khi lấy dữ liệu thiết bị:", error);
@@ -53,6 +57,14 @@ const TaoPhieuBaotriScreen = ({ navigation }) => {
       setIsLoading(false);
     }
   };
+
+  const hasTasksToday = useMemo(() => {
+    return dataThietBi.some(device => 
+      device.bt_nhomhm_tbi_da?.some(group => 
+        group.bt_thietbi_thietlap?.some(task => task.ngay_du_kien_tiep_theo === todayStr)
+      )
+    );
+  }, [dataThietBi, todayStr]);
 
   const filteredData = useMemo(() => {
     if (maintenanceType === "adhoc") return dataThietBi;
@@ -214,12 +226,14 @@ const TaoPhieuBaotriScreen = ({ navigation }) => {
             <View style={styles.staticHeader}>
                 <Text style={styles.label}>Loại bảo trì</Text>
                 <View style={styles.typeSelector}>
-                    <TouchableOpacity 
-                        style={[styles.typeButton, maintenanceType === "daily" && styles.typeButtonActive]}
-                        onPress={() => setMaintenanceType("daily")}
-                    >
-                        <Text style={[styles.typeButtonText, maintenanceType === "daily" && styles.typeButtonTextActive]}>Theo ngày</Text>
-                    </TouchableOpacity>
+                    {hasTasksToday && (
+                        <TouchableOpacity 
+                            style={[styles.typeButton, maintenanceType === "daily" && styles.typeButtonActive]}
+                            onPress={() => setMaintenanceType("daily")}
+                        >
+                            <Text style={[styles.typeButtonText, maintenanceType === "daily" && styles.typeButtonTextActive]}>Theo ngày</Text>
+                        </TouchableOpacity>
+                    )}
                     <TouchableOpacity 
                         style={[styles.typeButton, maintenanceType === "adhoc" && styles.typeButtonActive]}
                         onPress={() => setMaintenanceType("adhoc")}

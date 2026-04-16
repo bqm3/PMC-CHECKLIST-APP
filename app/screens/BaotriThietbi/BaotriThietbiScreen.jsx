@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import adjust from "../../adjust";
 import { COLORS } from "../../constants/theme";
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
-import { bt_thongtinchung_API } from "./api";
+import { bt_thongtinchung_API, bt_thietbi_da_API } from "./api";
 import moment from "moment";
 import { useLoading } from "../../context/LoadingContext";
 
@@ -15,6 +15,7 @@ const BaotriThietbiScreen = ({ navigation }) => {
   const [dataPhieu, setDataPhieu] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [dueDevicesCount, setDueDevicesCount] = useState(0);
 
   useFocusEffect(
     useCallback(() => {
@@ -25,10 +26,30 @@ const BaotriThietbiScreen = ({ navigation }) => {
   const fetchData = async () => {
     try {
       setIsLoading(true);
-      const response = await bt_thongtinchung_API.getAll(authToken);
-      setDataPhieu(response.data.data || []);
+      const [resPhieu, resThietBi] = await Promise.all([
+        bt_thongtinchung_API.getAll(authToken),
+        bt_thietbi_da_API.getAll(authToken)
+      ]);
+      
+      setDataPhieu(resPhieu.data.data || []);
+      
+      const devices = resThietBi.data.data || [];
+      const todayStr = moment().format("YYYY-MM-DD");
+      let count = 0;
+      devices.forEach((device) => {
+        let hasTaskToday = false;
+        device.bt_nhomhm_tbi_da?.forEach((group) => {
+          group.bt_thietbi_thietlap?.forEach((task) => {
+            if (task.ngay_du_kien_tiep_theo === todayStr) {
+                hasTaskToday = true;
+            }
+          });
+        });
+        if (hasTaskToday) count++;
+      });
+      setDueDevicesCount(count);
     } catch (error) {
-      console.error("Lỗi khi lấy danh sách phiếu bảo trì:", error);
+      console.error("Lỗi khi lấy danh sách bảo trì:", error);
     } finally {
       setIsLoading(false);
     }
@@ -37,10 +58,30 @@ const BaotriThietbiScreen = ({ navigation }) => {
   const onRefresh = async () => {
     setRefreshing(true);
     try {
-      const response = await bt_thongtinchung_API.getAll(authToken);
-      setDataPhieu(response.data.data || []);
+      const [resPhieu, resThietBi] = await Promise.all([
+        bt_thongtinchung_API.getAll(authToken),
+        bt_thietbi_da_API.getAll(authToken)
+      ]);
+      
+      setDataPhieu(resPhieu.data.data || []);
+      
+      const devices = resThietBi.data.data || [];
+      const todayStr = moment().format("YYYY-MM-DD");
+      let count = 0;
+      devices.forEach((device) => {
+        let hasTaskToday = false;
+        device.bt_nhomhm_tbi_da?.forEach((group) => {
+          group.bt_thietbi_thietlap?.forEach((task) => {
+            if (task.ngay_du_kien_tiep_theo === todayStr) {
+                hasTaskToday = true;
+            }
+          });
+        });
+        if (hasTaskToday) count++;
+      });
+      setDueDevicesCount(count);
     } catch (error) {
-      console.error("Lỗi khi refresh danh sách phiếu bảo trì:", error);
+      console.error("Lỗi khi refresh danh sách bảo trì:", error);
     } finally {
       setRefreshing(false);
     }
@@ -132,6 +173,21 @@ const BaotriThietbiScreen = ({ navigation }) => {
                     onChangeText={setSearchQuery}
                 />
             </View>
+
+            {dueDevicesCount > 0 && (
+                <TouchableOpacity 
+                    style={styles.dueAlert}
+                    onPress={() => navigation.navigate("tao_phieu_bt")}
+                >
+                    <View style={styles.dueAlertIcon}>
+                        <Ionicons name="notifications" size={adjust(16)} color="white" />
+                    </View>
+                    <Text style={styles.dueAlertText}>
+                        Hôm nay có <Text style={{ fontWeight: 'bold' }}>{dueDevicesCount}</Text> thiết bị cần được bảo trì
+                    </Text>
+                    <Ionicons name="chevron-forward" size={adjust(16)} color="#ef4444" />
+                </TouchableOpacity>
+            )}
 
             <FlatList
                 data={filteredData}
@@ -339,6 +395,32 @@ const styles = StyleSheet.create({
     marginTop: adjust(10),
     color: "#9ca3af",
     fontSize: adjust(15),
+  },
+  dueAlert: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fef2f2',
+    marginHorizontal: adjust(12),
+    marginBottom: adjust(12),
+    padding: adjust(10),
+    borderRadius: adjust(10),
+    borderWidth: 1,
+    borderColor: '#fee2e2',
+    elevation: 1,
+  },
+  dueAlertIcon: {
+    backgroundColor: '#ef4444',
+    width: adjust(26),
+    height: adjust(26),
+    borderRadius: adjust(13),
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: adjust(10),
+  },
+  dueAlertText: {
+    flex: 1,
+    fontSize: adjust(13),
+    color: '#991b1b',
   },
 });
 
