@@ -167,8 +167,6 @@ const ChiTietPhieuBaotriScreen = ({ route, navigation }) => {
           }
       });
 
-      console.log("formData ready to send");
-
       await bt_chitiettb_API.updateTask(authToken, formData);
       Alert.alert("Thành công", "Đã đồng bộ tất cả kết quả bảo trì lên hệ thống!");
       fetchDetail();
