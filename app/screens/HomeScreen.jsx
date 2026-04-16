@@ -121,8 +121,9 @@ async function registerForPushNotificationsAsync() {
 }
 
 // ================== Custom Hooks ==================
-const useInitializeData = (dispatch, authToken, refreshScreen) => {
+const useInitializeData = (dispatch, authToken) => {
   useEffect(() => {
+    if (!authToken) return;
     let isMounted = true;
     const initAll = async () => {
       try {
@@ -141,7 +142,7 @@ const useInitializeData = (dispatch, authToken, refreshScreen) => {
     };
     initAll();
     return () => { isMounted = false; };
-  }, [dispatch, refreshScreen]);
+  }, [dispatch, authToken]);
 };
 
 const useProjectData = (authToken) => {
@@ -169,14 +170,14 @@ const useProjectData = (authToken) => {
   return duan;
 };
 
-const useP0Check = (authToken, setIsLoading) => {
+const useP0Check = (authToken) => {
   const [checkP0, setCheckP0] = useState(false);
 
   useEffect(() => {
+    if (!authToken) return;
     let isMounted = true;
     const checkP0Status = async () => {
       try {
-        if (isMounted) setIsLoading(true);
         const response = await axios.get(`${BASE_URL}/p0/check`, {
           headers: {
             Accept: "application/json",
@@ -188,8 +189,6 @@ const useP0Check = (authToken, setIsLoading) => {
         }
       } catch (error) {
         if (isMounted) console.error("P0 check error:", error);
-      } finally {
-        if (isMounted) setIsLoading(false);
       }
     };
     checkP0Status();
@@ -206,12 +205,11 @@ const HomeScreen = ({ navigation, route }) => {
   const { setIsLoading, setColorLoading } = useLoading();
 
   const { user, authToken, passwordCore } = useSelector((state) => state.authReducer);
-  const hasProject = user?.ID_Duan;
+  const hasProject = user?.ID_Duan || user?.ent_duan?.ID_Duan;
   const { sdt_khancap } = useSelector((state) => state.entReducer);
   const { setToken } = React.useContext(ExpoTokenContext);
 
   const [expoPushToken, setExpoPushToken] = useState("");
-  const [refreshScreen, setRefreshScreen] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
   const [isFocus, setIsFocus] = useState(false);
   const [dueDevicesCount, setDueDevicesCount] = useState(0);
@@ -220,9 +218,9 @@ const HomeScreen = ({ navigation, route }) => {
   const responseListener = useRef();
 
   // Custom hooks
-  useInitializeData(dispatch, authToken, refreshScreen);
+  useInitializeData(dispatch, authToken);
   const duan = useProjectData(authToken);
-  const checkP0 = useP0Check(authToken, setIsLoading);
+  const checkP0 = useP0Check(authToken);
 
   // ================== Menu Data ==================
   const menuData = useMemo(() => {
@@ -235,8 +233,18 @@ const HomeScreen = ({ navigation, route }) => {
       baseData = baseData.map((item) => ({ ...item, status: null }));
     }
 
-    return baseData;
-  }, [user?.ent_chucvu?.Role]);
+    // Filter BT_THIETBI if no project selected
+    return baseData.map((menuItem) => {
+      if (menuItem.id === MENU_ITEMS.REPORT.id && menuItem.children) {
+        const filteredChildren = { ...menuItem.children };
+        if (!hasProject) {
+          delete filteredChildren.BT_THIETBI;
+        }
+        return { ...menuItem, children: filteredChildren };
+      }
+      return menuItem;
+    });
+  }, [user?.ent_chucvu?.Role, hasProject]);
 
   // ================== Show Multi-Project Selector ==================
   const showProjectSelector = useMemo(() => {
@@ -266,7 +274,7 @@ const HomeScreen = ({ navigation, route }) => {
 
   useEffect(() => {
     fetchNotifications();
-  }, [refreshScreen]);
+  }, []);
 
   const fetchDueDevicesCount = async () => {
     if (!authToken) return;
@@ -367,11 +375,14 @@ const HomeScreen = ({ navigation, route }) => {
       );
 
       if (response.status === 200) {
-        const UserName = await AsyncStorage.getItem("UserName");
-        const Password = await AsyncStorage.getItem("Password");
-        dispatch(login(UserName, Password));
-        Alert.alert("Thông báo", "Cập nhật dự án thành công!");
-        setRefreshScreen((prev) => !prev);
+        const [UserName, Password] = await Promise.all([
+          AsyncStorage.getItem("UserName"),
+          AsyncStorage.getItem("Password")
+        ]);
+        if (UserName && Password) {
+            await dispatch(login(UserName, Password));
+            Alert.alert("Thông báo", "Cập nhật dự án thành công!");
+        }
       }
     } catch (error) {
       Alert.alert("Thông báo", "Đã có lỗi xảy ra, vui lòng thử lại");
@@ -395,11 +406,14 @@ const HomeScreen = ({ navigation, route }) => {
       );
 
       if (response.status === 200) {
-        const UserName = await AsyncStorage.getItem("UserName");
-        const Password = await AsyncStorage.getItem("Password");
-        dispatch(login(UserName, Password));
-        Alert.alert("Thông báo", "Cập nhật dự án thành công!");
-        setRefreshScreen((prev) => !prev);
+        const [UserName, Password] = await Promise.all([
+          AsyncStorage.getItem("UserName"),
+          AsyncStorage.getItem("Password")
+        ]);
+        if (UserName && Password) {
+            await dispatch(login(UserName, Password));
+            Alert.alert("Thông báo", "Cập nhật dự án thành công!");
+        }
       }
     } catch (error) {
       Alert.alert("Thông báo", "Đã có lỗi xảy ra, vui lòng thử lại");
