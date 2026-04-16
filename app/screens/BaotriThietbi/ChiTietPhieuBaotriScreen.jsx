@@ -146,6 +146,7 @@ const ChiTietPhieuBaotriScreen = ({ route, navigation }) => {
       formData.append("id_thongtinchung", id); // Gửi thêm id_thongtinchung
       allFinishedTasks.forEach((item, index) => {
           formData.append(`id_chitiettb[${index}]`, item.id_chitiettb);
+          formData.append(`id_thietbi_thietlap[${index}]`, item.id_thietbi_thietlap);
           formData.append(`ket_qua[${index}]`, item.ket_qua || "");
           formData.append(`tinh_trang[${index}]`, item.tinh_trang || "Bình thường");
           formData.append(`ghi_chu[${index}]`, item.ghi_chu || "");
