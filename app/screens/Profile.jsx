@@ -32,6 +32,7 @@ import { validatePassword } from "../utils/util";
 
 const Profile = () => {
   const { user, authToken } = useSelector((state) => state.authReducer);
+  console.log(user);
   const dispatch = useDispatch();
 
   const [isCheckSecurity, setIsCheckSecurity] = useState({
@@ -155,176 +156,162 @@ const Profile = () => {
               top={10}
               bottom={10}
             />
-            <View style={styles.inputs}>
-              <TextInput
-                allowFontScaling={false}
-                value={user?.UserName}
-                editable={false}
-                placeholder="Nhập tên ca thực hiện checklist"
-                placeholderTextColor="gray"
-                style={[
-                  styles.textInput,
-                  {
-                    paddingHorizontal: 10,
-                  },
-                ]}
-                autoCapitalize="sentences"
-              />
+            
+            <View style={styles.profileHeader}>
+              <View style={styles.headerTextContainer}>
+                <Text style={styles.headerHoten}>{user?.Hoten}</Text>
+                <Text style={styles.headerEmail}>{user?.Email}</Text>
+              </View>
             </View>
-            <View style={styles.inputs}>
-              <TextInput
-                allowFontScaling={false}
-                value={user?.Email}
-                editable={false}
-                placeholder="Nhập email cá nhân"
-                placeholderTextColor="gray"
-                style={[
-                  styles.textInput,
-                  {
-                    paddingHorizontal: 10,
-                  },
-                ]}
-                autoCapitalize="sentences"
-              />
+
+            <View style={styles.infoCard}>
+              <View style={styles.infoRow}>
+                <Text style={styles.infoLabel}>Tên đăng nhập</Text>
+                <Text style={styles.infoValue}>{user?.UserName}</Text>
+              </View>
+              <View style={styles.infoRow}>
+                <Text style={styles.infoLabel}>Chức vụ</Text>
+                <Text style={styles.infoValue}>{user?.ent_chucvu?.Chucvu}</Text>
+              </View>
             </View>
-            <View style={styles.inputs}>
-              <TextInput
-                allowFontScaling={false}
-                value={user?.ent_chucvu?.Chucvu}
-                editable={false}
-                placeholderTextColor="gray"
-                style={[
-                  styles.textInput,
-                  {
-                    paddingHorizontal: 10,
-                  },
-                ]}
-                autoCapitalize="sentences"
-              />
-            </View>
-            <View style={styles.inputs}>
-              <TextInput
-                allowFontScaling={false}
-                value={user?.ent_duan?.Duan}
-                editable={false}
-                placeholder="Tên dự án"
-                placeholderTextColor="gray"
-                style={[
-                  styles.textInput,
-                  {
-                    paddingHorizontal: 10,
-                  },
-                ]}
-                autoCapitalize="sentences"
-              />
-            </View>
+
+            {/* <Title
+              text={"Thông tin dự án"}
+              size={adjust(18)}
+              top={5}
+              bottom={10}
+            />
+            
+            <View style={styles.infoCard}>
+              <View style={styles.infoRow}>
+                <Text style={styles.infoLabel}>Dự án</Text>
+                <Text style={[styles.infoValue, { color: COLORS.bg_button }]}>{user?.ent_duan?.Duan}</Text>
+              </View>
+              <View style={styles.infoRow}>
+                <Text style={styles.infoLabel}>Chi nhánh</Text>
+                <Text style={styles.infoValue}>{user?.ent_duan?.ent_chinhanh?.Tenchinhanh}</Text>
+              </View>
+              <View style={styles.infoRow}>
+                <Text style={styles.infoLabel}>Công ty</Text>
+                <Text style={styles.infoValue}>{user?.ent_duan?.ent_congty?.ten_cong_ty}</Text>
+              </View>
+              <View style={[styles.infoRow, { borderBottomWidth: 0 }]}>
+                <Text style={styles.infoLabel}>Phân loại</Text>
+                <Text style={styles.infoValue} numberOfLines={2}>{user?.ent_duan?.ent_phanloaida?.Phanloai}</Text>
+              </View>
+            </View> */}
+
             <Title
               text={"Đổi mật khẩu"}
               size={adjust(18)}
-              top={10}
+              top={5}
               bottom={10}
             />
 
-            <View style={styles.inputs}>
-              <Text allowFontScaling={false} style={styles.text}>
-                Mật khẩu cũ
-              </Text>
-              <View style={styles.searchSection}>
-                <TextInput
-                  allowFontScaling={false}
-                  style={styles.input}
-                  placeholder="Mật khẩu cũ"
-                  placeholderTextColor="gray"
-                  secureTextEntry={isCheckSecurity.password}
-                  onChangeText={(searchString) => {
-                    handleChangeDataPassword("password", searchString);
-                  }}
-                  underlineColorAndroid="transparent"
-                  autoCapitalize="sentences"
-                />
-                <TouchableOpacity
-                  onPress={() =>
-                    handleChangeSecurityPassword(
-                      "password",
-                      !isCheckSecurity.password
-                    )
-                  }
-                >
-                  <Ionicons
-                    style={styles.searchIcon}
-                    name={isCheckSecurity.password ? "eye" : "eye-off"}
-                    size={adjust(20)}
-                    color="#000"
+            <View style={styles.passwordCard}>
+              <View style={styles.inputs}>
+                <Text allowFontScaling={false} style={styles.passwordLabel}>
+                  Mật khẩu cũ
+                </Text>
+                <View style={styles.searchSection}>
+                  <TextInput
+                    allowFontScaling={false}
+                    style={styles.input}
+                    placeholder="Mật khẩu cũ"
+                    placeholderTextColor="gray"
+                    secureTextEntry={isCheckSecurity.password}
+                    onChangeText={(searchString) => {
+                      handleChangeDataPassword("password", searchString);
+                    }}
+                    underlineColorAndroid="transparent"
+                    autoCapitalize="sentences"
                   />
-                </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() =>
+                      handleChangeSecurityPassword(
+                        "password",
+                        !isCheckSecurity.password
+                      )
+                    }
+                  >
+                    <Ionicons
+                      style={styles.searchIcon}
+                      name={isCheckSecurity.password ? "eye" : "eye-off"}
+                      size={adjust(20)}
+                      color="#000"
+                    />
+                  </TouchableOpacity>
+                </View>
               </View>
-            </View>
-            <View style={styles.inputs}>
-              <Text allowFontScaling={false} style={styles.text}>
-                Mật khẩu mới
-              </Text>
-              <View style={styles.searchSection}>
-                <TextInput
-                  allowFontScaling={false}
-                  style={styles.input}
-                  placeholder="Mật khẩu mới"
-                  placeholderTextColor="gray"
-                  secureTextEntry={isCheckSecurity.newpassword}
-                  onChangeText={(searchString) => {
-                    handleChangeDataPassword("newpassword", searchString);
-                  }}
-                  underlineColorAndroid="transparent"
-                  autoCapitalize="sentences"
-                />
-                <TouchableOpacity
-                  onPress={() =>
-                    handleChangeSecurityPassword(
-                      "newpassword",
-                      !isCheckSecurity.newpassword
-                    )
-                  }
-                >
-                  <Ionicons
-                    style={styles.searchIcon}
-                    name={isCheckSecurity.newpassword ? "eye" : "eye-off"}
-                    size={adjust(20)}
-                    color="#000"
+
+              <View style={styles.inputs}>
+                <Text allowFontScaling={false} style={styles.passwordLabel}>
+                  Mật khẩu mới
+                </Text>
+                <View style={styles.searchSection}>
+                  <TextInput
+                    allowFontScaling={false}
+                    style={styles.input}
+                    placeholder="Mật khẩu mới"
+                    placeholderTextColor="gray"
+                    secureTextEntry={isCheckSecurity.newpassword}
+                    onChangeText={(searchString) => {
+                      handleChangeDataPassword("newpassword", searchString);
+                    }}
+                    underlineColorAndroid="transparent"
+                    autoCapitalize="sentences"
                   />
-                </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() =>
+                      handleChangeSecurityPassword(
+                        "newpassword",
+                        !isCheckSecurity.newpassword
+                      )
+                    }
+                  >
+                    <Ionicons
+                      style={styles.searchIcon}
+                      name={isCheckSecurity.newpassword ? "eye" : "eye-off"}
+                      size={adjust(20)}
+                      color="#000"
+                    />
+                  </TouchableOpacity>
+                </View>
               </View>
-            </View>
-            <View style={styles.inputs}>
-              <Text allowFontScaling={false} style={styles.text}>
-                Nhập lại mật khẩu
-              </Text>
-              <View style={styles.searchSection}>
-                <TextInput
-                  allowFontScaling={false}
-                  style={styles.input}
-                  placeholder="Nhập lại mật khẩu"
-                  placeholderTextColor="gray"
-                  secureTextEntry={isCheckSecurity.re_newpassword}
-                  onChangeText={(searchString) => {
-                    handleChangeDataPassword("re_newpassword", searchString);
-                  }}
-                  underlineColorAndroid="transparent"
-                  autoCapitalize="sentences"
-                />
-                <TouchableOpacity
-                  onPress={() =>
-                    handleChangeSecurityPassword(
-                      "re_newpassword",
-                      !isCheckSecurity.re_newpassword
-                    )
-                  }
-                >
-                  <Ionicons
-                    style={styles.searchIcon}
-                    name={isCheckSecurity.re_newpassword ? "eye" : "eye-off"}
-                    size={adjust(20)}
-                    color="#000"
+
+              <View style={[styles.inputs, { marginBottom: 0 }]}>
+                <Text allowFontScaling={false} style={styles.passwordLabel}>
+                  Nhập lại mật khẩu
+                </Text>
+                <View style={styles.searchSection}>
+                  <TextInput
+                    allowFontScaling={false}
+                    style={styles.input}
+                    placeholder="Nhập lại mật khẩu"
+                    placeholderTextColor="gray"
+                    secureTextEntry={isCheckSecurity.re_newpassword}
+                    onChangeText={(searchString) => {
+                      handleChangeDataPassword("re_newpassword", searchString);
+                    }}
+                    underlineColorAndroid="transparent"
+                    autoCapitalize="sentences"
                   />
-                </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() =>
+                      handleChangeSecurityPassword(
+                        "re_newpassword",
+                        !isCheckSecurity.re_newpassword
+                      )
+                    }
+                  >
+                    <Ionicons
+                      style={styles.searchIcon}
+                      name={isCheckSecurity.re_newpassword ? "eye" : "eye-off"}
+                      size={adjust(20)}
+                      color="#000"
+                    />
+                  </TouchableOpacity>
+                </View>
               </View>
             </View>
 
@@ -373,8 +360,81 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     backgroundColor: "#eeeeee",
   },
-  searchSection: {
+  profileHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "rgba(255, 255, 255, 0.15)",
+    padding: adjust(15),
+    borderRadius: 15,
+    marginBottom: 15,
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.2)",
+  },
+  profileLogo: {
+    width: adjust(60),
+    height: adjust(60),
+    borderRadius: adjust(30),
+    backgroundColor: "white",
+    marginRight: 15,
+  },
+  headerTextContainer: {
     flex: 1,
+  },
+  headerHoten: {
+    fontSize: adjust(18),
+    color: "white",
+    fontWeight: "bold",
+  },
+  headerEmail: {
+    fontSize: adjust(14),
+    color: "rgba(255, 255, 255, 0.8)",
+    marginTop: 2,
+  },
+  infoCard: {
+    backgroundColor: "rgba(255, 255, 255, 0.15)",
+    borderRadius: 15,
+    paddingHorizontal: 15,
+    paddingVertical: 5,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.2)",
+  },
+  infoRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 12,
+    borderBottomWidth: 0.5,
+    borderBottomColor: "rgba(255, 255, 255, 0.2)",
+  },
+  infoLabel: {
+    fontSize: adjust(14),
+    color: "rgba(255, 255, 255, 0.7)",
+    fontWeight: "500",
+    flex: 0.4,
+  },
+  infoValue: {
+    fontSize: adjust(14),
+    color: "white",
+    fontWeight: "600",
+    flex: 0.6,
+    textAlign: "right",
+  },
+  passwordCard: {
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+    borderRadius: 15,
+    padding: 15,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.1)",
+  },
+  passwordLabel: {
+    fontSize: adjust(14),
+    color: "white",
+    fontWeight: "600",
+    marginBottom: 5,
+  },
+  searchSection: {
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
@@ -382,17 +442,16 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderWidth: 1,
     borderColor: "gray",
+    height: adjust(45),
   },
   searchIcon: {
     padding: 10,
   },
   input: {
     flex: 1,
-    padding: 10,
+    paddingHorizontal: 10,
     color: "#05375a",
-    fontSize: adjust(16),
-    borderRadius: 8,
-    height: adjust(50),
-    paddingVertical: 4,
+    fontSize: adjust(15),
+    height: "100%",
   },
 });

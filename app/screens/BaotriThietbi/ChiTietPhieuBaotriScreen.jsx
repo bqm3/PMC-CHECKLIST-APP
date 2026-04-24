@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, FlatList, ActivityIndicator, Modal, Alert } from "react-native";
 import { useSelector } from "react-redux";
 import adjust from "../../adjust";
@@ -9,6 +9,8 @@ import moment from "moment";
 import { useLoading } from "../../context/LoadingContext";
 import QRCodeScreen from "../QRCodeScreen";
 import { Camera } from "expo-camera";
+import * as FileSystem from "expo-file-system/legacy";
+import * as Sharing from "expo-sharing"
 
 const ChiTietPhieuBaotriScreen = ({ route, navigation }) => {
   const { id } = route.params;
@@ -27,7 +29,26 @@ const ChiTietPhieuBaotriScreen = ({ route, navigation }) => {
   useEffect(() => {
     fetchDetail();
     fetchMasterData();
+    cleanupCache();
+
+    // Dọn dẹp khi thoát khỏi màn hình
+    return () => {
+      cleanupCache();
+    };
   }, [id]);
+
+  const cleanupCache = async () => {
+    try {
+      const cacheDir = FileSystem.cacheDirectory;
+      const files = await FileSystem.readDirectoryAsync(cacheDir);
+      const oldFiles = files.filter(f => f.startsWith("Phieu_Bao_Tri_") && f.endsWith(".pdf"));
+      for (const file of oldFiles) {
+        await FileSystem.deleteAsync(cacheDir + file, { idempotent: true });
+      }
+    } catch (error) {
+      console.error("Lỗi dọn dẹp cache:", error);
+    }
+  };
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('beforeRemove', (e) => {
@@ -178,6 +199,46 @@ const ChiTietPhieuBaotriScreen = ({ route, navigation }) => {
     }
   };
 
+  const handleExportPDF = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      // Dọn dẹp trước khi xuất mới
+      await cleanupCache();
+      
+      const response = await bt_thongtinchung_API.exportPDF(authToken, id);
+      
+      const fileName = `Phieu_Bao_Tri_${id}_${moment().format("DDMMYY_HHmm")}.pdf`;
+      const fileUri = FileSystem.cacheDirectory + fileName;
+
+      // Chuyển đổi blob từ axios sang base64 một cách đồng bộ hơn dùng Promise
+      const base64data = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(response.data);
+        reader.onloadend = () => resolve(reader.result.split(',')[1]);
+        reader.onerror = reject;
+      });
+
+      await FileSystem.writeAsStringAsync(fileUri, base64data, {
+        encoding: "base64",
+      });
+
+      if (await Sharing.isAvailableAsync()) {
+        await Sharing.shareAsync(fileUri, {
+          mimeType: 'application/pdf',
+          dialogTitle: 'Chia sẻ phiếu bảo trì',
+          UTI: 'com.adobe.pdf',
+        });
+      } else {
+        Alert.alert("Thông báo", "Thiết bị không hỗ trợ chia sẻ file.");
+      }
+    } catch (error) {
+      console.error("Lỗi xuất PDF:", error);
+      Alert.alert("Lỗi", "Không thể xuất file PDF. Vui lòng thử lại sau.");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [authToken, id, setIsLoading]);
+
   const handlePushDataFilterQr = (value) => {
     const cleanedValue = value.trim();
     // Tìm thiết bị trong phiếu có mã QR tương ứng
@@ -272,7 +333,13 @@ const ChiTietPhieuBaotriScreen = ({ route, navigation }) => {
             <View style={styles.headerCard}>
                 <View style={styles.titleRow}>
                     <Text style={styles.phieuName}>{data.ten_phieu}</Text>
-                    <Text style={styles.dateText}>{moment(data.ngay_bt).format("DD/MM/YYYY")}</Text>
+                    <View style={styles.headerRight}>
+                        <Text style={styles.dateText}>{moment(data.ngay_bt).format("DD/MM/YYYY")}</Text>
+                        <TouchableOpacity style={styles.exportBtn} onPress={handleExportPDF}>
+                            <MaterialCommunityIcons name="file-pdf-box" size={adjust(22)} color="#ef4444" />
+                            <Text style={styles.exportText}>Xuất báo cáo</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
                 {data.ghi_chu && (
                     <View style={styles.noteBox}>
@@ -382,9 +449,29 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   dateText: {
-    fontSize: adjust(13),
+    fontSize: adjust(12),
     color: "#64748b",
     fontWeight: "600",
+    marginBottom: adjust(4),
+  },
+  headerRight: {
+    alignItems: 'flex-end',
+  },
+  exportBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff1f2',
+    paddingHorizontal: adjust(8),
+    paddingVertical: adjust(4),
+    borderRadius: adjust(6),
+    borderWidth: 1,
+    borderColor: '#fecaca',
+    gap: adjust(4),
+  },
+  exportText: {
+    fontSize: adjust(11),
+    color: "#ef4444",
+    fontWeight: "700",
   },
   noteBox: {
     flexDirection: 'row',

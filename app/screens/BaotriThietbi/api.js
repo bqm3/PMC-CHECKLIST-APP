@@ -35,6 +35,16 @@ export const bt_thongtinchung_API = {
     return axios.get(`${BASE_URL}/bt_thongtinchung/${id}`, authConfig(authToken));
   },
 
+  exportPDF: async (authToken, id) => {
+    return axios.get(`${BASE_URL}/bt_thongtinchung/export-pdf/${id}`, {
+      headers: {
+        'Accept': 'application/pdf',
+        Authorization: `Bearer ${authToken}`,
+      },
+      responseType: "blob",
+    });
+  },
+
   create: async (authToken, data) => {
     return axios.post(`${BASE_URL}/bt_thongtinchung/create`, data, authConfig(authToken));
   },
